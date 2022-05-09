@@ -1,0 +1,7 @@
+Getting started
+Line Numbers
+Statements:
+* REM
+* PRINT
+* GOTO
+* IF
