@@ -17,6 +17,10 @@ class LexerTests: XCTestCase {
     XCTAssertEqual(token, expected)
   }
 
+  func testAtEnd() {
+    checkToken("", Token.atEnd)
+  }
+
   func testLineNumber() throws {
     checkToken("10  REM Comment", Token.line(10))
   }
@@ -51,7 +55,11 @@ class LexerTests: XCTestCase {
     XCTAssertEqual(token, Token.atEnd)
   }
 
-  func testAtEnd() {
-    checkToken("", Token.atEnd)
+  func testUnexpectedStatement() {
+    checkToken("WHAT", Token.error("unrecognized name"))
+  }
+
+  func testUnexpectedCharacters() {
+    checkToken("😬", Token.error("not yet implemented"))
   }
 }

@@ -1,12 +1,17 @@
-* REM
 * PRINT
 * GOTO
 * IF
+
+Parameterized tests package?
+Should Lexer be a Stream?
 
 BI-22-01: May 9, 2022
 * Line Numbers
 * Squeezing characters before lexing
 * End of program ("Token.atEnd")
+* REM
+
+
 
 
 //      let digits = CharacterSet(charactersIn:"0123456789")
