@@ -30,11 +30,16 @@ class LexerTests: XCTestCase {
   }
 
   func testRemark() throws {
-    let program = "10  REM Comment"
+    let program = "REM Comment"
     let lexer = Lexer(program)
     let token1 = lexer.next()
-    let token2 = lexer.next()
-    XCTAssertEqual(token1, Token.line(10))
-    XCTAssertEqual(token2, Token.remark)
+    XCTAssertEqual(token1,  Token.remark)
+  }
+
+  func testAtEnd() {
+    let program = ""
+    let lexer = Lexer(program)
+    let token1 = lexer.next()
+    XCTAssertEqual(token1,  Token.atEnd)
   }
 }

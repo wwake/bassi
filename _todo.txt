@@ -1,12 +1,11 @@
-Line Numbers
-Statements:
 * REM
 * PRINT
 * GOTO
 * IF
 
 BI-22-01: May 9, 2022
-
+* Line Numbers
+* Squeezing characters before lexing
 
 
 //      let digits = CharacterSet(charactersIn:"0123456789")

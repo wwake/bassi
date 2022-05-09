@@ -34,6 +34,10 @@ class Lexer {
   }
 
   func next() -> Token {
+    if index >= program.count {
+      return .atEnd
+    }
+
     switch program[index] {
     case "0", "1", "2", "3", "4",
       "5", "6", "7", "8", "9":
