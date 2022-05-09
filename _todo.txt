@@ -1,7 +1,8 @@
-Getting started
 Line Numbers
 Statements:
 * REM
 * PRINT
 * GOTO
 * IF
+
+BI-22-01: May 9, 2022

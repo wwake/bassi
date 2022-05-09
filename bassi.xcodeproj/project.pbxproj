@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		911657632828C5F40000D3AA /* _todo.txt in Resources */ = {isa = PBXBuildFile; fileRef = 911657622828C5F40000D3AA /* _todo.txt */; };
+		9116576628295A2B0000D3AA /* Interpreter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9116576528295A2B0000D3AA /* Interpreter.swift */; };
+		9116576828295B970000D3AA /* InterpreterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9116576728295B970000D3AA /* InterpreterTests.swift */; };
+		9116576A28295C2B0000D3AA /* LexerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9116576928295C2B0000D3AA /* LexerTests.swift */; };
+		9116576C28295CF20000D3AA /* Lexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9116576B28295CF20000D3AA /* Lexer.swift */; };
+		9116576E28295D2A0000D3AA /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9116576D28295D2A0000D3AA /* Token.swift */; };
 		9192F7362828B68F00FAFFA1 /* bassiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9192F7352828B68F00FAFFA1 /* bassiApp.swift */; };
 		9192F7382828B68F00FAFFA1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9192F7372828B68F00FAFFA1 /* ContentView.swift */; };
 		9192F73A2828B69000FAFFA1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9192F7392828B69000FAFFA1 /* Assets.xcassets */; };
@@ -37,6 +42,11 @@
 /* Begin PBXFileReference section */
 		911657622828C5F40000D3AA /* _todo.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = _todo.txt; sourceTree = "<group>"; };
 		911657642828C9BD0000D3AA /* Bint.key */ = {isa = PBXFileReference; lastKnownFileType = file; path = Bint.key; sourceTree = "<group>"; };
+		9116576528295A2B0000D3AA /* Interpreter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Interpreter.swift; sourceTree = "<group>"; };
+		9116576728295B970000D3AA /* InterpreterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterpreterTests.swift; sourceTree = "<group>"; };
+		9116576928295C2B0000D3AA /* LexerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LexerTests.swift; sourceTree = "<group>"; };
+		9116576B28295CF20000D3AA /* Lexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lexer.swift; sourceTree = "<group>"; };
+		9116576D28295D2A0000D3AA /* Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
 		9192F7322828B68F00FAFFA1 /* bassi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = bassi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9192F7352828B68F00FAFFA1 /* bassiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bassiApp.swift; sourceTree = "<group>"; };
 		9192F7372828B68F00FAFFA1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -78,11 +88,11 @@
 		9192F7292828B68F00FAFFA1 = {
 			isa = PBXGroup;
 			children = (
-				911657642828C9BD0000D3AA /* Bint.key */,
 				911657622828C5F40000D3AA /* _todo.txt */,
 				9192F7342828B68F00FAFFA1 /* bassi */,
 				9192F7462828B69000FAFFA1 /* bassiTests */,
 				9192F7502828B69000FAFFA1 /* bassiUITests */,
+				911657642828C9BD0000D3AA /* Bint.key */,
 				9192F7332828B68F00FAFFA1 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -105,6 +115,9 @@
 				9192F7392828B69000FAFFA1 /* Assets.xcassets */,
 				9192F73E2828B69000FAFFA1 /* bassi.entitlements */,
 				9192F73B2828B69000FAFFA1 /* Preview Content */,
+				9116576528295A2B0000D3AA /* Interpreter.swift */,
+				9116576B28295CF20000D3AA /* Lexer.swift */,
+				9116576D28295D2A0000D3AA /* Token.swift */,
 			);
 			path = bassi;
 			sourceTree = "<group>";
@@ -121,6 +134,8 @@
 			isa = PBXGroup;
 			children = (
 				9192F7472828B69000FAFFA1 /* bassiTests.swift */,
+				9116576728295B970000D3AA /* InterpreterTests.swift */,
+				9116576928295C2B0000D3AA /* LexerTests.swift */,
 			);
 			path = bassiTests;
 			sourceTree = "<group>";
@@ -265,7 +280,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9116576E28295D2A0000D3AA /* Token.swift in Sources */,
+				9116576628295A2B0000D3AA /* Interpreter.swift in Sources */,
 				9192F7382828B68F00FAFFA1 /* ContentView.swift in Sources */,
+				9116576C28295CF20000D3AA /* Lexer.swift in Sources */,
 				9192F7362828B68F00FAFFA1 /* bassiApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -274,6 +292,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9116576A28295C2B0000D3AA /* LexerTests.swift in Sources */,
+				9116576828295B970000D3AA /* InterpreterTests.swift in Sources */,
 				9192F7482828B69000FAFFA1 /* bassiTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
