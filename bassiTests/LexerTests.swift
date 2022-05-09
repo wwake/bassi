@@ -11,35 +11,47 @@ import XCTest
 
 class LexerTests: XCTestCase {
 
-  func checkLineNumber(_ program: String, _ expected: Int) {
+  func checkToken(_ program: String, _ expected: Token) {
     let lexer = Lexer(program)
-    let token1 = lexer.next()
-    XCTAssertEqual(token1, Token.line(expected))
+    let token = lexer.next()
+    XCTAssertEqual(token, expected)
   }
 
   func testLineNumber() throws {
-    checkLineNumber("10  REM Comment", 10)
+    checkToken("10  REM Comment", Token.line(10))
   }
 
   func testLineNumberLeadingSpaces() {
-    checkLineNumber("  11 REM ", 11)
+    checkToken("  11 REM ", Token.line(11))
   }
 
   func testLineNumberInternalSpaces() {
-    checkLineNumber(" 1 2 REM ", 12)
+    checkToken(" 1 2 REM ", Token.line(12))
   }
 
   func testRemark() throws {
-    let program = "REM Comment"
-    let lexer = Lexer(program)
-    let token1 = lexer.next()
-    XCTAssertEqual(token1,  Token.remark)
+    checkToken("REM Comment", Token.remark)
+  }
+
+  func testTwoRemarks() {
+    let lexer = Lexer("10 REM #\n20 REM")
+    var token = lexer.next()
+    XCTAssertEqual(token, Token.line(10))
+
+    token = lexer.next()
+    XCTAssertEqual(token, Token.remark)
+
+    token = lexer.next()
+    XCTAssertEqual(token, Token.line(20))
+
+    token = lexer.next()
+    XCTAssertEqual(token, Token.remark)
+
+    token = lexer.next()
+    XCTAssertEqual(token, Token.atEnd)
   }
 
   func testAtEnd() {
-    let program = ""
-    let lexer = Lexer(program)
-    let token1 = lexer.next()
-    XCTAssertEqual(token1,  Token.atEnd)
+    checkToken("", Token.atEnd)
   }
 }

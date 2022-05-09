@@ -6,6 +6,7 @@
 BI-22-01: May 9, 2022
 * Line Numbers
 * Squeezing characters before lexing
+* End of program ("Token.atEnd")
 
 
 //      let digits = CharacterSet(charactersIn:"0123456789")

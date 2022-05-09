@@ -19,6 +19,7 @@ class Lexer {
 
   init(_ program: String) {
     self.program = program.replacingOccurrences(of:" ", with:"")
+    + "\n"
   }
 
   func matchWhile(_ low: Character, _ high: Character) -> String {
@@ -33,12 +34,22 @@ class Lexer {
     return String(value)
   }
 
+  fileprivate func ignoreUntil(_ expected: Character) {
+    while program[index] != expected {
+      index += 1
+    }
+  }
+
   func next() -> Token {
     if index >= program.count {
       return .atEnd
     }
 
     switch program[index] {
+    case "\n":
+      index += 1
+      return next()
+
     case "0", "1", "2", "3", "4",
       "5", "6", "7", "8", "9":
       let value = matchWhile("0", "9")
@@ -52,6 +63,8 @@ class Lexer {
       let value = matchWhile("A", "Z")
       
       if (value .starts(with: "REM")) {
+        ignoreUntil("\n")
+
         return Token.remark
       }
 
