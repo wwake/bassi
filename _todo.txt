@@ -4,7 +4,6 @@
 * IF
 
 Parameterized tests package?
-Should Lexer work with [Character]
 
 BI-22-01: May 9, 2022
 * Line Numbers
@@ -14,8 +13,19 @@ BI-22-01: May 9, 2022
 
 BI-22-02: May 10, 2022
 * Should Lexer be a Sequence? Yes, and IteratorProtocol too.
+* Should Lexer work with [Character]? No, but we did clean up indexing.
 
 
 
 
 //      let digits = CharacterSet(charactersIn:"0123456789")
+
+GRAMMAR:
+program -> line*
+
+line -> line-number statement "\n"
+
+line-number -> LINE(INT)
+
+statement -> "REM" .*
+statement -> "PRINT" etc
