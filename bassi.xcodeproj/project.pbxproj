@@ -109,6 +109,14 @@
 			path = Parser;
 			sourceTree = "<group>";
 		};
+		9130885F282AC1C400E5C62E /* Interpreter */ = {
+			isa = PBXGroup;
+			children = (
+				9116576528295A2B0000D3AA /* Interpreter.swift */,
+			);
+			path = Interpreter;
+			sourceTree = "<group>";
+		};
 		9192F7292828B68F00FAFFA1 = {
 			isa = PBXGroup;
 			children = (
@@ -136,7 +144,7 @@
 			children = (
 				9130885D282ABD6300E5C62E /* Lexer */,
 				9130885E282ABD7400E5C62E /* Parser */,
-				9116576528295A2B0000D3AA /* Interpreter.swift */,
+				9130885F282AC1C400E5C62E /* Interpreter */,
 				9192F7352828B68F00FAFFA1 /* bassiApp.swift */,
 				9192F7372828B68F00FAFFA1 /* ContentView.swift */,
 				9192F7392828B69000FAFFA1 /* Assets.xcassets */,
