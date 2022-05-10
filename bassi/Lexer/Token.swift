@@ -12,6 +12,7 @@ enum Token  {
   case error(String)
   case line(Int)
   case remark
+  case print
 }
 
 extension Token : Equatable {

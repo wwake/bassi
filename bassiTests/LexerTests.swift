@@ -62,4 +62,8 @@ class LexerTests: XCTestCase {
   func testUnexpectedCharacters() {
     checkToken("😬", Token.error("not yet implemented"))
   }
+
+  func testPRINT() throws {
+    checkToken("PRINT", Token.print)
+  }
 }

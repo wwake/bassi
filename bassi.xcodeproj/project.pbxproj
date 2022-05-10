@@ -21,7 +21,7 @@
 		9192F7382828B68F00FAFFA1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9192F7372828B68F00FAFFA1 /* ContentView.swift */; };
 		9192F73A2828B69000FAFFA1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9192F7392828B69000FAFFA1 /* Assets.xcassets */; };
 		9192F73D2828B69000FAFFA1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9192F73C2828B69000FAFFA1 /* Preview Assets.xcassets */; };
-		9192F7482828B69000FAFFA1 /* BassiTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9192F7472828B69000FAFFA1 /* BassiTests.swift */; };
+		9192F7482828B69000FAFFA1 /* BassiTests2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9192F7472828B69000FAFFA1 /* BassiTests2.swift */; };
 		9192F7522828B69000FAFFA1 /* bassiUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9192F7512828B69000FAFFA1 /* bassiUITests.swift */; };
 		9192F7542828B69000FAFFA1 /* bassiUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9192F7532828B69000FAFFA1 /* bassiUITestsLaunchTests.swift */; };
 /* End PBXBuildFile section */
@@ -62,7 +62,7 @@
 		9192F73C2828B69000FAFFA1 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		9192F73E2828B69000FAFFA1 /* bassi.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = bassi.entitlements; sourceTree = "<group>"; };
 		9192F7432828B69000FAFFA1 /* bassiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = bassiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		9192F7472828B69000FAFFA1 /* BassiTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BassiTests.swift; sourceTree = "<group>"; };
+		9192F7472828B69000FAFFA1 /* BassiTests2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BassiTests2.swift; sourceTree = "<group>"; };
 		9192F74D2828B69000FAFFA1 /* bassiUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = bassiUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9192F7512828B69000FAFFA1 /* bassiUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bassiUITests.swift; sourceTree = "<group>"; };
 		9192F7532828B69000FAFFA1 /* bassiUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bassiUITestsLaunchTests.swift; sourceTree = "<group>"; };
@@ -168,7 +168,7 @@
 		9192F7462828B69000FAFFA1 /* bassiTests */ = {
 			isa = PBXGroup;
 			children = (
-				9192F7472828B69000FAFFA1 /* BassiTests.swift */,
+				9192F7472828B69000FAFFA1 /* BassiTests2.swift */,
 				9116576928295C2B0000D3AA /* LexerTests.swift */,
 				9116576F282AADC20000D3AA /* ParserTests.swift */,
 				9116576728295B970000D3AA /* InterpreterTests.swift */,
@@ -334,7 +334,7 @@
 				91165770282AADC20000D3AA /* ParserTests.swift in Sources */,
 				9116576A28295C2B0000D3AA /* LexerTests.swift in Sources */,
 				9116576828295B970000D3AA /* InterpreterTests.swift in Sources */,
-				9192F7482828B69000FAFFA1 /* BassiTests.swift in Sources */,
+				9192F7482828B69000FAFFA1 /* BassiTests2.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

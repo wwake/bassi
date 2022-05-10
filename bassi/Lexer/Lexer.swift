@@ -81,6 +81,11 @@ class Lexer : Sequence, IteratorProtocol {
         return Token.remark
       }
 
+      if value.starts(with: "PRINT") {
+        index += "PRINT".count
+        return Token.print
+      }
+
       return Token.error("unrecognized name")
 
 
