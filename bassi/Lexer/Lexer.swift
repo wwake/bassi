@@ -47,6 +47,10 @@ class Lexer : Sequence, IteratorProtocol {
     return substring(startIndex, index)
   }
 
+  func skipWord(_ word: String) {
+    index += word.count
+  }
+
   fileprivate func ignoreUntil(_ expected: Character) {
     while program[index] != expected {
       index += 1
@@ -82,7 +86,7 @@ class Lexer : Sequence, IteratorProtocol {
       }
 
       if value.starts(with: "PRINT") {
-        index += "PRINT".count
+        skipWord("PRINT")
         return Token.print
       }
 
