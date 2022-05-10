@@ -4,6 +4,7 @@
 * IF
 
 Parameterized tests package?
+Error handling w/try-catch
 
 BI-22-01: May 9, 2022
 * Line Numbers

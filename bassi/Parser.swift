@@ -40,6 +40,7 @@ public class Parser {
       let statementParse = statement()
       return Parse.line(lineNumber, statementParse)
     }
+    nextToken()
     return Parse.error("no line number")
   }
 
@@ -48,6 +49,7 @@ public class Parser {
       nextToken()
       return Parse.skip
     }
+    nextToken()
     return Parse.error("unknown statement")
   }
 }
