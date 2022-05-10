@@ -16,7 +16,7 @@ class BassiTests: XCTestCase {
     XCTAssertEqual(output, "")
   }
 
-  func xtest20PRINT() {
+  func test20PRINT() {
     let program = "20 PRINT"
     let interpreter = Bassi(program)
     let output = interpreter.run()

@@ -10,13 +10,23 @@ import XCTest
 
 class InterpreterTests: XCTestCase {
 
-    func testSkip() throws {
-      let parse = Parse.program([
-        Parse.line(Token.line(10), Parse.skip)
-      ])
+  func testSkip() throws {
+    let parse = Parse.program([
+      Parse.line(Token.line(10), Parse.skip)
+    ])
 
-      let interpreter = Interpreter(parse)
-      let output = interpreter.run()
-      XCTAssertEqual(output, "")
-    }
+    let interpreter = Interpreter(parse)
+    let output = interpreter.run()
+    XCTAssertEqual(output, "")
+  }
+
+  func testPrint() throws {
+    let parse = Parse.program([
+      Parse.line(Token.line(10), Parse.print)
+    ])
+
+    let interpreter = Interpreter(parse)
+    let output = interpreter.run()
+    XCTAssertEqual(output, "\n")
+  }
 }

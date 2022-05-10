@@ -32,6 +32,9 @@ class Interpreter {
 
     case .skip:
       return output
+
+    case .print:
+      return output + "\n"
     }
   }
 }

@@ -48,6 +48,9 @@ public class Parser {
     if .remark == token {
       nextToken()
       return Parse.skip
+    } else if .print == token {
+      nextToken()
+      return Parse.print
     }
     nextToken()
     return Parse.error("unknown statement")

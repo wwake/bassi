@@ -46,4 +46,14 @@ class ParserTests: XCTestCase {
       ]))
   }
 
+  func testPrintStatement() {
+    let program = "25 PRINT"
+    let parser = Parser(Lexer(program))
+    let result = parser.parse()
+    XCTAssertEqual(
+      result,
+      Parse.program([
+        Parse.line(Token.line(25), Parse.print)
+      ]))
+  }
 }
