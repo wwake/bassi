@@ -8,11 +8,11 @@
 import XCTest
 @testable import bassi
 
-class bassiTests: XCTestCase {
-  func testExample() throws {
+class BassiTests: XCTestCase {
+  func test10REM() throws {
     let program = "10 REM Comment"
-    let interpreter = Interpreter(Parse.skip)
-    let output = interpreter.run(program)
+    let interpreter = Bassi(program)
+    let output = interpreter.run()
     XCTAssertEqual(output, "")
   }
 }
