@@ -17,6 +17,14 @@ public class Parser {
   }
   
   func parse() -> Parse {
+    return program()
+  }
+
+  func nextToken() {
+    token = lexer.next()!
+  }
+
+  func program() -> Parse {
     var lines : [Parse] = []
     while token != .atEnd {
       lines.append(line())
@@ -27,7 +35,7 @@ public class Parser {
   func line() -> Parse {
     if case .line = token {
       let lineNumber = token
-      token = lexer.next()!
+      nextToken()
 
       let statementParse = statement()
       return Parse.line(lineNumber, statementParse)
@@ -37,7 +45,7 @@ public class Parser {
 
   func statement() -> Parse {
     if .remark == token {
-      token = lexer.next()!
+      nextToken()
       return Parse.skip
     }
     return Parse.error("unknown statement")
