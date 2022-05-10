@@ -1,4 +1,3 @@
-Should Lexer be a Sequence?
 * Run a REM-only program
 * PRINT
 * GOTO
@@ -12,6 +11,9 @@ BI-22-01: May 9, 2022
 * Squeezing characters before lexing
 * End of program ("Token.atEnd")
 * REM
+
+BI-22-02: May 10, 2022
+* Should Lexer be a Sequence? Yes, and IteratorProtocol too.
 
 
 

@@ -25,16 +25,26 @@ class Lexer : Sequence, IteratorProtocol {
     + "\n"
   }
 
+  func index(at: Int) ->String.Index {
+    program.index(
+      program.startIndex,
+      offsetBy: at)
+  }
+
+  func substring(_ start: Int, _ ending: Int) -> String {
+    let value = program[
+      index(at: start)..<index(at: ending)]
+    return String(value)
+  }
+
   func matchWhile(_ low: Character, _ high: Character) -> String {
-    let startingIndex = program.index(program.startIndex, offsetBy: index)
+    let startIndex = index
 
     while program[index] >= low && program[index] <= high {
       index += 1
     }
 
-    let endingIndex = program.index(program.startIndex, offsetBy: index)
-    let value = program[startingIndex..<endingIndex]
-    return String(value)
+    return substring(startIndex, index)
   }
 
   fileprivate func ignoreUntil(_ expected: Character) {
