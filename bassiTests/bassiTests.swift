@@ -11,7 +11,7 @@ import XCTest
 class bassiTests: XCTestCase {
   func testExample() throws {
     let program = "10 REM Comment"
-    let interpreter = Interpreter()
+    let interpreter = Interpreter(Parse.skip)
     let output = interpreter.run(program)
     XCTAssertEqual(output, "")
   }

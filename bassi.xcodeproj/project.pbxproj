@@ -91,6 +91,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9130885D282ABD6300E5C62E /* Lexer */ = {
+			isa = PBXGroup;
+			children = (
+				9116576D28295D2A0000D3AA /* Token.swift */,
+				9116576B28295CF20000D3AA /* Lexer.swift */,
+			);
+			path = Lexer;
+			sourceTree = "<group>";
+		};
+		9130885E282ABD7400E5C62E /* Parser */ = {
+			isa = PBXGroup;
+			children = (
+				91165771282AB0790000D3AA /* Parse.swift */,
+				91165773282AB1030000D3AA /* Parser.swift */,
+			);
+			path = Parser;
+			sourceTree = "<group>";
+		};
 		9192F7292828B68F00FAFFA1 = {
 			isa = PBXGroup;
 			children = (
@@ -116,16 +134,14 @@
 		9192F7342828B68F00FAFFA1 /* bassi */ = {
 			isa = PBXGroup;
 			children = (
+				9130885D282ABD6300E5C62E /* Lexer */,
+				9130885E282ABD7400E5C62E /* Parser */,
+				9116576528295A2B0000D3AA /* Interpreter.swift */,
 				9192F7352828B68F00FAFFA1 /* bassiApp.swift */,
 				9192F7372828B68F00FAFFA1 /* ContentView.swift */,
 				9192F7392828B69000FAFFA1 /* Assets.xcassets */,
 				9192F73E2828B69000FAFFA1 /* bassi.entitlements */,
 				9192F73B2828B69000FAFFA1 /* Preview Content */,
-				9116576528295A2B0000D3AA /* Interpreter.swift */,
-				9116576B28295CF20000D3AA /* Lexer.swift */,
-				9116576D28295D2A0000D3AA /* Token.swift */,
-				91165771282AB0790000D3AA /* Parse.swift */,
-				91165773282AB1030000D3AA /* Parser.swift */,
 			);
 			path = bassi;
 			sourceTree = "<group>";
@@ -142,9 +158,9 @@
 			isa = PBXGroup;
 			children = (
 				9192F7472828B69000FAFFA1 /* bassiTests.swift */,
-				9116576728295B970000D3AA /* InterpreterTests.swift */,
 				9116576928295C2B0000D3AA /* LexerTests.swift */,
 				9116576F282AADC20000D3AA /* ParserTests.swift */,
+				9116576728295B970000D3AA /* InterpreterTests.swift */,
 			);
 			path = bassiTests;
 			sourceTree = "<group>";
