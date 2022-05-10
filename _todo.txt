@@ -1,9 +1,11 @@
+Should Lexer be a Sequence?
+* Run a REM-only program
 * PRINT
 * GOTO
 * IF
 
 Parameterized tests package?
-Should Lexer be a Stream?
+Should Lexer work with [Character]
 
 BI-22-01: May 9, 2022
 * Line Numbers

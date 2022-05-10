@@ -13,7 +13,10 @@ extension StringProtocol {
   }
 }
 
-class Lexer {
+class Lexer : Sequence, IteratorProtocol {
+
+  typealias Element = Token
+
   let program: String
   var index = 0
 
@@ -40,7 +43,7 @@ class Lexer {
     }
   }
 
-  func next() -> Token {
+  func next() -> Token? {
     if index >= program.count {
       return .atEnd
     }
