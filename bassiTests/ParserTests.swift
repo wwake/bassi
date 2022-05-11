@@ -53,7 +53,7 @@ class ParserTests: XCTestCase {
       ]))
   }
 
-  func xtestPrintStatementWithNumber() {
+  func testPrintStatementWithNumber() {
     let program = "25 PRINT 42"
     let parser = Parser(Lexer(program))
     let result = parser.parse()
