@@ -49,7 +49,7 @@ class ParserTests: XCTestCase {
     XCTAssertEqual(
       result,
       Parse.program([
-        Parse.line(Token.integer(25), Parse.print)
+        Parse.line(Token.integer(25), Parse.print([]))
       ]))
   }
 
@@ -60,7 +60,7 @@ class ParserTests: XCTestCase {
     XCTAssertEqual(
       result,
       Parse.program([
-        Parse.line(Token.integer(25), Parse.print)
+        Parse.line(Token.integer(25), Parse.print([]))
       ]))
   }
 

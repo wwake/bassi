@@ -64,7 +64,7 @@ public class Parser {
       return Parse.skip
     } else if .print == token {
       nextToken()
-      return Parse.print
+      return Parse.print([])
     }
     nextToken()
     throw ParseError.unknownStatement
