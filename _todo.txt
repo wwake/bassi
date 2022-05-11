@@ -1,3 +1,5 @@
+* Expressions with single-character operators
+* Expressions with multi-character operators
 * PRINT with expressions
 * PRINT with strings
 * PRINT with ","

@@ -18,68 +18,68 @@ class LexerTests: XCTestCase {
   }
 
   func testAtEnd() {
-    checkToken("", Token.atEnd)
+    checkToken("", .atEnd)
   }
 
-  func testLineNumber() throws {
-    checkToken("10  REM Comment", Token.integer(10))
+  func testInteger() throws {
+    checkToken("10  REM Comment", .integer(10))
   }
 
   func testLineNumberLeadingSpaces() {
-    checkToken("  11 REM ", Token.integer(11))
+    checkToken("  11 REM ", .integer(11))
   }
 
   func testLineNumberInternalSpaces() {
-    checkToken(" 1 2 REM ", Token.integer(12))
+    checkToken(" 1 2 REM ", .integer(12))
   }
 
   func testRemark() throws {
-    checkToken("REM Comment", Token.remark)
+    checkToken("REM Comment", .remark)
   }
 
   func testTwoRemarks() {
     let lexer = Lexer("10 REM #\n20 REM")
     var token = lexer.next()
-    XCTAssertEqual(token, Token.integer(10))
+    XCTAssertEqual(token, .integer(10))
 
     token = lexer.next()
-    XCTAssertEqual(token, Token.remark)
+    XCTAssertEqual(token, .remark)
 
     token = lexer.next()
-    XCTAssertEqual(token, Token.integer(20))
+    XCTAssertEqual(token, .integer(20))
 
     token = lexer.next()
-    XCTAssertEqual(token, Token.remark)
+    XCTAssertEqual(token, .remark)
 
     token = lexer.next()
-    XCTAssertEqual(token, Token.atEnd)
+    XCTAssertEqual(token, .atEnd)
   }
 
   func testUnexpectedStatement() {
-    checkToken("WHAT", Token.error("unrecognized name"))
+    checkToken("WHAT", .error("unrecognized name"))
   }
 
   func testUnexpectedCharacters() {
-    checkToken("😬", Token.error("not yet implemented"))
+    checkToken("😬", .error("not yet implemented"))
   }
 
   func testPRINT() throws {
-    checkToken("PRINT", Token.print)
+    checkToken("PRINT", .print)
   }
 
 
   func testPRINTthenNumber() {
     let lexer = Lexer("25 PRINT 42")
     var token = lexer.next()
-    XCTAssertEqual(token, Token.integer(25))
+    XCTAssertEqual(token, .integer(25))
 
     token = lexer.next()
-    XCTAssertEqual(token, Token.print)
+    XCTAssertEqual(token, .print)
 
     token = lexer.next()
-    XCTAssertEqual(token, Token.integer(42))
+    XCTAssertEqual(token, .integer(42))
 
     token = lexer.next()
-    XCTAssertEqual(token, Token.atEnd)
+    XCTAssertEqual(token, .atEnd)
   }
 }
