@@ -47,7 +47,7 @@ public class Parser {
   }
 
   func line() throws -> Parse  {
-    if case .line = token {
+    if case .integer = token {
       let lineNumber = token
       nextToken()
 

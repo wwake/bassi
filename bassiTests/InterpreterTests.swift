@@ -12,7 +12,7 @@ class InterpreterTests: XCTestCase {
 
   func testSkip() throws {
     let parse = Parse.program([
-      Parse.line(Token.line(10), Parse.skip)
+      Parse.line(Token.integer(10), Parse.skip)
     ])
 
     let interpreter = Interpreter(parse)
@@ -22,7 +22,7 @@ class InterpreterTests: XCTestCase {
 
   func testPrint() throws {
     let parse = Parse.program([
-      Parse.line(Token.line(10), Parse.print)
+      Parse.line(Token.integer(10), Parse.print)
     ])
 
     let interpreter = Interpreter(parse)

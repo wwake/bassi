@@ -70,7 +70,7 @@ class Lexer : Sequence, IteratorProtocol {
     case "0", "1", "2", "3", "4",
       "5", "6", "7", "8", "9":
       let value = matchWhile("0", "9")
-      return Token.line(Int(value)!)
+      return Token.integer(Int(value)!)
 
     case "A", "B", "C", "D", "E", "F",
       "G", "H", "I", "J", "K", "L",

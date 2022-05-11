@@ -10,7 +10,7 @@ import Foundation
 enum Token  {
   case atEnd
   case error(String)
-  case line(Int)
+  case integer(Int)
   case remark
   case print
 }
