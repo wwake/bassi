@@ -11,6 +11,14 @@ enum Token  {
   case atEnd
   case error(String)
   case integer(Int)
+
+  case plus
+  case minus
+  case times
+  case divide
+  case exponent
+  case equals
+  
   case remark
   case print
 }

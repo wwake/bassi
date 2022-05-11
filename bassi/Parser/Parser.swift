@@ -75,10 +75,16 @@ public class Parser {
     nextToken()
 
     if case .integer = token {
-      values.append(Expression.number(token))
-      nextToken()
+      let value = expression()
+      values.append(value)
     }
 
     return Parse.print(values)
+  }
+
+  func expression() -> Expression {
+    let value = Expression.number(token)
+    nextToken()
+    return value
   }
 }

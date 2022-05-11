@@ -35,7 +35,9 @@ program -> line*
 
 line -> line-number statement "\n"
 
-line-number -> LINE(INT)
+line-number -> INTEGER(INT)
 
 statement -> "REM" .*
-statement -> "PRINT"
+statement -> "PRINT" expression?
+
+expression -> INTEGER(INT)

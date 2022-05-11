@@ -17,6 +17,15 @@ class Lexer : Sequence, IteratorProtocol {
 
   typealias Element = Token
 
+  let oneCharOperators: [Character : Token] = [
+    "+": .plus,
+    "-": .minus,
+    "*": .times,
+    "/": .divide,
+    "^": .exponent,
+    "=": .equals
+  ]
+
   let program: String
   var index = 0
 
@@ -71,6 +80,11 @@ class Lexer : Sequence, IteratorProtocol {
       "5", "6", "7", "8", "9":
       let value = matchWhile("0", "9")
       return Token.integer(Int(value)!)
+
+    case "+", "-", "*", "/", "^", "=":
+      let result = oneCharOperators[program[index]]
+      index += 1
+      return result
 
     case "A", "B", "C", "D", "E", "F",
       "G", "H", "I", "J", "K", "L",
