@@ -1,5 +1,10 @@
-* PRINT
 * Error handling w/try-catch
+* PRINT with numbers
+* PRINT with expressions
+* PRINT with strings
+* PRINT with ","
+* PRINT with ";"
+* Simple assignment ("LET")
 * GOTO
 * IF
 
@@ -15,11 +20,8 @@ BI-22-02: May 10, 2022
 * Should Lexer be a Sequence? Yes, and IteratorProtocol too.
 * Should Lexer work with [Character]? No, but we did clean up indexing.
 * Run a REM-only program
+* PRINT (no arguments)
 
-
-
-
-//      let digits = CharacterSet(charactersIn:"0123456789")
 
 GRAMMAR:
 program -> line*
