@@ -70,12 +70,12 @@ public class Parser {
   }
 
   func printStatement() -> Parse {
-    var values: [Parse] = []
+    var values: [Expression] = []
 
     nextToken()
 
     if case .integer = token {
-      values.append(Parse.number(token))
+      values.append(Expression.number(token))
       nextToken()
     }
 

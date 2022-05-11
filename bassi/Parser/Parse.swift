@@ -11,6 +11,10 @@ indirect enum Parse : Equatable {
   case program([Parse])
   case line(Token, Parse)
   case skip
-  case print([Parse])
+  case print([Expression])
+  case number(Token)
+}
+
+indirect enum Expression: Equatable {
   case number(Token)
 }

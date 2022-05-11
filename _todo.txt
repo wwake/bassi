@@ -1,4 +1,3 @@
-* PRINT with numbers
 * PRINT with expressions
 * PRINT with strings
 * PRINT with ","
@@ -13,6 +12,7 @@ Parameterized tests package?
 
 BI-22-03: May 11, 2022
 * Error handling w/try-catch
+* PRINT with numbers
 
 BI-22-02: May 10, 2022
 * Should Lexer be a Sequence? Yes, and IteratorProtocol too.

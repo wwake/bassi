@@ -38,7 +38,7 @@ class Interpreter {
     }
   }
 
-  fileprivate func doPrint(_ output: String, _ values : [Parse]) -> String {
+  fileprivate func doPrint(_ output: String, _ values : [Expression]) -> String {
     var result = output
 
     for value in values {
