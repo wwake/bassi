@@ -21,9 +21,6 @@ class Interpreter {
   func interpret(_ parse: Parse, _ output: String) -> String {
 
     switch parse {
-    case .error(let message):
-      return output + message + "\n"
-
     case .program(let lines):
       return interpret(lines[0], output)
 
