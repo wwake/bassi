@@ -25,25 +25,21 @@ class ParserTests: XCTestCase {
   func testNoLineNumber() {
     let program = "REM remark"
     let parser = Parser(Lexer(program))
-    let result = parser.parse()
+    _ = parser.parse()
     XCTAssertEqual(
-      result,
-      Parse.program([
-        Parse.error("no line number")
-      ]))
+      parser.errors(),
+      [ParseError.noLineNumber])
   }
 
   func testUnknownStatement() {
     let program = "42 HUH REMARK"
     let parser = Parser(Lexer(program))
-    let result = parser.parse()
+    _ = parser.parse()
     XCTAssertEqual(
-      result,
-      Parse.program([
-        Parse.line(
-          Token.line(42),
-          Parse.error("unknown statement"))
-      ]))
+      parser.errors(),
+      [
+        ParseError.unknownStatement
+      ])
   }
 
   func testPrintStatement() {

@@ -1,4 +1,3 @@
-* Error handling w/try-catch
 * PRINT with numbers
 * PRINT with expressions
 * PRINT with strings
@@ -7,20 +6,26 @@
 * Simple assignment ("LET")
 * GOTO
 * IF
+* Track line # of error messages
+* Error sync by skipping forward to next line # (or end)
 
 Parameterized tests package?
 
-BI-22-01: May 9, 2022
-* Line Numbers
-* Squeezing characters before lexing
-* End of program ("Token.atEnd")
-* REM
+BI-22-03: May 11, 2022
+* Error handling w/try-catch
 
 BI-22-02: May 10, 2022
 * Should Lexer be a Sequence? Yes, and IteratorProtocol too.
 * Should Lexer work with [Character]? No, but we did clean up indexing.
 * Run a REM-only program
 * PRINT (no arguments)
+
+
+BI-22-01: May 9, 2022
+* Line Numbers
+* Squeezing characters before lexing
+* End of program ("Token.atEnd")
+* REM
 
 
 GRAMMAR:
@@ -31,4 +36,4 @@ line -> line-number statement "\n"
 line-number -> LINE(INT)
 
 statement -> "REM" .*
-statement -> "PRINT" 
+statement -> "PRINT"

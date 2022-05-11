@@ -7,9 +7,15 @@
 
 import Foundation
 
+enum ParseError: Error {
+  case noLineNumber
+  case unknownStatement
+}
+
 public class Parser {
   let lexer: Lexer
   var token: Token
+  var errorMessages: [ParseError] = []
 
   init(_ input: Lexer) {
     lexer = input
@@ -20,31 +26,39 @@ public class Parser {
     return program()
   }
 
+  func errors() -> [ParseError] {
+    errorMessages
+  }
+
   func nextToken() {
     token = lexer.next()!
   }
 
   func program() -> Parse {
     var lines : [Parse] = []
-    while token != .atEnd {
-      lines.append(line())
+    do {
+      while token != .atEnd {
+        try lines.append(line())
+      }
+    } catch {
+      errorMessages.append(error as! ParseError)
     }
     return Parse.program(lines)
   }
 
-  func line() -> Parse {
+  func line() throws -> Parse  {
     if case .line = token {
       let lineNumber = token
       nextToken()
 
-      let statementParse = statement()
+      let statementParse = try statement()
       return Parse.line(lineNumber, statementParse)
     }
     nextToken()
-    return Parse.error("no line number")
+    throw ParseError.noLineNumber
   }
 
-  func statement() -> Parse {
+  func statement() throws -> Parse {
     if .remark == token {
       nextToken()
       return Parse.skip
@@ -53,6 +67,6 @@ public class Parser {
       return Parse.print
     }
     nextToken()
-    return Parse.error("unknown statement")
+    throw ParseError.unknownStatement
   }
 }
