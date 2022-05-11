@@ -32,6 +32,9 @@ class Interpreter {
 
     case .print:
       return output + "\n"
+
+    case .number(_):
+      return "TODO"
     }
   }
 }

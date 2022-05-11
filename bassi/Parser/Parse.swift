@@ -12,4 +12,5 @@ indirect enum Parse : Equatable {
   case line(Token, Parse)
   case skip
   case print([Parse])
+  case number(Token)
 }
