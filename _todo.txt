@@ -15,6 +15,7 @@ Parameterized tests package?
 BI-22-03: May 11, 2022
 * Error handling w/try-catch
 * PRINT with numbers
+* Expressions with parentheses
 
 BI-22-02: May 10, 2022
 * Should Lexer be a Sequence? Yes, and IteratorProtocol too.
@@ -40,8 +41,20 @@ line-number -> INTEGER(INT)
 statement -> "REM" .*
 statement -> "PRINT" expression?
 
-expression -> factor
+expression -> factor ((+|-) factor)*
 
 factor -> INTEGER(INT)
 factor -> "(" expression ")"
 
+1+2+3
+(1+2) + 3
+1+(2+3)
+
+      +
+   +    3
+  1 2
+
+
+    +
+   1  +
+     2 3

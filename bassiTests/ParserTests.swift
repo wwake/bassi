@@ -88,4 +88,17 @@ class ParserTests: XCTestCase {
       XCTFail("wrong exception thrown")
     }
   }
+
+  func xtestSimpleAddition() throws {
+    let program = "1+2"
+    let parser = Parser(Lexer(program))
+    let result = try parser.expression()
+    XCTAssertEqual(
+      result,
+      .op2(
+        .plus,
+        .number(.integer(1)),
+        .number(.integer(2)))
+    )
+  }
 }
