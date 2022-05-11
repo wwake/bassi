@@ -66,13 +66,26 @@ class ParserTests: XCTestCase {
       ]))
   }
 
-  func testParenthesizedExpression() {
+  func testParenthesizedExpression() throws {
     let program = "((21))"
     let parser = Parser(Lexer(program))
-    let result = parser.expression()
+    let result = try parser.expression()
     XCTAssertEqual(
       result,
       .number(.integer(21))
     )
+  }
+
+  func testMissingRightParentheses() {
+    do {
+      let program = "(((21)"
+      let parser = Parser(Lexer(program))
+      _ = try parser.expression()
+      XCTFail("exception should have been thrown")
+    } catch ParseError.missingRightParend {
+      // ok
+    } catch {
+      XCTFail("wrong exception thrown")
+    }
   }
 }

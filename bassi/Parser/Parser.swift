@@ -10,6 +10,7 @@ import Foundation
 enum ParseError: Error {
   case noLineNumber
   case unknownStatement
+  case missingRightParend
 }
 
 public class Parser {
@@ -63,38 +64,40 @@ public class Parser {
       nextToken()
       return Parse.skip
     } else if .print == token {
-      return printStatement()
+      return try printStatement()
     }
     nextToken()
     throw ParseError.unknownStatement
   }
 
-  func printStatement() -> Parse {
+  func printStatement() throws -> Parse {
     var values: [Expression] = []
 
     nextToken()
 
     if case .integer = token {
-      let value = expression()
+      let value = try expression()
       values.append(value)
     }
 
     return Parse.print(values)
   }
 
-  func expression() -> Expression {
-    factor()
+  func expression() throws -> Expression {
+    try factor()
   }
 
-  func factor() -> Expression {
+  func factor() throws -> Expression {
     if token == .leftParend {
       nextToken()
 
-      let expr = expression()
+      let expr = try expression()
 
       if token == .rightParend {
         nextToken()
-      } // todo
+      } else {
+        throw ParseError.missingRightParend
+      }
       return expr
     } else {
       let value = Expression.number(token)
@@ -102,5 +105,4 @@ public class Parser {
       return value
     }
   }
-
 }
