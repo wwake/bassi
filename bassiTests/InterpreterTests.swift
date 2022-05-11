@@ -20,7 +20,7 @@ class InterpreterTests: XCTestCase {
     XCTAssertEqual(output, "")
   }
 
-  func testPrint() throws {
+  func testSimplePrint() throws {
     let parse = Parse.program([
       Parse.line(Token.integer(10), Parse.print([]))
     ])
@@ -28,5 +28,17 @@ class InterpreterTests: XCTestCase {
     let interpreter = Interpreter(parse)
     let output = interpreter.run()
     XCTAssertEqual(output, "\n")
+  }
+
+  func testPrintWithValue() {
+    let parse = Parse.program([
+      .line(
+        .integer(35),
+        .print([.number(.integer(22))]))
+    ])
+
+    let interpreter = Interpreter(parse)
+    let output = interpreter.run()
+    XCTAssertEqual(output, "22 \n")
   }
 }

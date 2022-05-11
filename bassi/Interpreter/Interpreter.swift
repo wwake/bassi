@@ -30,11 +30,25 @@ class Interpreter {
     case .skip:
       return output
 
-    case .print:
-      return output + "\n"
+    case .print(let values):
+      return doPrint(output, values)
 
     case .number(_):
       return "TODO"
     }
+  }
+
+  fileprivate func doPrint(_ output: String, _ values : [Parse]) -> String {
+    var result = output
+
+    for value in values {
+      if case .number(let token) = value {
+        if case .integer(let i) = token {
+          result.append(String(i) + " ")
+        }
+      }
+    }
+    result.append("\n")
+    return result
   }
 }
