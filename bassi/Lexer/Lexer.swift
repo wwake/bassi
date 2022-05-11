@@ -77,8 +77,10 @@ class Lexer : Sequence, IteratorProtocol {
       "M", "N", "O", "P", "Q", "R", "S",
       "T", "U", "V", "W", "X", "Y", "Z":
 
+      let startingIndex = index
       let value = matchWhile("A", "Z")
-      
+
+      index = startingIndex
       if (value .starts(with: "REM")) {
         ignoreUntil("\n")
 

@@ -63,10 +63,22 @@ public class Parser {
       nextToken()
       return Parse.skip
     } else if .print == token {
-      nextToken()
-      return Parse.print([])
+      return printStatement()
     }
     nextToken()
     throw ParseError.unknownStatement
+  }
+
+  func printStatement() -> Parse {
+    var values: [Parse] = []
+
+    nextToken()
+
+    if case .integer = token {
+      values.append(Parse.number(token))
+      nextToken()
+    }
+
+    return Parse.print(values)
   }
 }
