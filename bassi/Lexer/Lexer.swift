@@ -23,7 +23,9 @@ class Lexer : Sequence, IteratorProtocol {
     "*": .times,
     "/": .divide,
     "^": .exponent,
-    "=": .equals
+    "=": .equals,
+    "(": .leftParend,
+    ")": .rightParend
   ]
 
   let program: String
@@ -81,7 +83,7 @@ class Lexer : Sequence, IteratorProtocol {
       let value = matchWhile("0", "9")
       return Token.integer(Int(value)!)
 
-    case "+", "-", "*", "/", "^", "=":
+    case "+", "-", "*", "/", "^", "=", "(", ")":
       let result = oneCharOperators[program[index]]
       index += 1
       return result

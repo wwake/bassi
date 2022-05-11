@@ -18,7 +18,9 @@ enum Token  {
   case divide
   case exponent
   case equals
-  
+  case leftParend
+  case rightParend
+
   case remark
   case print
 }

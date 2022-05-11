@@ -89,5 +89,7 @@ class LexerTests: XCTestCase {
     checkToken("/", .divide)
     checkToken("^", .exponent)
     checkToken("=", .equals)
+    checkToken("(", .leftParend)
+    checkToken(")", .rightParend)
   }
 }

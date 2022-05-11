@@ -66,4 +66,13 @@ class ParserTests: XCTestCase {
       ]))
   }
 
+  func testParenthesizedExpression() {
+    let program = "((21))"
+    let parser = Parser(Lexer(program))
+    let result = parser.expression()
+    XCTAssertEqual(
+      result,
+      .number(.integer(21))
+    )
+  }
 }

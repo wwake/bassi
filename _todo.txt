@@ -40,4 +40,8 @@ line-number -> INTEGER(INT)
 statement -> "REM" .*
 statement -> "PRINT" expression?
 
-expression -> INTEGER(INT)
+expression -> factor
+
+factor -> INTEGER(INT)
+factor -> "(" expression ")"
+

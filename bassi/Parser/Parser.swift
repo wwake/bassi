@@ -83,8 +83,24 @@ public class Parser {
   }
 
   func expression() -> Expression {
-    let value = Expression.number(token)
-    nextToken()
-    return value
+    factor()
   }
+
+  func factor() -> Expression {
+    if token == .leftParend {
+      nextToken()
+
+      let expr = expression()
+
+      if token == .rightParend {
+        nextToken()
+      } // todo
+      return expr
+    } else {
+      let value = Expression.number(token)
+      nextToken()
+      return value
+    }
+  }
+
 }
