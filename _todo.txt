@@ -60,3 +60,11 @@ factor -> "(" expression ")"
     +
    1  +
      2 3
+
+Semantics:
+* Arithmetic operators (+, -, *, /, ^) convert their arguments to "Float"
+* Logical operators convert their arguments to "Short" - error if out of range
+??? Does it truncate or round?
+* Relationals convert numeric values to Float
+* Strings can only work with relational operators
+* Relationals can work with two numbers or two strings, but not mixed

@@ -38,15 +38,34 @@ class Interpreter {
     }
   }
 
+  func evaluate(_ value: Expression) -> Float {
+
+    switch value {
+    case .number(let token):
+      if case .integer(let i) = token {
+        return Float(i)
+      }
+//    case .op2(let token, let left, let right):
+//
+//    }
+
+    default: return -1.0
+    }
+
+    return -1.0
+  }
+
+  func format(_ value: Expression) -> String {
+    return String(format: "%.0f", evaluate(value))
+  }
+
   fileprivate func doPrint(_ output: String, _ values : [Expression]) -> String {
     var result = output
 
     for value in values {
-      if case .number(let token) = value {
-        if case .integer(let i) = token {
-          result.append(String(i) + " ")
-        }
-      }
+      let stringToPrint = format(value)
+
+      result.append(stringToPrint + " ")
     }
     result.append("\n")
     return result
