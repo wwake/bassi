@@ -45,7 +45,9 @@ statement -> "PRINT" expression?
 
 expression -> term (("+"|"-") term)*
 
-term -> factor (("*"|"/") factor)*
+term -> power (("*"|"/") power)*
+
+power -> factor ("^" factor)*
 
 factor -> INTEGER(INT)
 factor -> "(" expression ")"

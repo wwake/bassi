@@ -98,18 +98,22 @@ public class Parser {
   }
 
   func term() throws -> Expression {
-    var left = try factor()
+    var left = try power()
 
     while token == .times || token == .divide {
       let op = token
       nextToken()
 
-      let right = try factor()
+      let right = try power()
 
       left = .op2(op, left, right)
     }
     return left
 
+  }
+
+  func power() throws -> Expression {
+    try factor()
   }
 
   func factor() throws -> Expression {
