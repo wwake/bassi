@@ -9,33 +9,21 @@ import XCTest
 @testable import bassi
 
 class ParserTests: XCTestCase {
-
-  func expr(
-    _ int1: Int,
-    _ op: Token,
-    _ int2: Int)
-  -> Expression {
-    .op2(
-      op,
-      .number(.integer(int1)),
-      .number(.integer(int2)))
-  }
-
-  func expr(
-    _ int1: Int,
-    _ operator1: Token,
-    _ int2: Int,
-    _ operator2: Token,
-    _ int3: Int)
-  -> Expression {
-    .op2(
-      operator2,
-      .op2(
-        operator1,
-        .number(.integer(int1)),
-        .number(.integer(int2))),
-      .number(.integer(int3)))
-  }
+//  func expr(
+//    _ int1: Int,
+//    _ operator1: Token,
+//    _ int2: Int,
+//    _ operator2: Token,
+//    _ int3: Int)
+//  -> Expression {
+//    .op2(
+//      operator2,
+//      .op2(
+//        operator1,
+//        .number(.integer(int1)),
+//        .number(.integer(int2))),
+//      .number(.integer(int3)))
+//  }
 
 
   func test10REM() throws {
@@ -123,7 +111,7 @@ class ParserTests: XCTestCase {
     let result = try parser.expression()
     XCTAssertEqual(
       result,
-      expr(1, .plus, 2)
+      Expression.make(1, .plus, 2)
     )
   }
 
@@ -133,7 +121,7 @@ class ParserTests: XCTestCase {
     let result = try parser.expression()
     XCTAssertEqual(
       result,
-      expr(1, .plus, 2, .plus, 3))
+      Expression.make(1, .plus, 2, .plus, 3))
   }
 
   func testSubtraction() throws {
@@ -142,7 +130,7 @@ class ParserTests: XCTestCase {
     let result = try parser.expression()
     XCTAssertEqual(
       result,
-      expr(1, .minus, 2, .minus, 3)
+      Expression.make(1, .minus, 2, .minus, 3)
     )
   }
 
@@ -152,7 +140,7 @@ class ParserTests: XCTestCase {
     let result = try parser.expression()
     XCTAssertEqual(
       result,
-      expr(1, .times, 6, .divide, 3)
+      Expression.make(1, .times, 6, .divide, 3)
     )
   }
 
