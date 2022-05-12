@@ -61,4 +61,25 @@ class InterpreterTests: XCTestCase {
     let output = interpreter.run()
     XCTAssertEqual(output, "6 \n")
   }
+
+  func testPrintWithSubtraction() {
+    let parse = Parse.program([
+      .line(
+        .integer(40),
+        .print([
+          .op2(
+            .minus,
+            .op2(
+              .minus,
+              .number(.integer(1)),
+              .number(.integer(2))),
+            .number(.integer(3)))
+        ]))
+    ])
+
+    let interpreter = Interpreter(parse)
+    let output = interpreter.run()
+    XCTAssertEqual(output, "-4 \n")
+  }
+
 }

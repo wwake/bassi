@@ -117,4 +117,21 @@ class ParserTests: XCTestCase {
         .number(.integer(3)))
     )
   }
+
+  func testSimpleSubtraction() throws {
+    let program = "1-2-3"
+    let parser = Parser(Lexer(program))
+    let result = try parser.expression()
+    XCTAssertEqual(
+      result,
+      .op2(
+        .minus,
+        .op2(
+          .minus,
+          .number(.integer(1)),
+          .number(.integer(2))),
+        .number(.integer(3)))
+    )
+  }
+
 }

@@ -48,7 +48,11 @@ class Interpreter {
     case .op2(let token, let left, let right):
       let operand1 = evaluate(left)
       let operand2 = evaluate(right)
-      return operand1 + operand2
+      if token == .plus {
+        return operand1 + operand2
+      } else {
+        return operand1 - operand2
+      }
     }
 
     return -1.0

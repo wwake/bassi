@@ -86,7 +86,7 @@ public class Parser {
   func expression() throws -> Expression {
     var left = try factor()
 
-    while token == .plus {
+    while token == .plus || token == .minus {
       let op = token
       nextToken()
 
