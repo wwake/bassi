@@ -38,6 +38,10 @@ class Interpreter {
     }
   }
 
+  let operators : [Token : (Float, Float) -> Float] =
+  [.plus : {$0 + $1},
+   .minus: {$0 - $1}]
+
   func evaluate(_ value: Expression) -> Float {
 
     switch value {
@@ -48,11 +52,8 @@ class Interpreter {
     case .op2(let token, let left, let right):
       let operand1 = evaluate(left)
       let operand2 = evaluate(right)
-      if token == .plus {
-        return operand1 + operand2
-      } else {
-        return operand1 - operand2
-      }
+
+      return operators[token]!(operand1, operand2)
     }
 
     return -1.0

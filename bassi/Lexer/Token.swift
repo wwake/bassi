@@ -27,3 +27,6 @@ enum Token  {
 
 extension Token : Equatable {
 }
+
+extension Token : Hashable {
+}
