@@ -11,7 +11,8 @@ enum Token  {
   case atEnd
   case error(String)
   case integer(Int)
-
+  case number(Float)
+  
   case plus
   case minus
   case times

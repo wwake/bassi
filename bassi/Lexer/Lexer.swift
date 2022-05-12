@@ -80,9 +80,23 @@ class Lexer : Sequence, IteratorProtocol {
 
     case "0", "1", "2", "3", "4",
       "5", "6", "7", "8", "9":
-      let value = matchWhile("0", "9")
-      return Token.integer(Int(value)!)
+      var isFloat = false
+      var value = matchWhile("0", "9")
 
+      if program[index] == "." {
+        isFloat = true
+        index += 1
+        let fraction = matchWhile("0", "9")
+        value += "."
+        value += fraction
+      }
+
+      if isFloat {
+        return Token.number(Float(value)!)
+      } else {
+        return Token.integer(Int(value)!)
+      }
+      
     case "+", "-", "*", "/", "^", "=", "(", ")":
       let result = oneCharOperators[program[index]]
       index += 1

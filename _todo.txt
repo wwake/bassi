@@ -1,10 +1,8 @@
-* Expressions with single-character operators
 * Straighten out the types
+* Expressions with floating point
 * REPL
 * Unary "-"
 * Expressions with multi-character operators
-* Expressions with floating point
-* PRINT with expressions
 * PRINT with strings
 * PRINT with ","
 * PRINT with ";"
@@ -17,10 +15,14 @@
 
 Parameterized tests package?
 
+BI-22-04: May 12, 2022
+* Expressions with single-character operators
+
 BI-22-03: May 11, 2022
 * Error handling w/try-catch
 * PRINT with numbers
 * Expressions with parentheses
+* PRINT with expressions
 
 BI-22-02: May 10, 2022
 * Should Lexer be a Sequence? Yes, and IteratorProtocol too.
@@ -55,20 +57,25 @@ term -> power (("*"|"/") power)*
 power -> factor ("^" factor)*
 
 factor -> INTEGER(INT)
+factor -> NUMBER(FLOAT)
 factor -> "(" expression ")"
 
-1+2+3
-(1+2) + 3
-1+(2+3)
 
-      +
-   +    3
-  1 2
+Number => [0-9]+("."[0-9]+)([Ee][+-]?[0-9]+)?
+
+Legal:
+123
+1234.5
+1233E2
+123.34e-14
+
+Not legal:
+123.
+123.E3
+123E
+123.4E
 
 
-    +
-   1  +
-     2 3
 
 Semantics:
 * Arithmetic operators (+, -, *, /, ^) convert their arguments to "Float"

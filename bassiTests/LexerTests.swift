@@ -92,4 +92,9 @@ class LexerTests: XCTestCase {
     checkToken("(", .leftParend)
     checkToken(")", .rightParend)
   }
+
+  func testNumberLexing() {
+    checkToken("14", .integer(14))
+    checkToken("14.5", .number(14.5))
+  }
 }
