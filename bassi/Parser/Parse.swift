@@ -19,4 +19,3 @@ indirect enum Expression: Equatable {
   case number(Token)
   case op2(Token, Expression, Expression)
 }
-
