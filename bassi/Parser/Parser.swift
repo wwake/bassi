@@ -84,7 +84,18 @@ public class Parser {
   }
 
   func expression() throws -> Expression {
-    try subexpression()
+    var left = try subexpression()
+
+    if token == .equals {
+      let op = token
+      nextToken()
+
+      let right = try subexpression()
+
+      left = .op2(op, left, right)
+    }
+
+    return left
   }
 
   func subexpression() throws -> Expression {

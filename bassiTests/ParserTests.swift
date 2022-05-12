@@ -153,4 +153,15 @@ class ParserTests: XCTestCase {
       Expression.make(2, .exponent, 3, .exponent, 4)
     )
   }
+
+  func testEqualityComparison() throws {
+    let program = "1=2"
+    let parser = Parser(Lexer(program))
+    let result = try parser.expression()
+    XCTAssertEqual(
+      result,
+      Expression.make(1, .equals, 2)
+    )
+  }
+
 }
