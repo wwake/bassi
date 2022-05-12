@@ -144,4 +144,13 @@ class ParserTests: XCTestCase {
     )
   }
 
+  func testPowerIsLeftAssociative() throws {
+    let program = "2^3^4"
+    let parser = Parser(Lexer(program))
+    let result = try parser.expression()
+    XCTAssertEqual(
+      result,
+      Expression.make(2, .exponent, 3, .exponent, 4)
+    )
+  }
 }

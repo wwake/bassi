@@ -1,4 +1,7 @@
 * Expressions with single-character operators
+* Straighten out the types
+* REPL
+* Unary "-"
 * Expressions with multi-character operators
 * Expressions with floating point
 * PRINT with expressions
@@ -11,7 +14,7 @@
 * Track line # of error messages
 * Error sync by skipping forward to next line # (or end)
 
-REPL
+
 Parameterized tests package?
 
 BI-22-03: May 11, 2022
@@ -43,7 +46,9 @@ line-number -> INTEGER(INT)
 statement -> "REM" .*
 statement -> "PRINT" expression?
 
-expression -> term (("+"|"-") term)*
+expression -> subexpr (relop subexpr)?
+
+subexpr -> term (("+"|"-") term)*
 
 term -> power (("*"|"/") power)*
 

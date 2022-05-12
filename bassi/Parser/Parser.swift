@@ -84,6 +84,10 @@ public class Parser {
   }
 
   func expression() throws -> Expression {
+    try subexpression()
+  }
+
+  func subexpression() throws -> Expression {
     var left = try term()
 
     while token == .plus || token == .minus {
@@ -109,11 +113,20 @@ public class Parser {
       left = .op2(op, left, right)
     }
     return left
-
   }
 
   func power() throws -> Expression {
-    try factor()
+    var left = try factor()
+
+    while token == .exponent {
+      let op = token
+      nextToken()
+
+      let right = try factor()
+
+      left = .op2(op, left, right)
+    }
+    return left
   }
 
   func factor() throws -> Expression {
