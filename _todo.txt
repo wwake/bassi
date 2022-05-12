@@ -43,7 +43,9 @@ line-number -> INTEGER(INT)
 statement -> "REM" .*
 statement -> "PRINT" expression?
 
-expression -> factor ((+|-) factor)*
+expression -> term (("+"|"-") term)*
+
+term -> factor (("*"|"/") factor)*
 
 factor -> INTEGER(INT)
 factor -> "(" expression ")"

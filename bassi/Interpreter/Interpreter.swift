@@ -40,7 +40,9 @@ class Interpreter {
 
   let operators : [Token : (Float, Float) -> Float] =
   [.plus : {$0 + $1},
-   .minus: {$0 - $1}]
+   .minus: {$0 - $1},
+   .times: {$0 * $1},
+   .divide: {$0 / $1}]
 
   func evaluate(_ value: Expression) -> Float {
 

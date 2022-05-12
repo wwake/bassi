@@ -118,7 +118,7 @@ class ParserTests: XCTestCase {
     )
   }
 
-  func testSimpleSubtraction() throws {
+  func testSubtraction() throws {
     let program = "1-2-3"
     let parser = Parser(Lexer(program))
     let result = try parser.expression()
@@ -130,6 +130,22 @@ class ParserTests: XCTestCase {
           .minus,
           .number(.integer(1)),
           .number(.integer(2))),
+        .number(.integer(3)))
+    )
+  }
+
+  func testMultiplyDivide() throws {
+    let program = "1*6/3"
+    let parser = Parser(Lexer(program))
+    let result = try parser.expression()
+    XCTAssertEqual(
+      result,
+      .op2(
+        .divide,
+        .op2(
+          .times,
+          .number(.integer(1)),
+          .number(.integer(6))),
         .number(.integer(3)))
     )
   }

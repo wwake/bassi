@@ -82,4 +82,24 @@ class InterpreterTests: XCTestCase {
     XCTAssertEqual(output, "-4 \n")
   }
 
+  func testPrintWithMultiplyDivide() {
+    let parse = Parse.program([
+      .line(
+        .integer(40),
+        .print([
+          .op2(
+            .divide,
+            .op2(
+              .times,
+              .number(.integer(1)),
+              .number(.integer(6))),
+            .number(.integer(3)))
+        ]))
+    ])
+
+    let interpreter = Interpreter(parse)
+    let output = interpreter.run()
+    XCTAssertEqual(output, "2 \n")
+  }
+
 }
