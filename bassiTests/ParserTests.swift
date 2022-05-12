@@ -10,6 +10,34 @@ import XCTest
 
 class ParserTests: XCTestCase {
 
+  func expr(
+    _ int1: Int,
+    _ op: Token,
+    _ int2: Int)
+  -> Expression {
+    .op2(
+      op,
+      .number(.integer(int1)),
+      .number(.integer(int2)))
+  }
+
+  func expr(
+    _ int1: Int,
+    _ operator1: Token,
+    _ int2: Int,
+    _ operator2: Token,
+    _ int3: Int)
+  -> Expression {
+    .op2(
+      operator2,
+      .op2(
+        operator1,
+        .number(.integer(int1)),
+        .number(.integer(int2))),
+      .number(.integer(int3)))
+  }
+
+
   func test10REM() throws {
     let program = "10 REM whatever"
     let parser = Parser(Lexer(program))
@@ -95,10 +123,7 @@ class ParserTests: XCTestCase {
     let result = try parser.expression()
     XCTAssertEqual(
       result,
-      .op2(
-        .plus,
-        .number(.integer(1)),
-        .number(.integer(2)))
+      expr(1, .plus, 2)
     )
   }
 
@@ -108,14 +133,7 @@ class ParserTests: XCTestCase {
     let result = try parser.expression()
     XCTAssertEqual(
       result,
-      .op2(
-        .plus,
-        .op2(
-          .plus,
-          .number(.integer(1)),
-          .number(.integer(2))),
-        .number(.integer(3)))
-    )
+      expr(1, .plus, 2, .plus, 3))
   }
 
   func testSubtraction() throws {
@@ -124,13 +142,7 @@ class ParserTests: XCTestCase {
     let result = try parser.expression()
     XCTAssertEqual(
       result,
-      .op2(
-        .minus,
-        .op2(
-          .minus,
-          .number(.integer(1)),
-          .number(.integer(2))),
-        .number(.integer(3)))
+      expr(1, .minus, 2, .minus, 3)
     )
   }
 
@@ -140,13 +152,7 @@ class ParserTests: XCTestCase {
     let result = try parser.expression()
     XCTAssertEqual(
       result,
-      .op2(
-        .divide,
-        .op2(
-          .times,
-          .number(.integer(1)),
-          .number(.integer(6))),
-        .number(.integer(3)))
+      expr(1, .times, 6, .divide, 3)
     )
   }
 
