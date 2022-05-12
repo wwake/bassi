@@ -43,7 +43,8 @@ class Interpreter {
    .minus: {$0 - $1},
    .times: {$0 * $1},
    .divide: {$0 / $1},
-   .exponent: { pow($0, $1) }
+   .exponent: { pow($0, $1)},
+   .equals: { ($0 == $1) ? 1.0 : 0.0}
   ]
 
   func evaluate(_ value: Expression) -> Float {

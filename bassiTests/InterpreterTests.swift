@@ -84,4 +84,18 @@ class InterpreterTests: XCTestCase {
     XCTAssertEqual(output, "2 \n")
   }
 
+  func testPrintWithEqualityComparison() {
+    let parse = Parse.program([
+      .line(
+        .integer(40),
+        .print([
+          Expression.make(10, .equals, 10)
+        ]))
+    ])
+
+    let interpreter = Interpreter(parse)
+    let output = interpreter.run()
+    XCTAssertEqual(output, "1 \n")
+  }
+
 }
