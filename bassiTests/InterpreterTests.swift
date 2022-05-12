@@ -42,7 +42,7 @@ class InterpreterTests: XCTestCase {
     XCTAssertEqual(output, "22 \n")
   }
 
-  func xtestPrintWithAddition() {
+  func testPrintWithAddition() {
     let parse = Parse.program([
       .line(
         .integer(40),

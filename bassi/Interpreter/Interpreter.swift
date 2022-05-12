@@ -45,11 +45,10 @@ class Interpreter {
       if case .integer(let i) = token {
         return Float(i)
       }
-//    case .op2(let token, let left, let right):
-//
-//    }
-
-    default: return -1.0
+    case .op2(let token, let left, let right):
+      let operand1 = evaluate(left)
+      let operand2 = evaluate(right)
+      return operand1 + operand2
     }
 
     return -1.0
