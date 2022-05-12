@@ -47,13 +47,7 @@ class InterpreterTests: XCTestCase {
       .line(
         .integer(40),
         .print([
-          .op2(
-            .plus,
-            .op2(
-              .plus,
-              .number(.integer(1)),
-              .number(.integer(2))),
-            .number(.integer(3)))
+          Expression.make(1, .plus, 2, .plus, 3)
         ]))
     ])
 
@@ -67,13 +61,7 @@ class InterpreterTests: XCTestCase {
       .line(
         .integer(40),
         .print([
-          .op2(
-            .minus,
-            .op2(
-              .minus,
-              .number(.integer(1)),
-              .number(.integer(2))),
-            .number(.integer(3)))
+          Expression.make(1, .minus, 2, .minus, 3)
         ]))
     ])
 
@@ -87,13 +75,7 @@ class InterpreterTests: XCTestCase {
       .line(
         .integer(40),
         .print([
-          .op2(
-            .divide,
-            .op2(
-              .times,
-              .number(.integer(1)),
-              .number(.integer(6))),
-            .number(.integer(3)))
+          Expression.make(1, .times, 6, .divide, 3)
         ]))
     ])
 
