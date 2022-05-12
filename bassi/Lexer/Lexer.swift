@@ -91,12 +91,20 @@ class Lexer : Sequence, IteratorProtocol {
         value += fraction
       }
 
+      if program[index] == "E" || program[index] == "e" {
+        isFloat = true
+        index += 1
+        let exponent = matchWhile("0", "9")
+        value += "E"
+        value += exponent
+      }
+
       if isFloat {
         return Token.number(Float(value)!)
       } else {
         return Token.integer(Int(value)!)
       }
-      
+
     case "+", "-", "*", "/", "^", "=", "(", ")":
       let result = oneCharOperators[program[index]]
       index += 1

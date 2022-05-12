@@ -96,5 +96,7 @@ class LexerTests: XCTestCase {
   func testNumberLexing() {
     checkToken("14", .integer(14))
     checkToken("14.5", .number(14.5))
+    checkToken("14.5E1", .number(145))
+    checkToken("17.5e1", .number(175))
   }
 }
