@@ -1,5 +1,6 @@
 * Expressions with single-character operators
 * Expressions with multi-character operators
+* Expressions with floating point
 * PRINT with expressions
 * PRINT with strings
 * PRINT with ","
@@ -10,6 +11,7 @@
 * Track line # of error messages
 * Error sync by skipping forward to next line # (or end)
 
+REPL
 Parameterized tests package?
 
 BI-22-03: May 11, 2022

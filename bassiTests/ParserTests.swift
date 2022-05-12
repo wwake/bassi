@@ -89,7 +89,7 @@ class ParserTests: XCTestCase {
     }
   }
 
-  func xtestSimpleAddition() throws {
+  func testSimpleAddition() throws {
     let program = "1+2"
     let parser = Parser(Lexer(program))
     let result = try parser.expression()
@@ -99,6 +99,22 @@ class ParserTests: XCTestCase {
         .plus,
         .number(.integer(1)),
         .number(.integer(2)))
+    )
+  }
+
+  func testAdditionIsLeftAssociative() throws {
+    let program = "1+2+3"
+    let parser = Parser(Lexer(program))
+    let result = try parser.expression()
+    XCTAssertEqual(
+      result,
+      .op2(
+        .plus,
+        .op2(
+          .plus,
+          .number(.integer(1)),
+          .number(.integer(2))),
+        .number(.integer(3)))
     )
   }
 }
