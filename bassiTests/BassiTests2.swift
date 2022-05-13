@@ -8,7 +8,7 @@
 import XCTest
 @testable import bassi
 
-class BassiTests: XCTestCase {
+class BassiTests2: XCTestCase {
   func test10REM() throws {
     let program = "10 REM Comment"
     let interpreter = Bassi(program)
