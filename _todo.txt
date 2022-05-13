@@ -1,5 +1,5 @@
+* Expressions with floating point - handle errors! (missing digits in fraction or exponent)
 * Straighten out the types
-* Expressions with floating point
 * REPL
 * Unary "-"
 * Expressions with multi-character operators
@@ -61,7 +61,7 @@ factor -> NUMBER(FLOAT)
 factor -> "(" expression ")"
 
 
-Number => [0-9]+("."[0-9]+)([Ee][+-]?[0-9]+)?
+Number => [0-9]+("."[0-9]+)?([Ee][+-]?[0-9]+)?
 
 Legal:
 123

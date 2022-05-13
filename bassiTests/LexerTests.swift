@@ -98,5 +98,10 @@ class LexerTests: XCTestCase {
     checkToken("14.5", .number(14.5))
     checkToken("14.5E1", .number(145))
     checkToken("17.5e1", .number(175))
+    checkToken("14.", .number(14))
+  }
+
+  func testNumberErrors() {
+    checkToken("14.3E", .error("Exponent value is missing"))
   }
 }

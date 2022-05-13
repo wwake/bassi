@@ -94,7 +94,13 @@ class Lexer : Sequence, IteratorProtocol {
       if program[index] == "E" || program[index] == "e" {
         isFloat = true
         index += 1
+
+        let message = "Exponent value is missing"
+        if program[index] < "0" || program[index] > "9" {
+          return .error(message)
+        }
         let exponent = matchWhile("0", "9")
+
         value += "E"
         value += exponent
       }
