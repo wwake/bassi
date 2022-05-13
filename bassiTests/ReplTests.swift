@@ -16,6 +16,4 @@ class ReplTests: XCTestCase {
     XCTAssertTrue(repl.contains("10"))
     XCTAssertFalse(repl.contains("20"))
   }
-
-  
 }
