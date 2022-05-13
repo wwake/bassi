@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
+  
   @State var command: String = ""
 
   var body: some View {

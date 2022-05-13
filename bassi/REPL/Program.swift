@@ -20,6 +20,4 @@ class Program {
       program.removeValue(forKey: newValue)
     }
   }
-
-
 }
