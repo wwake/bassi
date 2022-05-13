@@ -30,7 +30,6 @@ class BassiTests: XCTestCase {
     XCTAssertEqual(output, "42 \n")
   }
 
-  
   func testPowers() {
     let program = "25 PRINT 2^3^2"
     let interpreter = Bassi(program)
