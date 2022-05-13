@@ -108,7 +108,7 @@ class Lexer : Sequence, IteratorProtocol {
       if isFloat {
         return Token.number(Float(value)!)
       } else {
-        return Token.integer(Int(value)!)
+        return Token.integer(Float(value)!)
       }
 
     case "+", "-", "*", "/", "^", "=", "(", ")":

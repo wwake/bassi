@@ -10,9 +10,9 @@ import Foundation
 
 extension Expression {
   static func make(
-    _ int1: Int,
+    _ int1: Float,
     _ operator1: Token,
-    _ int2: Int)
+    _ int2: Float)
   -> Expression {
     .op2(
       operator1,
@@ -21,11 +21,11 @@ extension Expression {
   }
 
   static func make(
-    _ int1: Int,
+    _ int1: Float,
     _ operator1: Token,
-    _ int2: Int,
+    _ int2: Float,
     _ operator2: Token,
-    _ int3: Int)
+    _ int3: Float)
   -> Expression {
     .op2(
       operator2,

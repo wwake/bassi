@@ -1,4 +1,3 @@
-* Expressions with floating point - handle errors! (missing digits in fraction or exponent)
 * Straighten out the types
 * REPL
 * Unary "-"
@@ -14,6 +13,10 @@
 
 
 Parameterized tests package?
+
+BI-22-05: May 13, 2002
+* Expressions with floating point - handle errors! (missing digits in fraction or exponent)
+
 
 BI-22-04: May 12, 2022
 * Expressions with single-character operators
@@ -84,3 +87,6 @@ Semantics:
 * Relationals convert numeric values to Float
 * Strings can only work with relational operators
 * Relationals can work with two numbers or two strings, but not mixed
+
+
+10 PRINT "foo", 42.375, 10 + 2

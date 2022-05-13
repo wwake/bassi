@@ -10,7 +10,7 @@ import Foundation
 enum Token  {
   case atEnd
   case error(String)
-  case integer(Int)
+  case integer(Float)
   case number(Float)
   
   case plus
