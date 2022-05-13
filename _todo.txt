@@ -1,4 +1,7 @@
-* REPL
+* REPL - enter code
+* REPL - LIST
+* REPL - RUN
+
 * Unary "-"
 * Expressions with multi-character operators
 * PRINT with strings
@@ -90,3 +93,12 @@ Semantics:
 
 
 10 PRINT "foo", 42.375, 10 + 2
+
+
+REPL
+LIST
+RUN
+enter code
+SAVE
+LOAD
+NEW

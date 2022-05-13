@@ -121,6 +121,14 @@
 			path = Interpreter;
 			sourceTree = "<group>";
 		};
+		91308864282EA97A00E5C62E /* REPL */ = {
+			isa = PBXGroup;
+			children = (
+				9192F7372828B68F00FAFFA1 /* ContentView.swift */,
+			);
+			path = REPL;
+			sourceTree = "<group>";
+		};
 		9192F7292828B68F00FAFFA1 = {
 			isa = PBXGroup;
 			children = (
@@ -149,9 +157,9 @@
 				9130885D282ABD6300E5C62E /* Lexer */,
 				9130885E282ABD7400E5C62E /* Parser */,
 				9130885F282AC1C400E5C62E /* Interpreter */,
+				91308864282EA97A00E5C62E /* REPL */,
 				91308860282AC2CB00E5C62E /* Bassi.swift */,
 				9192F7352828B68F00FAFFA1 /* bassiApp.swift */,
-				9192F7372828B68F00FAFFA1 /* ContentView.swift */,
 				9192F7392828B69000FAFFA1 /* Assets.xcassets */,
 				9192F73E2828B69000FAFFA1 /* bassi.entitlements */,
 				9192F73B2828B69000FAFFA1 /* Preview Content */,
