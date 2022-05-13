@@ -36,4 +36,5 @@ class BassiTests: XCTestCase {
     let output = interpreter.run()
     XCTAssertEqual(output, "64 \n")
   }
+
 }
