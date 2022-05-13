@@ -1,3 +1,4 @@
+* Error message for bad factor
 * Straighten out the types
 * REPL
 * Unary "-"

@@ -9,23 +9,6 @@ import XCTest
 @testable import bassi
 
 class ParserTests: XCTestCase {
-//  func expr(
-//    _ int1: Int,
-//    _ operator1: Token,
-//    _ int2: Int,
-//    _ operator2: Token,
-//    _ int3: Int)
-//  -> Expression {
-//    .op2(
-//      operator2,
-//      .op2(
-//        operator1,
-//        .number(.integer(int1)),
-//        .number(.integer(int2))),
-//      .number(.integer(int3)))
-//  }
-
-
   func test10REM() throws {
     let program = "10 REM whatever"
     let parser = Parser(Lexer(program))
@@ -82,27 +65,16 @@ class ParserTests: XCTestCase {
       ]))
   }
 
-  func testParenthesizedExpression() throws {
-    let program = "((21))"
+
+
+  func testEqualityComparison() throws {
+    let program = "1=2"
     let parser = Parser(Lexer(program))
     let result = try parser.expression()
     XCTAssertEqual(
       result,
-      .number(.integer(21))
+      Expression.make(1, .equals, 2)
     )
-  }
-
-  func testMissingRightParentheses() {
-    do {
-      let program = "(((21)"
-      let parser = Parser(Lexer(program))
-      _ = try parser.expression()
-      XCTFail("exception should have been thrown")
-    } catch ParseError.missingRightParend {
-      // ok
-    } catch {
-      XCTFail("wrong exception thrown")
-    }
   }
 
   func testSimpleAddition() throws {
@@ -154,14 +126,39 @@ class ParserTests: XCTestCase {
     )
   }
 
-  func testEqualityComparison() throws {
-    let program = "1=2"
+  func testParenthesizedExpression() throws {
+    let program = "((21))"
     let parser = Parser(Lexer(program))
     let result = try parser.expression()
     XCTAssertEqual(
       result,
-      Expression.make(1, .equals, 2)
+      .number(.integer(21))
     )
   }
 
+  func testMissingRightParentheses() {
+    do {
+      let program = "(((21)"
+      let parser = Parser(Lexer(program))
+      _ = try parser.expression()
+      XCTFail("exception should have been thrown")
+    } catch ParseError.missingRightParend {
+      // ok
+    } catch {
+      XCTFail("wrong exception thrown: " + error.localizedDescription)
+    }
+  }
+
+  func testErrorWhenFactorIsNotValid() {
+    do {
+      let program = "(((*"
+      let parser = Parser(Lexer(program))
+      _ = try parser.expression()
+      XCTFail("exception should have been thrown")
+    } catch ParseError.expectedNumberOrLeftParend {
+      // ok
+    } catch {
+      XCTFail("wrong exception thrown: " + error.localizedDescription)
+    }
+  }
 }

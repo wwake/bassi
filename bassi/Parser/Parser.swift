@@ -11,6 +11,8 @@ enum ParseError: Error {
   case noLineNumber
   case unknownStatement
   case missingRightParend
+  case expectedNumberOrLeftParend
+
 }
 
 public class Parser {
@@ -152,10 +154,17 @@ public class Parser {
         throw ParseError.missingRightParend
       }
       return expr
-    } else {
+    } else if case .integer(let intValue) = token {
+
+        let value = Expression.number(.number(intValue))
+        nextToken()
+        return value
+    } else if case .number(_) = token {
       let value = Expression.number(token)
       nextToken()
       return value
+    } else {
+      throw ParseError.expectedNumberOrLeftParend
     }
   }
 }
