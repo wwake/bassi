@@ -10,29 +10,29 @@ import Foundation
 
 extension Expression {
   static func make(
-    _ int1: Float,
+    _ num1: Float,
     _ operator1: Token,
-    _ int2: Float)
+    _ num2: Float)
   -> Expression {
     .op2(
       operator1,
-      .number(.integer(int1)),
-      .number(.integer(int2)))
+      .number(num1),
+      .number(num2))
   }
 
   static func make(
-    _ int1: Float,
+    _ num1: Float,
     _ operator1: Token,
-    _ int2: Float,
+    _ num2: Float,
     _ operator2: Token,
-    _ int3: Float)
+    _ num3: Float)
   -> Expression {
     .op2(
       operator2,
       .op2(
         operator1,
-        .number(.integer(int1)),
-        .number(.integer(int2))),
-      .number(.integer(int3)))
+        .number(num1),
+        .number(num2)),
+      .number(num3))
   }
 }

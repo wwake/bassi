@@ -50,18 +50,15 @@ class Interpreter {
   func evaluate(_ value: Expression) -> Float {
 
     switch value {
-    case .number(let token):
-      if case .integer(let i) = token {
-        return Float(i)
-      }
+    case .number(let floatValue):
+        return floatValue
+
     case .op2(let token, let left, let right):
       let operand1 = evaluate(left)
       let operand2 = evaluate(right)
 
       return operators[token]!(operand1, operand2)
     }
-
-    return -1.0
   }
 
   func format(_ value: Expression) -> String {

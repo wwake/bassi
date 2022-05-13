@@ -34,7 +34,7 @@ class InterpreterTests: XCTestCase {
     let parse = Parse.program([
       .line(
         .integer(35),
-        .print([.number(.integer(22))]))
+        .print([.number(22.0)]))
     ])
 
     let interpreter = Interpreter(parse)

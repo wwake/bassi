@@ -61,11 +61,9 @@ class ParserTests: XCTestCase {
       .program([
         .line(
           .integer(25),
-          .print([.number(.integer(42))]))
+          .print([.number(42.0)]))
       ]))
   }
-
-
 
   func testEqualityComparison() throws {
     let program = "1=2"
@@ -132,7 +130,7 @@ class ParserTests: XCTestCase {
     let result = try parser.expression()
     XCTAssertEqual(
       result,
-      .number(.integer(21))
+      .number(21.0)
     )
   }
 

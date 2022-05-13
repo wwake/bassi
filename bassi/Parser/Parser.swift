@@ -156,11 +156,11 @@ public class Parser {
       return expr
     } else if case .integer(let intValue) = token {
 
-        let value = Expression.number(.number(intValue))
+        let value = Expression.number(intValue)
         nextToken()
         return value
-    } else if case .number(_) = token {
-      let value = Expression.number(token)
+    } else if case .number(let floatValue) = token {
+      let value = Expression.number(floatValue)
       nextToken()
       return value
     } else {
