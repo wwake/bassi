@@ -1,5 +1,4 @@
-* REPL - enter code
-* REPL - LIST
+* REPL - LIST (sort line numbers numerically)
 * REPL - RUN
 
 * Unary "-"
@@ -16,10 +15,10 @@
 Parameterized tests package?
 
 BI-22-05: May 13, 2002
-* Expressions with floating point - handle errors! (missing digits in fraction or exponent)
+* Expressions with floating point - handle errors! (missing digits in exponent)
 * Error message for bad factor
 * Straighten out the types
-
+* REPL - enter code
 
 BI-22-04: May 12, 2022
 * Expressions with single-character operators
