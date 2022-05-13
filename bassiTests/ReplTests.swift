@@ -7,7 +7,7 @@
 import XCTest
 @testable import bassi
 
-class ReplTestsGit: XCTestCase {
+class ReplTests: XCTestCase {
 
   func testAddingLineSavesIt() {
     let repl = Repl()
