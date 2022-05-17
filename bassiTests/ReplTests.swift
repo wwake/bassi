@@ -16,4 +16,10 @@ class ReplTests: XCTestCase {
     XCTAssertTrue(repl.contains("10"))
     XCTAssertFalse(repl.contains("20"))
   }
+
+  func testCommandGetsEchoed() {
+    let repl = Repl()
+    repl.execute("10 PRINT")
+    XCTAssertTrue(repl.output.contains("10 PRINT\n"))
+  }
 }

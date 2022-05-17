@@ -7,11 +7,14 @@
 
 import Foundation
 
-class Repl {
+class Repl : ObservableObject {
+  var output: String = "HELLO\n"
   var program = Program()
   
   func execute(_ command: String) {
-
+    output.append(command)
+    output.append("\n")
+    
     if command.count == 0 { return }
     
     if command.first!.isNumber {
