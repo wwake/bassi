@@ -26,14 +26,14 @@ class ReplTests: XCTestCase {
   func testListKnowsProgram() {
     let repl = Repl()
     repl.execute("10 PRINT 42")
-    repl.execute("LIST")
+    repl.execute("LisT")
 
     XCTAssertEqual(
       repl.output,
 """
 HELLO
 10 PRINT 42
-LIST
+LisT
 10 PRINT 42
 
 """)

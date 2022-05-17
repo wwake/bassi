@@ -19,7 +19,7 @@ class Repl : ObservableObject {
     
     if command.first!.isNumber {
       doLineNumber(command)
-    } else if command == "LIST" {
+    } else if command.uppercased() == "LIST" {
       doList()
     }
   }
