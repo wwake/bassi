@@ -50,6 +50,10 @@ class Interpreter {
     case .number(let floatValue):
         return floatValue
 
+    case .op1(let token, let expr):
+      print("NYI")
+      return 0
+
     case .op2(let token, let left, let right):
       let operand1 = evaluate(left)
       let operand2 = evaluate(right)

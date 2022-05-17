@@ -159,4 +159,17 @@ class ParserTests: XCTestCase {
       XCTFail("wrong exception thrown: " + error.localizedDescription)
     }
   }
+
+  func testUnaryMinus() throws {
+    let program = "---21"
+    let parser = Parser(Lexer(program))
+    let result = try parser.expression()
+    XCTAssertEqual(
+      result,
+      .op1(.minus,
+           .op1(.minus,
+                .op1(.minus,
+                      .number(21.0))))
+      )
+  }
 }

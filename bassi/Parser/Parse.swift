@@ -16,5 +16,6 @@ indirect enum Parse : Equatable {
 
 indirect enum Expression: Equatable {
   case number(Float)
+  case op1(Token, Expression)
   case op2(Token, Expression, Expression)
 }

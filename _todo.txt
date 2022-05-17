@@ -1,14 +1,12 @@
-* REPL - RUN
-* Make running write to an output stream
-
 * Unary "-"
 * Expressions with multi-character operators
+* Simple assignment ("LET")
+* Make running write to an output stream
+* GOTO
+* IF
 * PRINT with strings
 * PRINT with ","
 * PRINT with ";"
-* Simple assignment ("LET")
-* GOTO
-* IF
 * Track line # of error messages
 * Error sync by skipping forward to next line # (or end)
 
@@ -16,6 +14,7 @@ Parameterized tests package?
 
 BI-22-06: May 17, 2022
 * REPL - LIST (sort line numbers numerically)
+* REPL - RUN
 
 BI-22-05: May 13, 2022
 * Expressions with floating point - handle errors! (missing digits in exponent)
@@ -67,7 +66,7 @@ power -> factor ("^" factor)*
 factor -> INTEGER(INT)
 factor -> NUMBER(FLOAT)
 factor -> "(" expression ")"
-
+factor -> "-" factor
 
 Number => [0-9]+("."[0-9]+)?([Ee][+-]?[0-9]+)?
 

@@ -27,14 +27,14 @@ class BassiTests: XCTestCase {
     let program = Program("25 PRINT 42")
     let interpreter = Bassi(program)
     let output = interpreter.run()
-    XCTAssertEqual(output, "42 \n")
+    XCTAssertEqual(output, "42\n")
   }
 
   func testPowers() {
     let program = Program("25 PRINT 2^3^2")
     let interpreter = Bassi(program)
     let output = interpreter.run()
-    XCTAssertEqual(output, "64 \n")
+    XCTAssertEqual(output, "64\n")
   }
 
 }

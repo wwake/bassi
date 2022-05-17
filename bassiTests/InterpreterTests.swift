@@ -39,7 +39,7 @@ class InterpreterTests: XCTestCase {
 
     let interpreter = Interpreter(parse)
     let output = interpreter.run()
-    XCTAssertEqual(output, "22 \n")
+    XCTAssertEqual(output, "22\n")
   }
 
   func testPrintWithAddition() {
@@ -53,7 +53,7 @@ class InterpreterTests: XCTestCase {
 
     let interpreter = Interpreter(parse)
     let output = interpreter.run()
-    XCTAssertEqual(output, "6 \n")
+    XCTAssertEqual(output, "6\n")
   }
 
   func testPrintWithSubtraction() {
@@ -67,7 +67,7 @@ class InterpreterTests: XCTestCase {
 
     let interpreter = Interpreter(parse)
     let output = interpreter.run()
-    XCTAssertEqual(output, "-4 \n")
+    XCTAssertEqual(output, "-4\n")
   }
 
   func testPrintWithMultiplyDivide() {
@@ -81,7 +81,7 @@ class InterpreterTests: XCTestCase {
 
     let interpreter = Interpreter(parse)
     let output = interpreter.run()
-    XCTAssertEqual(output, "2 \n")
+    XCTAssertEqual(output, "2\n")
   }
 
   func testPrintWithEqualityComparison() {
@@ -95,7 +95,7 @@ class InterpreterTests: XCTestCase {
 
     let interpreter = Interpreter(parse)
     let output = interpreter.run()
-    XCTAssertEqual(output, "1 \n")
+    XCTAssertEqual(output, "1\n")
   }
 
 }
