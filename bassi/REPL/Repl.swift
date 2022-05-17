@@ -21,6 +21,8 @@ class Repl : ObservableObject {
       doLineNumber(command)
     } else if command.uppercased() == "LIST" {
       doList()
+    }  else if command.uppercased() == "RUN" {
+      doRun()
     }
   }
 
@@ -38,6 +40,12 @@ class Repl : ObservableObject {
         append($0)
         append("\n")
       }
+  }
+
+  func doRun() {
+    let interpreter = Bassi(program)
+    let result = interpreter.run()
+    append(result)
   }
 
   func append(_ line: String) {

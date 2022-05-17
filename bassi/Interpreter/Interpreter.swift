@@ -65,11 +65,11 @@ class Interpreter {
   fileprivate func doPrint(_ output: String, _ values : [Expression]) -> String {
     var result = output
 
-    for value in values {
-      let stringToPrint = format(value)
+    let printedOutput = values
+      .map(format)
+      .joined(separator: " ")
 
-      result.append(stringToPrint + " ")
-    }
+    result.append(printedOutput)
     result.append("\n")
     return result
   }

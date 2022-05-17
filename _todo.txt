@@ -1,5 +1,5 @@
-* Make running write to an output stream
 * REPL - RUN
+* Make running write to an output stream
 
 * Unary "-"
 * Expressions with multi-character operators

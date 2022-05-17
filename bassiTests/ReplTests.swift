@@ -60,4 +60,24 @@ LIST
 
 """)
   }
+
+  func testReplRun() {
+    let repl = Repl()
+    repl.execute("10 PRINT 42")
+
+    repl.execute("run")
+
+    let expected = """
+HELLO
+10 PRINT 42
+run
+42
+
+"""
+
+    print("*\(repl.output[0])*")
+    XCTAssertEqual(repl.output.count, expected.count)
+    XCTAssertEqual(repl.output, expected)
+
+  }
 }
