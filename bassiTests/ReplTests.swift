@@ -19,8 +19,8 @@ class ReplTests: XCTestCase {
     let repl = Repl()
     repl.execute("10 PRINT 42")
 
-    XCTAssertTrue(repl.contains("10"))
-    XCTAssertFalse(repl.contains("20"))
+    XCTAssertTrue(repl.contains(10))
+    XCTAssertFalse(repl.contains(20))
   }
 
   func testListKnowsProgram() {
@@ -35,6 +35,28 @@ HELLO
 10 PRINT 42
 LisT
 10 PRINT 42
+
+""")
+  }
+
+  func testListSortsByLineNumber() {
+    let repl = Repl()
+    repl.execute("10 PRINT 42")
+    repl.execute("20 PRINT 22")
+    repl.execute("5 PRINT 5")
+    repl.execute("LIST")
+
+    XCTAssertEqual(
+      repl.output,
+"""
+HELLO
+10 PRINT 42
+20 PRINT 22
+5 PRINT 5
+LIST
+5 PRINT 5
+10 PRINT 42
+20 PRINT 22
 
 """)
   }

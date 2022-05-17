@@ -22,8 +22,8 @@ class Program {
   }
 
   func list() -> [String] {
-    return program.values.map {
-      $0
-    }
+    program
+      .sorted(by: {$0.key < $1.key})
+      .map {(key, value) in value}
   }
 }

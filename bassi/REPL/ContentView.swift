@@ -21,8 +21,7 @@ struct ContentView: View {
       TextField("text", text: $command)
         .padding()
         .onSubmit({
-          repl.output.append(command)
-          repl.output.append("\n")
+          repl.execute(command)
           command = ""
         })
     }
