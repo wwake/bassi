@@ -10,28 +10,28 @@ import XCTest
 
 class BassiTests: XCTestCase {
   func test10REM() throws {
-    let program = "10 REM Comment"
+    let program = Program("10 REM Comment")
     let interpreter = Bassi(program)
     let output = interpreter.run()
     XCTAssertEqual(output, "")
   }
 
   func test20PRINT() {
-    let program = "20 PRINT"
+    let program = Program("20 PRINT")
     let interpreter = Bassi(program)
     let output = interpreter.run()
     XCTAssertEqual(output, "\n")
   }
 
   func test25PRINT42() {
-    let program = "25 PRINT 42"
+    let program = Program("25 PRINT 42")
     let interpreter = Bassi(program)
     let output = interpreter.run()
     XCTAssertEqual(output, "42 \n")
   }
 
   func testPowers() {
-    let program = "25 PRINT 2^3^2"
+    let program = Program("25 PRINT 2^3^2")
     let interpreter = Bassi(program)
     let output = interpreter.run()
     XCTAssertEqual(output, "64 \n")

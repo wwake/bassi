@@ -10,8 +10,11 @@ import Foundation
 class Bassi {
   let interpreter: Interpreter
 
-  init(_ program: String) {
-    let parser = Parser(Lexer(program))
+  init(_ program: Program) {
+    let program2 = program
+      .list()
+      .joined(separator: "\n")
+    let parser = Parser(Lexer(program2))
     interpreter = Interpreter(parser.parse())
   }
 

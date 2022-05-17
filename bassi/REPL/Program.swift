@@ -10,6 +10,15 @@ import Foundation
 class Program {
   var program : [Int: String] = [:]
 
+  init(_ line: String = "") {
+    if line.count != 0 {
+      let lineNumber = line.prefix {
+        $0.isNumber
+      }
+      program[Int(lineNumber)!] = line
+    }
+  }
+  
   subscript(_ lineNumber: Int) -> String {
     get { program[lineNumber] ?? "" }
     set {
