@@ -28,7 +28,7 @@ class Repl : ObservableObject {
     let lineNumber = command.prefix {
       $0.isNumber
     }
-    program[String(lineNumber)] = command
+    program[Int(lineNumber)!] = command
   }
 
   func doList() {
@@ -40,7 +40,7 @@ class Repl : ObservableObject {
       }
   }
 
-  func contains(_ lineNumber: String) -> Bool {
+  func contains(_ lineNumber: Int) -> Bool {
     program[lineNumber].count != 0
   }
 }

@@ -8,16 +8,16 @@
 import Foundation
 
 class Program {
-  var program : [String: String] = [:]
+  var program : [Int: String] = [:]
 
-  subscript(_ lineNumber: String) -> String {
+  subscript(_ lineNumber: Int) -> String {
     get { program[lineNumber] ?? "" }
     set {
       if Int(newValue) == nil {
         program[lineNumber] = newValue
         return
       }
-      program.removeValue(forKey: newValue)
+      program.removeValue(forKey: Int(newValue)!)
     }
   }
 
