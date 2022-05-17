@@ -32,9 +32,6 @@ class Interpreter {
 
     case .print(let values):
       return doPrint(output, values)
-
-    case .number(_):
-      return "TODO"
     }
   }
 

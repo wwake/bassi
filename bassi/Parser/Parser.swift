@@ -50,8 +50,8 @@ public class Parser {
   }
 
   func line() throws -> Parse  {
-    if case .integer = token {
-      let lineNumber = token
+    if case .integer(let floatValue) = token {
+      let lineNumber = Int(floatValue)
       nextToken()
 
       let statementParse = try statement()

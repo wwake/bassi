@@ -9,10 +9,9 @@ import Foundation
 
 indirect enum Parse : Equatable {
   case program([Parse])
-  case line(Token, Parse)
+  case line(Int, Parse)
   case skip
   case print([Expression])
-  case number(Token)
 }
 
 indirect enum Expression: Equatable {

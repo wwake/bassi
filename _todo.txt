@@ -1,4 +1,3 @@
-* REPL - LIST (sort line numbers numerically)
 * REPL - RUN
 
 * Unary "-"
@@ -14,7 +13,10 @@
 
 Parameterized tests package?
 
-BI-22-05: May 13, 2002
+BI-22-06: May 17, 2022
+* REPL - LIST (sort line numbers numerically)
+
+BI-22-05: May 13, 2022
 * Expressions with floating point - handle errors! (missing digits in exponent)
 * Error message for bad factor
 * Straighten out the types
