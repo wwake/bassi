@@ -14,17 +14,32 @@ class Repl : ObservableObject {
   func execute(_ command: String) {
     output.append(command)
     output.append("\n")
-    
+
     if command.count == 0 { return }
     
     if command.first!.isNumber {
-      let lineNumber = command.prefix {
-        $0.isNumber
-      }
-      program[String(lineNumber)] = command
+      doLineNumber(command)
+    } else if command == "LIST" {
+      doList()
     }
   }
-  
+
+  func doLineNumber(_ command: String) {
+    let lineNumber = command.prefix {
+      $0.isNumber
+    }
+    program[String(lineNumber)] = command
+  }
+
+  func doList() {
+    program
+      .list()
+      .forEach {
+        output.append($0)
+        output.append("\n")
+      }
+  }
+
   func contains(_ lineNumber: String) -> Bool {
     program[lineNumber].count != 0
   }

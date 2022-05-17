@@ -9,6 +9,12 @@ import XCTest
 
 class ReplTests: XCTestCase {
 
+  func testCommandGetsEchoed() {
+    let repl = Repl()
+    repl.execute("10 PRINT")
+    XCTAssertTrue(repl.output.contains("10 PRINT\n"))
+  }
+
   func testAddingLineSavesIt() {
     let repl = Repl()
     repl.execute("10 PRINT 42")
@@ -17,9 +23,19 @@ class ReplTests: XCTestCase {
     XCTAssertFalse(repl.contains("20"))
   }
 
-  func testCommandGetsEchoed() {
+  func testListKnowsProgram() {
     let repl = Repl()
-    repl.execute("10 PRINT")
-    XCTAssertTrue(repl.output.contains("10 PRINT\n"))
+    repl.execute("10 PRINT 42")
+    repl.execute("LIST")
+
+    XCTAssertEqual(
+      repl.output,
+"""
+HELLO
+10 PRINT 42
+LIST
+10 PRINT 42
+
+""")
   }
 }

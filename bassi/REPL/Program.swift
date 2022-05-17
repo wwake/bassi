@@ -20,4 +20,10 @@ class Program {
       program.removeValue(forKey: newValue)
     }
   }
+
+  func list() -> [String] {
+    return program.values.map {
+      $0
+    }
+  }
 }
