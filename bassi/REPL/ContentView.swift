@@ -8,19 +8,23 @@
 import SwiftUI
 
 struct ContentView: View {
-  
+  @State var output: String = ""
   @State var command: String = ""
 
   var body: some View {
     VStack {
       ScrollView {
-        Text("Hello, world!")
+        Text(output)
           .padding(.all)
           .frame(maxWidth: .infinity, alignment: .leading)
       }
       TextField("text", text: $command)
         .padding()
-        .onSubmit({print(command)})
+        .onSubmit({
+          output.append(command)
+          output.append("\n")
+          command = ""
+        })
     }
     .frame(width: 600, height: 800)
   }

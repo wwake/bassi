@@ -11,6 +11,7 @@ class Repl {
   var program = Program()
   
   func execute(_ command: String) {
+
     if command.count == 0 { return }
     
     if command.first!.isNumber {

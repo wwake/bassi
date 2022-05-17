@@ -67,7 +67,7 @@ class LexerTests: XCTestCase {
     checkToken("PRINT", .print)
   }
 
-  func testPRINTthenNumber() {
+  func testPRINTaNumber() {
     let lexer = Lexer("25 PRINT 42")
     var token = lexer.next()
     XCTAssertEqual(token, .integer(25))
