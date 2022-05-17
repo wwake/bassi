@@ -17,7 +17,7 @@ class ParserTests: XCTestCase {
     XCTAssertEqual(
       result,
       .program([
-        .line(.integer(10), .skip)
+        .line(10, .skip)
       ]))
   }
 
@@ -48,7 +48,7 @@ class ParserTests: XCTestCase {
     XCTAssertEqual(
       result,
       .program([
-        .line(.integer(25), .print([]))
+        .line(25, .print([]))
       ]))
   }
 
@@ -60,7 +60,7 @@ class ParserTests: XCTestCase {
       result,
       .program([
         .line(
-          .integer(25),
+          25,
           .print([.number(42.0)]))
       ]))
   }

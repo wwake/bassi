@@ -12,7 +12,7 @@ class InterpreterTests: XCTestCase {
 
   func testSkip() throws {
     let parse = Parse.program([
-      Parse.line(Token.integer(10), Parse.skip)
+      Parse.line(10, Parse.skip)
     ])
 
     let interpreter = Interpreter(parse)
@@ -22,7 +22,7 @@ class InterpreterTests: XCTestCase {
 
   func testSimplePrint() throws {
     let parse = Parse.program([
-      Parse.line(Token.integer(10), Parse.print([]))
+      Parse.line(10, Parse.print([]))
     ])
 
     let interpreter = Interpreter(parse)
@@ -33,7 +33,7 @@ class InterpreterTests: XCTestCase {
   func testPrintWithValue() {
     let parse = Parse.program([
       .line(
-        .integer(35),
+        35,
         .print([.number(22.0)]))
     ])
 
@@ -45,7 +45,7 @@ class InterpreterTests: XCTestCase {
   func testPrintWithAddition() {
     let parse = Parse.program([
       .line(
-        .integer(40),
+        40,
         .print([
           Expression.make(1, .plus, 2, .plus, 3)
         ]))
@@ -59,7 +59,7 @@ class InterpreterTests: XCTestCase {
   func testPrintWithSubtraction() {
     let parse = Parse.program([
       .line(
-        .integer(40),
+        40,
         .print([
           Expression.make(1, .minus, 2, .minus, 3)
         ]))
@@ -73,7 +73,7 @@ class InterpreterTests: XCTestCase {
   func testPrintWithMultiplyDivide() {
     let parse = Parse.program([
       .line(
-        .integer(40),
+        40,
         .print([
           Expression.make(1, .times, 6, .divide, 3)
         ]))
@@ -87,7 +87,7 @@ class InterpreterTests: XCTestCase {
   func testPrintWithEqualityComparison() {
     let parse = Parse.program([
       .line(
-        .integer(40),
+        40,
         .print([
           Expression.make(10, .equals, 10)
         ]))

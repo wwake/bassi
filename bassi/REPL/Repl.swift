@@ -12,8 +12,8 @@ class Repl : ObservableObject {
   var program = Program()
   
   func execute(_ command: String) {
-    output.append(command)
-    output.append("\n")
+    append(command)
+    append("\n")
 
     if command.count == 0 { return }
     
@@ -35,9 +35,13 @@ class Repl : ObservableObject {
     program
       .list()
       .forEach {
-        output.append($0)
-        output.append("\n")
+        append($0)
+        append("\n")
       }
+  }
+
+  func append(_ line: String) {
+    output.append(line)
   }
 
   func contains(_ lineNumber: Int) -> Bool {
