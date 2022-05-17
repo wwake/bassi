@@ -42,6 +42,15 @@ class InterpreterTests: XCTestCase {
     XCTAssertEqual(output, "22\n")
   }
 
+  func testPrintWithUnaryMinus() {
+    let expr = Expression.op1(
+      .minus,
+      .number(21.0))
+    let interpreter = Interpreter(.skip)
+    let output = interpreter.evaluate(expr)
+    XCTAssertEqual(output, -21)
+  }
+
   func testPrintWithAddition() {
     let parse = Parse.program([
       .line(

@@ -51,7 +51,11 @@ class Interpreter {
         return floatValue
 
     case .op1(let token, let expr):
-      print("NYI")
+      let operand = evaluate(expr)
+      if token == .minus {
+          return -operand
+      }
+      print("Can't happen - wasn't unary minus")
       return 0
 
     case .op2(let token, let left, let right):
