@@ -65,6 +65,16 @@ class ParserTests: XCTestCase {
       ]))
   }
 
+  func testAndExpr() throws {
+    let program = "2 < 3 AND 4"
+    let parser = Parser(Lexer(program))
+    let result = try parser.expression()
+    XCTAssertEqual(
+      result,
+      Expression.make(2, .lessThan, 3, .and, 4)
+    )
+  }
+  
   func testRelationalHasPrecedenceOverNegation() throws {
     let program = "NOT 2 < 3"
     let parser = Parser(Lexer(program))

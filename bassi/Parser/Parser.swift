@@ -88,7 +88,21 @@ public class Parser {
   }
 
   func expression() throws -> Expression {
-    return try negation()
+    return try andExpr()
+  }
+
+  func andExpr() throws -> Expression {
+    var left = try negation()
+
+    while token == .and {
+      let op = token
+      nextToken()
+
+      let right = try negation()
+
+      left = .op2(op, left, right)
+    }
+    return left
   }
 
   func negation() throws -> Expression {
