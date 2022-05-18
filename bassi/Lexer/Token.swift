@@ -29,9 +29,32 @@ enum Token  {
 
   case greaterThan
   case greaterThanOrEqualTo
-  
-  case remark
+
+  case clear
+  case data
+  case def
+  case dim
+  case end
+
+  case forKeyword
+  case goto
+  case gosub
+
+  case ifKeyword
+  case input
+  case letKeyword
+  case next
+  case on
+
+  case poke
   case print
+  case read
+  case remark
+
+  case restore
+  case returnKeyword
+  case stop
+  case then
 }
 
 extension Token : Equatable {
