@@ -48,7 +48,7 @@ class Lexer : Sequence, IteratorProtocol {
     return String(value)
   }
 
-  func matchWhile(_ low: Character, _ high: Character) -> String {
+  func repeatAny(_ low: Character, _ high: Character) -> String {
     let startIndex = index
 
     while program[index] >= low && program[index] <= high {
@@ -81,12 +81,12 @@ class Lexer : Sequence, IteratorProtocol {
     case "0", "1", "2", "3", "4",
       "5", "6", "7", "8", "9":
       var isFloat = false
-      var value = matchWhile("0", "9")
+      var value = repeatAny("0", "9")
 
       if program[index] == "." {
         isFloat = true
         index += 1
-        let fraction = matchWhile("0", "9")
+        let fraction = repeatAny("0", "9")
         value += "."
         value += fraction
       }
@@ -99,7 +99,7 @@ class Lexer : Sequence, IteratorProtocol {
         if program[index] < "0" || program[index] > "9" {
           return .error(message)
         }
-        let exponent = matchWhile("0", "9")
+        let exponent = repeatAny("0", "9")
 
         value += "E"
         value += exponent
@@ -116,13 +116,32 @@ class Lexer : Sequence, IteratorProtocol {
       index += 1
       return result
 
+    case "<":
+      index += 1
+      if program[index] == "=" {
+        index += 1
+        return .lessThanOrEqualTo
+      } else if program[index] == ">" {
+        index += 1
+        return .notEqual
+      }
+      return .lessThan
+
+    case ">":
+      index += 1
+      if program[index] == "=" {
+        index += 1
+        return .greaterThanOrEqualTo
+      }
+      return .greaterThan
+
     case "A", "B", "C", "D", "E", "F",
       "G", "H", "I", "J", "K", "L",
       "M", "N", "O", "P", "Q", "R", "S",
       "T", "U", "V", "W", "X", "Y", "Z":
 
       let startingIndex = index
-      let value = matchWhile("A", "Z")
+      let value = repeatAny("A", "Z")
 
       index = startingIndex
       if (value .starts(with: "REM")) {

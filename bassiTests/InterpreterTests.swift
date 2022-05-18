@@ -93,18 +93,30 @@ class InterpreterTests: XCTestCase {
     XCTAssertEqual(output, "2\n")
   }
 
-  func testPrintWithEqualityComparison() {
+  fileprivate func checkPrintWithRelop(_ op: Token, _ expected: Int) {
     let parse = Parse.program([
       .line(
         40,
         .print([
-          Expression.make(10, .equals, 10)
+          Expression.make(10, op, 10)
         ]))
     ])
 
     let interpreter = Interpreter(parse)
     let output = interpreter.run()
-    XCTAssertEqual(output, "1\n")
+    XCTAssertEqual(output, "\(expected)\n")
   }
 
+  fileprivate func checkRelop(
+    _ op1ExpectedTrue: Token,
+    _ op2ExpectedFalse: Token) {
+      checkPrintWithRelop(op1ExpectedTrue, 1)
+      checkPrintWithRelop(op2ExpectedFalse, 0)
+  }
+
+  func testPrintWithEqualityComparison() {
+    checkRelop(.equals, .notEqual)
+    checkRelop(.greaterThanOrEqualTo, .lessThan)
+    checkRelop(.lessThanOrEqualTo, .greaterThan)
+  }
 }

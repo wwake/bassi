@@ -22,6 +22,13 @@ enum Token  {
   case leftParend
   case rightParend
 
+  case lessThan
+  case lessThanOrEqualTo
+  case notEqual
+
+  case greaterThan
+  case greaterThanOrEqualTo
+  
   case remark
   case print
 }

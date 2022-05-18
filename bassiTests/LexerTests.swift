@@ -93,6 +93,14 @@ class LexerTests: XCTestCase {
     checkToken(")", .rightParend)
   }
 
+  func testRelationalOperators() {
+    checkToken("<", .lessThan)
+    checkToken("<=", .lessThanOrEqualTo)
+    checkToken("<>", .notEqual)
+    checkToken(">", .greaterThan)
+    checkToken(">=", .greaterThanOrEqualTo)
+  }
+
   func testNumberLexing() {
     checkToken("14", .integer(14))
     checkToken("14.5", .number(14.5))

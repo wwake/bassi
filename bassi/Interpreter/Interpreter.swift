@@ -7,6 +7,13 @@
 
 import Foundation
 
+fileprivate func boolToFloat(
+  _ x: Float,
+  _ op: (Float, Float) -> Bool,
+  _ y: Float) -> Float {
+    return op(x, y) ? 1.0 : 0.0
+}
+
 class Interpreter {
   let parse: Parse
 
@@ -41,7 +48,12 @@ class Interpreter {
    .times: {$0 * $1},
    .divide: {$0 / $1},
    .exponent: { pow($0, $1)},
-   .equals: { ($0 == $1) ? 1.0 : 0.0}
+   .equals: { boolToFloat($0, ==, $1)},
+   .notEqual: { boolToFloat($0, !=, $1)},
+   .lessThan: { boolToFloat($0, <, $1)},
+   .lessThanOrEqualTo: { boolToFloat($0, <=, $1)},
+   .greaterThan: { boolToFloat($0, >, $1)},
+   .greaterThanOrEqualTo: { boolToFloat($0, >=, $1)}
   ]
 
   func evaluate(_ value: Expression) -> Float {

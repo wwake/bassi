@@ -1,5 +1,6 @@
-* Unary "-"
-* Expressions with multi-character operators
+* Expressions with relational operators
+* Exponentiation has higher precedence than unary minus
+* Precedence low to high: relational, NOT, AND, OR
 * Simple assignment ("LET")
 * Make running write to an output stream
 * GOTO
@@ -15,6 +16,7 @@ Parameterized tests package?
 BI-22-06: May 17, 2022
 * REPL - LIST (sort line numbers numerically)
 * REPL - RUN
+* Unary "-"
 
 BI-22-05: May 13, 2022
 * Expressions with floating point - handle errors! (missing digits in exponent)

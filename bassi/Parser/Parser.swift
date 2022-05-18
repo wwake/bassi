@@ -20,6 +20,8 @@ public class Parser {
   var token: Token
   var errorMessages: [ParseError] = []
 
+  let relops: [Token] = [.equals, .lessThan, .lessThanOrEqualTo, .notEqual, .greaterThan, .greaterThanOrEqualTo]
+
   init(_ input: Lexer) {
     lexer = input
     token = lexer.next()!
@@ -88,7 +90,7 @@ public class Parser {
   func expression() throws -> Expression {
     var left = try subexpression()
 
-    if token == .equals {
+    if relops.contains(token) {
       let op = token
       nextToken()
 

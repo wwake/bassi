@@ -65,14 +65,23 @@ class ParserTests: XCTestCase {
       ]))
   }
 
-  func testEqualityComparison() throws {
-    let program = "1=2"
+  func checkRelational(_ relation: String, _ token: Token) throws {
+    let program = "1" + relation + "2"
     let parser = Parser(Lexer(program))
     let result = try parser.expression()
     XCTAssertEqual(
       result,
-      Expression.make(1, .equals, 2)
+      Expression.make(1, token, 2)
     )
+  }
+
+  func testRelationalComparison() throws {
+    try checkRelational("=", .equals)
+    try checkRelational("<", .lessThan)
+    try checkRelational("<=", .lessThanOrEqualTo)
+    try checkRelational("<>", .notEqual)
+    try checkRelational(">", .greaterThan)
+    try checkRelational(">=", .greaterThanOrEqualTo)
   }
 
   func testSimpleAddition() throws {
