@@ -12,7 +12,7 @@ fileprivate func boolToFloat(
   _ op: (Float, Float) -> Bool,
   _ y: Float) -> Float {
     return op(x, y) ? 1.0 : 0.0
-}
+  }
 
 class Interpreter {
   let parse: Parse
@@ -53,21 +53,34 @@ class Interpreter {
    .lessThan: { boolToFloat($0, <, $1)},
    .lessThanOrEqualTo: { boolToFloat($0, <=, $1)},
    .greaterThan: { boolToFloat($0, >, $1)},
-   .greaterThanOrEqualTo: { boolToFloat($0, >=, $1)}
+   .greaterThanOrEqualTo: { boolToFloat($0, >=, $1)},
+   .and: {
+     let short1 = Int16($0)
+     let short2 = Int16($1)
+     return Float(short1 & short2)
+   },
+   .or: {
+     let short1 = Int16($0)
+     let short2 = Int16($1)
+     return Float(short1 | short2)
+   }
   ]
 
   func evaluate(_ value: Expression) -> Float {
 
     switch value {
     case .number(let floatValue):
-        return floatValue
+      return floatValue
 
     case .op1(let token, let expr):
       let operand = evaluate(expr)
       if token == .minus {
-          return -operand
+        return -operand
+      } else if token == .not {
+        let short = Int16(operand)
+        return Float(~short)
       }
-      print("Can't happen - wasn't unary minus")
+      print("Can't happen - not a unary operator")
       return 0
 
     case .op2(let token, let left, let right):

@@ -42,6 +42,36 @@ class InterpreterTests: XCTestCase {
     XCTAssertEqual(output, "22\n")
   }
 
+  func testLogicalOperationsOnIntegers() {
+    // NOT -8 OR 5 AND 4
+    // 11111..1000  -8
+    // 0000....111  7 = NOT -8
+    // 0.......101  5
+    // 0.......100  4
+    // ===>    111  = 7
+
+    let expression = Expression.op2(
+      .or,
+      .op1(.not,
+           .op1(.minus, .number(8))),
+      .op2(
+        .and,
+        .number(5),
+        .number(4)
+      )
+    )
+
+    let parse = Parse.program([
+      .line(
+        40,
+        .print([expression]))
+    ])
+
+    let interpreter = Interpreter(parse)
+    let output = interpreter.run()
+    XCTAssertEqual(output, "7\n")
+  }
+
   func testPrintWithUnaryMinus() {
     let expr = Expression.op1(
       .minus,
