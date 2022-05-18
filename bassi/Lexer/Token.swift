@@ -36,6 +36,7 @@ enum Token  {
   case dim
   case end
 
+  case and
   case forKeyword
   case goto
   case gosub
@@ -44,7 +45,9 @@ enum Token  {
   case input
   case letKeyword
   case next
+  case not
   case on
+  case or
 
   case poke
   case print

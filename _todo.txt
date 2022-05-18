@@ -1,3 +1,4 @@
+* Add reserved words
 * Precedence low to high: relational, NOT, AND, OR
 * Simple assignment ("LET")
 * Make running write to an output stream

@@ -29,6 +29,7 @@ class Lexer : Sequence, IteratorProtocol {
   ]
 
   let reservedWords: [String : Token] = [
+    "AND": .and,
     "FOR": .forKeyword,
     "GOTO": .goto,
     "GOSUB": .gosub,
@@ -37,8 +38,10 @@ class Lexer : Sequence, IteratorProtocol {
     "INPUT": .input,
     "LET": .letKeyword,
     "NEXT": .next,
-    "ON": .on,
+    "NOT": .not,
 
+    "ON": .on,
+    "OR": .or,
     "POKE": .poke,
     "PRINT": .print,
     "READ": .read,
