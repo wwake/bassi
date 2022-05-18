@@ -88,10 +88,20 @@ public class Parser {
   }
 
   func expression() throws -> Expression {
-    return try relationalExpression()
+    return try negation()
   }
 
-  fileprivate func relationalExpression() throws -> Expression  {
+  func negation() throws -> Expression {
+    if .not == token {
+      nextToken()
+      let value = try negation()
+      return .op1(.not, value)
+    }
+
+    return try relational()
+  }
+
+  fileprivate func relational() throws -> Expression  {
     var left = try subexpression()
 
     if relops.contains(token) {
@@ -135,7 +145,7 @@ public class Parser {
   }
 
   func power() throws -> Expression {
-    if case .minus =  token {
+    if .minus ==  token {
       nextToken()
       let value = try power()
       return .op1(.minus, value)

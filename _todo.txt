@@ -61,7 +61,12 @@ line-number -> INTEGER(INT)
 statement -> "REM" .*
 statement -> "PRINT" expression?
 
-expression -> subexpr (relop subexpr)?
+expression -> negation
+
+negation -> NOT negation
+         -> relational
+
+relational -> subexpr (relop subexpr)?
 
 subexpr -> term (("+"|"-") term)*
 

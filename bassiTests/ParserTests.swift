@@ -65,6 +65,16 @@ class ParserTests: XCTestCase {
       ]))
   }
 
+  func testRelationalHasPrecedenceOverNegation() throws {
+    let program = "NOT 2 < 3"
+    let parser = Parser(Lexer(program))
+    let result = try parser.expression()
+    XCTAssertEqual(
+      result,
+      Expression.make(.not, 2, .lessThan, 3)
+    )
+  }
+
   func checkRelational(_ relation: String, _ token: Token) throws {
     let program = "1" + relation + "2"
     let parser = Parser(Lexer(program))
