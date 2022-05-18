@@ -88,7 +88,21 @@ public class Parser {
   }
 
   func expression() throws -> Expression {
-    return try andExpr()
+    return try orExpr()
+  }
+
+  func orExpr() throws -> Expression {
+    var left = try andExpr()
+
+    while token == .or {
+      let op = token
+      nextToken()
+
+      let right = try andExpr()
+
+      left = .op2(op, left, right)
+    }
+    return left
   }
 
   func andExpr() throws -> Expression {

@@ -12,7 +12,7 @@ class ParserTests: XCTestCase {
   func test10REM() throws {
     let program = "10 REM whatever"
     let parser = Parser(Lexer(program))
-
+    
     let result = parser.parse()
     XCTAssertEqual(
       result,
@@ -20,7 +20,7 @@ class ParserTests: XCTestCase {
         .line(10, .skip)
       ]))
   }
-
+  
   func testNoLineNumber() {
     let program = "REM remark"
     let parser = Parser(Lexer(program))
@@ -29,7 +29,7 @@ class ParserTests: XCTestCase {
       parser.errors(),
       [ParseError.noLineNumber])
   }
-
+  
   func testUnknownStatement() {
     let program = "42 HUH REMARK"
     let parser = Parser(Lexer(program))
@@ -40,7 +40,7 @@ class ParserTests: XCTestCase {
         ParseError.unknownStatement
       ])
   }
-
+  
   func testPrintStatement() {
     let program = "25 PRINT"
     let parser = Parser(Lexer(program))
@@ -51,7 +51,7 @@ class ParserTests: XCTestCase {
         .line(25, .print([]))
       ]))
   }
-
+  
   func testPrintStatementWithNumber() {
     let program = "25 PRINT 42"
     let parser = Parser(Lexer(program))
@@ -64,7 +64,23 @@ class ParserTests: XCTestCase {
           .print([.number(42.0)]))
       ]))
   }
-
+  
+  func testOrExpr() throws {
+    let program = "2 OR 4 AND 5"
+    let parser = Parser(Lexer(program))
+    let result = try parser.expression()
+    XCTAssertEqual(
+      result,
+      .op2(
+        .or,
+        .number(2),
+        .op2(
+          .and,
+          .number(4),
+          .number(5)))
+    )
+  }
+  
   func testAndExpr() throws {
     let program = "2 < 3 AND 4"
     let parser = Parser(Lexer(program))
@@ -84,7 +100,7 @@ class ParserTests: XCTestCase {
       Expression.make(.not, 2, .lessThan, 3)
     )
   }
-
+  
   func checkRelational(_ relation: String, _ token: Token) throws {
     let program = "1" + relation + "2"
     let parser = Parser(Lexer(program))
@@ -94,7 +110,7 @@ class ParserTests: XCTestCase {
       Expression.make(1, token, 2)
     )
   }
-
+  
   func testRelationalComparison() throws {
     try checkRelational("=", .equals)
     try checkRelational("<", .lessThan)
@@ -103,7 +119,7 @@ class ParserTests: XCTestCase {
     try checkRelational(">", .greaterThan)
     try checkRelational(">=", .greaterThanOrEqualTo)
   }
-
+  
   func testSimpleAddition() throws {
     let program = "1+2"
     let parser = Parser(Lexer(program))
@@ -113,7 +129,7 @@ class ParserTests: XCTestCase {
       Expression.make(1, .plus, 2)
     )
   }
-
+  
   func testAdditionIsLeftAssociative() throws {
     let program = "1+2+3"
     let parser = Parser(Lexer(program))
@@ -122,7 +138,7 @@ class ParserTests: XCTestCase {
       result,
       Expression.make(1, .plus, 2, .plus, 3))
   }
-
+  
   func testSubtraction() throws {
     let program = "1-2-3"
     let parser = Parser(Lexer(program))
@@ -132,7 +148,7 @@ class ParserTests: XCTestCase {
       Expression.make(1, .minus, 2, .minus, 3)
     )
   }
-
+  
   func testMultiplyDivide() throws {
     let program = "1*6/3"
     let parser = Parser(Lexer(program))
@@ -142,7 +158,7 @@ class ParserTests: XCTestCase {
       Expression.make(1, .times, 6, .divide, 3)
     )
   }
-
+  
   func testPowerIsLeftAssociative() throws {
     let program = "2^3^4"
     let parser = Parser(Lexer(program))
@@ -152,7 +168,7 @@ class ParserTests: XCTestCase {
       Expression.make(2, .exponent, 3, .exponent, 4)
     )
   }
-
+  
   func testUnaryMinusHasPrecedenceOverPower() throws {
     let program = "-2^3"
     let parser = Parser(Lexer(program))
@@ -162,7 +178,7 @@ class ParserTests: XCTestCase {
       Expression.make(.minus, 2, .exponent, 3)
     )
   }
-
+  
   func testParenthesizedExpression() throws {
     let program = "((21))"
     let parser = Parser(Lexer(program))
@@ -172,7 +188,7 @@ class ParserTests: XCTestCase {
       .number(21.0)
     )
   }
-
+  
   func testMissingRightParentheses() {
     do {
       let program = "(((21)"
@@ -185,7 +201,7 @@ class ParserTests: XCTestCase {
       XCTFail("wrong exception thrown: " + error.localizedDescription)
     }
   }
-
+  
   func testErrorWhenFactorIsNotValid() {
     do {
       let program = "(((*"
@@ -198,7 +214,7 @@ class ParserTests: XCTestCase {
       XCTFail("wrong exception thrown: " + error.localizedDescription)
     }
   }
-
+  
   func testUnaryMinus() throws {
     let program = "---21"
     let parser = Parser(Lexer(program))
@@ -208,7 +224,7 @@ class ParserTests: XCTestCase {
       .op1(.minus,
            .op1(.minus,
                 .op1(.minus,
-                      .number(21.0))))
-      )
+                     .number(21.0))))
+    )
   }
 }

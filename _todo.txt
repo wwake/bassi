@@ -61,7 +61,9 @@ line-number -> INTEGER(INT)
 statement -> "REM" .*
 statement -> "PRINT" expression?
 
-expression -> andExpr
+expression -> orExpr
+
+orExpr -> andExpr (OR andExpr)*
 
 andExpr -> negation (AND negation)*
 
