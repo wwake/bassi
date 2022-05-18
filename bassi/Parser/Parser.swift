@@ -88,6 +88,10 @@ public class Parser {
   }
 
   func expression() throws -> Expression {
+    return try relationalExpression()
+  }
+
+  fileprivate func relationalExpression() throws -> Expression  {
     var left = try subexpression()
 
     if relops.contains(token) {
