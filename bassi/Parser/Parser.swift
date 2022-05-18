@@ -131,6 +131,12 @@ public class Parser {
   }
 
   func power() throws -> Expression {
+    if case .minus =  token {
+      nextToken()
+      let value = try power()
+      return .op1(.minus, value)
+    }
+    
     var left = try factor()
 
     while token == .exponent {
@@ -165,10 +171,6 @@ public class Parser {
       let value = Expression.number(floatValue)
       nextToken()
       return value
-    } else if case .minus =  token {
-      nextToken()
-      let value = try factor()
-      return .op1(.minus, value)
     } else {
       throw ParseError.expectedNumberOrLeftParend
     }

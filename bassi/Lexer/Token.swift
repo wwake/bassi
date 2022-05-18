@@ -9,6 +9,7 @@ import Foundation
 
 enum Token  {
   case atEnd
+  case unknown
   case error(String)
   case integer(Float)
   case number(Float)

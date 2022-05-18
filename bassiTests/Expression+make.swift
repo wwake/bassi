@@ -35,4 +35,18 @@ extension Expression {
         .number(num2)),
       .number(num3))
   }
+
+  static func make(
+    _ unaryOp: Token,
+    _ num1: Float,
+    _ binaryOp: Token,
+    _ num2: Float
+  ) -> Expression {
+    .op1(
+      unaryOp,
+      .op2(
+        binaryOp,
+        .number(num1),
+        .number(num2)))
+  }
 }

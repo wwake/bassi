@@ -133,6 +133,16 @@ class ParserTests: XCTestCase {
     )
   }
 
+  func testUnaryMinusHasPrecedenceOverPower() throws {
+    let program = "-2^3"
+    let parser = Parser(Lexer(program))
+    let result = try parser.expression()
+    XCTAssertEqual(
+      result,
+      Expression.make(.minus, 2, .exponent, 3)
+    )
+  }
+
   func testParenthesizedExpression() throws {
     let program = "((21))"
     let parser = Parser(Lexer(program))
