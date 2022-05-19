@@ -13,6 +13,7 @@ enum ParseError: Error {
   case missingRightParend
   case expectedNumberOrLeftParend
   case extraCharactersAtEol
+  case missingTarget
 }
 
 public class Parser {
@@ -120,7 +121,8 @@ public class Parser {
       nextToken()
       return .goto(Int(lineNumber))
     }
-    throw ParseError.unknownStatement
+    
+    throw ParseError.missingTarget
   }
 
   func expression() throws -> Expression {

@@ -105,6 +105,13 @@ class ParserTests: XCTestCase {
       ]))
   }
 
+  func testGotoWithMissingTarget() throws {
+    let program = "10 GOTO"
+    let parser = Parser(Lexer(program))
+    let _ = parser.program()
+    XCTAssertEqual(parser.errorMessages, [ParseError.missingTarget])
+  }
+
   func testOrExpr() throws {
     let program = "2 OR 4 AND 5"
     let parser = Parser(Lexer(program))
