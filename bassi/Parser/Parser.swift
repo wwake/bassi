@@ -54,7 +54,6 @@ public class Parser {
   fileprivate func require(_ expected: Token, _ error: ParseError) throws {
 
     let heldToken = token
-    nextToken()
 
     if heldToken != expected {
       throw error
@@ -69,6 +68,7 @@ public class Parser {
       let statementParse = try statement()
 
       try require(.eol, .extraCharactersAtEol)
+      nextToken()
 
       return Parse.line(lineNumber, statementParse)
     }
@@ -224,11 +224,9 @@ public class Parser {
 
       let expr = try expression()
 
-      if token == .rightParend {
-        nextToken()
-      } else {
-        throw ParseError.missingRightParend
-      }
+      try require(.rightParend, .missingRightParend)
+      nextToken()
+
       return expr
     } else if case .integer(let intValue) = token {
 
