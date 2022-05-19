@@ -1,14 +1,10 @@
-* Make parser check for end of line
-    25 A = 42 21 "HI"  -- error
-    40 PRINT PRINT   -- error
-* Program with plain PRINT will use line number of the next line eg
-   20 PRINT
-   30 PRINT 42
-   Need end-of-line token?
-* Simple assignment ("LET")
-* Make running write to an output stream
 * GOTO
 * IF
+* Expressions: variables
+* Expressions: functions
+* Expressions: subscripts
+* Simple assignment ("LET")
+* Make running write to an output stream
 * PRINT with strings
 * PRINT with multiple expressions
    25 PRINT 42 21    -- is legal
@@ -21,6 +17,12 @@ Parameterized tests package?
 
 BI-22-08: May 19, 2022
 * Precedence low to high: relational, NOT, AND, OR
+* Add eol token to prevent - Program with plain PRINT will use line number of the next line eg
+   20 PRINT
+   30 PRINT 42
+* Make parser check for end of line
+    25 A = 42 21 "HI"  -- error
+    40 PRINT PRINT   -- error
 
 BI-22-07: May 18, 2022
 * Expressions with relational operators

@@ -92,6 +92,19 @@ class ParserTests: XCTestCase {
       ]))
   }
 
+  func testGoto() throws {
+    let program = "10 GOTO 10"
+    let parser = Parser(Lexer(program))
+    let result = parser.program()
+    XCTAssertEqual(
+      result,
+      .program([
+        .line(
+          10,
+          .goto(10))
+      ]))
+  }
+
   func testOrExpr() throws {
     let program = "2 OR 4 AND 5"
     let parser = Parser(Lexer(program))

@@ -83,6 +83,8 @@ public class Parser {
       result = Parse.skip
     case .print:
       result = try printStatement()
+    case .goto:
+      result = try goto()
     default:
       nextToken()
       throw ParseError.unknownStatement
@@ -109,6 +111,16 @@ public class Parser {
     }
 
     return Parse.print(values)
+  }
+
+  func goto() throws -> Parse {
+    nextToken()
+
+    if case .integer(let lineNumber) = token {
+      nextToken()
+      return .goto(Int(lineNumber))
+    }
+    throw ParseError.unknownStatement
   }
 
   func expression() throws -> Expression {
