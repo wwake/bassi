@@ -25,10 +25,6 @@ class Interpreter {
     parse = parser.parse()
   }
 
-  init(_ parse: Parse) {
-    self.parse = parse
-  }
-
   func run() -> String {
     interpret(parse, "")
   }

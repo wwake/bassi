@@ -11,11 +11,7 @@ class Bassi {
   let interpreter: Interpreter
 
   init(_ program: Program) {
-    let program2 = program
-      .list()
-      .joined(separator: "\n")
-    let parser = Parser(Lexer(program2))
-    interpreter = Interpreter(parser.parse())
+    interpreter = Interpreter(program)
   }
 
   func run() -> String {
