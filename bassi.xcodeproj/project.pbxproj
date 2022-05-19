@@ -125,6 +125,7 @@
 			isa = PBXGroup;
 			children = (
 				9116576528295A2B0000D3AA /* Interpreter.swift */,
+				91308867282EB64500E5C62E /* Program.swift */,
 			);
 			path = Interpreter;
 			sourceTree = "<group>";
@@ -133,7 +134,6 @@
 			isa = PBXGroup;
 			children = (
 				9192F7372828B68F00FAFFA1 /* ContentView.swift */,
-				91308867282EB64500E5C62E /* Program.swift */,
 				91308869282EBA6C00E5C62E /* Repl.swift */,
 			);
 			path = REPL;
