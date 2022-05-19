@@ -53,9 +53,7 @@ public class Parser {
 
   fileprivate func require(_ expected: Token, _ error: ParseError) throws {
 
-    let heldToken = token
-
-    if heldToken != expected {
+    if token != expected {
       throw error
     }
   }
