@@ -51,6 +51,16 @@ public class Parser {
     return Parse.program(lines)
   }
 
+  fileprivate func require(_ expected: Token, _ error: ParseError) throws {
+
+    let heldToken = token
+    nextToken()
+
+    if heldToken != expected {
+      throw error
+    }
+  }
+
   func line() throws -> Parse  {
     if case .integer(let floatValue) = token {
       let lineNumber = Int(floatValue)
@@ -58,12 +68,7 @@ public class Parser {
 
       let statementParse = try statement()
 
-      if token == .eol {
-        nextToken()
-      } else {
-        nextToken()
-        throw ParseError.extraCharactersAtEol
-      }
+      try require(.eol, .extraCharactersAtEol)
 
       return Parse.line(lineNumber, statementParse)
     }
