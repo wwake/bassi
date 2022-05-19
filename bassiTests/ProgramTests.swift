@@ -34,4 +34,16 @@ class ProgramTests: XCTestCase {
     program[25] = "25"
     XCTAssertEqual(program[25], "")
   }
+
+  func testProgramKnowsItsFirstLineNumber() {
+    let program = Program()
+    program[25] = "25 PRINT"
+    program[40] = "40 PRINT"
+    XCTAssertEqual(25, program.firstLineNumber())
+  }
+
+  func testEmptyProgramSaysFirstLineNumberIsZero() {
+    let program = Program()
+    XCTAssertEqual(0, program.firstLineNumber())
+  }
 }

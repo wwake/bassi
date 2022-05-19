@@ -1,3 +1,5 @@
+* Make interpreter work one line at a time
+* Delete Parse.program if we work one line at a time
 * GOTO
 * IF
 * Expressions: variables

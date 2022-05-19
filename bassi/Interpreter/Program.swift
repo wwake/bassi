@@ -35,4 +35,11 @@ class Program {
       .sorted(by: {$0.key < $1.key})
       .map {(key, value) in value}
   }
+
+  func firstLineNumber() -> Int {
+    let lineNumber = program
+      .min(by: {$0.key < $1.key})
+
+    return lineNumber?.key ?? 0
+  }
 }
