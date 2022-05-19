@@ -37,4 +37,10 @@ class BassiTests: XCTestCase {
     XCTAssertEqual(output, "64\n")
   }
 
+  func testLogicalOperationsOnIntegers() {
+    let program = Program("25 PRINT NOT -8 OR 5 AND 4")
+    let interpreter = Bassi(program)
+    let output = interpreter.run()
+    XCTAssertEqual(output, "7\n")
+  }
 }

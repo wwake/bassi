@@ -79,7 +79,7 @@ public class Parser {
 
     nextToken()
 
-    if case .integer = token {
+    if token != .atEnd {
       let value = try expression()
       values.append(value)
     }

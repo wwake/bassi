@@ -1,9 +1,15 @@
 * Precedence low to high: relational, NOT, AND, OR
+* Program with plain PRINT will use line number of the next line eg
+   20 PRINT
+   30 PRINT 42
+   Need end-of-line token?
 * Simple assignment ("LET")
 * Make running write to an output stream
 * GOTO
 * IF
 * PRINT with strings
+* PRINT with multiple expressions
+   25 PRINT 42 21    -- is legal
 * PRINT with ","
 * PRINT with ";"
 * Track line # of error messages
