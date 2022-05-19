@@ -18,7 +18,17 @@ class LexerTests: XCTestCase {
   }
 
   func testAtEnd() {
-    checkToken("", .atEnd)
+    let lexer = Lexer("")
+    
+    let token1 = lexer.next()
+    XCTAssertEqual(token1, .eol)
+
+    let token2 = lexer.next()
+    XCTAssertEqual(token2, .atEnd)
+  }
+
+  func testAtEol() {
+    checkToken("\n", .eol)
   }
 
   func testInteger() throws {
@@ -39,6 +49,7 @@ class LexerTests: XCTestCase {
 
   func testTwoRemarks() {
     let lexer = Lexer("10 REM #\n20 REM")
+
     var token = lexer.next()
     XCTAssertEqual(token, .integer(10))
 
@@ -46,10 +57,16 @@ class LexerTests: XCTestCase {
     XCTAssertEqual(token, .remark)
 
     token = lexer.next()
+    XCTAssertEqual(token, .eol)
+
+    token = lexer.next()
     XCTAssertEqual(token, .integer(20))
 
     token = lexer.next()
     XCTAssertEqual(token, .remark)
+
+    token = lexer.next()
+    XCTAssertEqual(token, .eol)
 
     token = lexer.next()
     XCTAssertEqual(token, .atEnd)
@@ -77,6 +94,9 @@ class LexerTests: XCTestCase {
 
     token = lexer.next()
     XCTAssertEqual(token, .integer(42))
+
+    token = lexer.next()
+    XCTAssertEqual(token, .eol)
 
     token = lexer.next()
     XCTAssertEqual(token, .atEnd)

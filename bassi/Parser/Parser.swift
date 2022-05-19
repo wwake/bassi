@@ -12,7 +12,7 @@ enum ParseError: Error {
   case unknownStatement
   case missingRightParend
   case expectedNumberOrLeftParend
-
+  case extraCharactersAtEol
 }
 
 public class Parser {
@@ -57,6 +57,14 @@ public class Parser {
       nextToken()
 
       let statementParse = try statement()
+
+      if token == .eol {
+        nextToken()
+      } else {
+        nextToken()
+        throw ParseError.extraCharactersAtEol
+      }
+
       return Parse.line(lineNumber, statementParse)
     }
     nextToken()
@@ -64,14 +72,20 @@ public class Parser {
   }
 
   func statement() throws -> Parse {
-    if .remark == token {
+    var result: Parse
+
+    switch token {
+    case .remark:
       nextToken()
-      return Parse.skip
-    } else if .print == token {
-      return try printStatement()
+      result = Parse.skip
+    case .print:
+      result = try printStatement()
+    default:
+      nextToken()
+      throw ParseError.unknownStatement
     }
-    nextToken()
-    throw ParseError.unknownStatement
+
+    return result
   }
 
   func printStatement() throws -> Parse {
@@ -79,9 +93,16 @@ public class Parser {
 
     nextToken()
 
-    if token != .atEnd {
+    switch token {
+    case .integer(_),
+        .number(_),
+        .leftParend,
+        .not:
+
       let value = try expression()
       values.append(value)
+
+    default: break
     }
 
     return Parse.print(values)

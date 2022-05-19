@@ -67,7 +67,6 @@ class Interpreter {
   ]
 
   func evaluate(_ value: Expression) -> Float {
-
     switch value {
     case .number(let floatValue):
       return floatValue

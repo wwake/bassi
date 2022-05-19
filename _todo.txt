@@ -1,4 +1,6 @@
-* Precedence low to high: relational, NOT, AND, OR
+* Make parser check for end of line
+    25 A = 42 21 "HI"  -- error
+    40 PRINT PRINT   -- error
 * Program with plain PRINT will use line number of the next line eg
    20 PRINT
    30 PRINT 42
@@ -16,6 +18,9 @@
 * Error sync by skipping forward to next line # (or end)
 
 Parameterized tests package?
+
+BI-22-08: May 19, 2022
+* Precedence low to high: relational, NOT, AND, OR
 
 BI-22-07: May 18, 2022
 * Expressions with relational operators
