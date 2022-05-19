@@ -17,6 +17,14 @@ fileprivate func boolToFloat(
 class Interpreter {
   let parse: Parse
 
+  init(_ program: Program) {
+    let program2 = program
+      .list()
+      .joined(separator: "\n")
+    let parser = Parser(Lexer(program2))
+    parse = parser.parse()
+  }
+
   init(_ parse: Parse) {
     self.parse = parse
   }
