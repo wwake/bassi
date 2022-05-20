@@ -8,7 +8,6 @@
 import Foundation
 
 indirect enum Parse : Equatable {
-  case program([Parse])
   case line(Int, Parse)
   case skip
   case print([Expression])

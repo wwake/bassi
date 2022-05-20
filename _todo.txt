@@ -1,6 +1,5 @@
-* Make interpreter work one line at a time
+* Make interpreter work one line at a time ("step()")
 * Delete Parse.program if we work one line at a time
-* GOTO
 * IF
 * Expressions: variables
 * Expressions: functions
@@ -16,6 +15,9 @@
 * Error sync by skipping forward to next line # (or end)
 
 Parameterized tests package?
+
+BI-22-09: May 20, 2022
+* GOTO
 
 BI-22-08: May 19, 2022
 * Precedence low to high: relational, NOT, AND, OR

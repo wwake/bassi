@@ -11,9 +11,7 @@ import XCTest
 class InterpreterTests: XCTestCase {
 
   func testSkip() throws {
-    let parse = Parse.program([
-      Parse.line(10, Parse.skip)
-    ])
+    let parse = Parse.line(10, Parse.skip)
 
     let interpreter = Interpreter(Program())
 
@@ -22,9 +20,8 @@ class InterpreterTests: XCTestCase {
   }
 
   func testSimplePrint() throws {
-    let parse = Parse.program([
+    let parse =
       Parse.line(10, Parse.print([]))
-    ])
 
     let interpreter = Interpreter(Program())
     let output = interpreter.step(parse, "")
@@ -32,11 +29,10 @@ class InterpreterTests: XCTestCase {
   }
 
   func testPrintWithValue() {
-    let parse = Parse.program([
-      .line(
+    let parse =
+      Parse.line(
         35,
         .print([.number(22.0)]))
-    ])
 
     let interpreter = Interpreter(Program())
     let output = interpreter.step(parse, "")
@@ -62,11 +58,10 @@ class InterpreterTests: XCTestCase {
       )
     )
 
-    let parse = Parse.program([
-      .line(
+    let parse =
+      Parse.line(
         40,
         .print([expression]))
-    ])
 
     let interpreter = Interpreter(Program())
     let output = interpreter.step(parse, "")
@@ -83,27 +78,26 @@ class InterpreterTests: XCTestCase {
   }
 
   func testPrintWithAddition() {
-    let parse = Parse.program([
-      .line(
+    let parse =
+      Parse.line(
         40,
         .print([
           Expression.make(1, .plus, 2, .plus, 3)
-        ]))
-    ])
-
+        ])
+        )
+    
     let interpreter = Interpreter(Program())
     let output = interpreter.step(parse, "")
     XCTAssertEqual(output, "6\n")
   }
 
   func testPrintWithSubtraction() {
-    let parse = Parse.program([
-      .line(
+    let parse =
+      Parse.line(
         40,
         .print([
           Expression.make(1, .minus, 2, .minus, 3)
         ]))
-    ])
 
     let interpreter = Interpreter(Program())
     let output = interpreter.step(parse, "")
@@ -111,13 +105,12 @@ class InterpreterTests: XCTestCase {
   }
 
   func testPrintWithMultiplyDivide() {
-    let parse = Parse.program([
-      .line(
+    let parse =
+      Parse.line(
         40,
         .print([
           Expression.make(1, .times, 6, .divide, 3)
         ]))
-    ])
 
     let interpreter = Interpreter(Program())
     let output = interpreter.step(parse, "")
@@ -125,13 +118,12 @@ class InterpreterTests: XCTestCase {
   }
 
   fileprivate func checkPrintWithRelop(_ op: Token, _ expected: Int) {
-    let parse = Parse.program([
-      .line(
+    let parse =
+      Parse.line(
         40,
         .print([
           Expression.make(10, op, 10)
         ]))
-    ])
 
     let interpreter = Interpreter(Program())
     let output = interpreter.step(parse, "")
@@ -152,11 +144,10 @@ class InterpreterTests: XCTestCase {
   }
 
   func test10Goto10() {
-    let parse = Parse.program([
-      .line(
+    let parse =
+      Parse.line(
         10,
         .goto(10))
-    ])
 
     let interpreter = Interpreter(Program())
 
@@ -168,11 +159,10 @@ class InterpreterTests: XCTestCase {
   }
 
   func testStepWillEvenGotoMissingLine() {
-    let parse = Parse.program([
-      .line(
+    let parse =
+      Parse.line(
         10,
         .goto(20))
-    ])
 
     let interpreter = Interpreter(Program())
 
