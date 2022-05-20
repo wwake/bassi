@@ -26,7 +26,7 @@ class Interpreter {
 
   func run() -> String {
     let line = program[lineNumber]
-    let parse = Parser(Lexer(line)).parse()
+    let parse = Parser(Lexer("")).parse(line)
     return step(parse, "")
   }
 

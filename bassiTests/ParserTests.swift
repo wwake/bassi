@@ -10,10 +10,10 @@ import XCTest
 
 class ParserTests: XCTestCase {
   func test10REM() throws {
-    let program = "10 REM whatever"
-    let parser = Parser(Lexer(program))
+    let line = "10 REM whatever"
+    let parser = Parser(Lexer(line))
 
-    let result = parser.parse()
+    let result = parser.parse(line)
     XCTAssertEqual(
       result,
       .line(10, .skip)
@@ -21,18 +21,18 @@ class ParserTests: XCTestCase {
   }
 
   func testNoLineNumber() {
-    let program = "REM remark"
-    let parser = Parser(Lexer(program))
-    _ = parser.parse()
+    let line = "REM remark"
+    let parser = Parser(Lexer(line))
+    _ = parser.parse(line)
     XCTAssertEqual(
       parser.errors(),
       [ParseError.noLineNumber])
   }
 
   func testUnknownStatement() {
-    let program = "42 HUH REMARK"
-    let parser = Parser(Lexer(program))
-    _ = parser.parse()
+    let line = "42 HUH REMARK"
+    let parser = Parser(Lexer(line))
+    _ = parser.parse(line)
     XCTAssertEqual(
       parser.errors(),
       [
@@ -41,9 +41,9 @@ class ParserTests: XCTestCase {
   }
 
   func testPrintStatement() {
-    let program = "25 PRINT"
-    let parser = Parser(Lexer(program))
-    let result = parser.parse()
+    let line = "25 PRINT"
+    let parser = Parser(Lexer(line))
+    let result = parser.parse(line)
     XCTAssertEqual(
       result,
       .line(25, .print([]))
@@ -51,9 +51,9 @@ class ParserTests: XCTestCase {
   }
 
   func testPrintStatementWithNumber() {
-    let program = "25 PRINT 42"
-    let parser = Parser(Lexer(program))
-    let result = parser.parse()
+    let line = "25 PRINT 42"
+    let parser = Parser(Lexer(line))
+    let result = parser.parse(line)
     XCTAssertEqual(
       result,
       .line(
@@ -63,36 +63,17 @@ class ParserTests: XCTestCase {
   }
 
   func testPrintPrintIsError() {
-    let program = "25 PRINT PRINT"
-    let parser = Parser(Lexer(program))
-    let _ = parser.parse()
+    let line = "25 PRINT PRINT"
+    let parser = Parser(Lexer(line))
+    let _ = parser.parse(line)
 
     XCTAssertEqual(parser.errorMessages, [ParseError.extraCharactersAtEol])
   }
 
-  func xtestMultiLine() throws {
-    let program = """
-10 PRINT
-20 PRINT 42
-"""
-    let parser = Parser(Lexer(program))
-    let result = parser.parse()
-    XCTAssertEqual(
-      result,
-      .program([
-        .line(
-          10,
-          .print([])),
-        .line(
-          20,
-          .print([.number(42.0)]))
-      ]))
-  }
-
   func testGoto() throws {
-    let program = "10 GOTO 10"
-    let parser = Parser(Lexer(program))
-    let result = parser.singleLine()
+    let line = "10 GOTO 10"
+    let parser = Parser(Lexer(line))
+    let result = parser.parse(line)
     XCTAssertEqual(
       result,
         .line(
@@ -102,9 +83,9 @@ class ParserTests: XCTestCase {
   }
 
   func testGotoWithMissingTarget() throws {
-    let program = "10 GOTO"
-    let parser = Parser(Lexer(program))
-    let _ = parser.singleLine()
+    let line = "10 GOTO"
+    let parser = Parser(Lexer(line))
+    let _ = parser.parse(line)
     XCTAssertEqual(parser.errorMessages, [ParseError.missingTarget])
   }
 

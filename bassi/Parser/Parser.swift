@@ -17,7 +17,7 @@ enum ParseError: Error {
 }
 
 public class Parser {
-  let lexer: Lexer
+  var lexer: Lexer
   var token: Token
   var errorMessages: [ParseError] = []
 
@@ -44,6 +44,12 @@ public class Parser {
   }
 
   func parse() -> Parse {
+    return singleLine()
+  }
+
+  func parse(_ input: String) -> Parse {
+    lexer = Lexer(input)
+    nextToken()
     return singleLine()
   }
 
