@@ -17,22 +17,18 @@ enum ParseError: Error {
 }
 
 public class Parser {
-  var lexer: Lexer
-  var token: Token
+  var lexer: Lexer = Lexer("")
+  var token: Token = .unknown
+  
   var errorMessages: [ParseError] = []
 
   let relops: [Token] = [.equals, .lessThan, .lessThanOrEqualTo, .notEqual, .greaterThan, .greaterThanOrEqualTo]
 
-  init(_ input: Lexer) {
-    lexer = input
-    token = lexer.next()!
-  }
-  
   func errors() -> [ParseError] {
     errorMessages
   }
 
-  fileprivate func nextToken() {
+  func nextToken() {
     token = lexer.next()!
   }
 
