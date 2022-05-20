@@ -105,90 +105,110 @@ class Lexer : Sequence, IteratorProtocol {
 
     case "0", "1", "2", "3", "4",
       "5", "6", "7", "8", "9":
-      var isFloat = false
-      var value = repeatAny("0", "9")
-
-      if program[index] == "." {
-        isFloat = true
-        index += 1
-        let fraction = repeatAny("0", "9")
-        value += "."
-        value += fraction
-      }
-
-      if program[index] == "E" || program[index] == "e" {
-        isFloat = true
-        index += 1
-
-        let message = "Exponent value is missing"
-        if program[index] < "0" || program[index] > "9" {
-          return .error(message)
-        }
-        let exponent = repeatAny("0", "9")
-
-        value += "E"
-        value += exponent
-      }
-
-      if isFloat {
-        return Token.number(Float(value)!)
-      } else {
-        return Token.integer(Float(value)!)
-      }
+      return number()
 
     case "+", "-", "*", "/", "^", "=", "(", ")":
-      let result = oneCharOperators[program[index]]
-      index += 1
-      return result
+      return oneCharacterOperator()
 
     case "<":
-      index += 1
-      if program[index] == "=" {
-        index += 1
-        return .lessThanOrEqualTo
-      } else if program[index] == ">" {
-        index += 1
-        return .notEqual
-      }
-      return .lessThan
+      return lessThanOperators()
 
     case ">":
-      index += 1
-      if program[index] == "=" {
-        index += 1
-        return .greaterThanOrEqualTo
-      }
-      return .greaterThan
+      return greaterThanOperators()
 
     case "A", "B", "C", "D", "E", "F",
       "G", "H", "I", "J", "K", "L",
       "M", "N", "O", "P", "Q", "R", "S",
       "T", "U", "V", "W", "X", "Y", "Z":
 
-      let startingIndex = index
-      let value = repeatAny("A", "Z")
-
-      index = startingIndex
-
-      let answer = reservedWords.first { (word, token) in
-        value.starts(with: word)
-      }
-
-      if answer == nil {
-        return Token.error("unrecognized name")
-      }
-
-      skipWord(answer!.0)
-      let keyword = answer!.1
-
-      if keyword == .remark {
-        ignoreUntil("\n")
-      }
-      return keyword
+      return keywordsAndNames()
 
 
     default:
       return Token.error("not yet implemented")
     }
+  }
+
+  fileprivate func number() -> Token? {
+    var isFloat = false
+    var value = repeatAny("0", "9")
+
+    if program[index] == "." {
+      isFloat = true
+      index += 1
+      let fraction = repeatAny("0", "9")
+      value += "."
+      value += fraction
+    }
+
+    if program[index] == "E" || program[index] == "e" {
+      isFloat = true
+      index += 1
+
+      let message = "Exponent value is missing"
+      if program[index] < "0" || program[index] > "9" {
+        return .error(message)
+      }
+      let exponent = repeatAny("0", "9")
+
+      value += "E"
+      value += exponent
+    }
+
+    if isFloat {
+      return Token.number(Float(value)!)
+    } else {
+      return Token.integer(Float(value)!)
+    }
+  }
+
+  fileprivate func oneCharacterOperator() -> Token? {
+    let result = oneCharOperators[program[index]]
+    index += 1
+    return result
+  }
+
+  fileprivate func lessThanOperators() -> Token? {
+    index += 1
+    if program[index] == "=" {
+      index += 1
+      return .lessThanOrEqualTo
+    } else if program[index] == ">" {
+      index += 1
+      return .notEqual
+    }
+    return .lessThan
+  }
+
+  fileprivate func greaterThanOperators() -> Token? {
+    index += 1
+    if program[index] == "=" {
+      index += 1
+      return .greaterThanOrEqualTo
+    }
+    return .greaterThan
+  }
+
+  fileprivate func keywordsAndNames() -> Token? {
+    let startingIndex = index
+    let value = repeatAny("A", "Z")
+
+    index = startingIndex
+
+    let answer = reservedWords.first { (word, token) in
+      value.starts(with: word)
+    }
+
+    if answer == nil {
+      return Token.error("unrecognized name")
+    }
+
+    skipWord(answer!.0)
+    let keyword = answer!.1
+
+    if keyword == .remark {
+      ignoreUntil("\n")
+    }
+    return keyword
   }
 }

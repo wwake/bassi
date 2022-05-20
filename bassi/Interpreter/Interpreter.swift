@@ -33,9 +33,6 @@ class Interpreter {
   func step(_ parse: Parse, _ output: String) -> String {
 
     switch parse {
-//    case .program(let lines):
-//      return step(lines[0], output)
-
     case .line(_, let statement):
       return step(statement, output)
 
