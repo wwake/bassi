@@ -8,14 +8,6 @@
 import XCTest
 @testable import bassi
 
-extension Parser {
-  func expression(_ testInput: String) throws -> Expression {
-    lexer = Lexer(testInput)
-    nextToken()
-    return try expression()
-  }
-}
-
 class ParserTests: XCTestCase {
 
   func test10END() throws {
@@ -107,12 +99,25 @@ class ParserTests: XCTestCase {
     XCTAssertEqual(parser.errorMessages, [ParseError.missingTarget])
   }
 
+  func checkExpression(
+    _ expression: String,
+    _ expected: Expression) {
+
+      let input = "10 PRINT \(expression)"
+      let parser = Parser()
+      let result = parser.parse(input)
+      XCTAssertEqual(
+        result,
+        .line(
+          10,
+          .print([expected]))
+      )
+      XCTAssertEqual(parser.errorMessages, [])
+  }
+
   func testOrExpr() throws {
-    let expression = "2 OR 4 AND 5"
-    let parser = Parser()
-    let result = try parser.expression(expression)
-    XCTAssertEqual(
-      result,
+    checkExpression(
+      "2 OR 4 AND 5",
       .op2(
         .or,
         .number(2),
@@ -124,31 +129,22 @@ class ParserTests: XCTestCase {
   }
 
   func testAndExpr() throws {
-    let expression = "2 < 3 AND 4"
-    let parser = Parser()
-    let result = try parser.expression(expression)
-    XCTAssertEqual(
-      result,
+    checkExpression(
+      "2 < 3 AND 4",
       Expression.make(2, .lessThan, 3, .and, 4)
     )
   }
   
   func testRelationalHasPrecedenceOverNegation() throws {
-    let expression = "NOT 2 < 3"
-    let parser = Parser()
-    let result = try parser.expression(expression)
-    XCTAssertEqual(
-      result,
+    checkExpression(
+      "NOT 2 < 3",
       Expression.make(.not, 2, .lessThan, 3)
     )
   }
 
   func checkRelational(_ relation: String, _ token: Token) throws {
-    let expression = "1" + relation + "2"
-    let parser = Parser()
-    let result = try parser.expression(expression)
-    XCTAssertEqual(
-      result,
+    checkExpression(
+      "1" + relation + "2",
       Expression.make(1, token, 2)
     )
   }
@@ -163,106 +159,73 @@ class ParserTests: XCTestCase {
   }
 
   func testSimpleAddition() throws {
-    let expression = "1+2"
-    let parser = Parser()
-    let result = try parser.expression(expression)
-    XCTAssertEqual(
-      result,
+    checkExpression(
+      "1+2",
       Expression.make(1, .plus, 2)
     )
   }
 
   func testAdditionIsLeftAssociative() throws {
-    let expression = "1+2+3"
-    let parser = Parser()
-    let result = try parser.expression(expression)
-    XCTAssertEqual(
-      result,
+    checkExpression(
+      "1+2+3",
       Expression.make(1, .plus, 2, .plus, 3))
   }
 
   func testSubtraction() throws {
-    let expression = "1-2-3"
-    let parser = Parser()
-    let result = try parser.expression(expression)
-    XCTAssertEqual(
-      result,
+    checkExpression(
+      "1-2-3",
       Expression.make(1, .minus, 2, .minus, 3)
     )
   }
 
   func testMultiplyDivide() throws {
-    let expression = "1*6/3"
-    let parser = Parser()
-    let result = try parser.expression(expression)
-    XCTAssertEqual(
-      result,
+    checkExpression(
+      "1*6/3",
       Expression.make(1, .times, 6, .divide, 3)
     )
   }
 
   func testPowerIsLeftAssociative() throws {
-    let expression = "2^3^4"
-    let parser = Parser()
-    let result = try parser.expression(expression)
-    XCTAssertEqual(
-      result,
+    checkExpression(
+      "2^3^4",
       Expression.make(2, .exponent, 3, .exponent, 4)
     )
   }
 
   func testUnaryMinusHasPrecedenceOverPower() throws {
-    let expression = "-2^3"
-    let parser = Parser()
-    let result = try parser.expression(expression)
-    XCTAssertEqual(
-      result,
+    checkExpression(
+      "-2^3",
       Expression.make(.minus, 2, .exponent, 3)
     )
   }
 
   func testParenthesizedExpression() throws {
-    let expression = "((21))"
-    let parser = Parser()
-    let result = try parser.expression(expression)
-    XCTAssertEqual(
-      result,
+    checkExpression(
+      "((21))",
       .number(21.0)
     )
   }
 
   func testMissingRightParentheses() {
-    do {
-      let expression = "(((21)"
-      let parser = Parser()
-      _ = try parser.expression(expression)
-      XCTFail("exception should have been thrown")
-    } catch ParseError.missingRightParend {
-      // ok
-    } catch {
-      XCTFail("wrong exception thrown: " + error.localizedDescription)
-    }
+
+    let expression = "(((21)"
+    let input = "10 PRINT \(expression)"
+    let parser = Parser()
+    let _ = parser.parse(input)
+    XCTAssertEqual(parser.errorMessages, [ParseError.missingRightParend])
   }
 
   func testErrorWhenFactorIsNotValid() {
-    do {
-      let expression = "(((*"
-      let parser = Parser()
-      _ = try parser.expression(expression)
-      XCTFail("exception should have been thrown")
-    } catch ParseError.expectedNumberOrLeftParend {
-      // ok
-    } catch {
-      XCTFail("wrong exception thrown: " + error.localizedDescription)
-    }
+    let expression = "(((*"
+    let input = "10 PRINT \(expression)"
+    let parser = Parser()
+    let _ = parser.parse(input)
+    XCTAssertEqual(parser.errorMessages, [ParseError.expectedStartOfExpression])
   }
 
   func testUnaryMinus() throws {
-    let expression = "---21"
-    let parser = Parser()
-    let result = try parser.expression(expression)
-    XCTAssertEqual(
-      result,
+    checkExpression (
+      "---21",
       .op1(.minus,
            .op1(.minus,
                 .op1(.minus,

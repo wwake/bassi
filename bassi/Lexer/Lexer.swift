@@ -143,7 +143,7 @@ class Lexer : Sequence, IteratorProtocol {
 
   fileprivate func integer() -> Token? {
     let value = repeatAny("0", "9")
-    return Token.integer(Float(value)!)
+    return Token.integer(Int(value)!)
   }
 
   fileprivate func number() -> Token? {

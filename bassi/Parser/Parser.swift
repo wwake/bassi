@@ -11,7 +11,7 @@ enum ParseError: Error {
   case noLineNumber
   case unknownStatement
   case missingRightParend
-  case expectedNumberOrLeftParend
+  case expectedStartOfExpression
   case extraCharactersAtEol
   case missingTarget
 }
@@ -98,8 +98,9 @@ public class Parser {
     nextToken()
 
     switch token {
-    case .integer(_),
+    case
         .number(_),
+        .minus,
         .leftParend,
         .not:
 
@@ -238,17 +239,12 @@ public class Parser {
       nextToken()
 
       return expr
-    } else if case .integer(let intValue) = token {
-
-        let value = Expression.number(intValue)
-        nextToken()
-        return value
     } else if case .number(let floatValue) = token {
       let value = Expression.number(floatValue)
       nextToken()
       return value
     } else {
-      throw ParseError.expectedNumberOrLeftParend
+      throw ParseError.expectedStartOfExpression
     }
   }
 }

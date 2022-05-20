@@ -12,7 +12,7 @@ enum Token  {
   case atEnd
   case eol
   case error(String)
-  case integer(Float)
+  case integer(Int)
   case number(Float)
   
   case plus

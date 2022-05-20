@@ -100,7 +100,6 @@ term -> power (("*"|"/") power)*
 power -> "-" power
 power -> factor ("^" factor)*
 
-factor -> INTEGER(INT)
 factor -> NUMBER(FLOAT)
 factor -> "(" expression ")"
 
