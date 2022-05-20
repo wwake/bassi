@@ -43,33 +43,25 @@ class LexerTests: XCTestCase {
     checkToken(" 1 2 REM ", .integer(12))
   }
 
-  func testRemark() throws {
-    checkToken("REM Comment", .remark)
+  func testFirstTokenAlwaysExpectsInteger() {
+    checkToken("1END", .integer(1))
   }
 
-  func testTwoRemarks() {
-    let lexer = Lexer("10 REM #\n20 REM")
+  func testNumbersPastLineNumberExpectFloat() {
+    let lexer = Lexer("10 PRINT 20")
 
     var token = lexer.next()
     XCTAssertEqual(token, .integer(10))
 
     token = lexer.next()
-    XCTAssertEqual(token, .remark)
+    XCTAssertEqual(token, .print)
 
     token = lexer.next()
-    XCTAssertEqual(token, .eol)
+    XCTAssertEqual(token, .number(20))
+  }
 
-    token = lexer.next()
-    XCTAssertEqual(token, .integer(20))
-
-    token = lexer.next()
-    XCTAssertEqual(token, .remark)
-
-    token = lexer.next()
-    XCTAssertEqual(token, .eol)
-
-    token = lexer.next()
-    XCTAssertEqual(token, .atEnd)
+  func testRemark() throws {
+    checkToken("REM Comment", .remark)
   }
 
   func testUnexpectedStatement() {
@@ -93,7 +85,7 @@ class LexerTests: XCTestCase {
     XCTAssertEqual(token, .print)
 
     token = lexer.next()
-    XCTAssertEqual(token, .integer(42))
+    XCTAssertEqual(token, .number(42))
 
     token = lexer.next()
     XCTAssertEqual(token, .eol)
@@ -121,15 +113,37 @@ class LexerTests: XCTestCase {
     checkToken(">=", .greaterThanOrEqualTo)
   }
 
+  func checkNumber(_ input: String, _ expected: Token) {
+    let lexer = Lexer("10 PRINT \(input)")
+
+    var token = lexer.next()
+    XCTAssertEqual(token, .integer(10))
+
+    token = lexer.next()
+    XCTAssertEqual(token, .print)
+
+    token = lexer.next()
+    XCTAssertEqual(token, expected)
+  }
+
   func testNumberLexing() {
-    checkToken("14", .integer(14))
-    checkToken("14.5", .number(14.5))
-    checkToken("14.5E1", .number(145))
-    checkToken("17.5e1", .number(175))
-    checkToken("14.", .number(14))
+    checkNumber("14", .number(14))
+    checkNumber("14.5", .number(14.5))
+    checkNumber("14.5E1", .number(145))
+    checkNumber("17.5e1", .number(175))
+    checkNumber("14.", .number(14))
   }
 
   func testNumberErrors() {
-    checkToken("14.3E", .error("Exponent value is missing")) 
+    let lexer = Lexer("10 PRINT 14.3E")
+
+    var token = lexer.next()
+    XCTAssertEqual(token, .integer(10))
+
+    token = lexer.next()
+    XCTAssertEqual(token, .print)
+
+    token = lexer.next()
+    XCTAssertEqual(token, .error("Exponent value is missing"))
   }
 }

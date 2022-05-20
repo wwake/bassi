@@ -17,6 +17,16 @@ extension Parser {
 }
 
 class ParserTests: XCTestCase {
+
+  func test10END() throws {
+    let line = "10 END"
+    let parser = Parser()
+    let result = parser.parse(line)
+    XCTAssertEqual(
+      result,
+      .line(10, .end))
+  }
+
   func test10REM() throws {
     let line = "10 REM whatever"
     let parser = Parser()

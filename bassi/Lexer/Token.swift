@@ -31,13 +31,13 @@ enum Token  {
   case greaterThan
   case greaterThanOrEqualTo
 
+  case and
   case clear
   case data
   case def
   case dim
-  case end
 
-  case and
+  case end
   case forKeyword
   case goto
   case gosub

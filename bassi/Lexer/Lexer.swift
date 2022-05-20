@@ -30,6 +30,11 @@ class Lexer : Sequence, IteratorProtocol {
 
   let reservedWords: [String : Token] = [
     "AND": .and,
+    "CLEAR": .clear,
+    "DATA": .data,
+    "DEF": .def,
+    
+    "END": .end,
     "FOR": .forKeyword,
     "GOTO": .goto,
     "GOSUB": .gosub,
@@ -55,6 +60,8 @@ class Lexer : Sequence, IteratorProtocol {
 
   let program: String
   var index = 0
+
+  var lookingForLineNumber = true
 
   init(_ program: String) {
     self.program = program.replacingOccurrences(of:" ", with:"")
@@ -105,7 +112,13 @@ class Lexer : Sequence, IteratorProtocol {
 
     case "0", "1", "2", "3", "4",
       "5", "6", "7", "8", "9":
-      return number()
+      
+      if lookingForLineNumber {
+        lookingForLineNumber = false
+        return integer()
+      } else {
+        return number()
+      }
 
     case "+", "-", "*", "/", "^", "=", "(", ")":
       return oneCharacterOperator()
@@ -128,12 +141,15 @@ class Lexer : Sequence, IteratorProtocol {
     }
   }
 
+  fileprivate func integer() -> Token? {
+    let value = repeatAny("0", "9")
+    return Token.integer(Float(value)!)
+  }
+
   fileprivate func number() -> Token? {
-    var isFloat = false
     var value = repeatAny("0", "9")
 
     if program[index] == "." {
-      isFloat = true
       index += 1
       let fraction = repeatAny("0", "9")
       value += "."
@@ -141,7 +157,6 @@ class Lexer : Sequence, IteratorProtocol {
     }
 
     if program[index] == "E" || program[index] == "e" {
-      isFloat = true
       index += 1
 
       let message = "Exponent value is missing"
@@ -154,11 +169,7 @@ class Lexer : Sequence, IteratorProtocol {
       value += exponent
     }
 
-    if isFloat {
-      return Token.number(Float(value)!)
-    } else {
-      return Token.integer(Float(value)!)
-    }
+    return Token.number(Float(value)!)
   }
 
   fileprivate func oneCharacterOperator() -> Token? {

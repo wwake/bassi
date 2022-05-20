@@ -36,6 +36,9 @@ class Interpreter {
     case .line(_, let statement):
       return step(statement, output)
 
+    case .end:
+      return "END NYI"
+
     case .skip:
       return output
 

@@ -74,6 +74,9 @@ public class Parser {
     var result: Parse
 
     switch token {
+    case .end:
+      nextToken()
+      result = Parse.end
     case .remark:
       nextToken()
       result = Parse.skip
@@ -112,7 +115,7 @@ public class Parser {
   func goto() throws -> Parse {
     nextToken()
 
-    if case .integer(let lineNumber) = token {
+    if case .number(let lineNumber) = token {
       nextToken()
       return .goto(Int(lineNumber))
     }
