@@ -150,4 +150,34 @@ class InterpreterTests: XCTestCase {
     checkRelop(.greaterThanOrEqualTo, .lessThan)
     checkRelop(.lessThanOrEqualTo, .greaterThan)
   }
+
+  func test10Goto10() {
+    let parse = Parse.program([
+      .line(
+        10,
+        .goto(10))
+    ])
+
+    let interpreter = Interpreter(Program())
+
+    XCTAssertEqual(interpreter.lineNumber, 0)
+
+    let _ = interpreter.interpret(parse, "")
+
+    XCTAssertEqual(interpreter.lineNumber, 10)
+  }
+
+  func testStepWillEvenGotoMissingLine() {
+    let parse = Parse.program([
+      .line(
+        10,
+        .goto(20))
+    ])
+
+    let interpreter = Interpreter(Program())
+
+    let _ = interpreter.interpret(parse, "")
+
+    XCTAssertEqual(interpreter.lineNumber, 20)
+  }
 }

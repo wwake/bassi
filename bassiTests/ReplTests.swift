@@ -75,7 +75,6 @@ run
 
 """
 
-    print("*\(repl.output[0])*")
     XCTAssertEqual(repl.output.count, expected.count)
     XCTAssertEqual(repl.output, expected)
 

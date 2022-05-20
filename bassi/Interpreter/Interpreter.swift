@@ -45,8 +45,9 @@ class Interpreter {
     case .print(let values):
       return doPrint(output, values)
 
-    case .goto(_):
-      return "GOTO not supported"
+    case .goto(let newLineNumber):
+      lineNumber = newLineNumber
+      return output
     }
   }
 
