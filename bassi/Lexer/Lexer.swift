@@ -123,7 +123,6 @@ class Lexer : Sequence, IteratorProtocol {
 
       return keywordsAndNames()
 
-
     default:
       return Token.error("not yet implemented")
     }
