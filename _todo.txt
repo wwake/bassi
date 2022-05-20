@@ -1,5 +1,3 @@
-* Force line number to be parsed as an integer
-  + "1 END" was interpreted as "1E" which is an invalid float
 * END statement
 * Run multi-line programs
 * IF
@@ -22,6 +20,8 @@ BI-22-09: May 20, 2022
 * GOTO
 * Make interpreter work one line at a time ("step()")
 * Delete Parse.program if we work one line at a time
+* Force line number to be parsed as an integer
+  + "1 END" was interpreted as "1E" which is an invalid float
 
 BI-22-08: May 19, 2022
 * Precedence low to high: relational, NOT, AND, OR
