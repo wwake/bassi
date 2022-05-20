@@ -43,10 +43,6 @@ public class Parser {
     }
   }
 
-  func parse() -> Parse {
-    return singleLine()
-  }
-
   func parse(_ input: String) -> Parse {
     lexer = Lexer(input)
     nextToken()
