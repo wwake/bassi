@@ -27,17 +27,17 @@ class Interpreter {
   func run() -> String {
     let line = program[lineNumber]
     let parse = Parser(Lexer(line)).parse()
-    return interpret(parse, "")
+    return step(parse, "")
   }
 
-  func interpret(_ parse: Parse, _ output: String) -> String {
+  func step(_ parse: Parse, _ output: String) -> String {
 
     switch parse {
     case .program(let lines):
-      return interpret(lines[0], output)
+      return step(lines[0], output)
 
     case .line(_, let statement):
-      return interpret(statement, output)
+      return step(statement, output)
 
     case .skip:
       return output

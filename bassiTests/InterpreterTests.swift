@@ -17,7 +17,7 @@ class InterpreterTests: XCTestCase {
 
     let interpreter = Interpreter(Program())
 
-    let output = interpreter.interpret(parse, "")
+    let output = interpreter.step(parse, "")
     XCTAssertEqual(output, "")
   }
 
@@ -27,7 +27,7 @@ class InterpreterTests: XCTestCase {
     ])
 
     let interpreter = Interpreter(Program())
-    let output = interpreter.interpret(parse, "")
+    let output = interpreter.step(parse, "")
     XCTAssertEqual(output, "\n")
   }
 
@@ -39,7 +39,7 @@ class InterpreterTests: XCTestCase {
     ])
 
     let interpreter = Interpreter(Program())
-    let output = interpreter.interpret(parse, "")
+    let output = interpreter.step(parse, "")
     XCTAssertEqual(output, "22\n")
   }
 
@@ -69,7 +69,7 @@ class InterpreterTests: XCTestCase {
     ])
 
     let interpreter = Interpreter(Program())
-    let output = interpreter.interpret(parse, "")
+    let output = interpreter.step(parse, "")
     XCTAssertEqual(output, "7\n")
   }
 
@@ -92,7 +92,7 @@ class InterpreterTests: XCTestCase {
     ])
 
     let interpreter = Interpreter(Program())
-    let output = interpreter.interpret(parse, "")
+    let output = interpreter.step(parse, "")
     XCTAssertEqual(output, "6\n")
   }
 
@@ -106,7 +106,7 @@ class InterpreterTests: XCTestCase {
     ])
 
     let interpreter = Interpreter(Program())
-    let output = interpreter.interpret(parse, "")
+    let output = interpreter.step(parse, "")
     XCTAssertEqual(output, "-4\n")
   }
 
@@ -120,7 +120,7 @@ class InterpreterTests: XCTestCase {
     ])
 
     let interpreter = Interpreter(Program())
-    let output = interpreter.interpret(parse, "")
+    let output = interpreter.step(parse, "")
     XCTAssertEqual(output, "2\n")
   }
 
@@ -134,7 +134,7 @@ class InterpreterTests: XCTestCase {
     ])
 
     let interpreter = Interpreter(Program())
-    let output = interpreter.interpret(parse, "")
+    let output = interpreter.step(parse, "")
     XCTAssertEqual(output, "\(expected)\n")
   }
 
@@ -162,7 +162,7 @@ class InterpreterTests: XCTestCase {
 
     XCTAssertEqual(interpreter.lineNumber, 0)
 
-    let _ = interpreter.interpret(parse, "")
+    let _ = interpreter.step(parse, "")
 
     XCTAssertEqual(interpreter.lineNumber, 10)
   }
@@ -176,7 +176,7 @@ class InterpreterTests: XCTestCase {
 
     let interpreter = Interpreter(Program())
 
-    let _ = interpreter.interpret(parse, "")
+    let _ = interpreter.step(parse, "")
 
     XCTAssertEqual(interpreter.lineNumber, 20)
   }
