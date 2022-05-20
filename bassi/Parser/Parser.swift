@@ -28,34 +28,31 @@ public class Parser {
     token = lexer.next()!
   }
   
-  func parse() -> Parse {
-    return program()
-  }
-
   func errors() -> [ParseError] {
     errorMessages
   }
 
-  func nextToken() {
+  fileprivate func nextToken() {
     token = lexer.next()!
-  }
-
-  func program() -> Parse {
-    var lines : [Parse] = []
-    do {
-      while token != .atEnd {
-        try lines.append(line())
-      }
-    } catch {
-      errorMessages.append(error as! ParseError)
-    }
-    return Parse.program(lines)
   }
 
   fileprivate func require(_ expected: Token, _ error: ParseError) throws {
 
     if token != expected {
       throw error
+    }
+  }
+
+  func parse() -> Parse {
+    return singleLine()
+  }
+
+  func singleLine() -> Parse {
+    do {
+      return try line()
+    } catch {
+      errorMessages.append(error as! ParseError)
+      return .skip
     }
   }
 
