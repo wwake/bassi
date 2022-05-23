@@ -58,11 +58,9 @@ class Interpreter {
       lineNumber = newLineNumber
       return output
 
-    case .`if`(_, _):
-      return "IF is NYI"
+    case .`if`(let expr, let target):
+      return doIfThen(output, expr, target)
     }
-
-
   }
 
   let operators : [Token : (Float, Float) -> Float] =
@@ -127,5 +125,13 @@ class Interpreter {
     result.append(printedOutput)
     result.append("\n")
     return result
+  }
+
+  fileprivate func doIfThen(_ output: String, _ expr: Expression, _ target: Int) -> String {
+    let test = evaluate(expr)
+    if test != 0.0 {
+      lineNumber = target
+    }
+    return output
   }
 }

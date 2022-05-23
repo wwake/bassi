@@ -233,4 +233,26 @@ class InterpreterTests: XCTestCase {
     let output = interpreter.run()
     XCTAssertEqual(output, "50\n")
   }
+
+  func ifWithFalseResultFallsThrough() throws {
+    let program = Program("""
+25 IF 0 THEN 50
+30 PRINT 30
+50 PRINT 50
+""")
+    let interpreter = Interpreter(program)
+    let output = interpreter.run()
+    XCTAssertEqual(output, "30\n50\n")
+  }
+
+  func testIfWithTrueResultDoesGoto() throws {
+    let program = Program("""
+25 IF 1 THEN 50
+30 PRINT 30
+50 PRINT 50
+""")
+    let interpreter = Interpreter(program)
+    let output = interpreter.run()
+    XCTAssertEqual(output, "50\n")
+  }
 }
