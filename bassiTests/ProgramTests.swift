@@ -55,4 +55,24 @@ class ProgramTests: XCTestCase {
     XCTAssertEqual(program[25], "25 PRINT 25")
     XCTAssertEqual(program[40], "40 END")
   }
+
+  func testUnknownNextLineNumberIsZeroEnd() {
+    let program = Program()
+    XCTAssertEqual(program.lineAfter(10), nil)
+  }
+
+  func testLineAfterOnlyLineIsZeroEnd() {
+    let program = Program("""
+10 PRINT 10
+""")
+    XCTAssertEqual(program.lineAfter(10), nil)
+  }
+
+  func testLineAfterFirstLineIsSecondLine() {
+    let program = Program("""
+10 PRINT 10
+20 PRINT 20
+""")
+    XCTAssertEqual(program.lineAfter(10), 20)
+  }
 }

@@ -28,7 +28,7 @@ class Interpreter {
   func run() -> String {
     var output = ""
 
-//    while !done {
+ //   while !done {
       let line = program[lineNumber]
       lineNumber = 40
       let parse = Parser().parse(line)

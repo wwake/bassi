@@ -8,6 +8,7 @@
 import Foundation
 
 class Program {
+
   var program : [Int: String] = [:]
 
   init(_ lines: String) {
@@ -48,5 +49,23 @@ class Program {
       .min(by: {$0.key < $1.key})
 
     return lineNumber?.key ?? 0
+  }
+
+  func lineAfter(_ lineNumber: Int) -> Int? {
+    let keys = program.keys.sorted(by: <)
+
+    let startIndex = keys
+      .firstIndex { $0 == lineNumber
+      }
+
+    if startIndex == nil {
+      return nil
+    }
+
+    if startIndex! + 1 >= keys.count {
+      return nil
+    }
+
+    return keys[startIndex! + 1]
   }
 }
