@@ -43,7 +43,7 @@ class Repl : ObservableObject {
   }
 
   func doRun() {
-    let interpreter = Bassi(program)
+    let interpreter = Interpreter(program)
     let result = interpreter.run()
     append(result)
   }
