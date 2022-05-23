@@ -10,6 +10,33 @@ import XCTest
 
 class InterpreterTests: XCTestCase {
 
+  func test10REM() throws {
+    let program = Program("10 REM Comment")
+    let interpreter = Interpreter(program)
+    let output = interpreter.run()
+    XCTAssertEqual(output, "")
+  }
+
+  func test20PRINT() {
+    let program = Program("20 PRINT")
+    let interpreter = Interpreter(program)
+    let output = interpreter.run()
+    XCTAssertEqual(output, "\n")
+  }
+
+  func test25PRINT42() {
+    let program = Program("25 PRINT 42")
+    let interpreter = Interpreter(program)
+    let output = interpreter.run()
+    XCTAssertEqual(output, "42\n")
+  }
+
+  func testEnd() {
+    let program = Program("999 END")
+    let interpreter = Interpreter(program)
+    let _ = interpreter.run()
+    XCTAssertTrue(interpreter.done)
+  }
   func testSkip() throws {
     let parse = Parse.line(10, Parse.skip)
 
@@ -39,7 +66,14 @@ class InterpreterTests: XCTestCase {
     XCTAssertEqual(output, "22\n")
   }
 
-  func testLogicalOperationsOnIntegers() {
+  func testPowers() {
+    let program = Program("25 PRINT 2^3^2")
+    let interpreter = Interpreter(program)
+    let output = interpreter.run()
+    XCTAssertEqual(output, "64\n")
+  }
+
+  func testLogicalOperationsOnIntegersTree() {
     // NOT -8 OR 5 AND 4
     // 11111..1000  -8
     // 0000....111  7 = NOT -8
@@ -67,6 +101,14 @@ class InterpreterTests: XCTestCase {
     let output = interpreter.step(parse, "")
     XCTAssertEqual(output, "7\n")
   }
+
+  func testLogicalOperationsOnIntegers() {
+    let program = Program("25 PRINT NOT -8 OR 5 AND 4")
+    let interpreter = Interpreter(program)
+    let output = interpreter.run()
+    XCTAssertEqual(output, "7\n")
+  }
+
 
   func testPrintWithUnaryMinus() {
     let expr = Expression.op1(
