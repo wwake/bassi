@@ -1,10 +1,11 @@
-* Run multi-line programs
-* IF
+* IF relation-expr THEN line-number
 * Expressions: variables
 * Expressions: functions
 * Expressions: subscripts
 * Simple assignment ("LET")
+* IF relation-expr THEN statements
 * Make running write to an output stream
+* String expressions
 * PRINT with strings
 * PRINT with multiple expressions
    25 PRINT 42 21    -- is legal
@@ -17,6 +18,7 @@ Parameterized tests package?
 
 BI-22-10: May 23, 2022
 * END statement
+* Run multi-line programs
 
 BI-22-09: May 20, 2022
 * GOTO

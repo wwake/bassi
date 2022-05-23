@@ -218,6 +218,10 @@ class Lexer : Sequence, IteratorProtocol {
 
     if keyword == .remark {
       ignoreUntil("\n")
+    } else if keyword == .then {
+      if program[index] >= "0" && program[index] <= "9" {
+        lookingForLineNumber = true
+      }
     }
     return keyword
   }

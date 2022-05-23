@@ -30,7 +30,7 @@ class Interpreter {
 
     while !done {
       let line = program[lineNumber]
-    lineNumber = program.lineAfter(lineNumber)
+      lineNumber = program.lineAfter(lineNumber)
       let parse = Parser().parse(line)
       output = step(parse, output)
     }

@@ -146,4 +146,34 @@ class LexerTests: XCTestCase {
     token = lexer.next()
     XCTAssertEqual(token, .error("Exponent value is missing"))
   }
+
+  func testThenFollowedByDigitGetsInteger() {
+    let lexer = Lexer("20 THEN 9")
+
+    let token1 = lexer.next()
+    XCTAssertEqual(token1, .integer(20))
+
+    let token2 = lexer.next()
+    XCTAssertEqual(token2, .then)
+
+    let token3 = lexer.next()
+    XCTAssertEqual(token3, .integer(9))
+  }
+
+  func testThenFollowedByPrintDigitGetsNumber() {
+    let lexer = Lexer("20THENPRINT9")
+
+    let token1 = lexer.next()
+    XCTAssertEqual(token1, .integer(20))
+
+    let token2 = lexer.next()
+    XCTAssertEqual(token2, .then)
+
+    let token3 = lexer.next()
+    XCTAssertEqual(token3, .print)
+
+    let token4 = lexer.next()
+    XCTAssertEqual(token4, .number(9))
+
+  }
 }
