@@ -26,9 +26,16 @@ class Interpreter {
   }
 
   func run() -> String {
-    let line = program[lineNumber]
-    let parse = Parser().parse(line)
-    return step(parse, "")
+    var output = ""
+
+//    while !done {
+      let line = program[lineNumber]
+      lineNumber = 40
+      let parse = Parser().parse(line)
+      output = step(parse, output)
+//    }
+
+    return output
   }
 
   func step(_ parse: Parse, _ output: String) -> String {

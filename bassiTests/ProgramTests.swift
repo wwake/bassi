@@ -16,12 +16,12 @@ class ProgramTests: XCTestCase {
     XCTAssertEqual(program[10], "10 PRINT 42")
   }
   
-    func testAddingSameLineNumberOverwrites() throws {
-      let program = Program()
-      program[10] = "10 PRINT 42"
-      program[10] = "10 PRINT 43"
-      XCTAssertEqual(program[10], "10 PRINT 43")
-    }
+  func testAddingSameLineNumberOverwrites() throws {
+    let program = Program()
+    program[10] = "10 PRINT 42"
+    program[10] = "10 PRINT 43"
+    XCTAssertEqual(program[10], "10 PRINT 43")
+  }
 
   func testNonExistentLinesAreEmpty() {
     let program = Program()
@@ -45,5 +45,14 @@ class ProgramTests: XCTestCase {
   func testEmptyProgramSaysFirstLineNumberIsZero() {
     let program = Program()
     XCTAssertEqual(0, program.firstLineNumber())
+  }
+
+  func testInitializeMultiLineProgram() {
+    let program = Program("""
+25 PRINT 25
+40 END
+""")
+    XCTAssertEqual(program[25], "25 PRINT 25")
+    XCTAssertEqual(program[40], "40 END")
   }
 }

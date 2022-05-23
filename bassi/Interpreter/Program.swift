@@ -10,15 +10,22 @@ import Foundation
 class Program {
   var program : [Int: String] = [:]
 
-  init(_ line: String = "") {
-    if line.count != 0 {
-      let lineNumber = line.prefix {
-        $0.isNumber
+  init(_ lines: String) {
+    lines
+      .split(separator: "\n")
+      .forEach {
+        let line = String($0)
+        if line.count != 0 {
+          let lineNumber = line.prefix {
+            $0.isNumber
+          }
+          program[Int(lineNumber)!] = line
+        }
       }
-      program[Int(lineNumber)!] = line
-    }
   }
-  
+
+  init() {}
+
   subscript(_ lineNumber: Int) -> String {
     get { program[lineNumber] ?? "" }
     set {

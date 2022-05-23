@@ -212,4 +212,14 @@ class InterpreterTests: XCTestCase {
 
     XCTAssertEqual(interpreter.lineNumber, 20)
   }
+
+  func xtestTwoLineProgramRunsBothLines() throws {
+    let program = Program("""
+25 PRINT 25
+40 END
+""")
+    let interpreter = Interpreter(program)
+    let output = interpreter.run()
+    XCTAssertEqual(output, "25\n")
+  }
 }
