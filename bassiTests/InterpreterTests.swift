@@ -191,9 +191,9 @@ class InterpreterTests: XCTestCase {
         10,
         .goto(10))
 
-    let interpreter = Interpreter(Program())
+    let interpreter = Interpreter(Program("10 GOTO 10"))
 
-    XCTAssertEqual(interpreter.lineNumber, 0)
+    XCTAssertEqual(interpreter.lineNumber, 10)
 
     let _ = interpreter.step(parse, "")
 

@@ -42,9 +42,11 @@ class ProgramTests: XCTestCase {
     XCTAssertEqual(25, program.firstLineNumber())
   }
 
-  func testEmptyProgramSaysFirstLineNumberIsZero() {
+  func testEmptyProgramSaysFirstLineNumberIsMaxLineNumber() {
     let program = Program()
-    XCTAssertEqual(0, program.firstLineNumber())
+    XCTAssertEqual(
+      program.firstLineNumber(),
+      program.maxLineNumber)
   }
 
   func testInitializeMultiLineProgram() {
@@ -58,14 +60,14 @@ class ProgramTests: XCTestCase {
 
   func testUnknownNextLineNumberIsZeroEnd() {
     let program = Program()
-    XCTAssertEqual(program.lineAfter(10), nil)
+    XCTAssertEqual(program.lineAfter(10), program.maxLineNumber)
   }
 
   func testLineAfterOnlyLineIsZeroEnd() {
     let program = Program("""
 10 PRINT 10
 """)
-    XCTAssertEqual(program.lineAfter(10), nil)
+    XCTAssertEqual(program.lineAfter(10), program.maxLineNumber)
   }
 
   func testLineAfterFirstLineIsSecondLine() {

@@ -8,8 +8,10 @@
 import Foundation
 
 class Program {
+  let maxLineNumber = 99999
 
-  var program : [Int: String] = [:]
+  var program : [Int: String] =
+    [99999 : "99999 END"]
 
   init(_ lines: String) {
     lines
@@ -42,6 +44,7 @@ class Program {
     program
       .sorted(by: {$0.key < $1.key})
       .map {(key, value) in value}
+      .dropLast()
   }
 
   func firstLineNumber() -> Int {
@@ -51,7 +54,7 @@ class Program {
     return lineNumber?.key ?? 0
   }
 
-  func lineAfter(_ lineNumber: Int) -> Int? {
+  func lineAfter(_ lineNumber: Int) -> Int {
     let keys = program.keys.sorted(by: <)
 
     let startIndex = keys
@@ -59,11 +62,11 @@ class Program {
       }
 
     if startIndex == nil {
-      return nil
+      return maxLineNumber
     }
 
     if startIndex! + 1 >= keys.count {
-      return nil
+      return maxLineNumber
     }
 
     return keys[startIndex! + 1]
