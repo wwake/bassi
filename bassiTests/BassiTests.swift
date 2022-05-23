@@ -43,4 +43,11 @@ class BassiTests: XCTestCase {
     let output = interpreter.run()
     XCTAssertEqual(output, "7\n")
   }
+
+  func testEnd() {
+    let program = Program("999 END")
+    let interpreter = Bassi(program)
+    let _ = interpreter.run()
+    XCTAssertTrue(interpreter.interpreter.done)
+  }
 }

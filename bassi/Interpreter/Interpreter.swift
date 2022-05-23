@@ -18,6 +18,7 @@ class Interpreter {
   let program: Program
 
   var lineNumber : Int
+  var done = false
 
   init(_ program: Program) {
     self.program = program
@@ -37,7 +38,8 @@ class Interpreter {
       return step(statement, output)
 
     case .end:
-      return "END NYI"
+      done = true
+      return output
 
     case .skip:
       return output
