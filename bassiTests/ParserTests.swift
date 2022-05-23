@@ -232,4 +232,31 @@ class ParserTests: XCTestCase {
                      .number(21.0))))
     )
   }
+
+  func testIfThenLineNumber() throws {
+    let line = "42 IF 0 THEN 43"
+    let parser = Parser()
+    let result = parser.parse(line)
+    XCTAssertEqual(
+      result,
+      .line(
+        42,
+        .`if`(.number(0), 43))
+    )
+    XCTAssertEqual(parser.errorMessages, [])
+  }
+
+  func testIfMissingThenGetsError() throws {
+    let line = "42 IF 0 PRINT"
+    let parser = Parser()
+    let _ = parser.parse(line)
+    XCTAssertEqual(parser.errorMessages, [ParseError.missingTHEN])
+  }
+
+  func testIfThenMissingTargetGetsError() throws {
+    let line = "42 IF 0 THEN"
+    let parser = Parser()
+    let _ = parser.parse(line)
+    XCTAssertEqual(parser.errorMessages, [ParseError.missingTarget])
+  }
 }

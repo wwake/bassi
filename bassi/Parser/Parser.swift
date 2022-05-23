@@ -14,6 +14,7 @@ enum ParseError: Error {
   case expectedStartOfExpression
   case extraCharactersAtEol
   case missingTarget
+  case missingTHEN
 }
 
 public class Parser {
@@ -84,6 +85,8 @@ public class Parser {
       result = try printStatement()
     case .goto:
       result = try goto()
+    case .ifKeyword:
+      result = try ifThen()
     default:
       nextToken()
       throw ParseError.unknownStatement
@@ -121,6 +124,22 @@ public class Parser {
       return .goto(Int(lineNumber))
     }
     
+    throw ParseError.missingTarget
+  }
+
+  func ifThen() throws -> Parse {
+    nextToken()
+
+    let expr = try expression()
+
+    try require(.then, .missingTHEN)
+    nextToken()
+
+    if case .integer(let target) = token {
+      nextToken()
+      return .`if`(expr, target)
+    }
+
     throw ParseError.missingTarget
   }
 

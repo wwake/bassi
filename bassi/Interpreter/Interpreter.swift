@@ -57,7 +57,12 @@ class Interpreter {
     case .goto(let newLineNumber):
       lineNumber = newLineNumber
       return output
+
+    case .`if`(_, _):
+      return "IF is NYI"
     }
+
+
   }
 
   let operators : [Token : (Float, Float) -> Float] =

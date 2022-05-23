@@ -13,6 +13,7 @@ indirect enum Parse : Equatable {
   case skip
   case print([Expression])
   case goto(Int)
+  case `if`(Expression, Int)
 }
 
 indirect enum Expression: Equatable {
