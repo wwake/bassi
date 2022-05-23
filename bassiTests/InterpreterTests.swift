@@ -222,4 +222,15 @@ class InterpreterTests: XCTestCase {
     let output = interpreter.run()
     XCTAssertEqual(output, "25\n")
   }
+
+  func testRunMultiLineProgramAndFallOffTheEnd() throws {
+    let program = Program("""
+25 GOTO 50
+30 PRINT 30
+50 PRINT 50
+""")
+    let interpreter = Interpreter(program)
+    let output = interpreter.run()
+    XCTAssertEqual(output, "50\n")
+  }
 }

@@ -28,12 +28,12 @@ class Interpreter {
   func run() -> String {
     var output = ""
 
- //   while !done {
+    while !done {
       let line = program[lineNumber]
     lineNumber = program.lineAfter(lineNumber)
       let parse = Parser().parse(line)
       output = step(parse, output)
-//    }
+    }
 
     return output
   }
