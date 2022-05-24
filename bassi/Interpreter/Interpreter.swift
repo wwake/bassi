@@ -19,6 +19,7 @@ class Interpreter {
 
   var lineNumber : Int
   var done = false
+  var numericVariables: [String:Float] = [:]
 
   init(_ program: Program) {
     self.program = program
@@ -92,8 +93,8 @@ class Interpreter {
     case .number(let floatValue):
       return floatValue
 
-    case .variable(_):
-      return -1
+    case .variable(let name):
+      return numericVariables[name] ?? 0
 
     case .op1(let token, let expr):
       let operand = evaluate(expr)

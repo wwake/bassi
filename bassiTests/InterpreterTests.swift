@@ -109,6 +109,12 @@ class InterpreterTests: XCTestCase {
     XCTAssertEqual(output, "7\n")
   }
 
+  func testVariableDefaultsToZero() {
+    let program = Program("25 PRINT Y9")
+    let interpreter = Interpreter(program)
+    let output = interpreter.run()
+    XCTAssertEqual(output, "0\n")
+  }
 
   func testPrintWithUnaryMinus() {
     let expr = Expression.op1(
