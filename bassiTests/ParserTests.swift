@@ -39,17 +39,6 @@ class ParserTests: XCTestCase {
       [ParseError.noLineNumber])
   }
 
-  func testUnknownStatement() {
-    let line = "42 HUH REMARK"
-    let parser = Parser()
-    _ = parser.parse(line)
-    XCTAssertEqual(
-      parser.errors(),
-      [
-        ParseError.unknownStatement
-      ])
-  }
-
   func testPrintStatement() {
     let line = "25 PRINT"
     let parser = Parser()
@@ -77,7 +66,7 @@ class ParserTests: XCTestCase {
     let parser = Parser()
     let _ = parser.parse(line)
 
-    XCTAssertEqual(parser.errorMessages, [ParseError.extraCharactersAtEol])
+    XCTAssertEqual(parser.errorMessages, [ParseError.expectedStartOfExpression])
   }
 
   func testGoto() throws {
@@ -272,4 +261,31 @@ class ParserTests: XCTestCase {
     let _ = parser.parse(line)
     XCTAssertEqual(parser.errorMessages, [ParseError.missingTarget])
   }
+
+  func testAssignmentStatementWithNumber() {
+    let line = "25 X = 42"
+    let parser = Parser()
+    let result = parser.parse(line)
+    XCTAssertEqual(
+      result,
+      .line(
+        25,
+        .assign(
+          "X",
+          .number(42.0)))
+    )
+  }
+
+  func testAssignMissingEqualSign() {
+    let line = "42 HUH REMARK"
+    let parser = Parser()
+    _ = parser.parse(line)
+    XCTAssertEqual(
+      parser.errors(),
+      [
+        ParseError.assignmentMissingEqualSign
+      ])
+  }
+
+
 }

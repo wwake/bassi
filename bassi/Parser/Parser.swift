@@ -15,6 +15,7 @@ enum ParseError: Error {
   case extraCharactersAtEol
   case missingTarget
   case missingTHEN
+  case assignmentMissingEqualSign
 }
 
 public class Parser {
@@ -87,6 +88,8 @@ public class Parser {
       result = try goto()
     case .ifKeyword:
       result = try ifThen()
+    case .variable(let name):
+      result = try assign(name)
     default:
       nextToken()
       throw ParseError.unknownStatement
@@ -145,6 +148,17 @@ public class Parser {
     }
 
     throw ParseError.missingTarget
+  }
+
+  func assign(_ name: String) throws -> Parse {
+    nextToken()
+
+    try require(.equals, .assignmentMissingEqualSign)
+    nextToken()
+
+    let expr = try expression()
+
+    return .assign(name, expr)
   }
 
   func expression() throws -> Expression {

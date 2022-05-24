@@ -61,6 +61,9 @@ class Interpreter {
 
     case .`if`(let expr, let target):
       return doIfThen(output, expr, target)
+
+    case .assign(_, _):
+      return "Assignment NYI"
     }
   }
 

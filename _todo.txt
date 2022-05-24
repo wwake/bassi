@@ -1,5 +1,3 @@
-* Expressions: variables
-  - Make PRINT more explicit about what's wrong
 * Simple assignment ("LET")
 * Expressions: subscripts
 * Expressions: functions
@@ -16,6 +14,10 @@
 * Error sync by skipping forward to next line # (or end)
 
 Parameterized tests package?
+
+BI-22-11: May 24, 2022
+* Expressions: variables
+  - Make PRINT more explicit about what's wrong
 
 BI-22-10: May 23, 2022
 * END statement
@@ -89,6 +91,7 @@ statement -> "REM" .*
 statement -> "PRINT" expression?
 statement -> "GOTO" INTEGER(int)
 statement -> "IF" expression THEN INTEGER(int)
+statement -> [LET] VARIABLE = expression
 
 expression -> orExpr
 
