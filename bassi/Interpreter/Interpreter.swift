@@ -92,6 +92,9 @@ class Interpreter {
     case .number(let floatValue):
       return floatValue
 
+    case .variable(_):
+      return -1
+
     case .op1(let token, let expr):
       let operand = evaluate(expr)
       if token == .minus {

@@ -233,6 +233,12 @@ class ParserTests: XCTestCase {
     )
   }
 
+  func testVariable() throws {
+    checkExpression(
+      "X",
+      .variable("X"))
+  }
+
   func testIfThenLineNumber() throws {
     let line = "42 IF 0 THEN 43"
     let parser = Parser()

@@ -1,4 +1,5 @@
 * Expressions: variables
+  - Make PRINT more explicit about what's wrong
 * Simple assignment ("LET")
 * Expressions: subscripts
 * Expressions: functions

@@ -103,6 +103,7 @@ public class Parser {
     switch token {
     case
         .number(_),
+        .variable(_),
         .minus,
         .leftParend,
         .not:
@@ -253,6 +254,8 @@ public class Parser {
       return try parenthesizedExpression()
     } else if case .number(let floatValue) = token {
       return numericFactor(floatValue)
+    } else if case .variable(let name) = token {
+      return variable(name)
     } else {
       throw ParseError.expectedStartOfExpression
     }
@@ -275,5 +278,8 @@ public class Parser {
     return value
   }
 
-
+  fileprivate func variable(_ name: String) -> Expression {
+    nextToken()
+    return .variable(name)
+  }
 }
