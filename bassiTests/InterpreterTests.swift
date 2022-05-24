@@ -261,4 +261,14 @@ class InterpreterTests: XCTestCase {
     let output = interpreter.run()
     XCTAssertEqual(output, "50\n")
   }
+
+  func testAssignment() throws {
+    let program = Program("""
+10 X = 42
+25 PRINT X
+""")
+    let interpreter = Interpreter(program)
+    let output = interpreter.run()
+    XCTAssertEqual(output, "42\n")
+  }
 }

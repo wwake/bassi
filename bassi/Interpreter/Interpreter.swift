@@ -62,8 +62,8 @@ class Interpreter {
     case .`if`(let expr, let target):
       return doIfThen(output, expr, target)
 
-    case .assign(_, _):
-      return "Assignment NYI"
+    case .assign(let name, let expr):
+      return doAssign(output, name, expr)
     }
   }
 
@@ -139,6 +139,12 @@ class Interpreter {
     if test != 0.0 {
       lineNumber = target
     }
+    return output
+  }
+
+  fileprivate func doAssign(_ output: String, _ name: String, _ expr: Expression) -> String {
+    let value = evaluate(expr)
+    numericVariables[name] = value
     return output
   }
 }
