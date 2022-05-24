@@ -10,6 +10,31 @@ import XCTest
 
 class ParserTests: XCTestCase {
 
+  func checkExpression(
+    _ expression: String,
+    _ expected: Expression) {
+
+      let input = "10 PRINT \(expression)"
+      let parser = Parser()
+      let result = parser.parse(input)
+      XCTAssertEqual(
+        result,
+        .line(
+          10,
+          .print([expected]))
+      )
+      XCTAssertEqual(parser.errorMessages, [])
+    }
+
+  func checkError(_ program: String, _ expected: ParseError) {
+    let line = program
+    let parser = Parser()
+    _ = parser.parse(line)
+    XCTAssertEqual(
+      parser.errors(),
+      [expected])
+  }
+
   func test10END() throws {
     let line = "10 END"
     let parser = Parser()
@@ -31,12 +56,9 @@ class ParserTests: XCTestCase {
   }
 
   func testNoLineNumber() {
-    let line = "REM remark"
-    let parser = Parser()
-    _ = parser.parse(line)
-    XCTAssertEqual(
-      parser.errors(),
-      [ParseError.noLineNumber])
+    checkError(
+      "REM remark",
+      .noLineNumber)
   }
 
   func testPrintStatement() {
@@ -62,11 +84,10 @@ class ParserTests: XCTestCase {
   }
 
   func testPrintPrintIsError() {
-    let line = "25 PRINT PRINT"
-    let parser = Parser()
-    let _ = parser.parse(line)
-
-    XCTAssertEqual(parser.errorMessages, [ParseError.expectedStartOfExpression])
+    checkError(
+      "25 PRINT PRINT",
+      .expectedStartOfExpression
+    )
   }
 
   func testGoto() throws {
@@ -75,33 +96,17 @@ class ParserTests: XCTestCase {
     let result = parser.parse(line)
     XCTAssertEqual(
       result,
-        .line(
-          10,
-          .goto(10))
-      )
+      .line(
+        10,
+        .goto(10))
+    )
   }
 
   func testGotoWithMissingTarget() throws {
-    let line = "10 GOTO"
-    let parser = Parser()
-    let _ = parser.parse(line)
-    XCTAssertEqual(parser.errorMessages, [ParseError.missingTarget])
-  }
-
-  func checkExpression(
-    _ expression: String,
-    _ expected: Expression) {
-
-      let input = "10 PRINT \(expression)"
-      let parser = Parser()
-      let result = parser.parse(input)
-      XCTAssertEqual(
-        result,
-        .line(
-          10,
-          .print([expected]))
-      )
-      XCTAssertEqual(parser.errorMessages, [])
+    checkError(
+      "10 GOTO",
+      .missingTarget
+    )
   }
 
   func testOrExpr() throws {
@@ -198,25 +203,24 @@ class ParserTests: XCTestCase {
   func testMissingRightParentheses() {
 
     let expression = "(((21)"
-    let input = "10 PRINT \(expression)"
-    let parser = Parser()
-    let _ = parser.parse(input)
-    XCTAssertEqual(parser.errorMessages, [ParseError.missingRightParend])
+    checkError(
+      "10 PRINT \(expression)",
+      .missingRightParend
+    )
   }
 
   func testPrintImproperExpression() {
-    let input = "10 PRINT +"
-    let parser = Parser()
-    let _ = parser.parse(input)
-    XCTAssertEqual(parser.errorMessages, [ParseError.expectedStartOfExpression])
-
+    checkError(
+      "10 PRINT +",
+      .expectedStartOfExpression
+    )
   }
   func testErrorWhenFactorIsNotValid() {
     let expression = "(((*"
-    let input = "10 PRINT \(expression)"
-    let parser = Parser()
-    let _ = parser.parse(input)
-    XCTAssertEqual(parser.errorMessages, [ParseError.expectedStartOfExpression])
+    checkError(
+      "10 PRINT \(expression)",
+      .expectedStartOfExpression
+    )
   }
 
   func testUnaryMinus() throws {
@@ -249,17 +253,17 @@ class ParserTests: XCTestCase {
   }
 
   func testIfMissingThenGetsError() throws {
-    let line = "42 IF 0 PRINT"
-    let parser = Parser()
-    let _ = parser.parse(line)
-    XCTAssertEqual(parser.errorMessages, [ParseError.missingTHEN])
+    checkError(
+      "42 IF 0 PRINT",
+      .missingTHEN
+    )
   }
 
   func testIfThenMissingTargetGetsError() throws {
-    let line = "42 IF 0 THEN"
-    let parser = Parser()
-    let _ = parser.parse(line)
-    XCTAssertEqual(parser.errorMessages, [ParseError.missingTarget])
+    checkError(
+      "42 IF 0 THEN",
+      .missingTarget
+    )
   }
 
   func testAssignmentStatementWithNumber() {
@@ -291,24 +295,16 @@ class ParserTests: XCTestCase {
   }
 
   func testAssignMissingEqualSign() {
-    let line = "42 HUH REMARK"
-    let parser = Parser()
-    _ = parser.parse(line)
-    XCTAssertEqual(
-      parser.errors(),
-      [
-        ParseError.assignmentMissingEqualSign
-      ])
+    checkError(
+      "42 HUH REMARK",
+      .assignmentMissingEqualSign
+    )
   }
 
   func testLETMissingAssignment() {
-    let line = "42 LET"
-    let parser = Parser()
-    _ = parser.parse(line)
-    XCTAssertEqual(
-      parser.errors(),
-      [
-        ParseError.letMissingAssignment
-      ])
+    checkError(
+      "42 LET",
+      ParseError.letMissingAssignment
+    )
   }
 }
