@@ -250,20 +250,30 @@ public class Parser {
 
   func factor() throws -> Expression {
     if token == .leftParend {
-      nextToken()
-
-      let expr = try expression()
-
-      try require(.rightParend, .missingRightParend)
-      nextToken()
-
-      return expr
+      return try parenthesizedExpression()
     } else if case .number(let floatValue) = token {
-      let value = Expression.number(floatValue)
-      nextToken()
-      return value
+      return numericFactor(floatValue)
     } else {
       throw ParseError.expectedStartOfExpression
     }
   }
+
+  fileprivate func parenthesizedExpression() throws -> Expression {
+    nextToken()
+
+    let expr = try expression()
+
+    try require(.rightParend, .missingRightParend)
+    nextToken()
+
+    return expr
+  }
+
+  fileprivate func numericFactor(_ floatValue: (Float)) -> Expression {
+    let value = Expression.number(floatValue)
+    nextToken()
+    return value
+  }
+
+
 }

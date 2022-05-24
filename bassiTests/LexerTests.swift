@@ -64,10 +64,6 @@ class LexerTests: XCTestCase {
     checkToken("REM Comment", .remark)
   }
 
-  func testUnexpectedStatement() {
-    checkToken("WHAT", .error("unrecognized name"))
-  }
-
   func testUnexpectedCharacters() {
     checkToken("😬", .error("not yet implemented"))
   }
