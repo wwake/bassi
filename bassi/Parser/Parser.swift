@@ -111,7 +111,10 @@ public class Parser {
       let value = try expression()
       values.append(value)
 
-    default: break
+    case .eol: break
+
+    default:
+      throw ParseError.expectedStartOfExpression
     }
 
     return Parse.print(values)

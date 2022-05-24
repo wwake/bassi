@@ -215,6 +215,13 @@ class ParserTests: XCTestCase {
     XCTAssertEqual(parser.errorMessages, [ParseError.missingRightParend])
   }
 
+  func testPrintImproperExpression() {
+    let input = "10 PRINT +"
+    let parser = Parser()
+    let _ = parser.parse(input)
+    XCTAssertEqual(parser.errorMessages, [ParseError.expectedStartOfExpression])
+
+  }
   func testErrorWhenFactorIsNotValid() {
     let expression = "(((*"
     let input = "10 PRINT \(expression)"
