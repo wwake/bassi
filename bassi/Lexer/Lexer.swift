@@ -199,6 +199,10 @@ class Lexer : Sequence, IteratorProtocol {
     return .greaterThan
   }
 
+  fileprivate func isDigit() -> Bool {
+    return program[index] >= "0" && program[index] <= "9"
+  }
+
   fileprivate func keywordsAndNames() -> Token? {
     let startingIndex = index
     let value = repeatAny("A", "Z")
@@ -210,7 +214,7 @@ class Lexer : Sequence, IteratorProtocol {
     }
 
     if answer == nil {
-      return Token.error("unrecognized name")
+      return handleVariable()
     }
 
     skipWord(answer!.0)
@@ -219,10 +223,27 @@ class Lexer : Sequence, IteratorProtocol {
     if keyword == .remark {
       ignoreUntil("\n")
     } else if keyword == .then {
-      if program[index] >= "0" && program[index] <= "9" {
+      if isDigit() {
         lookingForLineNumber = true
       }
     }
     return keyword
+  }
+
+  fileprivate func handleVariable() -> Token? {
+    var name: String = String(program[index])
+    index += 1
+
+    if isDigit() {
+      name += String(program[index])
+      index += 1
+    }
+
+    if program[index] == "$" {
+      name += "$"
+      index += 1
+    }
+    
+    return Token.variable(name)
   }
 }
