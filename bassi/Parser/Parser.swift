@@ -16,6 +16,7 @@ enum ParseError: Error {
   case missingTarget
   case missingTHEN
   case assignmentMissingEqualSign
+  case letMissingAssignment
 }
 
 public class Parser {
@@ -88,6 +89,8 @@ public class Parser {
       result = try goto()
     case .ifKeyword:
       result = try ifThen()
+    case .letKeyword:
+      result = try letAssign()
     case .variable(let name):
       result = try assign(name)
     default:
@@ -148,6 +151,15 @@ public class Parser {
     }
 
     throw ParseError.missingTarget
+  }
+
+  func letAssign() throws -> Parse {
+    nextToken()
+
+    if case .variable(let name) = token {
+      return try assign(name)
+    }
+    throw ParseError.letMissingAssignment
   }
 
   func assign(_ name: String) throws -> Parse {

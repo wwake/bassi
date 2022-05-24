@@ -276,6 +276,20 @@ class ParserTests: XCTestCase {
     )
   }
 
+  func testAssignmentStatementWithLET() {
+    let line = "25 LET A = 2"
+    let parser = Parser()
+    let result = parser.parse(line)
+    XCTAssertEqual(
+      result,
+      .line(
+        25,
+        .assign(
+          "A",
+          .number(2.0)))
+    )
+  }
+
   func testAssignMissingEqualSign() {
     let line = "42 HUH REMARK"
     let parser = Parser()
@@ -287,5 +301,14 @@ class ParserTests: XCTestCase {
       ])
   }
 
-
+  func testLETMissingAssignment() {
+    let line = "42 LET"
+    let parser = Parser()
+    _ = parser.parse(line)
+    XCTAssertEqual(
+      parser.errors(),
+      [
+        ParseError.letMissingAssignment
+      ])
+  }
 }
