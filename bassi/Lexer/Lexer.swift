@@ -243,7 +243,7 @@ class Lexer : Sequence, IteratorProtocol {
       name += "$"
       index += 1
     }
-    
+
     return Token.variable(name)
   }
 }

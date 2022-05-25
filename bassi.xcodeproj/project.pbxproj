@@ -27,6 +27,7 @@
 		9192F73D2828B69000FAFFA1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9192F73C2828B69000FAFFA1 /* Preview Assets.xcassets */; };
 		9192F7522828B69000FAFFA1 /* bassiUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9192F7512828B69000FAFFA1 /* bassiUITests.swift */; };
 		9192F7542828B69000FAFFA1 /* bassiUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9192F7532828B69000FAFFA1 /* bassiUITestsLaunchTests.swift */; };
+		91BE90E8283E7CD9004F0CF9 /* ExpressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91BE90E7283E7CD9004F0CF9 /* ExpressionTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +73,7 @@
 		9192F74D2828B69000FAFFA1 /* bassiUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = bassiUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9192F7512828B69000FAFFA1 /* bassiUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bassiUITests.swift; sourceTree = "<group>"; };
 		9192F7532828B69000FAFFA1 /* bassiUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bassiUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		91BE90E7283E7CD9004F0CF9 /* ExpressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -189,6 +191,7 @@
 				9116576728295B970000D3AA /* InterpreterTests.swift */,
 				9130886B282EBADA00E5C62E /* ProgramTests.swift */,
 				9130886D282EC0C300E5C62E /* ReplTests.swift */,
+				91BE90E7283E7CD9004F0CF9 /* ExpressionTests.swift */,
 			);
 			path = bassiTests;
 			sourceTree = "<group>";
@@ -355,6 +358,7 @@
 				9130886C282EBADA00E5C62E /* ProgramTests.swift in Sources */,
 				9116576A28295C2B0000D3AA /* LexerTests.swift in Sources */,
 				9116576828295B970000D3AA /* InterpreterTests.swift in Sources */,
+				91BE90E8283E7CD9004F0CF9 /* ExpressionTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

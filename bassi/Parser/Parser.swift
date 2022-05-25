@@ -17,6 +17,7 @@ enum ParseError: Error {
   case missingTHEN
   case assignmentMissingEqualSign
   case letMissingAssignment
+  case assignmentTypeMismatch
 }
 
 public class Parser {
@@ -91,8 +92,8 @@ public class Parser {
       result = try ifThen()
     case .letKeyword:
       result = try letAssign()
-    case .variable(let name):
-      result = try assign(name)
+    case .variable(_):
+      result = try assign()
     default:
       nextToken()
       throw ParseError.unknownStatement
@@ -156,19 +157,32 @@ public class Parser {
   func letAssign() throws -> Parse {
     nextToken()
 
-    if case .variable(let name) = token {
-      return try assign(name)
+    if case .variable(_) = token {
+      return try assign()
     }
     throw ParseError.letMissingAssignment
   }
 
-  func assign(_ name: String) throws -> Parse {
+  func typeFor(_ name: String) -> `Type` {
+    name.last! == "$" ? .string : .float
+  }
+
+  func assign() throws -> Parse {
+    guard case .variable(let name) = token else {
+      return .skip /*can't happen*/
+    }
+    let leftType = typeFor(name)
     nextToken()
 
     try require(.equals, .assignmentMissingEqualSign)
     nextToken()
 
     let expr = try expression()
+
+    let rightType = expr.type()
+    if leftType != rightType {
+      throw ParseError.assignmentTypeMismatch
+    }
 
     return .assign(name, expr)
   }
@@ -309,6 +323,8 @@ public class Parser {
 
   fileprivate func variable(_ name: String) -> Expression {
     nextToken()
-    return .variable(name)
+    let theType : `Type` =
+    name.last! == "$" ? .string : .float
+    return .variable(name, theType)
   }
 }

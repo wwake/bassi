@@ -19,7 +19,8 @@ class Interpreter {
 
   var lineNumber : Int
   var done = false
-  var numericVariables: [String:Float] = [:]
+
+  var store: [String:Float] = [:]
 
   init(_ program: Program) {
     self.program = program
@@ -96,8 +97,8 @@ class Interpreter {
     case .number(let floatValue):
       return floatValue
 
-    case .variable(let name):
-      return numericVariables[name] ?? 0
+    case .variable(let name, _):
+      return store[name] ?? 0
 
     case .op1(let token, let expr):
       let operand = evaluate(expr)
@@ -144,7 +145,7 @@ class Interpreter {
 
   fileprivate func doAssign(_ output: String, _ name: String, _ expr: Expression) -> String {
     let value = evaluate(expr)
-    numericVariables[name] = value
+    store[name] = value
     return output
   }
 }

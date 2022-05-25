@@ -1,10 +1,10 @@
-* Simple assignment ("LET")
+* Expression Types
+* String expressions
 * Expressions: subscripts
 * Expressions: functions
 * Multiple statements on one line
 * IF relation-expr THEN statements
 * Make running write to an output stream
-* String expressions
 * PRINT with strings
 * PRINT with multiple expressions
    25 PRINT 42 21    -- is legal
@@ -18,6 +18,7 @@ Parameterized tests package?
 BI-22-11: May 24, 2022
 * Expressions: variables
   - Make PRINT more explicit about what's wrong
+* Simple assignment ("LET")
 
 BI-22-10: May 23, 2022
 * END statement
@@ -113,7 +114,9 @@ power -> factor ("^" factor)*
 
 factor -> NUMBER(FLOAT)
 factor -> "(" expression ")"
-factor -> VARIABLE
+factor -> VARIABLE ("(" expression ("," expression)* ")")?
+factor -> FUNCTION-NAME ("(" expression ("," expression)* ")")?
+factor -> FN LETTER ("(" expression ("," expression)* ")")?
 
 Number => [0-9]+("."[0-9]+)?([Ee][+-]?[0-9]+)?
 
@@ -152,3 +155,10 @@ enter code
 SAVE
 LOAD
 NEW
+
+
+type ->
+  integer   (line numbers)
+  number aka float
+  string
+  array [limit] of type

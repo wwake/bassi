@@ -236,7 +236,7 @@ class ParserTests: XCTestCase {
   func testVariable() throws {
     checkExpression(
       "X",
-      .variable("X"))
+      .variable("X", .float))
   }
 
   func testIfThenLineNumber() throws {
@@ -305,6 +305,13 @@ class ParserTests: XCTestCase {
     checkError(
       "42 LET",
       ParseError.letMissingAssignment
+    )
+  }
+
+  func testAssignStringToNumberFails() {
+    checkError(
+      "17 A=B$",
+      .assignmentTypeMismatch
     )
   }
 }
