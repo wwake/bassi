@@ -118,6 +118,7 @@ power -> factor ("^" factor)*
 factor -> NUMBER(FLOAT)
 factor -> "(" expression ")"
 factor -> VARIABLE ("(" expression ("," expression)* ")")?
+factor -> STRING
 factor -> FUNCTION-NAME ("(" expression ("," expression)* ")")?
 factor -> FN LETTER ("(" expression ("," expression)* ")")?
 

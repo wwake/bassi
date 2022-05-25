@@ -19,6 +19,7 @@ indirect enum Parse : Equatable {
 
 indirect enum Expression: Equatable {
   case number(Float)
+  case string(String)
   case variable(String, `Type`)
   case op1(Token, Expression)
   case op2(Token, Expression, Expression)
@@ -27,6 +28,8 @@ indirect enum Expression: Equatable {
     switch self {
     case .number(_):
       return .float
+    case .string(_):
+      return .string
     case .variable(_, let theType):
       return theType
     case .op1(_, _):

@@ -316,4 +316,33 @@ class ParserTests: XCTestCase {
       .assignmentTypeMismatch
     )
   }
+
+  func testStandaloneStringInExpression() {
+    let line = "25 A$ = \"body\""
+    let parser = Parser()
+    let result = parser.parse(line)
+    XCTAssertEqual(
+      result,
+      .line(
+        25,
+        .assign(
+          .variable("A$", .string),
+          .string("body")))
+    )
+    XCTAssertEqual(parser.errorMessages, [])
+  }
+
+  func testPrintString() {
+    let line = "25 PRINT \"body\""
+    let parser = Parser()
+    let result = parser.parse(line)
+    XCTAssertEqual(
+      result,
+      .line(
+        25,
+        .print(
+          [.string("body")]))
+    )
+    XCTAssertEqual(parser.errorMessages, [])
+  }
 }

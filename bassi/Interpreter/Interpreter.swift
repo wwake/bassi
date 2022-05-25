@@ -100,6 +100,9 @@ class Interpreter {
     case .variable(let name, _):
       return store[name] ?? 0
 
+    case .string(_):
+      return -1
+
     case .op1(let token, let expr):
       let operand = evaluate(expr)
       if token == .minus {

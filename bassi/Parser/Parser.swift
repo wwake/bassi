@@ -110,6 +110,7 @@ public class Parser {
     switch token {
     case
         .number(_),
+        .string(_),
         .variable(_),
         .minus,
         .leftParend,
@@ -297,6 +298,9 @@ public class Parser {
       return try parenthesizedExpression()
     } else if case .number(let floatValue) = token {
       return numericFactor(floatValue)
+    } else if case .string(let text) = token {
+      nextToken()
+      return .string(text)
     } else if case .variable(let name) = token {
       return variable(name)
     } else {
