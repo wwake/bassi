@@ -63,8 +63,8 @@ class Interpreter {
     case .`if`(let expr, let target):
       return doIfThen(output, expr, target)
 
-    case .assign(let name, let expr):
-      return doAssign(output, name, expr)
+    case .assign(let variable, let expr):
+      return doAssign(output, variable, expr)
     }
   }
 
@@ -143,8 +143,16 @@ class Interpreter {
     return output
   }
 
-  fileprivate func doAssign(_ output: String, _ name: String, _ expr: Expression) -> String {
+  fileprivate func doAssign(
+    _ output: String,
+    _ lvalue: Expression,
+    _ expr: Expression)
+  -> String {
+    guard case .variable(let name, _) = lvalue else {
+      return "Improper lvalue"
+    }
     let value = evaluate(expr)
+
     store[name] = value
     return output
   }

@@ -14,7 +14,7 @@ indirect enum Parse : Equatable {
   case print([Expression])
   case goto(Int)
   case `if`(Expression, Int)
-  case assign(String, Expression)
+  case assign(Expression, Expression)
 }
 
 indirect enum Expression: Equatable {

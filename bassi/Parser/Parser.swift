@@ -171,8 +171,8 @@ public class Parser {
     guard case .variable(let name) = token else {
       return .skip /*can't happen*/
     }
-    let leftType = typeFor(name)
-    nextToken()
+    let variable = variable(name)
+    let leftType = variable.type()
 
     try require(.equals, .assignmentMissingEqualSign)
     nextToken()
@@ -184,7 +184,7 @@ public class Parser {
       throw ParseError.assignmentTypeMismatch
     }
 
-    return .assign(name, expr)
+    return .assign(variable, expr)
   }
 
   func expression() throws -> Expression {

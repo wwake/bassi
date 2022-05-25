@@ -1,4 +1,3 @@
-* Expression Types
 * String expressions
 * Expressions: subscripts
 * Expressions: functions
@@ -14,6 +13,10 @@
 * Error sync by skipping forward to next line # (or end)
 
 Parameterized tests package?
+
+BI-22-12: May 25, 2022
+* Expression Types
+* Enforced that assignment must have same type on left & right
 
 BI-22-11: May 24, 2022
 * Expressions: variables

@@ -275,9 +275,10 @@ class ParserTests: XCTestCase {
       .line(
         25,
         .assign(
-          "X",
+          .variable("X", .float),
           .number(42.0)))
     )
+    XCTAssertEqual(parser.errorMessages, [])
   }
 
   func testAssignmentStatementWithLET() {
@@ -289,9 +290,10 @@ class ParserTests: XCTestCase {
       .line(
         25,
         .assign(
-          "A",
+          .variable("A", .float),
           .number(2.0)))
     )
+    XCTAssertEqual(parser.errorMessages, [])
   }
 
   func testAssignMissingEqualSign() {
