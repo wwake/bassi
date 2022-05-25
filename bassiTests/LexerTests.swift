@@ -17,6 +17,18 @@ class LexerTests: XCTestCase {
     XCTAssertEqual(token, expected)
   }
 
+  func checkString(_ item: String, _ expected: Token) {
+    let lexer = Lexer("10 PRINT \(item)")
+
+    var token = lexer.next()
+    token = lexer.next()
+
+    token = lexer.next()
+    XCTAssertEqual(token, expected)
+
+    token = lexer.next()
+  }
+
   func testAtEnd() {
     let lexer = Lexer("")
     
@@ -90,6 +102,25 @@ class LexerTests: XCTestCase {
     XCTAssertEqual(token, .atEnd)
   }
 
+  func testStringKnowsItsContents() {
+    checkString("\"body\"", .string("body"))
+  }
+
+  func testUnterminatedStringIsAnError() {
+    checkString("\"body",
+               .error("unterminated string"))
+  }
+
+  func testStringsMayContainBlanks() {
+    checkString(
+      "\"HEllO world\"",
+      .string("HEllO world"))
+  }
+
+  func testNonStringsAreUppercased() {
+    checkToken("prINt", .print)
+  }
+  
   func testSingleCharacterOperators() throws {
     checkToken("+", .plus)
     checkToken("-", .minus)

@@ -16,6 +16,7 @@ enum Token  {
   case integer(Int)
   case number(Float)
   case variable(String)
+  case string(String)
   
   case plus
   case minus

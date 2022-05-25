@@ -64,8 +64,25 @@ class Lexer : Sequence, IteratorProtocol {
   var lookingForLineNumber = true
 
   init(_ program: String) {
-    self.program = program.replacingOccurrences(of:" ", with:"")
-    + "\n"
+    self.program = Lexer.normalize(program)
+  }
+
+  fileprivate static func normalize(_ program: String) -> String {
+    let program2 = program + "\n"
+    let pieces = program2
+      .split(separator:"\"")
+
+    let normalizedPieces =
+      pieces
+      .enumerated()
+      .map { n, piece in
+        n % 2 == 0 ?
+          String(piece).replacingOccurrences(of:" ", with:"")
+          .uppercased()
+        : String("\"" + piece + "\"")
+      }
+
+    return normalizedPieces.joined()
   }
 
   func index(at: Int) ->String.Index {
@@ -111,13 +128,15 @@ class Lexer : Sequence, IteratorProtocol {
       return .eol
 
     case "0"..."9":
-      
       if lookingForLineNumber {
         lookingForLineNumber = false
         return integer()
       } else {
         return number()
       }
+
+    case "\"":
+      return string()
 
     case "+", "-", "*", "/", "^", "=", "(", ")":
       return oneCharacterOperator()
@@ -129,7 +148,6 @@ class Lexer : Sequence, IteratorProtocol {
       return greaterThanOperators()
 
     case "A"..."Z":
-
       return keywordsAndNames()
 
     default:
@@ -166,6 +184,24 @@ class Lexer : Sequence, IteratorProtocol {
     }
 
     return Token.number(Float(value)!)
+  }
+
+  func string() -> Token? {
+    var body = ""
+    index += 1
+
+    while program[index] != "\"" && program[index] != "\n" {
+      body += String(program[index])
+      index += 1
+    }
+
+    if program[index] == "\n" {
+      return .error("unterminated string")
+    }
+
+    index += 1
+
+    return .string(body)
   }
 
   fileprivate func oneCharacterOperator() -> Token? {
