@@ -174,17 +174,13 @@ public class Parser {
       return .skip /*can't happen*/
     }
     let variable = variable(name)
-    let leftType = variable.type()
 
     try require(.equals, .assignmentMissingEqualSign)
     nextToken()
 
     let expr = try expression()
 
-    let rightType = expr.type()
-    if leftType != rightType {
-      throw ParseError.typeMismatch
-    }
+    try requireMatchingTypes(variable, expr)
 
     return .assign(variable, expr)
   }
