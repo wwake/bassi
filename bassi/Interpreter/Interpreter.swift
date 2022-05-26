@@ -8,14 +8,22 @@
 import Foundation
 
 fileprivate func boolToFloat(
-  _ x: Float,
+  _ x: Value,
   _ op: (Float, Float) -> Bool,
-  _ y: Float) -> Float {
-    return op(x, y) ? 1.0 : 0.0
+  _ y: Value) -> Value {
+    return .number(op(x.asFloat(), y.asFloat()) ? 1.0 : 0.0)
   }
 
 enum Value {
   case number(Float)
+
+  func asFloat() -> Float {
+    guard case .number(let value) = self else {
+      print("asFloat() called on non-number")
+      return -1
+    }
+    return value
+  }
 }
 
 class Interpreter {
@@ -72,18 +80,18 @@ class Interpreter {
     }
   }
 
-  let operators1 : [Token : (Float) -> Float] =
+  let operators1 : [Token : (Value) -> Value] =
   [
-    .minus : {-$0},
-    .not : { Float(~Int16($0)) }
+    .minus : {.number(-($0.asFloat()))},
+    .not : { .number(Float(~Int16($0.asFloat()))) }
   ]
 
-  let operators2 : [Token : (Float, Float) -> Float] =
-  [.plus : {$0 + $1},
-   .minus: {$0 - $1},
-   .times: {$0 * $1},
-   .divide: {$0 / $1},
-   .exponent: { pow($0, $1)},
+  let operators2 : [Token : (Value, Value) -> Value] =
+  [.plus : {.number($0.asFloat() + $1.asFloat())},
+   .minus: {.number($0.asFloat() - $1.asFloat())},
+   .times: {.number($0.asFloat() * $1.asFloat())},
+   .divide: {.number($0.asFloat() / $1.asFloat())},
+   .exponent: { .number(pow($0.asFloat(), $1.asFloat()))},
    .equals: { boolToFloat($0, ==, $1)},
    .notEqual: { boolToFloat($0, !=, $1)},
    .lessThan: { boolToFloat($0, <, $1)},
@@ -91,14 +99,14 @@ class Interpreter {
    .greaterThan: { boolToFloat($0, >, $1)},
    .greaterThanOrEqualTo: { boolToFloat($0, >=, $1)},
    .and: {
-     let short1 = Int16($0)
-     let short2 = Int16($1)
-     return Float(short1 & short2)
+     let short1 = Int16($0.asFloat())
+     let short2 = Int16($1.asFloat())
+     return .number(Float(short1 & short2))
    },
    .or: {
-     let short1 = Int16($0)
-     let short2 = Int16($1)
-     return Float(short1 | short2)
+     let short1 = Int16($0.asFloat())
+     let short2 = Int16($1.asFloat())
+     return .number(Float(short1 | short2))
    }
   ]
 
@@ -123,14 +131,14 @@ class Interpreter {
       return Value.number(-1)
 
     case .op1(let token, let expr):
-      let operand = evaluate(expr)
-      return Value.number(operators1[token]!(operand))
+      let operand = evaluate2(expr)
+      return operators1[token]!(operand)
 
     case .op2(let token, let left, let right):
-      let operand1 = evaluate(left)
-      let operand2 = evaluate(right)
+      let operand1 = evaluate2(left)
+      let operand2 = evaluate2(right)
 
-      return Value.number(operators2[token]!(operand1, operand2))
+      return operators2[token]!(operand1, operand2)
     }
   }
 
