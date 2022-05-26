@@ -14,7 +14,7 @@ fileprivate func boolToFloat(
     return .number(op(x.asFloat(), y.asFloat()) ? 1.0 : 0.0)
   }
 
-enum Value {
+enum Value : Equatable {
   case number(Float)
 
   func asFloat() -> Float {
@@ -143,7 +143,7 @@ class Interpreter {
   }
 
   func format(_ value: Expression) -> String {
-    return String(format: "%.0f", evaluate(value))
+    return String(format: "%.0f", evaluate2(value).asFloat())
   }
 
   fileprivate func doPrint(_ output: String, _ values : [Expression]) -> String {
@@ -159,8 +159,8 @@ class Interpreter {
   }
 
   fileprivate func doIfThen(_ output: String, _ expr: Expression, _ target: Int) -> String {
-    let condition = evaluate(expr)
-    if condition != 0.0 {
+    let condition = evaluate2(expr)
+    if condition != .number(0.0) {
       lineNumber = target
     }
     return output

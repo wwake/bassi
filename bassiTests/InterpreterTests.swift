@@ -121,8 +121,8 @@ class InterpreterTests: XCTestCase {
       .minus,
       .number(21.0))
     let interpreter = Interpreter(Program())
-    let output = interpreter.evaluate(expr)
-    XCTAssertEqual(output, -21)
+    let output = interpreter.evaluate2(expr)
+    XCTAssertEqual(output, .number(-21))
   }
 
   func testPrintWithAddition() {

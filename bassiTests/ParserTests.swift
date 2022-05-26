@@ -252,6 +252,13 @@ class ParserTests: XCTestCase {
     XCTAssertEqual(parser.errorMessages, [])
   }
 
+  func testIfMustCheckNumericType() throws {
+    let line = "42 IF A$ THEN 43"
+    let parser = Parser()
+    _ = parser.parse(line)
+    XCTAssertEqual(parser.errorMessages, [.typeMismatch])
+  }
+
   func testIfMissingThenGetsError() throws {
     checkError(
       "42 IF 0 PRINT",

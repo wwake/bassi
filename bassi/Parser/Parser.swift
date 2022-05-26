@@ -143,7 +143,8 @@ public class Parser {
     nextToken()
 
     let expr = try expression()
-
+    try requireFloatType(expr)
+    
     try require(.then, .missingTHEN)
     nextToken()
 
