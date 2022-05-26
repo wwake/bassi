@@ -110,16 +110,7 @@ class Interpreter {
    }
   ]
 
-  func evaluate(_ value: Expression) -> Float {
-    let evaluated = evaluate2(value)
-    guard case .number(let result) = evaluated else {
-      return -99
-    }
-
-    return result
-  }
-
-  func evaluate2(_ value: Expression) -> Value {
+  func evaluate(_ value: Expression) -> Value {
     switch value {
     case .number(let floatValue):
       return Value.number(floatValue)
@@ -131,19 +122,19 @@ class Interpreter {
       return Value.number(-1)
 
     case .op1(let token, let expr):
-      let operand = evaluate2(expr)
+      let operand = evaluate(expr)
       return operators1[token]!(operand)
 
     case .op2(let token, let left, let right):
-      let operand1 = evaluate2(left)
-      let operand2 = evaluate2(right)
+      let operand1 = evaluate(left)
+      let operand2 = evaluate(right)
 
       return operators2[token]!(operand1, operand2)
     }
   }
 
   func format(_ value: Expression) -> String {
-    return String(format: "%.0f", evaluate2(value).asFloat())
+    return String(format: "%.0f", evaluate(value).asFloat())
   }
 
   fileprivate func doPrint(_ output: String, _ values : [Expression]) -> String {
@@ -159,7 +150,7 @@ class Interpreter {
   }
 
   fileprivate func doIfThen(_ output: String, _ expr: Expression, _ target: Int) -> String {
-    let condition = evaluate2(expr)
+    let condition = evaluate(expr)
     if condition != .number(0.0) {
       lineNumber = target
     }
@@ -174,7 +165,7 @@ class Interpreter {
     guard case .variable(let name, _) = lvalue else {
       return "Improper lvalue"
     }
-    let value = evaluate2(expr)
+    let value = evaluate(expr)
 
     store[name] = value
     return output
