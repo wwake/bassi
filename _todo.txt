@@ -1,11 +1,8 @@
-* String expressions
-  - relational operators
 * Expressions: subscripts
 * Expressions: functions
 * Multiple statements on one line
 * IF relation-expr THEN statements
 * Make running write to an output stream
-* PRINT with strings
 * PRINT with multiple expressions
    25 PRINT "A" 4221    -- is legal
 * PRINT with ","
@@ -18,6 +15,9 @@ Parameterized tests package?
 BI-22-13: May 26, 2022
 * Operate on Value rather than Float
 * Print string expressions
+* String expressions
+  - relational operators
+* PRINT with strings
 
 BI-22-12: May 25, 2022
 * Expression Types
