@@ -61,7 +61,8 @@ class Interpreter {
   var lineNumber : Int
   var done = false
 
-  var store: [String:Value] = [:]
+  typealias Store = [String : Value]
+  var store: Store = [:]
 
   init(_ program: Program) {
     self.program = program
@@ -139,7 +140,7 @@ class Interpreter {
    }
   ]
 
-  func evaluate(_ value: Expression) -> Value {
+  func evaluate(_ value: Expression, _ store: Store) -> Value {
     switch value {
     case .number(let floatValue):
       return Value.number(floatValue)
@@ -151,19 +152,19 @@ class Interpreter {
       return Value.string(value)
 
     case .op1(let token, let expr):
-      let operand = evaluate(expr)
+      let operand = evaluate(expr, store)
       return operators1[token]!(operand)
 
     case .op2(let token, let left, let right):
-      let operand1 = evaluate(left)
-      let operand2 = evaluate(right)
+      let operand1 = evaluate(left, store)
+      let operand2 = evaluate(right, store)
 
       return operators2[token]!(operand1, operand2)
     }
   }
 
   func format(_ input: Expression) -> String {
-    let value = evaluate(input)
+    let value = evaluate(input, store)
     switch value {
     case .number(let number):
       return String(format: "%.0f", number)
@@ -186,7 +187,7 @@ class Interpreter {
   }
 
   fileprivate func doIfThen(_ output: String, _ expr: Expression, _ target: Int) -> String {
-    let condition = evaluate(expr)
+    let condition = evaluate(expr, store)
     if condition != .number(0.0) {
       lineNumber = target
     }
@@ -201,7 +202,7 @@ class Interpreter {
     guard case .variable(let name, _) = lvalue else {
       return "Improper lvalue"
     }
-    let value = evaluate(expr)
+    let value = evaluate(expr, store)
 
     store[name] = value
     return output

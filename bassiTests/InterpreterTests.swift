@@ -132,7 +132,7 @@ class InterpreterTests: XCTestCase {
       .minus,
       .number(21.0))
     let interpreter = Interpreter(Program())
-    let output = interpreter.evaluate(expr)
+    let output = interpreter.evaluate(expr, [:])
     XCTAssertEqual(output, .number(-21))
   }
 

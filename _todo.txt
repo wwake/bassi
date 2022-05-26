@@ -1,5 +1,5 @@
-* Expressions: subscripts
 * Expressions: functions
+* Expressions: subscripts
 * Multiple statements on one line
 * IF relation-expr THEN statements
 * Make running write to an output stream
