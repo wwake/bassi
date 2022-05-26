@@ -14,13 +14,17 @@ fileprivate func boolToFloat(
     return op(x, y) ? 1.0 : 0.0
   }
 
+enum Value {
+  case number(Float)
+}
+
 class Interpreter {
   let program: Program
 
   var lineNumber : Int
   var done = false
 
-  var store: [String:Float] = [:]
+  var store: [String:Value] = [:]
 
   init(_ program: Program) {
     self.program = program
@@ -68,7 +72,13 @@ class Interpreter {
     }
   }
 
-  let operators : [Token : (Float, Float) -> Float] =
+  let operators1 : [Token : (Float) -> Float] =
+  [
+    .minus : {-$0},
+    .not : { Float(~Int16($0)) }
+  ]
+
+  let operators2 : [Token : (Float, Float) -> Float] =
   [.plus : {$0 + $1},
    .minus: {$0 - $1},
    .times: {$0 * $1},
@@ -93,32 +103,34 @@ class Interpreter {
   ]
 
   func evaluate(_ value: Expression) -> Float {
+    let evaluated = evaluate2(value)
+    guard case .number(let result) = evaluated else {
+      return -99
+    }
+
+    return result
+  }
+
+  func evaluate2(_ value: Expression) -> Value {
     switch value {
     case .number(let floatValue):
-      return floatValue
+      return Value.number(floatValue)
 
     case .variable(let name, _):
-      return store[name] ?? 0
+      return store[name] ?? Value.number(0)
 
     case .string(_):
-      return -1
+      return Value.number(-1)
 
     case .op1(let token, let expr):
       let operand = evaluate(expr)
-      if token == .minus {
-        return -operand
-      } else if token == .not {
-        let short = Int16(operand)
-        return Float(~short)
-      }
-      print("Can't happen - not a unary operator")
-      return 0
+      return Value.number(operators1[token]!(operand))
 
     case .op2(let token, let left, let right):
       let operand1 = evaluate(left)
       let operand2 = evaluate(right)
 
-      return operators[token]!(operand1, operand2)
+      return Value.number(operators2[token]!(operand1, operand2))
     }
   }
 
@@ -139,8 +151,8 @@ class Interpreter {
   }
 
   fileprivate func doIfThen(_ output: String, _ expr: Expression, _ target: Int) -> String {
-    let test = evaluate(expr)
-    if test != 0.0 {
+    let condition = evaluate(expr)
+    if condition != 0.0 {
       lineNumber = target
     }
     return output
@@ -154,7 +166,7 @@ class Interpreter {
     guard case .variable(let name, _) = lvalue else {
       return "Improper lvalue"
     }
-    let value = evaluate(expr)
+    let value = evaluate2(expr)
 
     store[name] = value
     return output

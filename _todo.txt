@@ -6,7 +6,7 @@
 * Make running write to an output stream
 * PRINT with strings
 * PRINT with multiple expressions
-   25 PRINT 42 21    -- is legal
+   25 PRINT "A" 4221    -- is legal
 * PRINT with ","
 * PRINT with ";"
 * Track line # of error messages
@@ -17,6 +17,7 @@ Parameterized tests package?
 BI-22-12: May 25, 2022
 * Expression Types
 * Enforced that assignment must have same type on left & right
+* Enforced other operators' rules about floating point or matching types
 
 BI-22-11: May 24, 2022
 * Expressions: variables
@@ -41,7 +42,7 @@ BI-22-08: May 19, 2022
    20 PRINT
    30 PRINT 42
 * Make parser check for end of line
-    25 A = 42 21 "HI"  -- error
+    25 A = 42 21 "HI  -- error
     40 PRINT PRINT   -- error
 
 BI-22-07: May 18, 2022

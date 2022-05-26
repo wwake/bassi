@@ -17,7 +17,7 @@ enum ParseError: Error {
   case missingTHEN
   case assignmentMissingEqualSign
   case letMissingAssignment
-  case assignmentTypeMismatch
+  case typeMismatch
 }
 
 public class Parser {
@@ -182,11 +182,33 @@ public class Parser {
 
     let rightType = expr.type()
     if leftType != rightType {
-      throw ParseError.assignmentTypeMismatch
+      throw ParseError.typeMismatch
     }
 
     return .assign(variable, expr)
   }
+
+  fileprivate func requireFloatType(_ expr: Expression) throws {
+    if expr.type() != .float {
+      throw ParseError.typeMismatch
+    }
+  }
+
+  fileprivate func requireFloatTypes(
+    _ left: Expression,
+    _ right: Expression) throws {
+      if left.type() != .float || right.type() != .float {
+        throw ParseError.typeMismatch
+      }
+    }
+
+  fileprivate func requireMatchingTypes(
+    _ left: Expression,
+    _ right: Expression) throws {
+      if left.type() != right.type() {
+        throw ParseError.typeMismatch
+      }
+    }
 
   func expression() throws -> Expression {
     return try orExpr()
@@ -200,6 +222,7 @@ public class Parser {
       nextToken()
 
       let right = try andExpr()
+      try requireFloatTypes(left, right)
 
       left = .op2(op, left, right)
     }
@@ -214,6 +237,7 @@ public class Parser {
       nextToken()
 
       let right = try negation()
+      try requireFloatTypes(left, right)
 
       left = .op2(op, left, right)
     }
@@ -224,6 +248,7 @@ public class Parser {
     if .not == token {
       nextToken()
       let value = try negation()
+      try requireFloatType(value)
       return .op1(.not, value)
     }
 
@@ -239,6 +264,7 @@ public class Parser {
 
       let right = try subexpression()
 
+      try requireMatchingTypes(left, right)
       left = .op2(op, left, right)
     }
 
@@ -254,6 +280,8 @@ public class Parser {
 
       let right = try term()
 
+      try requireFloatTypes(left, right)
+
       left = .op2(op, left, right)
     }
     return left
@@ -268,6 +296,7 @@ public class Parser {
 
       let right = try power()
 
+      try requireFloatTypes(left, right)
       left = .op2(op, left, right)
     }
     return left
@@ -277,6 +306,7 @@ public class Parser {
     if .minus ==  token {
       nextToken()
       let value = try power()
+      try requireFloatType(value)
       return .op1(.minus, value)
     }
     
@@ -288,6 +318,7 @@ public class Parser {
 
       let right = try factor()
 
+      try requireFloatTypes(left, right)
       left = .op2(op, left, right)
     }
     return left

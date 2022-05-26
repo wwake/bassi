@@ -313,7 +313,7 @@ class ParserTests: XCTestCase {
   func testAssignStringToNumberFails() {
     checkError(
       "17 A=B$",
-      .assignmentTypeMismatch
+      .typeMismatch
     )
   }
 
@@ -344,5 +344,27 @@ class ParserTests: XCTestCase {
           [.string("body")]))
     )
     XCTAssertEqual(parser.errorMessages, [])
+  }
+
+  func testStringCantDoArithmetic() {
+    checkError("17 A=-B$", .typeMismatch)
+
+    checkError("17 A=B$^3", .typeMismatch)
+    checkError("17 A=3^B$", .typeMismatch)
+
+    checkError("17 A=B$*C$", .typeMismatch)
+    checkError("17 A=3/B$", .typeMismatch)
+
+    checkError("17 A=B$+C$", .typeMismatch)
+    checkError("17 A=3-B$", .typeMismatch)
+
+    checkError("17 A=NOT B$", .typeMismatch)
+    checkError("17 A=B$ AND 3", .typeMismatch)
+    checkError("17 A=42 OR B$", .typeMismatch)
+  }
+
+  func testRelationalOperatorNeedsSameTypes() {
+    checkError("17 A=B$ < 3", .typeMismatch)
+    checkError("17 A=33=B$", .typeMismatch)
   }
 }
