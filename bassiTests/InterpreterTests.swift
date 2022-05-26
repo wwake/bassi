@@ -289,4 +289,12 @@ class InterpreterTests: XCTestCase {
     let output = interpreter.run()
     XCTAssertEqual(output, "1\n")
   }
+
+  func testStringVariableDefaultsToEmptyString() {
+    let program = Program("25 PRINT A$")
+    let interpreter = Interpreter(program)
+    let output = interpreter.run()
+    XCTAssertEqual(output, "\n")
+  }
+
 }

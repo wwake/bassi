@@ -21,6 +21,18 @@ fileprivate func boolToFloat(
     }
   }
 
+extension `Type` {
+  func defaultValue() -> Value {
+    switch self {
+    case .float:
+      return Value.number(0.0)
+
+    case .string:
+      return Value.string("")
+    }
+  }
+}
+
 enum Value : Equatable {
   case number(Float)
   case string(String)
@@ -40,6 +52,7 @@ enum Value : Equatable {
     }
     return value
   }
+
 }
 
 class Interpreter {
@@ -131,8 +144,8 @@ class Interpreter {
     case .number(let floatValue):
       return Value.number(floatValue)
 
-    case .variable(let name, _):
-      return store[name] ?? Value.number(0)
+    case .variable(let name, let theType):
+      return store[name] ?? theType.defaultValue()
 
     case .string(let value):
       return Value.string(value)
