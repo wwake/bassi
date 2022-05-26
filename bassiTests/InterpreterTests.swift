@@ -55,7 +55,7 @@ class InterpreterTests: XCTestCase {
     XCTAssertEqual(output, "\n")
   }
 
-  func testPrintWithValue() {
+  func testPrintWithNumericValue() {
     let parse =
       Parse.line(
         35,
@@ -64,6 +64,17 @@ class InterpreterTests: XCTestCase {
     let interpreter = Interpreter(Program())
     let output = interpreter.step(parse, "")
     XCTAssertEqual(output, "22\n")
+  }
+
+  func testPrintWithStringValue() {
+    let parse =
+    Parse.line(
+      35,
+      .print([.string("hello")]))
+
+    let interpreter = Interpreter(Program())
+    let output = interpreter.step(parse, "")
+    XCTAssertEqual(output, "hello\n")
   }
 
   func testPowers() {

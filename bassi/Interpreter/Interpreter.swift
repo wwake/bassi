@@ -16,6 +16,7 @@ fileprivate func boolToFloat(
 
 enum Value : Equatable {
   case number(Float)
+  case string(String)
 
   func asFloat() -> Float {
     guard case .number(let value) = self else {
@@ -118,8 +119,8 @@ class Interpreter {
     case .variable(let name, _):
       return store[name] ?? Value.number(0)
 
-    case .string(_):
-      return Value.number(-1)
+    case .string(let value):
+      return Value.string(value)
 
     case .op1(let token, let expr):
       let operand = evaluate(expr)
@@ -133,8 +134,15 @@ class Interpreter {
     }
   }
 
-  func format(_ value: Expression) -> String {
-    return String(format: "%.0f", evaluate(value).asFloat())
+  func format(_ input: Expression) -> String {
+    let value = evaluate(input)
+    switch value {
+    case .number(let number):
+      return String(format: "%.0f", number)
+
+    case .string(let string):
+      return string
+    }
   }
 
   fileprivate func doPrint(_ output: String, _ values : [Expression]) -> String {
