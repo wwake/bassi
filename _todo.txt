@@ -1,4 +1,5 @@
 * String expressions
+  - relational operators
 * Expressions: subscripts
 * Expressions: functions
 * Multiple statements on one line
@@ -13,6 +14,10 @@
 * Error sync by skipping forward to next line # (or end)
 
 Parameterized tests package?
+
+BI-22-13: May 26, 2022
+* Operate on Value rather than Float
+* Print string expressions
 
 BI-22-12: May 25, 2022
 * Expression Types

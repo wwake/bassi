@@ -48,7 +48,7 @@ class InterpreterTests: XCTestCase {
 
   func testSimplePrint() throws {
     let parse =
-      Parse.line(10, Parse.print([]))
+    Parse.line(10, Parse.print([]))
 
     let interpreter = Interpreter(Program())
     let output = interpreter.step(parse, "")
@@ -57,9 +57,9 @@ class InterpreterTests: XCTestCase {
 
   func testPrintWithNumericValue() {
     let parse =
-      Parse.line(
-        35,
-        .print([.number(22.0)]))
+    Parse.line(
+      35,
+      .print([.number(22.0)]))
 
     let interpreter = Interpreter(Program())
     let output = interpreter.step(parse, "")
@@ -104,9 +104,9 @@ class InterpreterTests: XCTestCase {
     )
 
     let parse =
-      Parse.line(
-        40,
-        .print([expression]))
+    Parse.line(
+      40,
+      .print([expression]))
 
     let interpreter = Interpreter(Program())
     let output = interpreter.step(parse, "")
@@ -138,12 +138,12 @@ class InterpreterTests: XCTestCase {
 
   func testPrintWithAddition() {
     let parse =
-      Parse.line(
-        40,
-        .print([
-          Expression.make(1, .plus, 2, .plus, 3)
-        ])
-        )
+    Parse.line(
+      40,
+      .print([
+        Expression.make(1, .plus, 2, .plus, 3)
+      ])
+    )
     
     let interpreter = Interpreter(Program())
     let output = interpreter.step(parse, "")
@@ -152,11 +152,11 @@ class InterpreterTests: XCTestCase {
 
   func testPrintWithSubtraction() {
     let parse =
-      Parse.line(
-        40,
-        .print([
-          Expression.make(1, .minus, 2, .minus, 3)
-        ]))
+    Parse.line(
+      40,
+      .print([
+        Expression.make(1, .minus, 2, .minus, 3)
+      ]))
 
     let interpreter = Interpreter(Program())
     let output = interpreter.step(parse, "")
@@ -165,11 +165,11 @@ class InterpreterTests: XCTestCase {
 
   func testPrintWithMultiplyDivide() {
     let parse =
-      Parse.line(
-        40,
-        .print([
-          Expression.make(1, .times, 6, .divide, 3)
-        ]))
+    Parse.line(
+      40,
+      .print([
+        Expression.make(1, .times, 6, .divide, 3)
+      ]))
 
     let interpreter = Interpreter(Program())
     let output = interpreter.step(parse, "")
@@ -178,11 +178,11 @@ class InterpreterTests: XCTestCase {
 
   fileprivate func checkPrintWithRelop(_ op: Token, _ expected: Int) {
     let parse =
-      Parse.line(
-        40,
-        .print([
-          Expression.make(10, op, 10)
-        ]))
+    Parse.line(
+      40,
+      .print([
+        Expression.make(10, op, 10)
+      ]))
 
     let interpreter = Interpreter(Program())
     let output = interpreter.step(parse, "")
@@ -194,7 +194,7 @@ class InterpreterTests: XCTestCase {
     _ op2ExpectedFalse: Token) {
       checkPrintWithRelop(op1ExpectedTrue, 1)
       checkPrintWithRelop(op2ExpectedFalse, 0)
-  }
+    }
 
   func testPrintWithEqualityComparison() {
     checkRelop(.equals, .notEqual)
@@ -204,9 +204,9 @@ class InterpreterTests: XCTestCase {
 
   func test10Goto10() {
     let parse =
-      Parse.line(
-        10,
-        .goto(10))
+    Parse.line(
+      10,
+      .goto(10))
 
     let interpreter = Interpreter(Program("10 GOTO 10"))
 
@@ -219,9 +219,9 @@ class InterpreterTests: XCTestCase {
 
   func testStepWillEvenGotoMissingLine() {
     let parse =
-      Parse.line(
-        10,
-        .goto(20))
+    Parse.line(
+      10,
+      .goto(20))
 
     let interpreter = Interpreter(Program())
 
@@ -281,5 +281,12 @@ class InterpreterTests: XCTestCase {
     let interpreter = Interpreter(program)
     let output = interpreter.run()
     XCTAssertEqual(output, "42\n")
+  }
+
+  func testStringRelationalOperator() {
+    let program = Program("25 PRINT \"A\"<\"B\"")
+    let interpreter = Interpreter(program)
+    let output = interpreter.run()
+    XCTAssertEqual(output, "1\n")
   }
 }

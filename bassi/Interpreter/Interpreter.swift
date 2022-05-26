@@ -9,9 +9,16 @@ import Foundation
 
 fileprivate func boolToFloat(
   _ x: Value,
-  _ op: (Float, Float) -> Bool,
+  _ opFloat: (Float, Float) -> Bool,
+  _ opString: (String, String) -> Bool,
   _ y: Value) -> Value {
-    return .number(op(x.asFloat(), y.asFloat()) ? 1.0 : 0.0)
+    switch x {
+    case .number(let number):
+      return .number(opFloat(number, y.asFloat()) ? 1.0 : 0.0)
+    case .string(let string):
+        return .number(opString(string, y.asString()) ? 1.0 : 0.0)
+
+    }
   }
 
 enum Value : Equatable {
@@ -22,6 +29,14 @@ enum Value : Equatable {
     guard case .number(let value) = self else {
       print("asFloat() called on non-number")
       return -1
+    }
+    return value
+  }
+
+  func asString() -> String {
+    guard case .string(let value) = self else {
+      print("asString() called on non-string")
+      return "???"
     }
     return value
   }
@@ -93,12 +108,12 @@ class Interpreter {
    .times: {.number($0.asFloat() * $1.asFloat())},
    .divide: {.number($0.asFloat() / $1.asFloat())},
    .exponent: { .number(pow($0.asFloat(), $1.asFloat()))},
-   .equals: { boolToFloat($0, ==, $1)},
-   .notEqual: { boolToFloat($0, !=, $1)},
-   .lessThan: { boolToFloat($0, <, $1)},
-   .lessThanOrEqualTo: { boolToFloat($0, <=, $1)},
-   .greaterThan: { boolToFloat($0, >, $1)},
-   .greaterThanOrEqualTo: { boolToFloat($0, >=, $1)},
+   .equals: { boolToFloat($0, ==, ==, $1)},
+   .notEqual: { boolToFloat($0, !=, !=, $1)},
+   .lessThan: { boolToFloat($0, <, <, $1)},
+   .lessThanOrEqualTo: { boolToFloat($0, <=, <=, $1)},
+   .greaterThan: { boolToFloat($0, >, >,  $1)},
+   .greaterThanOrEqualTo: { boolToFloat($0, >=, >=, $1)},
    .and: {
      let short1 = Int16($0.asFloat())
      let short2 = Int16($1.asFloat())
