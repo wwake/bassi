@@ -9,6 +9,30 @@ import XCTest
 @testable import bassi
 
 class ParserTests: XCTestCase {
+  func checkError(
+    _ program: String,
+    _ expected: ParseError)
+  {
+    let line = program
+    let parser = Parser()
+    _ = parser.parse(line)
+    XCTAssertEqual(
+      parser.errors(),
+      [expected])
+  }
+
+  func checkParsing(
+    _ program: String,
+    _ expected: Parse)
+  {
+    let parser = Parser()
+    let result = parser.parse(program)
+    XCTAssertEqual(
+      result,
+      expected
+    )
+    XCTAssertEqual(parser.errorMessages, [])
+  }
 
   func checkExpression(
     _ expression: String,
@@ -26,13 +50,11 @@ class ParserTests: XCTestCase {
       XCTAssertEqual(parser.errorMessages, [])
     }
 
-  func checkError(_ program: String, _ expected: ParseError) {
-    let line = program
-    let parser = Parser()
-    _ = parser.parse(line)
-    XCTAssertEqual(
-      parser.errors(),
-      [expected])
+  func checkRelational(_ relation: String, _ token: Token) throws {
+    checkExpression(
+      "1" + relation + "2",
+      Expression.make(1, token, 2)
+    )
   }
 
   func test10END() throws {
@@ -133,13 +155,6 @@ class ParserTests: XCTestCase {
     checkExpression(
       "NOT 2 < 3",
       Expression.make(.not, 2, .lessThan, 3)
-    )
-  }
-
-  func checkRelational(_ relation: String, _ token: Token) throws {
-    checkExpression(
-      "1" + relation + "2",
-      Expression.make(1, token, 2)
     )
   }
 
@@ -274,33 +289,25 @@ class ParserTests: XCTestCase {
   }
 
   func testAssignmentStatementWithNumber() {
-    let line = "25 X = 42"
-    let parser = Parser()
-    let result = parser.parse(line)
-    XCTAssertEqual(
-      result,
+    checkParsing(
+      "25 X = 42",
       .line(
         25,
         .assign(
           .variable("X", .float),
           .number(42.0)))
     )
-    XCTAssertEqual(parser.errorMessages, [])
   }
 
   func testAssignmentStatementWithLET() {
-    let line = "25 LET A = 2"
-    let parser = Parser()
-    let result = parser.parse(line)
-    XCTAssertEqual(
-      result,
+    checkParsing(
+      "25 LET A = 2",
       .line(
         25,
         .assign(
           .variable("A", .float),
           .number(2.0)))
     )
-    XCTAssertEqual(parser.errorMessages, [])
   }
 
   func testAssignMissingEqualSign() {
@@ -325,32 +332,24 @@ class ParserTests: XCTestCase {
   }
 
   func testStandaloneStringInExpression() {
-    let line = "25 A$ = \"body\""
-    let parser = Parser()
-    let result = parser.parse(line)
-    XCTAssertEqual(
-      result,
+    checkParsing(
+      "25 A$ = \"body\"",
       .line(
         25,
         .assign(
           .variable("A$", .string),
           .string("body")))
     )
-    XCTAssertEqual(parser.errorMessages, [])
   }
 
   func testPrintString() {
-    let line = "25 PRINT \"body\""
-    let parser = Parser()
-    let result = parser.parse(line)
-    XCTAssertEqual(
-      result,
+    checkParsing(
+      "25 PRINT \"body\"",
       .line(
         25,
         .print(
           [.string("body")]))
     )
-    XCTAssertEqual(parser.errorMessages, [])
   }
 
   func testStringCantDoArithmetic() {
@@ -376,11 +375,8 @@ class ParserTests: XCTestCase {
   }
 
   func testDefDefinesHelperFunctions() {
-    let line = "25 DEF FNI(x)=x"
-    let parser = Parser()
-    let result = parser.parse(line)
-    XCTAssertEqual(
-      result,
+    checkParsing(
+      "25 DEF FNI(x)=x",
       .line(
         25,
         .def(
@@ -388,19 +384,29 @@ class ParserTests: XCTestCase {
           "X",
           .variable("X", .float)
         )
-        )
       )
-    XCTAssertEqual(parser.errorMessages, [])
+    )
   }
 
   func testDefErrorMessages() {
     checkError("17 DEF F(X)=X", .DEFfunctionMustStartWithFn)
     checkError("17 DEF FN(x)=X", .DEFrequiresVariableAfterFn)
     checkError("17 DEF FNX9(x)=X", .DEFfunctionNameMustBeFnFollowedBySingleLetter)
-    checkError("17 DEF FNI x)=X", .DEFrequiresLeftParendBeforeParameter)
+    checkError("17 DEF FNI x)=X", .missingLeftParend)
     checkError("17 DEF FNZ()=X", .DEFrequiresParameterVariable)
     checkError("17 DEF FNA(x=X", .DEFrequiresRightParendAfterParameter)
     checkError("17 DEF FNP(x) -> X", .DEFrequiresEqualAfterParameter)
   }
 
+  func testPredefinedFunction() {
+    checkParsing(
+      "25 PRINT SQR(4)",
+      .line(
+        25,
+        .print(
+          [.predefined("SQR", .number(4))]
+        )
+      )
+    )
+  }
 }

@@ -57,6 +57,8 @@ class Lexer : Sequence, IteratorProtocol {
     "RETURN": .returnKeyword,
     "STOP": .stop,
     "THEN": .then,
+
+    "SQR": .predefined("SQR")
   ]
 
   let program: String

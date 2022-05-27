@@ -1,4 +1,8 @@
-* Expressions: functions
+* Expressions: function calls
+* Expressions: pre-defined numeric functions
+* DEF: user-defined functions
+  + Interpret (save the value) - not done
+* Expression: pre-defined string functions
 * In Parser, require() should consume token
 * Expressions: subscripts
 * Multiple statements on one line
@@ -17,6 +21,11 @@
 * Error sync by skipping forward to next line # (or end)
 
 Parameterized tests package?
+
+BI-22-14: May 27, 2022
+* DEF: user-defined functions
+  + Parse (done)
+
 
 BI-22-13: May 26, 2022
 * Operate on Value rather than Float
@@ -132,7 +141,7 @@ factor -> NUMBER(FLOAT)
 factor -> "(" expression ")"
 factor -> VARIABLE ("(" expression ("," expression)* ")")?
 factor -> STRING
-factor -> FUNCTION-NAME ("(" expression ("," expression)* ")")?
+factor -> PREDEFINED "(" expression ("," expression)* ")"
 factor -> FN LETTER ("(" expression ("," expression)* ")")?
 
 Number => [0-9]+("."[0-9]+)?([Ee][+-]?[0-9]+)?

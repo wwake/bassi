@@ -11,6 +11,8 @@ enum ParseError: Error {
   case notYetImplemented
   case noLineNumber
   case unknownStatement
+
+  case missingLeftParend
   case missingRightParend
   case expectedStartOfExpression
   case extraCharactersAtEol
@@ -23,7 +25,6 @@ enum ParseError: Error {
   case DEFfunctionMustStartWithFn
   case DEFrequiresVariableAfterFn
   case DEFfunctionNameMustBeFnFollowedBySingleLetter
-  case DEFrequiresLeftParendBeforeParameter
   case DEFrequiresParameterVariable
   case DEFrequiresRightParendAfterParameter
   case DEFrequiresEqualAfterParameter
@@ -114,27 +115,16 @@ public class Parser {
   }
 
   func printStatement() throws -> Parse {
-    var values: [Expression] = []
-
     nextToken()
 
-    switch token {
-    case
-        .number(_),
-        .string(_),
-        .variable(_),
-        .minus,
-        .leftParend,
-        .not:
-
-      let value = try expression()
-      values.append(value)
-
-    case .eol: break
-
-    default:
-      throw ParseError.expectedStartOfExpression
+    if token == .eol {
+      return Parse.print([])
     }
+
+    var values: [Expression] = []
+
+    let value = try expression()
+    values.append(value)
 
     return Parse.print(values)
   }
@@ -211,7 +201,7 @@ public class Parser {
       throw ParseError.DEFfunctionNameMustBeFnFollowedBySingleLetter
     }
 
-    try require(.leftParend, .DEFrequiresLeftParendBeforeParameter)
+    try require(.leftParend, .missingLeftParend)
     nextToken()
 
     guard case .variable(let parameter) = token else {
@@ -376,6 +366,8 @@ public class Parser {
       return .string(text)
     } else if case .variable(let name) = token {
       return variable(name)
+    } else if case .predefined(let name) = token {
+      return try predefinedFunctionCall(name)
     } else {
       throw ParseError.expectedStartOfExpression
     }
@@ -403,5 +395,19 @@ public class Parser {
     let theType : `Type` =
     name.last! == "$" ? .string : .float
     return .variable(name, theType)
+  }
+
+  fileprivate func predefinedFunctionCall(_ name: String) throws -> Expression  {
+    nextToken()
+
+    try require(.leftParend, .missingLeftParend)
+    nextToken()
+
+    let expr = try expression()
+
+    try require(.rightParend, .missingRightParend)
+    nextToken()
+
+    return .predefined(name, expr)
   }
 }

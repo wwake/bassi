@@ -230,4 +230,8 @@ class LexerTests: XCTestCase {
   func testReservedWordFn() {
     checkToken("FNA(X)", Token.fn)
   }
+
+  func testFunctionCallWithSqr() {
+    checkToken("SQR(4)", Token.predefined("SQR"))
+  }
 }

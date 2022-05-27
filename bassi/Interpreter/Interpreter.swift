@@ -154,6 +154,9 @@ class Interpreter {
     case .string(let value):
       return Value.string(value)
 
+    case .predefined(_,_):
+      return Value.number(-99)
+
     case .op1(let token, let expr):
       let operand = evaluate(expr, store)
       return operators1[token]!(operand)

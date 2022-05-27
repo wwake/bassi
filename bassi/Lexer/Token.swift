@@ -63,6 +63,8 @@ enum Token  {
   case returnKeyword
   case stop
   case then
+
+  case predefined(String)
 }
 
 extension Token : Equatable {
