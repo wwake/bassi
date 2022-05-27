@@ -48,6 +48,6 @@ indirect enum Expression: Equatable {
 indirect enum `Type` : Equatable {
   case float
   case string
-//  case array(Int, `Type`)
-//  case function([`Type`], `Type`)
+  case function([`Type`], `Type`)
+  //  case array(Int, `Type`)
 }

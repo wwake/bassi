@@ -17,6 +17,8 @@ fileprivate func boolToFloat(
       return .number(opFloat(number, y.asFloat()) ? 1.0 : 0.0)
     case .string(let string):
         return .number(opString(string, y.asString()) ? 1.0 : 0.0)
+    case .function:
+      return .number(0.0)
     }
   }
 
@@ -28,13 +30,30 @@ extension `Type` {
 
     case .string:
       return Value.string("")
+
+    case .function(_, _):
+      return Value.number(0.0)
     }
   }
 }
 
 enum Value : Equatable {
+  static func == (lhs: Value, rhs: Value) -> Bool {
+    switch (lhs, rhs) {
+    case (.number(let float1), .number(let float2)):
+      return float1 == float2
+
+    case (.string(let string1), .string(let string2)):
+      return string1 == string2
+
+    default:
+      return false
+    }
+  }
+
   case number(Float)
   case string(String)
+  case function(([Value]) -> Value)
 
   func asFloat() -> Float {
     guard case .number(let value) = self else {
@@ -52,6 +71,72 @@ enum Value : Equatable {
     return value
   }
 
+  func apply(_ args: [Value]) -> Value {
+    guard case .function(let fn) = self else {
+      print("apply() called on non-function")
+      return Value.string("???")
+    }
+
+    return fn(args)
+  }
+}
+
+fileprivate func Fn2n(
+   _ fn: @escaping (Float) -> Float)
+        -> (([Value]) -> Value)
+{
+  return { args in
+    Value.number(
+      fn(args[0].asFloat())
+    )
+  }
+}
+
+fileprivate func Fn2s(
+  _ fn: @escaping (Float) -> String)
+-> (([Value]) -> Value)
+{
+  return { args in
+    Value.string(
+      fn(args[0].asFloat())
+    )
+  }
+}
+
+fileprivate func Fs2n(
+  _ fn: @escaping (String) -> Float)
+-> (([Value]) -> Value)
+{
+  return { args in
+    Value.number(
+      fn(args[0].asString())
+    )
+  }
+}
+
+fileprivate func Fsn2s(
+  _ fn: @escaping (String, Float) -> String)
+-> (([Value]) -> Value)
+{
+  return { args in
+    Value.string(
+      fn(args[0].asString(),
+         args[1].asFloat())
+    )
+  }
+}
+
+fileprivate func Fsnn2s(
+  _ fn: @escaping (String, Float, Float) -> String)
+-> (([Value]) -> Value)
+{
+  return { args in
+    Value.string(
+      fn(args[0].asString(),
+         args[1].asFloat(),
+         args[2].asFloat())
+    )
+  }
 }
 
 class Interpreter {
@@ -66,7 +151,12 @@ class Interpreter {
   init(_ program: Program) {
     self.program = program
     lineNumber = program.firstLineNumber()
-  }
+
+    store["LEN"] = Value.function(Fs2n({Float($0.count)}))
+    store["SQR"] = Value.function(Fn2n(sqrt))
+    store["SIN"] = Value.function(Fn2n(sin))
+
+ }
 
   func run() -> String {
     var output = ""
@@ -154,8 +244,11 @@ class Interpreter {
     case .string(let value):
       return Value.string(value)
 
-    case .predefined(_,_):
-      return Value.number(-99)
+    case .predefined(let name, let expr):
+      let function = store[name]!
+      let operand = evaluate(expr, store)
+
+      return function.apply([operand])
 
     case .op1(let token, let expr):
       let operand = evaluate(expr, store)
@@ -177,6 +270,9 @@ class Interpreter {
 
     case .string(let string):
       return string
+
+    case .function:
+      return "<FUNCTION>"
     }
   }
 

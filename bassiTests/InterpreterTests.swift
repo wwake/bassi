@@ -297,5 +297,30 @@ class InterpreterTests: XCTestCase {
     XCTAssertEqual(output, "\n")
   }
 
-  
+  func testCallSqr() {
+    let program = Program("25 PRINT SQR(4)")
+    let interpreter = Interpreter(program)
+    let output = interpreter.run()
+    XCTAssertEqual(output, "2\n")
+  }
+
+  func testCallSin() {
+    let program = Program("25 PRINT SIN(0)")
+    let interpreter = Interpreter(program)
+    let output = interpreter.run()
+    XCTAssertEqual(output, "0\n")
+  }
+
+  func testCallLen() {
+    let program = Program("25 PRINT LEN(\"ABC\")")
+    let interpreter = Interpreter(program)
+    let output = interpreter.run()
+    XCTAssertEqual(output, "3\n")
+  }
+
+  func testTypeDefaultValueForFunctionIs0() {
+    XCTAssertEqual(
+      Type.function([.float], .float).defaultValue(),
+      Value.number(0))
+  }
 }

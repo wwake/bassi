@@ -58,7 +58,34 @@ class Lexer : Sequence, IteratorProtocol {
     "STOP": .stop,
     "THEN": .then,
 
-    "SQR": .predefined("SQR")
+    "ABS": .predefined("ABS"),
+    "ASC": .predefined("ASC"),
+    "ATN": .predefined("ATN"),
+    "CHR$": .predefined("CHR$"),
+    "COS": .predefined("COS"),
+
+    "EXP": .predefined("EXP"),
+    "FRE": .predefined("FRE"),
+    "INT": .predefined("INT"),
+    "LEFT$": .predefined("LEFT$"),
+    "LEN": .predefined("LEN"),
+    "LOG": .predefined("LOG"),
+
+    "MID$": .predefined("MID$"),
+    "POS": .predefined("POS"),
+    "RIGHT$": .predefined("RIGHT$"),
+    "RND": .predefined("RND"),
+
+    "SGN": .predefined("SGN"),
+    "SIN": .predefined("SIN"),
+    "SPC": .predefined("SPC"),
+    "SQR": .predefined("SQR"),
+    "STR$": .predefined("STR$"),
+
+    "TAB": .predefined("TAB"),
+    "TAN": .predefined("TAN"),
+    "USR": .predefined("URS"),
+    "VAL": .predefined("VAL"),
   ]
 
   let program: String
