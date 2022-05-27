@@ -58,21 +58,14 @@ class ParserTests: XCTestCase {
   }
 
   func test10END() throws {
-    let line = "10 END"
-    let parser = Parser()
-    let result = parser.parse(line)
-    XCTAssertEqual(
-      result,
+    checkParsing(
+      "10 END",
       .line(10, .end))
   }
 
   func test10REM() throws {
-    let line = "10 REM whatever"
-    let parser = Parser()
-
-    let result = parser.parse(line)
-    XCTAssertEqual(
-      result,
+    checkParsing(
+      "10 REM whatever",
       .line(10, .skip)
     )
   }
@@ -84,21 +77,15 @@ class ParserTests: XCTestCase {
   }
 
   func testPrintStatement() {
-    let line = "25 PRINT"
-    let parser = Parser()
-    let result = parser.parse(line)
-    XCTAssertEqual(
-      result,
+    checkParsing(
+      "25 PRINT",
       .line(25, .print([]))
     )
   }
 
   func testPrintStatementWithNumber() {
-    let line = "25 PRINT 42"
-    let parser = Parser()
-    let result = parser.parse(line)
-    XCTAssertEqual(
-      result,
+    checkParsing(
+      "25 PRINT 42",
       .line(
         25,
         .print([.number(42.0)]))
@@ -113,11 +100,8 @@ class ParserTests: XCTestCase {
   }
 
   func testGoto() throws {
-    let line = "10 GOTO 10"
-    let parser = Parser()
-    let result = parser.parse(line)
-    XCTAssertEqual(
-      result,
+    checkParsing(
+      "10 GOTO 10",
       .line(
         10,
         .goto(10))
@@ -255,23 +239,18 @@ class ParserTests: XCTestCase {
   }
 
   func testIfThenLineNumber() throws {
-    let line = "42 IF 0 THEN 43"
-    let parser = Parser()
-    let result = parser.parse(line)
-    XCTAssertEqual(
-      result,
+    checkParsing(
+      "42 IF 0 THEN 43",
       .line(
         42,
         .`if`(.number(0), 43))
     )
-    XCTAssertEqual(parser.errorMessages, [])
   }
 
   func testIfMustCheckNumericType() throws {
-    let line = "42 IF A$ THEN 43"
-    let parser = Parser()
-    _ = parser.parse(line)
-    XCTAssertEqual(parser.errorMessages, [.typeMismatch])
+    checkError(
+      "42 IF A$ THEN 43",
+      .typeMismatch)
   }
 
   func testIfMissingThenGetsError() throws {
