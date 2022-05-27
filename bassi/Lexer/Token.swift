@@ -41,6 +41,7 @@ enum Token  {
   case dim
 
   case end
+  case fn
   case forKeyword
   case goto
   case gosub

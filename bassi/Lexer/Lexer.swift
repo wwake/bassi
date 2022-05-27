@@ -35,6 +35,7 @@ class Lexer : Sequence, IteratorProtocol {
     "DEF": .def,
     
     "END": .end,
+    "FN": .fn,
     "FOR": .forKeyword,
     "GOTO": .goto,
     "GOSUB": .gosub,

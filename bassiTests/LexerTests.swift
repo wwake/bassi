@@ -226,4 +226,8 @@ class LexerTests: XCTestCase {
 
     XCTAssertEqual(token1, .variable("M0$"))
   }
+
+  func testReservedWordFn() {
+    checkToken("FNA(X)", Token.fn)
+  }
 }

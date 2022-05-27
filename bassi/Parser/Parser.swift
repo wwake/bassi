@@ -8,6 +8,7 @@
 import Foundation
 
 enum ParseError: Error {
+  case notYetImplemented
   case noLineNumber
   case unknownStatement
   case missingRightParend
@@ -18,6 +19,14 @@ enum ParseError: Error {
   case assignmentMissingEqualSign
   case letMissingAssignment
   case typeMismatch
+
+  case DEFfunctionMustStartWithFn
+  case DEFrequiresVariableAfterFn
+  case DEFfunctionNameMustBeFnFollowedBySingleLetter
+  case DEFrequiresLeftParendBeforeParameter
+  case DEFrequiresParameterVariable
+  case DEFrequiresRightParendAfterParameter
+  case DEFrequiresEqualAfterParameter
 }
 
 public class Parser {
@@ -94,6 +103,8 @@ public class Parser {
       result = try letAssign()
     case .variable(_):
       result = try assign()
+    case .def:
+      result = try define()
     default:
       nextToken()
       throw ParseError.unknownStatement
@@ -183,6 +194,40 @@ public class Parser {
     try requireMatchingTypes(variable, expr)
 
     return .assign(variable, expr)
+  }
+
+  func define() throws -> Parse {
+    nextToken()
+
+    try require(.fn, .DEFfunctionMustStartWithFn)
+    nextToken()
+
+    guard case .variable(let name) = token else {
+      throw ParseError.DEFrequiresVariableAfterFn
+    }
+    nextToken()
+
+    if name.count != 1 {
+      throw ParseError.DEFfunctionNameMustBeFnFollowedBySingleLetter
+    }
+
+    try require(.leftParend, .DEFrequiresLeftParendBeforeParameter)
+    nextToken()
+
+    guard case .variable(let parameter) = token else {
+      throw ParseError.DEFrequiresParameterVariable
+    }
+    nextToken()
+
+    try require(.rightParend, .DEFrequiresRightParendAfterParameter)
+    nextToken()
+
+    try require(.equals, .DEFrequiresEqualAfterParameter)
+    nextToken()
+
+    let expr = try expression()
+
+    return .def("FN"+name, parameter, expr)
   }
 
   fileprivate func requireFloatType(_ expr: Expression) throws {

@@ -374,4 +374,33 @@ class ParserTests: XCTestCase {
     checkError("17 A=B$ < 3", .typeMismatch)
     checkError("17 A=33=B$", .typeMismatch)
   }
+
+  func testDefDefinesHelperFunctions() {
+    let line = "25 DEF FNI(x)=x"
+    let parser = Parser()
+    let result = parser.parse(line)
+    XCTAssertEqual(
+      result,
+      .line(
+        25,
+        .def(
+          "FNI",
+          "X",
+          .variable("X", .float)
+        )
+        )
+      )
+    XCTAssertEqual(parser.errorMessages, [])
+  }
+
+  func testDefErrorMessages() {
+    checkError("17 DEF F(X)=X", .DEFfunctionMustStartWithFn)
+    checkError("17 DEF FN(x)=X", .DEFrequiresVariableAfterFn)
+    checkError("17 DEF FNX9(x)=X", .DEFfunctionNameMustBeFnFollowedBySingleLetter)
+    checkError("17 DEF FNI x)=X", .DEFrequiresLeftParendBeforeParameter)
+    checkError("17 DEF FNZ()=X", .DEFrequiresParameterVariable)
+    checkError("17 DEF FNA(x=X", .DEFrequiresRightParendAfterParameter)
+    checkError("17 DEF FNP(x) -> X", .DEFrequiresEqualAfterParameter)
+  }
+
 }

@@ -17,7 +17,6 @@ fileprivate func boolToFloat(
       return .number(opFloat(number, y.asFloat()) ? 1.0 : 0.0)
     case .string(let string):
         return .number(opString(string, y.asString()) ? 1.0 : 0.0)
-
     }
   }
 
@@ -107,8 +106,12 @@ class Interpreter {
 
     case .assign(let variable, let expr):
       return doAssign(output, variable, expr)
+
+    case .def(_, _, _):
+      return "DEF NYI"
     }
   }
+
 
   let operators1 : [Token : (Value) -> Value] =
   [
