@@ -321,6 +321,6 @@ class InterpreterTests: XCTestCase {
   func testTypeDefaultValueForFunctionIs0() {
     XCTAssertEqual(
       Type.function([.float], .float).defaultValue(),
-      Value.number(0))
+      Value.string("Undefined function"))
   }
 }

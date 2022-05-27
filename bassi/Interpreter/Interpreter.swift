@@ -32,7 +32,7 @@ extension `Type` {
       return Value.string("")
 
     case .function(_, _):
-      return Value.number(0.0)
+      return Value.string("Undefined function")
     }
   }
 }
