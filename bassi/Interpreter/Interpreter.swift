@@ -143,22 +143,10 @@ class Interpreter {
       return Value.string(value)
 
     case .predefined(let name, let expr):
-      let function = store[name]!
-      let operand = evaluate(expr, store)
-
-      return function.apply([operand])
+      return callPredefinedFunction(store, name, expr)
 
     case .userdefined(let name, let expr):
-      let operand = evaluate(expr, store)
-
-      guard case .userFunction(let parameter, let definition) = store[name]! else {
-        return .string("?? Internal error - function not found")
-      }
-
-      var locals = globals
-      locals[parameter] = operand
-
-      return evaluate(definition, locals)
+      return callUserDefinedFunction(store, name, expr)
       
     case .op1(let token, let expr):
       let operand = evaluate(expr, store)
@@ -170,6 +158,26 @@ class Interpreter {
 
       return operators2[token]!(operand1, operand2)
     }
+  }
+
+  fileprivate func callPredefinedFunction(_ store: Interpreter.Store, _ name: String, _ expr: Expression) -> Value {
+    let function = store[name]!
+    let operand = evaluate(expr, store)
+
+    return function.apply([operand])
+  }
+
+  fileprivate func callUserDefinedFunction(_ store: Interpreter.Store, _ name: String, _ expr: Expression) -> Value {
+    let operand = evaluate(expr, store)
+
+    guard case .userFunction(let parameter, let definition) = store[name]! else {
+      return .string("?? Internal error - function not found")
+    }
+
+    var locals = globals
+    locals[parameter] = operand
+
+    return evaluate(definition, locals)
   }
 
   func format(_ input: Expression) -> String {

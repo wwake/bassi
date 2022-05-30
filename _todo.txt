@@ -1,9 +1,7 @@
-* Expressions: function calls
-* DEF: user-defined functions
-  + Interpret (save the value) - not done
 * Handle the case of a missing predefined function
 * Expressions: remaining pre-defined numeric functions
 * Expression: remaining pre-defined string functions
+* Error handling in interpreter
 * Split ExpressionParser from Parser
 * In Parser, require() should consume token
 * Expressions: subscripts
@@ -29,6 +27,9 @@ BI-22-15: May 30, 2022
 * DEF: user-defined functions
   + Interpret (save the value)
 * On structs: https://forums.swift.org/t/why-are-structs-in-swift-said-to-be-immutable/55319
+* Expressions: function calls
+* DEF: user-defined functions
+  + Interpret (save the value)
 
 BI-22-14: May 27, 2022
 * DEF: user-defined functions
