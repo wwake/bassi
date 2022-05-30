@@ -44,16 +44,15 @@ class Interpreter {
   var done = false
 
   typealias Store = [String : Value]
-  var store: Store = [:]
+  var store: Store = [
+    "LEN" : Value.function(Fs2n({Float($0.count)})),
+    "SQR" : Value.function(Fn2n(sqrt)),
+    "SIN" : Value.function(Fn2n(sin))
+  ]
 
   init(_ program: Program) {
     self.program = program
     lineNumber = program.firstLineNumber()
-
-    store["LEN"] = Value.function(Fs2n({Float($0.count)}))
-    store["SQR"] = Value.function(Fn2n(sqrt))
-    store["SIN"] = Value.function(Fn2n(sin))
-
  }
 
   func run() -> String {
@@ -99,7 +98,6 @@ class Interpreter {
       return "DEF NYI"
     }
   }
-
 
   let operators1 : [Token : (Value) -> Value] =
   [

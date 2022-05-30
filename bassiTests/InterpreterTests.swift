@@ -323,4 +323,26 @@ class InterpreterTests: XCTestCase {
       Type.function([.float], .float).defaultValue(),
       Value.string("Undefined function"))
   }
+
+  func testDictionaryIsReallyCopyOnWrite() {
+    let globals = ["A": "Apple", "B": "Ball"]
+    var locals = globals
+    locals["B"] = "Boat"
+
+    XCTAssertEqual(locals["A"], "Apple")
+    XCTAssertEqual(locals["B"], "Boat")
+
+    XCTAssertEqual(globals["A"], "Apple")
+    XCTAssertEqual(globals["B"], "Ball")
+  }
+
+  func xtestDEFstoresItsFunctionForLater() {
+    let program = Program("""
+25 DEF FNI(X) = X
+30 PRINT FNI(3)
+""")
+    let interpreter = Interpreter(program)
+    let output = interpreter.run()
+    XCTAssertEqual(output, "3\n")
+  }
 }

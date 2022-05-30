@@ -1,7 +1,8 @@
-* Expressions: function calls
-* Expressions: remaining pre-defined numeric functions
 * DEF: user-defined functions
   + Interpret (save the value) - not done
+* Expressions: function calls
+* Handle the case of a missing predefined function
+* Expressions: remaining pre-defined numeric functions
 * Expression: remaining pre-defined string functions
 * Split ExpressionParser from Parser
 * In Parser, require() should consume token
@@ -26,7 +27,7 @@ Parameterized tests package?
 BI-22-14: May 27, 2022
 * DEF: user-defined functions
   + Parse (done)
-
+* Expressions: function calls of a couple predefined functions
 
 BI-22-13: May 26, 2022
 * Operate on Value rather than Float
