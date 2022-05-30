@@ -361,7 +361,8 @@ class ParserTests: XCTestCase {
         .def(
           "FNI",
           "X",
-          .variable("X", .float)
+          .variable("X", .float),
+          .function([.float], .float)
         )
       )
     )

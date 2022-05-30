@@ -219,7 +219,11 @@ public class Parser {
     let expr = try expression()
     try requireFloatType(expr)
 
-    return .def("FN"+name, parameter, expr)
+    return .def(
+      "FN"+name,
+      parameter,
+      expr,
+      .function([.float], .float))
   }
 
   fileprivate func requireFloatType(_ expr: Expression) throws {

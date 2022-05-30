@@ -15,7 +15,7 @@ public indirect enum Parse : Equatable {
   case goto(Int)
   case `if`(Expression, Int)
   case assign(Expression, Expression)
-  case def(String, String, Expression)
+  case def(String, String, Expression, Type)
 }
 
 public indirect enum Expression: Equatable {

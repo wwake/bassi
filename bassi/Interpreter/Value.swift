@@ -24,7 +24,7 @@ public enum Value : Equatable {
   case number(Float)
   case string(String)
   case function(([Value]) -> Value)
-  case userFunction(String, Expression)
+  case userFunction(String, Expression, Type)
 
   func asFloat() -> Float {
     guard case .number(let value) = self else {

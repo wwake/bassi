@@ -1,4 +1,3 @@
-* Type-check user-defined functions
 * Type-check predefined functions
 * Handle the case of a missing predefined function
 * Expressions: remaining pre-defined numeric functions
@@ -34,6 +33,7 @@ BI-22-15: May 30, 2022
 * Expressions: function calls
 * DEF: user-defined functions
   + Interpret (save the value)
+* Type-check user-defined functions
 
 BI-22-14: May 27, 2022
 * DEF: user-defined functions

@@ -18,7 +18,7 @@ fileprivate func boolToFloat(
     case .string(let string):
         return .number(opString(string, y.asString()) ? 1.0 : 0.0)
     case .function,
-        .userFunction(_, _):
+        .userFunction(_, _, _):
       return .number(0.0)
     }
   }
@@ -95,8 +95,8 @@ class Interpreter {
     case .assign(let variable, let expr):
       return doAssign(output, variable, expr)
 
-    case .def(let functionName, let parameter, let definition):
-      globals[functionName] = .userFunction(parameter, definition)
+    case .def(let functionName, let parameter, let definition, let theType):
+      globals[functionName] = .userFunction(parameter, definition, theType)
       return output
     }
   }
@@ -147,7 +147,7 @@ class Interpreter {
 
     case .userdefined(let name, let expr):
       return callUserDefinedFunction(store, name, expr)
-      
+
     case .op1(let token, let expr):
       let operand = evaluate(expr, store)
       return operators1[token]!(operand)
@@ -170,8 +170,15 @@ class Interpreter {
   fileprivate func callUserDefinedFunction(_ store: Interpreter.Store, _ name: String, _ expr: Expression) -> Value {
     let operand = evaluate(expr, store)
 
-    guard case .userFunction(let parameter, let definition) = store[name]! else {
+    guard case .userFunction(let parameter, let definition, let type) = store[name]! else {
       return .string("?? Internal error - function not found")
+    }
+
+    guard case .function(let operandTypes, _) = type else {
+      return .string("?? Function has non-function type")
+    }
+    if expr.type() != operandTypes[0] {
+      return .string("?? FNx must be called with numeric argument")
     }
 
     var locals = globals
@@ -192,7 +199,7 @@ class Interpreter {
     case .function:
       return "<FUNCTION>"
 
-    case .userFunction(_, _):
+    case .userFunction(_, _, _):
       return "<USER-FUNCTION>"
     }
   }

@@ -343,7 +343,8 @@ class InterpreterTests: XCTestCase {
       .def(
         "FNI",
         "X",
-        .variable("X", .float)
+        .variable("X", .float),
+        .string
       ))
 
     let interpreter = Interpreter(Program())
@@ -373,7 +374,7 @@ class InterpreterTests: XCTestCase {
     XCTAssertEqual(output, "8\n")
   }
 
-  func xtestUserDefinedFunctionsMustHaveNumericArguments() {
+  func testUserDefinedFunctionsMustHaveNumericArguments() {
     let program = Program("""
 10 DEF FNA(Y)=Y
 20 PRINT FNA("string")
