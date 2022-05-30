@@ -348,6 +348,28 @@ class InterpreterTests: XCTestCase {
 
     let interpreter = Interpreter(Program())
     let _ = interpreter.step(parse, "")
-    XCTAssertNotNil(interpreter.store["FNI"])
+    XCTAssertNotNil(interpreter.globals["FNI"])
+  }
+
+  func testCallUserDefinedFunction() {
+    let program = Program("""
+10 DEF FNI(X)=X
+25 PRINT FNI(3)
+""")
+    let interpreter = Interpreter(program)
+    let output = interpreter.run()
+    XCTAssertEqual(output, "3\n")
+  }
+
+  func testUsingStaticScope() {
+    let program = Program("""
+10 DEF FNA(Y)= Y + FNB(Y+1)
+20 DEF FNB(X)= X+Y
+30 Y=1
+40 PRINT FNA(3)
+""")
+    let interpreter = Interpreter(program)
+    let output = interpreter.run()
+    XCTAssertEqual(output, "8\n")
   }
 }

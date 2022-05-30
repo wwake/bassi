@@ -7,7 +7,7 @@
 
 import Foundation
 
-indirect enum Parse : Equatable {
+public indirect enum Parse : Equatable {
   case end
   case line(Int, Parse)
   case skip
@@ -18,7 +18,7 @@ indirect enum Parse : Equatable {
   case def(String, String, Expression)
 }
 
-indirect enum Expression: Equatable {
+public indirect enum Expression: Equatable {
   case number(Float)
   case string(String)
   case variable(String, `Type`)
@@ -48,7 +48,7 @@ indirect enum Expression: Equatable {
   }
 }
 
-indirect enum `Type` : Equatable {
+public indirect enum `Type` : Equatable {
   case float
   case string
   case function([`Type`], `Type`)

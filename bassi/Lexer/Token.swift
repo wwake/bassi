@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum Token  {
+public enum Token  {
   case unknown
   case atEnd
   case eol

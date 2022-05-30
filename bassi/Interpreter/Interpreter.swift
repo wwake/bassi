@@ -17,17 +17,11 @@ fileprivate func boolToFloat(
       return .number(opFloat(number, y.asFloat()) ? 1.0 : 0.0)
     case .string(let string):
         return .number(opString(string, y.asString()) ? 1.0 : 0.0)
-    case .function:
+    case .function,
+        .userFunction(_, _):
       return .number(0.0)
     }
   }
-
-fileprivate func exprToFunction(_ parameter: String, _ expr: Expression) -> ([Value]) -> Value
-{
-  return {args in
-    Value.number(-42)
-  }
-}
 
 extension `Type` {
   func defaultValue() -> Value {
@@ -51,7 +45,7 @@ class Interpreter {
   var done = false
 
   typealias Store = [String : Value]
-  var store: Store = [
+  var globals: Store = [
     "LEN" : Value.function(Fs2n({Float($0.count)})),
     "SQR" : Value.function(Fn2n(sqrt)),
     "SIN" : Value.function(Fn2n(sin))
@@ -102,7 +96,7 @@ class Interpreter {
       return doAssign(output, variable, expr)
 
     case .def(let functionName, let parameter, let definition):
-      store[functionName] = .function(exprToFunction(parameter, definition))
+      globals[functionName] = .userFunction(parameter, definition)
       return output
     }
   }
@@ -154,8 +148,17 @@ class Interpreter {
 
       return function.apply([operand])
 
-    case .userdefined(_, _):
-      return .string("Userdefined NYI")
+    case .userdefined(let name, let expr):
+      let operand = evaluate(expr, store)
+
+      guard case .userFunction(let parameter, let definition) = store[name]! else {
+        return .string("?? Internal error - function not found")
+      }
+
+      var locals = globals
+      locals[parameter] = operand
+
+      return evaluate(definition, locals)
       
     case .op1(let token, let expr):
       let operand = evaluate(expr, store)
@@ -170,7 +173,7 @@ class Interpreter {
   }
 
   func format(_ input: Expression) -> String {
-    let value = evaluate(input, store)
+    let value = evaluate(input, globals)
     switch value {
     case .number(let number):
       return String(format: "%.0f", number)
@@ -180,6 +183,9 @@ class Interpreter {
 
     case .function:
       return "<FUNCTION>"
+
+    case .userFunction(_, _):
+      return "<USER-FUNCTION>"
     }
   }
 
@@ -196,7 +202,7 @@ class Interpreter {
   }
 
   fileprivate func doIfThen(_ output: String, _ expr: Expression, _ target: Int) -> String {
-    let condition = evaluate(expr, store)
+    let condition = evaluate(expr, globals)
     if condition != .number(0.0) {
       lineNumber = target
     }
@@ -211,9 +217,9 @@ class Interpreter {
     guard case .variable(let name, _) = lvalue else {
       return "Improper lvalue"
     }
-    let value = evaluate(expr, store)
+    let value = evaluate(expr, globals)
 
-    store[name] = value
+    globals[name] = value
     return output
   }
 }
