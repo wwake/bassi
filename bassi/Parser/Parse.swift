@@ -47,10 +47,3 @@ public indirect enum Expression: Equatable {
     }
   }
 }
-
-public indirect enum `Type` : Equatable {
-  case float
-  case string
-  case function([`Type`], `Type`)
-  //  case array(Int, `Type`)
-}
