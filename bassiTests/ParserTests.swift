@@ -250,7 +250,7 @@ class ParserTests: XCTestCase {
   func testIfMustCheckNumericType() throws {
     checkError(
       "42 IF A$ THEN 43",
-      .typeMismatch)
+      .floatRequired)
   }
 
   func testIfMissingThenGetsError() throws {
@@ -332,7 +332,7 @@ class ParserTests: XCTestCase {
   }
 
   func testStringCantDoArithmetic() {
-    checkError("17 A=-B$", .typeMismatch)
+    checkError("17 A=-B$", .floatRequired)
 
     checkError("17 A=B$^3", .typeMismatch)
     checkError("17 A=3^B$", .typeMismatch)
@@ -343,7 +343,7 @@ class ParserTests: XCTestCase {
     checkError("17 A=B$+C$", .typeMismatch)
     checkError("17 A=3-B$", .typeMismatch)
 
-    checkError("17 A=NOT B$", .typeMismatch)
+    checkError("17 A=NOT B$", .floatRequired)
     checkError("17 A=B$ AND 3", .typeMismatch)
     checkError("17 A=42 OR B$", .typeMismatch)
   }
@@ -400,4 +400,12 @@ class ParserTests: XCTestCase {
             .number(3) )
         ])))
   }
+
+  func testUserDefinedFunctionsMustHaveNumericResult() {
+    checkError("""
+10 DEF FNA(Y)="string"
+""",
+       .floatRequired)
+  }
+
 }

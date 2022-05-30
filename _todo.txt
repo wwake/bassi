@@ -1,9 +1,13 @@
+* Type-check user-defined functions
+* Type-check predefined functions
 * Handle the case of a missing predefined function
 * Expressions: remaining pre-defined numeric functions
 * Expression: remaining pre-defined string functions
+
 * Error handling in interpreter
 * Split ExpressionParser from Parser
 * In Parser, require() should consume token
+
 * Expressions: subscripts
 * Multiple statements on one line
 * IF relation-expr THEN statements

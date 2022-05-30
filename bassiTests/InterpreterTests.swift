@@ -372,4 +372,14 @@ class InterpreterTests: XCTestCase {
     let output = interpreter.run()
     XCTAssertEqual(output, "8\n")
   }
+
+  func xtestUserDefinedFunctionsMustHaveNumericArguments() {
+    let program = Program("""
+10 DEF FNA(Y)=Y
+20 PRINT FNA("string")
+""")
+    let interpreter = Interpreter(program)
+    let output = interpreter.run()
+    XCTAssertEqual(output, "?? FNx must be called with numeric argument\n")
+  }
 }

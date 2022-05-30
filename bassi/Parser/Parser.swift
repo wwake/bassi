@@ -21,6 +21,7 @@ enum ParseError: Error {
   case assignmentMissingEqualSign
   case letMissingAssignment
   case typeMismatch
+  case floatRequired
 
   case DEFfunctionMustStartWithFn
   case DEFrequiresVariableAfterFn
@@ -216,13 +217,14 @@ public class Parser {
     nextToken()
 
     let expr = try expression()
+    try requireFloatType(expr)
 
     return .def("FN"+name, parameter, expr)
   }
 
   fileprivate func requireFloatType(_ expr: Expression) throws {
     if expr.type() != .float {
-      throw ParseError.typeMismatch
+      throw ParseError.floatRequired
     }
   }
 
