@@ -1,6 +1,6 @@
+* Expressions: function calls
 * DEF: user-defined functions
   + Interpret (save the value) - not done
-* Expressions: function calls
 * Handle the case of a missing predefined function
 * Expressions: remaining pre-defined numeric functions
 * Expression: remaining pre-defined string functions
@@ -23,6 +23,12 @@
 * Error sync by skipping forward to next line # (or end)
 
 Parameterized tests package?
+
+BI-22-15: May 30, 2022
+* Make sure Dictionary works as expected (copy-on-write)
+* DEF: user-defined functions
+  + Interpret (save the value)
+* On structs: https://forums.swift.org/t/why-are-structs-in-swift-said-to-be-immutable/55319
 
 BI-22-14: May 27, 2022
 * DEF: user-defined functions
@@ -144,7 +150,7 @@ factor -> "(" expression ")"
 factor -> VARIABLE ("(" expression ("," expression)* ")")?
 factor -> STRING
 factor -> PREDEFINED "(" expression ("," expression)* ")"
-factor -> FN LETTER ("(" expression ("," expression)* ")")?
+factor -> FN LETTER ("(" expression ")")
 
 Number => [0-9]+("."[0-9]+)?([Ee][+-]?[0-9]+)?
 

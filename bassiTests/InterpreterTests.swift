@@ -336,13 +336,18 @@ class InterpreterTests: XCTestCase {
     XCTAssertEqual(globals["B"], "Ball")
   }
 
-  func xtestDEFstoresItsFunctionForLater() {
-    let program = Program("""
-25 DEF FNI(X) = X
-30 PRINT FNI(3)
-""")
-    let interpreter = Interpreter(program)
-    let output = interpreter.run()
-    XCTAssertEqual(output, "3\n")
+  func testDEFstoresItsFunctionForLater() {
+    let parse =
+    Parse.line(
+      40,
+      .def(
+        "FNI",
+        "X",
+        .variable("X", .float)
+      ))
+
+    let interpreter = Interpreter(Program())
+    let _ = interpreter.step(parse, "")
+    XCTAssertNotNil(interpreter.store["FNI"])
   }
 }

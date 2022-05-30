@@ -23,7 +23,8 @@ indirect enum Expression: Equatable {
   case string(String)
   case variable(String, `Type`)
   case predefined(String, Expression)
-
+  case userdefined(String, Expression)
+  
   case op1(Token, Expression)
   case op2(Token, Expression, Expression)
 
@@ -36,6 +37,8 @@ indirect enum Expression: Equatable {
     case .variable(_, let theType):
       return theType
     case .predefined(_,_):
+      return .float
+    case .userdefined(_,_):
       return .float
     case .op1(_, _):
       return .float

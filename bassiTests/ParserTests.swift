@@ -372,7 +372,7 @@ class ParserTests: XCTestCase {
     checkError("17 DEF FN(x)=X", .DEFrequiresVariableAfterFn)
     checkError("17 DEF FNX9(x)=X", .DEFfunctionNameMustBeFnFollowedBySingleLetter)
     checkError("17 DEF FNI x)=X", .missingLeftParend)
-    checkError("17 DEF FNZ()=X", .DEFrequiresParameterVariable)
+    checkError("17 DEF FNZ()=X", .FNrequiresParameterVariable)
     checkError("17 DEF FNA(x=X", .DEFrequiresRightParendAfterParameter)
     checkError("17 DEF FNP(x) -> X", .DEFrequiresEqualAfterParameter)
   }
@@ -387,5 +387,17 @@ class ParserTests: XCTestCase {
         )
       )
     )
+  }
+
+  func testDefCall() {
+    checkParsing(
+      "10 PRINT FNI(3)",
+      .line(
+        10,
+        .print([
+          .userdefined(
+            "FNI",
+            .number(3) )
+        ])))
   }
 }

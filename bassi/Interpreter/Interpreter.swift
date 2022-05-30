@@ -22,6 +22,13 @@ fileprivate func boolToFloat(
     }
   }
 
+fileprivate func exprToFunction(_ parameter: String, _ expr: Expression) -> ([Value]) -> Value
+{
+  return {args in
+    Value.number(-42)
+  }
+}
+
 extension `Type` {
   func defaultValue() -> Value {
     switch self {
@@ -94,8 +101,9 @@ class Interpreter {
     case .assign(let variable, let expr):
       return doAssign(output, variable, expr)
 
-    case .def(_, _, _):
-      return "DEF NYI"
+    case .def(let functionName, let parameter, let definition):
+      store[functionName] = .function(exprToFunction(parameter, definition))
+      return output
     }
   }
 
@@ -146,6 +154,9 @@ class Interpreter {
 
       return function.apply([operand])
 
+    case .userdefined(_, _):
+      return .string("Userdefined NYI")
+      
     case .op1(let token, let expr):
       let operand = evaluate(expr, store)
       return operators1[token]!(operand)

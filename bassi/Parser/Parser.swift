@@ -25,7 +25,7 @@ enum ParseError: Error {
   case DEFfunctionMustStartWithFn
   case DEFrequiresVariableAfterFn
   case DEFfunctionNameMustBeFnFollowedBySingleLetter
-  case DEFrequiresParameterVariable
+  case FNrequiresParameterVariable
   case DEFrequiresRightParendAfterParameter
   case DEFrequiresEqualAfterParameter
 }
@@ -205,7 +205,7 @@ public class Parser {
     nextToken()
 
     guard case .variable(let parameter) = token else {
-      throw ParseError.DEFrequiresParameterVariable
+      throw ParseError.FNrequiresParameterVariable
     }
     nextToken()
 
@@ -368,6 +368,8 @@ public class Parser {
       return variable(name)
     } else if case .predefined(let name) = token {
       return try predefinedFunctionCall(name)
+    } else if case .fn = token {
+      return try userdefinedFunctionCall()
     } else {
       throw ParseError.expectedStartOfExpression
     }
@@ -409,5 +411,24 @@ public class Parser {
     nextToken()
 
     return .predefined(name, expr)
+  }
+
+  fileprivate func userdefinedFunctionCall()  throws -> Expression {
+    nextToken()
+
+    guard case .variable(let parameter) = token else {
+      throw ParseError.FNrequiresParameterVariable
+    }
+    nextToken()
+
+    try require(.leftParend, .missingLeftParend)
+    nextToken()
+
+    let expr = try expression()
+
+    try require(.rightParend, .missingRightParend)
+    nextToken()
+
+    return .userdefined("FN" + parameter, expr)
   }
 }
