@@ -436,6 +436,12 @@ class ParserTests: XCTestCase {
         ])))
   }
 
+  func testDefCallMustTakeNumericArgument() {
+    checkError(
+      "10 PRINT FNI(\"str\")",
+      .typeMismatch)
+  }
+
   func testUserDefinedFunctionsMustHaveNumericResult() {
     checkError("""
 10 DEF FNA(Y)="string"

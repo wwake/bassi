@@ -449,6 +449,8 @@ public class Parser {
 
     try require(.rightParend, .missingRightParend)
 
+    try typeCheck([.number], [expr])
+
     return .userdefined("FN" + parameter, expr)
   }
 }
