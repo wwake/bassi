@@ -137,9 +137,9 @@ public class Parser {
   func goto() throws -> Parse {
     nextToken()
 
-    if case .number(let lineNumber) = token {
+    if case .integer(let lineNumber) = token {
       nextToken()
-      return .goto(Int(lineNumber))
+      return .goto(lineNumber)
     }
     
     throw ParseError.missingTarget
@@ -365,6 +365,8 @@ public class Parser {
       return try parenthesizedExpression()
     } else if case .number(let floatValue) = token {
       return numericFactor(floatValue)
+    } else if case .integer(let intValue) = token {
+      return numericFactor(Float(intValue))
     } else if case .string(let text) = token {
       nextToken()
       return .string(text)

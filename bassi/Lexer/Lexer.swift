@@ -91,8 +91,6 @@ class Lexer : Sequence, IteratorProtocol {
   let program: String
   var index = 0
 
-  var lookingForLineNumber = true
-
   init(_ program: String) {
     self.program = Lexer.normalize(program)
   }
@@ -158,12 +156,7 @@ class Lexer : Sequence, IteratorProtocol {
       return .eol
 
     case "0"..."9":
-      if lookingForLineNumber {
-        lookingForLineNumber = false
-        return integer()
-      } else {
         return number()
-      }
 
     case "\"":
       return string()
@@ -185,23 +178,22 @@ class Lexer : Sequence, IteratorProtocol {
     }
   }
 
-  fileprivate func integer() -> Token? {
-    let value = repeatAny("0", "9")
-    return Token.integer(Int(value)!)
-  }
-
   fileprivate func number() -> Token? {
+    var isFloat = false
+
     var value = repeatAny("0", "9")
 
     if program[index] == "." {
       index += 1
+      isFloat = true
       let fraction = repeatAny("0", "9")
       value += "."
       value += fraction
     }
 
-    if program[index] == "E" || program[index] == "e" {
+    if program[index] == "E" && !(("A"..."Z").contains(program[index+1])) {
       index += 1
+      isFloat = true
 
       let message = "Exponent value is missing"
       if program[index] < "0" || program[index] > "9" {
@@ -213,7 +205,8 @@ class Lexer : Sequence, IteratorProtocol {
       value += exponent
     }
 
-    return Token.number(Float(value)!)
+    return isFloat ?  Token.number(Float(value)!)
+    : Token.integer(Int(value)!)
   }
 
   func string() -> Token? {
@@ -286,11 +279,8 @@ class Lexer : Sequence, IteratorProtocol {
 
     if keyword == .remark {
       ignoreUntil("\n")
-    } else if keyword == .then {
-      if isDigit() {
-        lookingForLineNumber = true
-      }
     }
+    
     return keyword
   }
 
