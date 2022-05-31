@@ -46,9 +46,13 @@ class Interpreter {
 
   typealias Store = [String : Value]
   var globals: Store = [
+    "ABS" : Value.function(Fn2n(abs)),
+    "ATN" : Value.function(Fn2n(atan)),
+    "COS" : Value.function(Fn2n(cos)),
     "LEN" : Value.function(Fs2n({Float($0.count)})),
+    "SIN" : Value.function(Fn2n(sin)),
     "SQR" : Value.function(Fn2n(sqrt)),
-    "SIN" : Value.function(Fn2n(sin))
+    "TAN" : Value.function(Fn2n(tan)),
   ]
 
   init(_ program: Program) {

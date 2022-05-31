@@ -5,7 +5,6 @@
 * Expression: remaining pre-defined string functions
 
 * Split ExpressionParser from Parser
-* In Parser, require() should consume token
 * Error handling in interpreter
 
 * Expressions: subscripts
@@ -33,6 +32,7 @@ Parameterized tests package?
 BI-22-16: May 31, 2022
 * Type-check predefined function calls
 * Move static type definitions from Lexer to `Type`
+* In Parser, require() should consume token
 
 
 BI-22-15: May 30, 2022
