@@ -28,12 +28,6 @@ class Lexer : Sequence, IteratorProtocol {
     ")": .rightParend
   ]
 
-  static let typeNtoN = `Type`.function([.float], .float)
-  static let typeNtoS = `Type`.function([.float], .string)
-  static let typeStoN = `Type`.function([.string], .float)
-  static let typeSNtoS = `Type`.function([.string, .float], .string)
-  static let typeSNNtoS = `Type`.function([.string, .float, .float], .string)
-
   let reservedWords: [String : Token] = [
     "AND": .and,
     "CLEAR": .clear,
@@ -64,34 +58,34 @@ class Lexer : Sequence, IteratorProtocol {
     "STOP": .stop,
     "THEN": .then,
 
-    "ABS": .predefined("ABS", typeNtoN),
-    "ASC": .predefined("ASC", typeStoN),
-    "ATN": .predefined("ATN", typeNtoN),
-    "CHR$": .predefined("CHR$", typeNtoS),
-    "COS": .predefined("COS", typeNtoN),
+    "ABS": .predefined("ABS", `Type`.typeNtoN),
+    "ASC": .predefined("ASC", `Type`.typeStoN),
+    "ATN": .predefined("ATN", `Type`.typeNtoN),
+    "CHR$": .predefined("CHR$", `Type`.typeNtoS),
+    "COS": .predefined("COS", `Type`.typeNtoN),
 
-    "EXP": .predefined("EXP", typeNtoN),
-    "FRE": .predefined("FRE", typeNtoN),
-    "INT": .predefined("INT", typeNtoN),
-    "LEFT$": .predefined("LEFT$", typeSNtoS),
-    "LEN": .predefined("LEN", typeStoN),
-    "LOG": .predefined("LOG", typeNtoN),
+    "EXP": .predefined("EXP", `Type`.typeNtoN),
+    "FRE": .predefined("FRE", `Type`.typeNtoN),
+    "INT": .predefined("INT", `Type`.typeNtoN),
+    "LEFT$": .predefined("LEFT$", `Type`.typeSNtoS),
+    "LEN": .predefined("LEN", `Type`.typeStoN),
+    "LOG": .predefined("LOG", `Type`.typeNtoN),
 
-    "MID$": .predefined("MID$", typeSNNtoS),
-    "POS": .predefined("POS", typeNtoN),
-    "RIGHT$": .predefined("RIGHT$", typeSNtoS),
-    "RND": .predefined("RND", typeNtoN),
+    "MID$": .predefined("MID$", `Type`.typeSNNtoS),
+    "POS": .predefined("POS", `Type`.typeNtoN),
+    "RIGHT$": .predefined("RIGHT$", `Type`.typeSNtoS),
+    "RND": .predefined("RND", `Type`.typeNtoN),
 
-    "SGN": .predefined("SGN", typeNtoN),
-    "SIN": .predefined("SIN", typeNtoN),
-    "SPC": .predefined("SPC", typeNtoS),
-    "SQR": .predefined("SQR", typeNtoN),
-    "STR$": .predefined("STR$", typeNtoS),
+    "SGN": .predefined("SGN", `Type`.typeNtoN),
+    "SIN": .predefined("SIN", `Type`.typeNtoN),
+    "SPC": .predefined("SPC", `Type`.typeNtoS),
+    "SQR": .predefined("SQR", `Type`.typeNtoN),
+    "STR$": .predefined("STR$", `Type`.typeNtoS),
 
-    "TAB": .predefined("TAB", typeNtoS),
-    "TAN": .predefined("TAN", typeNtoN),
-    "USR": .predefined("USR", typeNtoN),
-    "VAL": .predefined("VAL", typeStoN),
+    "TAB": .predefined("TAB", `Type`.typeNtoS),
+    "TAN": .predefined("TAN", `Type`.typeNtoN),
+    "USR": .predefined("USR", `Type`.typeNtoN),
+    "VAL": .predefined("VAL", `Type`.typeStoN),
   ]
 
   let program: String

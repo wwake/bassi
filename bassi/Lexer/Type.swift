@@ -15,3 +15,11 @@ public indirect enum `Type` : Equatable {
 }
 
 extension `Type`: Hashable {}
+
+extension `Type` {
+  static let typeNtoN = `Type`.function([.float], .float)
+  static let typeNtoS = `Type`.function([.float], .string)
+  static let typeStoN = `Type`.function([.string], .float)
+  static let typeSNtoS = `Type`.function([.string, .float], .string)
+  static let typeSNNtoS = `Type`.function([.string, .float, .float], .string)
+}

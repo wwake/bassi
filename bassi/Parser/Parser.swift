@@ -56,6 +56,7 @@ public class Parser {
     if token != expected {
       throw error
     }
+    nextToken()
   }
 
   func parse(_ input: String) -> Parse {
@@ -81,7 +82,6 @@ public class Parser {
       let statementParse = try statement()
 
       try require(.eol, .extraCharactersAtEol)
-      nextToken()
 
       return Parse.line(lineNumber, statementParse)
     }
@@ -152,7 +152,6 @@ public class Parser {
     try requireFloatType(expr)
     
     try require(.then, .missingTHEN)
-    nextToken()
 
     if case .integer(let target) = token {
       nextToken()
@@ -182,7 +181,6 @@ public class Parser {
     let variable = variable(name)
 
     try require(.equals, .assignmentMissingEqualSign)
-    nextToken()
 
     let expr = try expression()
 
@@ -195,7 +193,6 @@ public class Parser {
     nextToken()
 
     try require(.fn, .DEFfunctionMustStartWithFn)
-    nextToken()
 
     guard case .variable(let name) = token else {
       throw ParseError.DEFrequiresVariableAfterFn
@@ -207,7 +204,6 @@ public class Parser {
     }
 
     try require(.leftParend, .missingLeftParend)
-    nextToken()
 
     guard case .variable(let parameter) = token else {
       throw ParseError.FNrequiresParameterVariable
@@ -215,10 +211,8 @@ public class Parser {
     nextToken()
 
     try require(.rightParend, .DEFrequiresRightParendAfterParameter)
-    nextToken()
 
     try require(.equals, .DEFrequiresEqualAfterParameter)
-    nextToken()
 
     let expr = try expression()
     try requireFloatType(expr)
@@ -391,7 +385,6 @@ public class Parser {
     let expr = try expression()
 
     try require(.rightParend, .missingRightParend)
-    nextToken()
 
     return expr
   }
@@ -413,12 +406,10 @@ public class Parser {
     nextToken()
 
     try require(.leftParend, .missingLeftParend)
-    nextToken()
 
     let expr = try expression()
 
     try require(.rightParend, .missingRightParend)
-    nextToken()
 
     try typeCheck(type, [expr])
 
@@ -434,7 +425,7 @@ public class Parser {
     if operands.count != exprs.count {
       throw ParseError.argumentCountMismatch
     }
-    
+
     try operands
       .enumerated()
       .forEach { (index, parameterType) in
@@ -453,12 +444,10 @@ public class Parser {
     nextToken()
 
     try require(.leftParend, .missingLeftParend)
-    nextToken()
 
     let expr = try expression()
 
     try require(.rightParend, .missingRightParend)
-    nextToken()
 
     return .userdefined("FN" + parameter, expr)
   }

@@ -1,5 +1,5 @@
-* Type-check predefined functions
-* Move static type definitions from Lexer to `Type`
+* Type-check function results
+
 * Handle the case of a missing predefined function
 * Expressions: remaining pre-defined numeric functions
 * Expression: remaining pre-defined string functions
@@ -29,6 +29,11 @@
 * Error sync by skipping forward to next line # (or end)
 
 Parameterized tests package?
+
+BI-22-16: May 31, 2022
+* Type-check predefined function calls
+* Move static type definitions from Lexer to `Type`
+
 
 BI-22-15: May 30, 2022
 * Make sure Dictionary works as expected (copy-on-write)
