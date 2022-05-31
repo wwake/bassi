@@ -1,9 +1,8 @@
-* Handle the case of a missing predefined function
+* Error handling in interpreter
+
 * Expressions: test pre-defined numeric functions
 * Expression: remaining pre-defined string functions
 
-* Split ExpressionParser from Parser
-* Error handling in interpreter
 
 * Expressions: subscripts
 * Multiple statements on one line

@@ -321,7 +321,7 @@ class InterpreterTests: XCTestCase {
   func testTypeDefaultValueForFunctionIs0() {
     XCTAssertEqual(
       Type.function([.number], .number).defaultValue(),
-      Value.string("Undefined function"))
+      Value.string("?? Undefined function"))
   }
 
   func testDictionaryIsReallyCopyOnWrite() {

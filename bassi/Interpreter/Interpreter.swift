@@ -33,7 +33,7 @@ extension `Type` {
       return Value.string("")
 
     case .function(_, _):
-      return Value.string("Undefined function")
+      return Value.string("?? Undefined function")
     }
   }
 }
@@ -243,7 +243,7 @@ class Interpreter {
     _ expr: Expression)
   -> String {
     guard case .variable(let name, _) = lvalue else {
-      return "Improper lvalue"
+      return "?? Improper lvalue"
     }
     let value = evaluate(expr, globals)
 
