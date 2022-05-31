@@ -171,7 +171,7 @@ public class Parser {
   }
 
   func typeFor(_ name: String) -> `Type` {
-    name.last! == "$" ? .string : .float
+    name.last! == "$" ? .string : .number
   }
 
   func assign() throws -> Parse {
@@ -221,11 +221,11 @@ public class Parser {
       "FN"+name,
       parameter,
       expr,
-      .function([.float], .float))
+      .function([.number], .number))
   }
 
   fileprivate func requireFloatType(_ expr: Expression) throws {
-    if expr.type() != .float {
+    if expr.type() != .number {
       throw ParseError.floatRequired
     }
   }
@@ -233,7 +233,7 @@ public class Parser {
   fileprivate func requireFloatTypes(
     _ left: Expression,
     _ right: Expression) throws {
-      if left.type() != .float || right.type() != .float {
+      if left.type() != .number || right.type() != .number {
         throw ParseError.typeMismatch
       }
     }
@@ -398,12 +398,16 @@ public class Parser {
   fileprivate func variable(_ name: String) -> Expression {
     nextToken()
     let theType : `Type` =
-    name.last! == "$" ? .string : .float
+    name.last! == "$" ? .string : .number
     return .variable(name, theType)
   }
 
   fileprivate func predefinedFunctionCall(_ name: String, _ type: `Type`) throws -> Expression  {
     nextToken()
+
+    guard case .function(let operandTypes, let resultType) = type else {
+      throw ParseError.internalError("Function has non-function type")
+    }
 
     try require(.leftParend, .missingLeftParend)
 
@@ -411,16 +415,12 @@ public class Parser {
 
     try require(.rightParend, .missingRightParend)
 
-    try typeCheck(type, [expr])
+    try typeCheck(operandTypes, [expr])
 
-    return .predefined(name, expr)
+    return .predefined(name, expr, resultType)
   }
 
-  fileprivate func typeCheck(_ type: `Type`, _ exprs: [Expression]) throws {
-
-    guard case .function(let operands, _) = type else {
-      throw ParseError.internalError("Function has non-function type")
-    }
+  fileprivate func typeCheck(_ operands: [`Type`], _ exprs: [Expression]) throws {
 
     if operands.count != exprs.count {
       throw ParseError.argumentCountMismatch

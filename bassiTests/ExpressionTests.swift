@@ -11,22 +11,22 @@ import XCTest
 class ExpressionTests: XCTestCase {
   func testNumberHasTypeFloat() {
     let number = Expression.number(37.5)
-    XCTAssertEqual(number.type(), .float)
+    XCTAssertEqual(number.type(), .number)
   }
 
   func testVariableHasSpecifiedType() {
-    XCTAssertEqual(Expression.variable("X", .float).type(), .float)
+    XCTAssertEqual(Expression.variable("X", .number).type(), .number)
     XCTAssertEqual(Expression.variable("Y", .string).type(), .string)
   }
 
   func testOperatorsAllHaveTypeFloat() {
     XCTAssertEqual(
       Expression.op1(.minus, .number(3)).type(),
-      .float)
+      .number)
     XCTAssertEqual(
       Expression.op2(.plus,
           .number(1),
           .number(2)).type(),
-      .float)
+      .number)
   }
 }

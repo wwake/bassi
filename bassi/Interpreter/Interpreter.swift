@@ -26,7 +26,7 @@ fileprivate func boolToFloat(
 extension `Type` {
   func defaultValue() -> Value {
     switch self {
-    case .float:
+    case .number:
       return Value.number(0.0)
 
     case .string:
@@ -146,7 +146,7 @@ class Interpreter {
     case .string(let value):
       return Value.string(value)
 
-    case .predefined(let name, let expr):
+    case .predefined(let name, let expr, _):
       return callPredefinedFunction(store, name, expr)
 
     case .userdefined(let name, let expr):

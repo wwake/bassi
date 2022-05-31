@@ -22,7 +22,7 @@ public indirect enum Expression: Equatable {
   case number(Float)
   case string(String)
   case variable(String, `Type`)
-  case predefined(String, Expression)
+  case predefined(String, Expression, `Type`)
   case userdefined(String, Expression)
   
   case op1(Token, Expression)
@@ -31,19 +31,19 @@ public indirect enum Expression: Equatable {
   func type() -> `Type` {
     switch self {
     case .number(_):
-      return .float
+      return .number
     case .string(_):
       return .string
     case .variable(_, let theType):
       return theType
-    case .predefined(_,_):
-      return .float
+    case .predefined(_,_, _):
+      return .number
     case .userdefined(_,_):
-      return .float
+      return .number
     case .op1(_, _):
-      return .float
+      return .number
     case .op2(_, _, _):
-      return .float
+      return .number
     }
   }
 }

@@ -235,7 +235,7 @@ class ParserTests: XCTestCase {
   func testVariable() throws {
     checkExpression(
       "X",
-      .variable("X", .float))
+      .variable("X", .number))
   }
 
   func testIfThenLineNumber() throws {
@@ -273,7 +273,7 @@ class ParserTests: XCTestCase {
       .line(
         25,
         .assign(
-          .variable("X", .float),
+          .variable("X", .number),
           .number(42.0)))
     )
   }
@@ -284,7 +284,7 @@ class ParserTests: XCTestCase {
       .line(
         25,
         .assign(
-          .variable("A", .float),
+          .variable("A", .number),
           .number(2.0)))
     )
   }
@@ -361,8 +361,8 @@ class ParserTests: XCTestCase {
         .def(
           "FNI",
           "X",
-          .variable("X", .float),
-          .function([.float], .float)
+          .variable("X", .number),
+          .function([.number], .number)
         )
       )
     )
@@ -384,7 +384,19 @@ class ParserTests: XCTestCase {
       .line(
         25,
         .print(
-          [.predefined("SQR", .number(4))]
+          [.predefined("SQR", .number(4), .number)]
+        )
+      )
+    )
+  }
+
+  func testPredefinedStringFunctionReturnType() {
+    checkParsing(
+      "25 PRINT CHR$(4)",
+      .line(
+        25,
+        .print(
+          [.predefined("CHR$", .number(4), .string)]
         )
       )
     )

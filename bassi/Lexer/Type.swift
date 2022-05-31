@@ -8,7 +8,7 @@
 import Foundation
 
 public indirect enum `Type` : Equatable {
-  case float
+  case number
   case string
   case function([`Type`], `Type`)
   //  case array(Int, `Type`)
@@ -17,9 +17,9 @@ public indirect enum `Type` : Equatable {
 extension `Type`: Hashable {}
 
 extension `Type` {
-  static let typeNtoN = `Type`.function([.float], .float)
-  static let typeNtoS = `Type`.function([.float], .string)
-  static let typeStoN = `Type`.function([.string], .float)
-  static let typeSNtoS = `Type`.function([.string, .float], .string)
-  static let typeSNNtoS = `Type`.function([.string, .float, .float], .string)
+  static let typeNtoN = `Type`.function([.number], .number)
+  static let typeNtoS = `Type`.function([.number], .string)
+  static let typeStoN = `Type`.function([.string], .number)
+  static let typeSNtoS = `Type`.function([.string, .number], .string)
+  static let typeSNNtoS = `Type`.function([.string, .number, .number], .string)
 }

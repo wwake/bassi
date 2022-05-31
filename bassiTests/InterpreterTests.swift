@@ -320,7 +320,7 @@ class InterpreterTests: XCTestCase {
 
   func testTypeDefaultValueForFunctionIs0() {
     XCTAssertEqual(
-      Type.function([.float], .float).defaultValue(),
+      Type.function([.number], .number).defaultValue(),
       Value.string("Undefined function"))
   }
 
@@ -343,7 +343,7 @@ class InterpreterTests: XCTestCase {
       .def(
         "FNI",
         "X",
-        .variable("X", .float),
+        .variable("X", .number),
         .string
       ))
 
