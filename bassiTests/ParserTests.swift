@@ -59,8 +59,19 @@ class ParserTests: XCTestCase {
 
   func test10END() throws {
     checkParsing(
-      "10 END",
-      .line(10, .end))
+      "1 END",
+      .line(1, .end))
+    checkParsing(
+      "99999 END",
+      .line(99999, .end))
+  }
+
+  func testLineNumberIsInRange0to99999() {
+    checkError(
+      "0 END", ParseError.lineNumberRange)
+
+    checkError(
+      "100000 END", ParseError.lineNumberRange)
   }
 
   func test10REM() throws {

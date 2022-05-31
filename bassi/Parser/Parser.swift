@@ -9,10 +9,11 @@ import Foundation
 
 enum ParseError: Error, Equatable {
   case internalError(String)
+  case unknownStatement
   case notYetImplemented
 
   case noLineNumber
-  case unknownStatement
+  case lineNumberRange
 
   case missingLeftParend
   case missingRightParend
@@ -36,6 +37,8 @@ enum ParseError: Error, Equatable {
 }
 
 public class Parser {
+  let maxLineNumber = 99999
+
   var lexer: Lexer = Lexer("")
   var token: Token = .unknown
   
@@ -75,9 +78,12 @@ public class Parser {
   }
 
   func line() throws -> Parse  {
-    if case .integer(let floatValue) = token {
-      let lineNumber = Int(floatValue)
+    if case .integer(let lineNumber) = token {
       nextToken()
+
+      if lineNumber <= 0 || lineNumber > maxLineNumber {
+        throw ParseError.lineNumberRange
+      }
 
       let statementParse = try statement()
 
