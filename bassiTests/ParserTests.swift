@@ -409,6 +409,13 @@ class ParserTests: XCTestCase {
     )
   }
 
+  func testCantAssignPredefinedStringFunctionCallToNumericVariable() {
+    checkError(
+      "25 A=CHR$(17)",
+      .typeMismatch
+    )
+  }
+
   func testPredefinedFunctionEnforcesNumberOfArguments() {
     checkError(
       "25 PRINT LEFT$(\"X\")",

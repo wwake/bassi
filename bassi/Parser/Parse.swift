@@ -34,10 +34,10 @@ public indirect enum Expression: Equatable {
       return .number
     case .string(_):
       return .string
-    case .variable(_, let theType):
-      return theType
-    case .predefined(_,_, _):
-      return .number
+    case .variable(_, let type):
+      return type
+    case .predefined(_,_, let type):
+      return type
     case .userdefined(_,_):
       return .number
     case .op1(_, _):
