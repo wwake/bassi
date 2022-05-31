@@ -49,7 +49,23 @@ class Interpreter {
     "ABS" : Value.function(Fn2n(abs)),
     "ATN" : Value.function(Fn2n(atan)),
     "COS" : Value.function(Fn2n(cos)),
+    "EXP":
+      Value.function(Fn2n(exp)),
+    "INT" : Value.function(Fn2n({Float(Int($0))})),
     "LEN" : Value.function(Fs2n({Float($0.count)})),
+    "LOG":
+      Value.function(Fn2n(log)),
+    "RND" :
+      Value.function(Fn2n({_ in Float.random(in: 0.0 ..< 1.0)})),
+    "SGN":
+      Value.function(Fn2n({
+        if $0 == 0 {
+          return 0.0
+        } else if $0 < 0 {
+          return -1.0
+        }
+        return 1.0
+      })),
     "SIN" : Value.function(Fn2n(sin)),
     "SQR" : Value.function(Fn2n(sqrt)),
     "TAN" : Value.function(Fn2n(tan)),
@@ -174,15 +190,8 @@ class Interpreter {
   fileprivate func callUserDefinedFunction(_ store: Interpreter.Store, _ name: String, _ expr: Expression) -> Value {
     let operand = evaluate(expr, store)
 
-    guard case .userFunction(let parameter, let definition, let type) = store[name]! else {
+    guard case .userFunction(let parameter, let definition, _) = store[name]! else {
       return .string("?? Internal error - function not found")
-    }
-
-    guard case .function(let operandTypes, _) = type else {
-      return .string("?? Function has non-function type")
-    }
-    if expr.type() != operandTypes[0] {
-      return .string("?? FNx must be called with numeric argument")
     }
 
     var locals = globals

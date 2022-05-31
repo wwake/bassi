@@ -1,7 +1,5 @@
-* Type-check function results
-
 * Handle the case of a missing predefined function
-* Expressions: remaining pre-defined numeric functions
+* Expressions: test pre-defined numeric functions
 * Expression: remaining pre-defined string functions
 
 * Split ExpressionParser from Parser
@@ -33,6 +31,7 @@ BI-22-16: May 31, 2022
 * Type-check predefined function calls
 * Move static type definitions from Lexer to `Type`
 * In Parser, require() should consume token
+* Type-check function results
 
 
 BI-22-15: May 30, 2022
