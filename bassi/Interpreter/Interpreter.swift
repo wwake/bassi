@@ -39,6 +39,8 @@ extension `Type` {
 }
 
 class Interpreter {
+  static let freeSpaceCount : Float = 100_000
+
   let program: Program
 
   var lineNumber : Int
@@ -51,6 +53,8 @@ class Interpreter {
     "COS" : Value.function(Fn2n(cos)),
     "EXP":
       Value.function(Fn2n(exp)),
+    "FRE":
+      Value.function(Fn2n({_ in Interpreter.freeSpaceCount})),
     "INT" : Value.function(Fn2n({Float(Int($0))})),
     "LEN" : Value.function(Fs2n({Float($0.count)})),
     "LOG":

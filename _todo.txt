@@ -1,8 +1,9 @@
-* Check line number range (1..99999)
 * Expressions: test pre-defined numeric functions
 * Expression: remaining pre-defined string functions
 
+
 * Expressions: subscripts
+* DIM
 * Multiple statements on one line
 * IF relation-expr THEN statements
 
@@ -22,6 +23,13 @@
 * Track line # of error messages
 * Error sync by skipping forward to next line # (or end)
 
+* DATA, READ, RESTORE
+* FOR, NEXT
+* GOSUB, RETURN
+* ON..GOTO
+* STOP
+
+
 Parameterized tests package?
 
 BI-22-16: May 31, 2022
@@ -31,6 +39,7 @@ BI-22-16: May 31, 2022
 * Type-check function results
 * Error handling in interpreter
 * Handling integer - line number vs float
+* Check line number range (1..99999)
 
 
 BI-22-15: May 30, 2022
