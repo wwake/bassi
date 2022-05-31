@@ -13,3 +13,5 @@ public indirect enum `Type` : Equatable {
   case function([`Type`], `Type`)
   //  case array(Int, `Type`)
 }
+
+extension `Type`: Hashable {}

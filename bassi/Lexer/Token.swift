@@ -64,7 +64,7 @@ public enum Token  {
   case stop
   case then
 
-  case predefined(String)
+  case predefined(String, `Type`)
 }
 
 extension Token : Equatable {

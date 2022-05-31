@@ -232,6 +232,11 @@ class LexerTests: XCTestCase {
   }
 
   func testFunctionCallWithSqr() {
-    checkToken("SQR(4)", Token.predefined("SQR"))
+    checkToken("SQR(4)", Token.predefined("SQR", Lexer.typeNtoN))
   }
+
+  func testFunctionNameWithDollarSign() {
+    checkToken("LEFT$(", Token.predefined("LEFT$", Lexer.typeSNtoS))
+  }
+
 }

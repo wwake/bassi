@@ -1,16 +1,19 @@
 * Type-check predefined functions
+* Move static type definitions from Lexer to `Type`
 * Handle the case of a missing predefined function
 * Expressions: remaining pre-defined numeric functions
 * Expression: remaining pre-defined string functions
 
-* Error handling in interpreter
 * Split ExpressionParser from Parser
 * In Parser, require() should consume token
+* Error handling in interpreter
 
 * Expressions: subscripts
 * Multiple statements on one line
 * IF relation-expr THEN statements
+
 * Make running write to an output stream
+
 * PRINT with multiple expressions
    25 PRINT "A" 4221    -- is legal - puts a space between them
 * PRINT with ",":
@@ -20,6 +23,8 @@
   + move to next multiple of 3 characters to start printing
   + semicolon at eol means don't print newline
   + numbers have a space before and after
+  + No space between strings
+  
 * Track line # of error messages
 * Error sync by skipping forward to next line # (or end)
 

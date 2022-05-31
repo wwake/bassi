@@ -7,8 +7,10 @@
 
 import Foundation
 
-enum ParseError: Error {
+enum ParseError: Error, Equatable {
+  case internalError(String)
   case notYetImplemented
+
   case noLineNumber
   case unknownStatement
 
@@ -21,6 +23,8 @@ enum ParseError: Error {
   case assignmentMissingEqualSign
   case letMissingAssignment
   case typeMismatch
+  case argumentCountMismatch
+
   case floatRequired
 
   case DEFfunctionMustStartWithFn
@@ -372,8 +376,8 @@ public class Parser {
       return .string(text)
     } else if case .variable(let name) = token {
       return variable(name)
-    } else if case .predefined(let name) = token {
-      return try predefinedFunctionCall(name)
+    } else if case .predefined(let name, let type) = token {
+      return try predefinedFunctionCall(name, type)
     } else if case .fn = token {
       return try userdefinedFunctionCall()
     } else {
@@ -405,7 +409,7 @@ public class Parser {
     return .variable(name, theType)
   }
 
-  fileprivate func predefinedFunctionCall(_ name: String) throws -> Expression  {
+  fileprivate func predefinedFunctionCall(_ name: String, _ type: `Type`) throws -> Expression  {
     nextToken()
 
     try require(.leftParend, .missingLeftParend)
@@ -416,7 +420,28 @@ public class Parser {
     try require(.rightParend, .missingRightParend)
     nextToken()
 
+    try typeCheck(type, [expr])
+
     return .predefined(name, expr)
+  }
+
+  fileprivate func typeCheck(_ type: `Type`, _ exprs: [Expression]) throws {
+
+    guard case .function(let operands, _) = type else {
+      throw ParseError.internalError("Function has non-function type")
+    }
+
+    if operands.count != exprs.count {
+      throw ParseError.argumentCountMismatch
+    }
+    
+    try operands
+      .enumerated()
+      .forEach { (index, parameterType) in
+        if parameterType != exprs[index].type() {
+          throw ParseError.typeMismatch
+        }
+      }
   }
 
   fileprivate func userdefinedFunctionCall()  throws -> Expression {

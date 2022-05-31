@@ -390,6 +390,21 @@ class ParserTests: XCTestCase {
     )
   }
 
+  func testPredefinedFunctionEnforcesTypes() {
+    checkError(
+      "25 PRINT SQR(\"X\")",
+      .typeMismatch
+    )
+  }
+
+  func testPredefinedFunctionEnforcesNumberOfArguments() {
+    checkError(
+      "25 PRINT LEFT$(\"X\")",
+      .argumentCountMismatch
+    )
+  }
+
+
   func testDefCall() {
     checkParsing(
       "10 PRINT FNI(3)",
@@ -408,5 +423,4 @@ class ParserTests: XCTestCase {
 """,
        .floatRequired)
   }
-
 }

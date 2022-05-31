@@ -28,6 +28,12 @@ class Lexer : Sequence, IteratorProtocol {
     ")": .rightParend
   ]
 
+  static let typeNtoN = `Type`.function([.float], .float)
+  static let typeNtoS = `Type`.function([.float], .string)
+  static let typeStoN = `Type`.function([.string], .float)
+  static let typeSNtoS = `Type`.function([.string, .float], .string)
+  static let typeSNNtoS = `Type`.function([.string, .float, .float], .string)
+
   let reservedWords: [String : Token] = [
     "AND": .and,
     "CLEAR": .clear,
@@ -58,34 +64,34 @@ class Lexer : Sequence, IteratorProtocol {
     "STOP": .stop,
     "THEN": .then,
 
-    "ABS": .predefined("ABS"),
-    "ASC": .predefined("ASC"),
-    "ATN": .predefined("ATN"),
-    "CHR$": .predefined("CHR$"),
-    "COS": .predefined("COS"),
+    "ABS": .predefined("ABS", typeNtoN),
+    "ASC": .predefined("ASC", typeStoN),
+    "ATN": .predefined("ATN", typeNtoN),
+    "CHR$": .predefined("CHR$", typeNtoS),
+    "COS": .predefined("COS", typeNtoN),
 
-    "EXP": .predefined("EXP"),
-    "FRE": .predefined("FRE"),
-    "INT": .predefined("INT"),
-    "LEFT$": .predefined("LEFT$"),
-    "LEN": .predefined("LEN"),
-    "LOG": .predefined("LOG"),
+    "EXP": .predefined("EXP", typeNtoN),
+    "FRE": .predefined("FRE", typeNtoN),
+    "INT": .predefined("INT", typeNtoN),
+    "LEFT$": .predefined("LEFT$", typeSNtoS),
+    "LEN": .predefined("LEN", typeStoN),
+    "LOG": .predefined("LOG", typeNtoN),
 
-    "MID$": .predefined("MID$"),
-    "POS": .predefined("POS"),
-    "RIGHT$": .predefined("RIGHT$"),
-    "RND": .predefined("RND"),
+    "MID$": .predefined("MID$", typeSNNtoS),
+    "POS": .predefined("POS", typeNtoN),
+    "RIGHT$": .predefined("RIGHT$", typeSNtoS),
+    "RND": .predefined("RND", typeNtoN),
 
-    "SGN": .predefined("SGN"),
-    "SIN": .predefined("SIN"),
-    "SPC": .predefined("SPC"),
-    "SQR": .predefined("SQR"),
-    "STR$": .predefined("STR$"),
+    "SGN": .predefined("SGN", typeNtoN),
+    "SIN": .predefined("SIN", typeNtoN),
+    "SPC": .predefined("SPC", typeNtoS),
+    "SQR": .predefined("SQR", typeNtoN),
+    "STR$": .predefined("STR$", typeNtoS),
 
-    "TAB": .predefined("TAB"),
-    "TAN": .predefined("TAN"),
-    "USR": .predefined("URS"),
-    "VAL": .predefined("VAL"),
+    "TAB": .predefined("TAB", typeNtoS),
+    "TAN": .predefined("TAN", typeNtoN),
+    "USR": .predefined("USR", typeNtoN),
+    "VAL": .predefined("VAL", typeStoN),
   ]
 
   let program: String
@@ -267,8 +273,10 @@ class Lexer : Sequence, IteratorProtocol {
 
   fileprivate func keywordsAndNames() -> Token? {
     let startingIndex = index
-    let value = repeatAny("A", "Z")
-
+    var value = repeatAny("A", "Z")
+    if program[index] == "$" {
+      value += "$"
+    }
     index = startingIndex
 
     let answer = reservedWords.first { (word, token) in
