@@ -10,25 +10,48 @@ import XCTest
 
 class InterpreterTests: XCTestCase {
 
-  func test10REM() throws {
-    let program = Program("10 REM Comment")
-    let interpreter = Interpreter(program)
+  fileprivate func checkProgramResults(_ program: String, expecting: String) {
+    let interpreter = Interpreter(Program(program))
     let output = interpreter.run()
-    XCTAssertEqual(output, "")
+    XCTAssertEqual(output, expecting)
+  }
+
+  fileprivate func checkPrintWithRelop(_ op: Token, _ expected: Int) {
+    let parse =
+    Parse.line(
+      40,
+      .print([
+        Expression.make(10, op, 10)
+      ]))
+
+    let interpreter = Interpreter(Program())
+    let output = interpreter.step(parse, "")
+    XCTAssertEqual(output, "\(expected)\n")
+  }
+
+  fileprivate func checkRelop(
+    _ op1ExpectedTrue: Token,
+    _ op2ExpectedFalse: Token) {
+      checkPrintWithRelop(op1ExpectedTrue, 1)
+      checkPrintWithRelop(op2ExpectedFalse, 0)
+    }
+
+  func test10REM() throws {
+    checkProgramResults(
+      "10 REM Comment",
+      expecting: "")
   }
 
   func test20PRINT() {
-    let program = Program("20 PRINT")
-    let interpreter = Interpreter(program)
-    let output = interpreter.run()
-    XCTAssertEqual(output, "\n")
+    checkProgramResults(
+      "20 PRINT",
+      expecting: "\n")
   }
 
   func test25PRINT42() {
-    let program = Program("25 PRINT 42")
-    let interpreter = Interpreter(program)
-    let output = interpreter.run()
-    XCTAssertEqual(output, "42\n")
+    checkProgramResults(
+      "25 PRINT 42",
+      expecting: "42\n")
   }
 
   func testEnd() {
@@ -37,6 +60,7 @@ class InterpreterTests: XCTestCase {
     let _ = interpreter.run()
     XCTAssertTrue(interpreter.done)
   }
+
   func testSkip() throws {
     let parse = Parse.line(10, Parse.skip)
 
@@ -78,10 +102,9 @@ class InterpreterTests: XCTestCase {
   }
 
   func testPowers() {
-    let program = Program("25 PRINT 2^3^2")
-    let interpreter = Interpreter(program)
-    let output = interpreter.run()
-    XCTAssertEqual(output, "64\n")
+    checkProgramResults(
+      "25 PRINT 2^3^2",
+      expecting: "64\n")
   }
 
   func testLogicalOperationsOnIntegersTree() {
@@ -176,26 +199,6 @@ class InterpreterTests: XCTestCase {
     XCTAssertEqual(output, "2\n")
   }
 
-  fileprivate func checkPrintWithRelop(_ op: Token, _ expected: Int) {
-    let parse =
-    Parse.line(
-      40,
-      .print([
-        Expression.make(10, op, 10)
-      ]))
-
-    let interpreter = Interpreter(Program())
-    let output = interpreter.step(parse, "")
-    XCTAssertEqual(output, "\(expected)\n")
-  }
-
-  fileprivate func checkRelop(
-    _ op1ExpectedTrue: Token,
-    _ op2ExpectedFalse: Token) {
-      checkPrintWithRelop(op1ExpectedTrue, 1)
-      checkPrintWithRelop(op2ExpectedFalse, 0)
-    }
-
   func testPrintWithEqualityComparison() {
     checkRelop(.equals, .notEqual)
     checkRelop(.greaterThanOrEqualTo, .lessThan)
@@ -231,91 +234,76 @@ class InterpreterTests: XCTestCase {
   }
 
   func testTwoLineProgramRunsBothLines() throws {
-    let program = Program("""
+    checkProgramResults("""
 25 PRINT 25
 40 END
-""")
-    let interpreter = Interpreter(program)
-    let output = interpreter.run()
-    XCTAssertEqual(output, "25\n")
+""",
+    expecting: "25\n")
   }
 
   func testRunMultiLineProgramAndFallOffTheEnd() throws {
-    let program = Program("""
+    checkProgramResults("""
 25 GOTO 50
 30 PRINT 30
 50 PRINT 50
-""")
-    let interpreter = Interpreter(program)
-    let output = interpreter.run()
-    XCTAssertEqual(output, "50\n")
+""",
+    expecting: "50\n")
   }
 
   func ifWithFalseResultFallsThrough() throws {
-    let program = Program("""
+    checkProgramResults("""
 25 IF 0 THEN 50
 30 PRINT 30
 50 PRINT 50
-""")
-    let interpreter = Interpreter(program)
-    let output = interpreter.run()
-    XCTAssertEqual(output, "30\n50\n")
+""",
+    expecting: "30\n50\n")
   }
 
   func testIfWithTrueResultDoesGoto() throws {
-    let program = Program("""
+    checkProgramResults("""
 25 IF 1 THEN 50
 30 PRINT 30
 50 PRINT 50
-""")
-    let interpreter = Interpreter(program)
-    let output = interpreter.run()
-    XCTAssertEqual(output, "50\n")
+""",
+    expecting: "50\n")
   }
 
   func testAssignment() throws {
-    let program = Program("""
+    checkProgramResults("""
 10 X = 42
 25 PRINT X
-""")
-    let interpreter = Interpreter(program)
-    let output = interpreter.run()
-    XCTAssertEqual(output, "42\n")
+""",
+    expecting: "42\n")
   }
 
   func testStringRelationalOperator() {
-    let program = Program("25 PRINT \"A\"<\"B\"")
-    let interpreter = Interpreter(program)
-    let output = interpreter.run()
-    XCTAssertEqual(output, "1\n")
+    checkProgramResults(
+      "25 PRINT \"A\"<\"B\"",
+      expecting: "1\n")
   }
 
   func testStringVariableDefaultsToEmptyString() {
-    let program = Program("25 PRINT A$")
-    let interpreter = Interpreter(program)
-    let output = interpreter.run()
-    XCTAssertEqual(output, "\n")
+    checkProgramResults(
+      "25 PRINT A$",
+      expecting: "\n")
   }
 
   func testCallSqr() {
-    let program = Program("25 PRINT SQR(4)")
-    let interpreter = Interpreter(program)
-    let output = interpreter.run()
-    XCTAssertEqual(output, "2\n")
+    checkProgramResults(
+      "25 PRINT SQR(4)",
+      expecting: "2\n")
   }
 
   func testCallSin() {
-    let program = Program("25 PRINT SIN(0)")
-    let interpreter = Interpreter(program)
-    let output = interpreter.run()
-    XCTAssertEqual(output, "0\n")
+    checkProgramResults(
+      "25 PRINT SIN(0)",
+      expecting: "0\n")
   }
 
   func testCallLen() {
-    let program = Program("25 PRINT LEN(\"ABC\")")
-    let interpreter = Interpreter(program)
-    let output = interpreter.run()
-    XCTAssertEqual(output, "3\n")
+    checkProgramResults(
+      "25 PRINT LEN(\"ABC\")",
+      expecting: "3\n")
   }
 
   func testTypeDefaultValueForFunctionIs0() {
@@ -353,24 +341,20 @@ class InterpreterTests: XCTestCase {
   }
 
   func testCallUserDefinedFunction() {
-    let program = Program("""
+    checkProgramResults("""
 10 DEF FNI(X)=X
 25 PRINT FNI(3)
-""")
-    let interpreter = Interpreter(program)
-    let output = interpreter.run()
-    XCTAssertEqual(output, "3\n")
+""",
+    expecting: "3\n")
   }
 
   func testUsingStaticScope() {
-    let program = Program("""
+    checkProgramResults("""
 10 DEF FNA(Y)= Y + FNB(Y+1)
 20 DEF FNB(X)= X+Y
 30 Y=1
 40 PRINT FNA(3)
-""")
-    let interpreter = Interpreter(program)
-    let output = interpreter.run()
-    XCTAssertEqual(output, "8\n")
+""",
+    expecting: "8\n")
   }
 }

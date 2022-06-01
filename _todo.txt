@@ -1,9 +1,14 @@
 * Expressions: test pre-defined numeric functions
 * Expression: remaining pre-defined string functions
-
+* Use test helper for parse-based tests in InterpreterTests
 
 * Expressions: subscripts
 * DIM
+
+* ON..GOTO
+* FOR, NEXT
+* GOSUB, RETURN
+
 * Multiple statements on one line
 * IF relation-expr THEN statements
 
@@ -21,16 +26,18 @@
   + No space between strings
   
 * Track line # of error messages
+* Column number of syntax errors
 * Error sync by skipping forward to next line # (or end)
 
 * DATA, READ, RESTORE
-* FOR, NEXT
-* GOSUB, RETURN
-* ON..GOTO
 * STOP
 
 
 Parameterized tests package?
+
+BI-22-17: June 1, 2022
+* Use test helper in InterpreterTests
+
 
 BI-22-16: May 31, 2022
 * Type-check predefined function calls
