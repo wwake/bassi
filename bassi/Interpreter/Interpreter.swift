@@ -23,6 +23,14 @@ fileprivate func boolToFloat(
     }
   }
 
+func basicFormat(_ number: (Float)) -> String {
+  if number == Float(Int(number)) {
+    return String(format: "%.0f", number)
+  } else {
+    return String(format: "%f", number)
+  }
+}
+
 extension `Type` {
   func defaultValue() -> Value {
     switch self {
@@ -54,15 +62,21 @@ class Interpreter {
       return Float($0.utf8.first!)
     })),
     "ATN" : Value.function(Fn2n(atan)),
-    "CHR$" : Value.function(Fn2s( { _ in
-      return "wrong"
-    })),
+    "CHR$" : Value.function(Fn2s( { return
+          String(
+            Character(
+              UnicodeScalar(
+                Int($0))!))
+        })),
     "COS" : Value.function(Fn2n(cos)),
     "EXP":
       Value.function(Fn2n(exp)),
     "FRE":
       Value.function(Fn2n({_ in Interpreter.freeSpaceCount})),
     "INT" : Value.function(Fn2n({Float(Int($0))})),
+    "LEFT$": Value.function(Fsn2s({
+      String($0.prefix(Int($1)))
+    })),
     "LEN" : Value.function(Fs2n({Float($0.count)})),
     "LOG":
       Value.function(Fn2n(log)),
@@ -79,7 +93,11 @@ class Interpreter {
       })),
     "SIN" : Value.function(Fn2n(sin)),
     "SQR" : Value.function(Fn2n(sqrt)),
+    "STR$": Value.function(Fn2s({
+      basicFormat($0)
+    })),
     "TAN" : Value.function(Fn2n(tan)),
+    "VAL" : Value.function(Fs2n({Float($0) ?? 0})),
   ]
 
   init(_ program: Program) {
@@ -215,11 +233,7 @@ class Interpreter {
     let value = evaluate(input, globals)
     switch value {
     case .number(let number):
-      if number == Float(Int(number)) {
-        return String(format: "%.0f", number)
-      } else {
-        return String(format: "%f", number)
-      }
+      return basicFormat(number)
 
     case .string(let string):
       return string

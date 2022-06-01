@@ -1,5 +1,5 @@
-* Expressions: test pre-defined numeric functions
-* Expression: remaining pre-defined string functions
+* Expression: multi-argument pre-defined string functions
+* xtestLEFTfunction
 * Use test helper for parse-based tests in InterpreterTests
 
 * Expressions: subscripts
@@ -38,7 +38,8 @@ Parameterized tests package?
 
 BI-22-17: June 1, 2022
 * Use test helper in InterpreterTests
-
+* Expressions: test pre-defined numeric functions
+* Expression: single-argument pre-defined string functions
 
 BI-22-16: May 31, 2022
 * Type-check predefined function calls

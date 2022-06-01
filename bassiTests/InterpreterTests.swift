@@ -425,7 +425,7 @@ class InterpreterTests: XCTestCase {
     }
   }
 
-  func xtestStringSystemFunctions() {
+  func testStringSystemFunctions() {
     checkProgramResults(
       "1 PRINT LEN(\"ABCDE\")",
       expecting: "5\n")
@@ -434,6 +434,9 @@ class InterpreterTests: XCTestCase {
       "1 PRINT CHR$(42)",
       expecting: "*\n")
 
+    checkProgramResults(
+      "1 PRINT STR$(-21)",
+      expecting: "-21\n")
   }
 
   func testASCfunction() {
@@ -443,6 +446,34 @@ class InterpreterTests: XCTestCase {
 
     checkProgramResults(
       "1 PRINT ASC(\"\")",
+      expecting: "0\n")
+  }
+
+  func xtestLEFTfunction() {
+    checkProgramResults(
+      "1 PRINT LEFT$(\"\", 10)",
+      expecting: "")
+
+    checkProgramResults(
+      "1 PRINT LEFT$(\"ABC\", 2)",
+      expecting: "AB")
+
+    checkProgramResults(
+      "1 PRINT LEFT$(\"ABC\", 0)",
+      expecting: "")
+
+    checkProgramResults(
+      "1 PRINT LEFT$(\"ABC\", 10)",
+      expecting: "ABC")
+  }
+
+  func testVALfunction() {
+    checkProgramResults(
+      "1 PRINT VAL(\"21.25\")",
+      expecting: "21.250000\n")
+
+    checkProgramResults(
+      "1 PRINT VAL(\"junk\")",
       expecting: "0\n")
   }
 }
