@@ -49,7 +49,14 @@ class Interpreter {
   typealias Store = [String : Value]
   var globals: Store = [
     "ABS" : Value.function(Fn2n(abs)),
+    "ASC" : Value.function(Fs2n( {
+      if $0.count == 0 { return 0}
+      return Float($0.utf8.first!)
+    })),
     "ATN" : Value.function(Fn2n(atan)),
+    "CHR$" : Value.function(Fn2s( { _ in
+      return "wrong"
+    })),
     "COS" : Value.function(Fn2n(cos)),
     "EXP":
       Value.function(Fn2n(exp)),

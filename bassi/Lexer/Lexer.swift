@@ -98,7 +98,9 @@ class Lexer : Sequence, IteratorProtocol {
   fileprivate static func normalize(_ program: String) -> String {
     let program2 = program + "\n"
     let pieces = program2
-      .split(separator:"\"")
+      .split(
+        separator:"\"",
+        omittingEmptySubsequences: false)
 
     let normalizedPieces =
       pieces

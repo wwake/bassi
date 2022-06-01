@@ -424,4 +424,25 @@ class InterpreterTests: XCTestCase {
       XCTAssertTrue(value >= 0 && value < 1)
     }
   }
+
+  func xtestStringSystemFunctions() {
+    checkProgramResults(
+      "1 PRINT LEN(\"ABCDE\")",
+      expecting: "5\n")
+
+    checkProgramResults(
+      "1 PRINT CHR$(42)",
+      expecting: "*\n")
+
+  }
+
+  func testASCfunction() {
+    checkProgramResults(
+      "1 PRINT ASC(\"DAD\")",
+      expecting: "68\n")
+
+    checkProgramResults(
+      "1 PRINT ASC(\"\")",
+      expecting: "0\n")
+  }
 }

@@ -413,6 +413,16 @@ class ParserTests: XCTestCase {
     )
   }
 
+  func testChrParsesString() {
+    checkExpression(
+      "ASC(\"\")",
+      .predefined(
+        "ASC",
+        .string(""),
+        .number)
+    )
+  }
+  
   func testPredefinedFunctionEnforcesTypes() {
     checkError(
       "25 PRINT SQR(\"X\")",

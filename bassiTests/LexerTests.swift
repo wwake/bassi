@@ -106,6 +106,10 @@ class LexerTests: XCTestCase {
     checkString("\"body\"", .string("body"))
   }
 
+  func testEmptyStringKnowsItsContents() {
+    checkString("\"\"", .string(""))
+  }
+
   func testUnterminatedStringIsAnError() {
     checkString("\"body",
                .error("unterminated string"))

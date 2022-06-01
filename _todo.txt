@@ -32,6 +32,7 @@
 * DATA, READ, RESTORE
 * STOP
 * Format for printing floats - no trailing 0's after decimal point?
+* What should ASC do if given an empty string?
 
 Parameterized tests package?
 
