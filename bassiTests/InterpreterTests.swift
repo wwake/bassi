@@ -357,4 +357,71 @@ class InterpreterTests: XCTestCase {
 """,
     expecting: "8\n")
   }
+
+  func testPrintIntegerUsesNoDecimals() {
+    checkProgramResults(
+      "1 PRINT 42",
+      expecting: "42\n")
+  }
+
+  func testPrintFloatDoesUseDecimals() {
+    checkProgramResults(
+      "1 PRINT 0.875000",
+      expecting: "0.875000\n")
+  }
+
+  func testNumericSystemFunctions() {
+    checkProgramResults(
+      "1 PRINT ABS(-1)",
+      expecting: "1\n")
+
+    checkProgramResults(
+      "1 PRINT ATN(1)",
+      expecting: "0.785398\n")
+
+    checkProgramResults(
+      "1 PRINT COS(1)",
+      expecting: "0.540302\n")
+
+    checkProgramResults(
+      "1 PRINT EXP(1)",
+      expecting: "2.718282\n")
+
+    checkProgramResults(
+      "1 PRINT FRE(1)",
+      expecting: "100000\n")
+
+    checkProgramResults(
+      "1 PRINT INT(41.99)",
+      expecting: "41\n")
+
+    checkProgramResults(
+      "1 PRINT LOG(2.71)",
+      expecting: "0.996949\n")
+
+    checkProgramResults(
+      "1 PRINT SGN(-41.99)",
+      expecting: "-1\n")
+
+    checkProgramResults(
+      "1 PRINT SIN(1.56)",
+      expecting: "0.999942\n")
+
+    checkProgramResults(
+      "1 PRINT SQR(64)",
+      expecting: "8\n")
+
+    checkProgramResults(
+      "1 PRINT TAN(3.14)",
+      expecting: "-0.001593\n")
+  }
+
+  func testRandomNumbers() {
+    (1...1000).forEach { _ in
+      let interpreter = Interpreter(Program("1 PRINT RND(0)"))
+      let output = interpreter.run()
+      let value = Float(output.dropLast())!
+      XCTAssertTrue(value >= 0 && value < 1)
+    }
+  }
 }

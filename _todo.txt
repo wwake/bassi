@@ -31,7 +31,7 @@
 
 * DATA, READ, RESTORE
 * STOP
-
+* Format for printing floats - no trailing 0's after decimal point?
 
 Parameterized tests package?
 

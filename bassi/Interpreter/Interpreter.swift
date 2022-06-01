@@ -16,7 +16,7 @@ fileprivate func boolToFloat(
     case .number(let number):
       return .number(opFloat(number, y.asFloat()) ? 1.0 : 0.0)
     case .string(let string):
-        return .number(opString(string, y.asString()) ? 1.0 : 0.0)
+      return .number(opString(string, y.asString()) ? 1.0 : 0.0)
     case .function,
         .userFunction(_, _, _):
       return .number(0.0)
@@ -78,7 +78,7 @@ class Interpreter {
   init(_ program: Program) {
     self.program = program
     lineNumber = program.firstLineNumber()
- }
+  }
 
   func run() -> String {
     var output = ""
@@ -208,7 +208,11 @@ class Interpreter {
     let value = evaluate(input, globals)
     switch value {
     case .number(let number):
-      return String(format: "%.0f", number)
+      if number == Float(Int(number)) {
+        return String(format: "%.0f", number)
+      } else {
+        return String(format: "%f", number)
+      }
 
     case .string(let string):
       return string
