@@ -17,7 +17,7 @@ fileprivate func boolToFloat(
       return .number(opFloat(number, y.asFloat()) ? 1.0 : 0.0)
     case .string(let string):
       return .number(opString(string, y.asString()) ? 1.0 : 0.0)
-    case .function,
+    case .undefined, .function,
         .userFunction(_, _, _):
       return .number(0.0)
     }
@@ -252,6 +252,8 @@ class Interpreter {
 
     case .string(let string):
       return string
+
+    case .undefined: return "<UNDEFINED>"
 
     case .function:
       return "<FUNCTION>"

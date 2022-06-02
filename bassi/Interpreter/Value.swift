@@ -21,6 +21,7 @@ public enum Value : Equatable {
     }
   }
 
+  case undefined
   case number(Float)
   case string(String)
   case function(([Value]) -> Value)
