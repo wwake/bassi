@@ -419,13 +419,19 @@ public class Parser {
 
     try require(.leftParend, .missingLeftParend)
 
-    let expr = try expression()
+    var exprs: [Expression] = []
+    exprs.append(try expression())
+
+    while token == .comma {
+      nextToken()
+      exprs.append(try expression())
+    }
 
     try require(.rightParend, .missingRightParend)
 
-    try typeCheck(operandTypes, [expr])
+    try typeCheck(operandTypes, exprs)
 
-    return .predefined(name, [expr], resultType)
+    return .predefined(name, exprs, resultType)
   }
 
   fileprivate func typeCheck(_ operands: [`Type`], _ exprs: [Expression]) throws {

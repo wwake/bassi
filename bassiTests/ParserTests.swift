@@ -444,15 +444,21 @@ class ParserTests: XCTestCase {
     )
   }
 
-  func xtestPredefinedFunctionCallSupportsMultipleArguments() {
+  func testPredefinedFunctionCallSupportsMultipleArguments() {
     checkExpression(
       "LEFT$(\"S\", 1)",
       .predefined(
         "LEFT$",
         [.string("S"), .number(1)],
         .string)
-
       )
+  }
+
+  func testPredefinedFunctionDetectsTypeMismatchForMultipleArguments() {
+    checkError(
+      "10 PRINT LEFT$(\"S\", \"T\")",
+      .typeMismatch
+    )
   }
 
   func testDefCall() {
