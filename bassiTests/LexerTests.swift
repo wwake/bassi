@@ -134,6 +134,7 @@ class LexerTests: XCTestCase {
     checkToken("=", .equals)
     checkToken("(", .leftParend)
     checkToken(")", .rightParend)
+    checkToken(",", .comma)
   }
 
   func testRelationalOperators() {

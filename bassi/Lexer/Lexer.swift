@@ -25,7 +25,8 @@ class Lexer : Sequence, IteratorProtocol {
     "^": .exponent,
     "=": .equals,
     "(": .leftParend,
-    ")": .rightParend
+    ")": .rightParend,
+    ",": .comma
   ]
 
   let reservedWords: [String : Token] = [
@@ -163,7 +164,7 @@ class Lexer : Sequence, IteratorProtocol {
     case "\"":
       return string()
 
-    case "+", "-", "*", "/", "^", "=", "(", ")":
+    case "+", "-", "*", "/", "^", "=", "(", ")", ",":
       return oneCharacterOperator()
 
     case "<":

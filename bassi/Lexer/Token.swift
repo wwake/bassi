@@ -26,7 +26,8 @@ public enum Token  {
   case equals
   case leftParend
   case rightParend
-
+  case comma
+  
   case lessThan
   case lessThanOrEqualTo
   case notEqual

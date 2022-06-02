@@ -450,13 +450,13 @@ class InterpreterTests: XCTestCase {
   }
 
   func xtestLEFTfunction() {
+      checkProgramResults(
+        "1 PRINT LEFT$(\"ABC\", 2)",
+        expecting: "AB")
+
     checkProgramResults(
       "1 PRINT LEFT$(\"\", 10)",
       expecting: "")
-
-    checkProgramResults(
-      "1 PRINT LEFT$(\"ABC\", 2)",
-      expecting: "AB")
 
     checkProgramResults(
       "1 PRINT LEFT$(\"ABC\", 0)",
