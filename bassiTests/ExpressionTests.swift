@@ -31,7 +31,7 @@ class ExpressionTests: XCTestCase {
   }
 
   func testCallOfPredefinedFunctionHasProperReturnType() {
-    let call = Expression.predefined("CHR$", .number(3), .string)
+    let call = Expression.predefined("CHR$", [.number(3)], .string)
     XCTAssertEqual(call.type(), .string)
   }
 

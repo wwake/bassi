@@ -1,3 +1,4 @@
+* Parser: add support for multiple arguments on function call
 * Expression: multi-argument pre-defined string functions
 * xtestLEFTfunction
 * Use test helper for parse-based tests in InterpreterTests
@@ -35,6 +36,11 @@
 * What should ASC do if given an empty string?
 
 Parameterized tests package?
+
+BI-22-18: June 2, 2022
+* Lexer: Add support for comma
+* Interpreter: Stop when there's a syntax error
+
 
 BI-22-17: June 1, 2022
 * Use test helper in InterpreterTests

@@ -395,7 +395,7 @@ class ParserTests: XCTestCase {
       .line(
         25,
         .print(
-          [.predefined("SQR", .number(4), .number)]
+          [.predefined("SQR", [.number(4)], .number)]
         )
       )
     )
@@ -407,7 +407,7 @@ class ParserTests: XCTestCase {
       .line(
         25,
         .print(
-          [.predefined("CHR$", .number(4), .string)]
+          [.predefined("CHR$", [.number(4)], .string)]
         )
       )
     )
@@ -418,7 +418,7 @@ class ParserTests: XCTestCase {
       "ASC(\"\")",
       .predefined(
         "ASC",
-        .string(""),
+        [.string("")],
         .number)
     )
   }
@@ -444,6 +444,16 @@ class ParserTests: XCTestCase {
     )
   }
 
+  func xtestPredefinedFunctionCallSupportsMultipleArguments() {
+    checkExpression(
+      "LEFT$(\"S\", 1)",
+      .predefined(
+        "LEFT$",
+        [.string("S"), .number(1)],
+        .string)
+
+      )
+  }
 
   func testDefCall() {
     checkParsing(

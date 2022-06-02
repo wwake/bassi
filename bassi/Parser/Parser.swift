@@ -425,7 +425,7 @@ public class Parser {
 
     try typeCheck(operandTypes, [expr])
 
-    return .predefined(name, expr, resultType)
+    return .predefined(name, [expr], resultType)
   }
 
   fileprivate func typeCheck(_ operands: [`Type`], _ exprs: [Expression]) throws {

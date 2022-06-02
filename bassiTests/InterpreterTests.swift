@@ -61,6 +61,15 @@ class InterpreterTests: XCTestCase {
     XCTAssertTrue(interpreter.done)
   }
 
+  func testSyntaxErrorStopsInterpreter() throws {
+    let program = "10 PRINT {}"
+    let interpreter = Interpreter(Program(program))
+    let actual = interpreter.run()
+    XCTAssertEqual(
+      actual,
+      "? expectedStartOfExpression\n")
+  }
+
   func testSkip() throws {
     let parse = Parse.line(10, Parse.skip)
 

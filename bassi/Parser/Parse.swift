@@ -22,7 +22,7 @@ public indirect enum Expression: Equatable {
   case number(Float)
   case string(String)
   case variable(String, `Type`)
-  case predefined(String, Expression, `Type`)
+  case predefined(String, [Expression], `Type`)
   case userdefined(String, Expression)
   
   case op1(Token, Expression)

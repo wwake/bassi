@@ -111,7 +111,14 @@ class Interpreter {
     while !done {
       let line = program[lineNumber]
       lineNumber = program.lineAfter(lineNumber)
-      let parse = Parser().parse(line)
+      let parser = Parser()
+      let parse = parser.parse(line)
+      if parser.errorMessages.count > 0 {
+        parser.errorMessages.forEach {
+          output += "? " + String(describing: $0) + "\n"
+        }
+        break
+      }
       output = step(parse, output)
     }
 
@@ -191,8 +198,8 @@ class Interpreter {
     case .string(let value):
       return Value.string(value)
 
-    case .predefined(let name, let expr, _):
-      return callPredefinedFunction(store, name, expr)
+    case .predefined(let name, let exprs, _):
+      return callPredefinedFunction(store, name, exprs[0])
 
     case .userdefined(let name, let expr):
       return callUserDefinedFunction(store, name, expr)
