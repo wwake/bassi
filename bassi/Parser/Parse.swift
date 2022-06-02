@@ -19,6 +19,7 @@ public indirect enum Parse : Equatable {
 }
 
 public indirect enum Expression: Equatable {
+  case missing
   case number(Float)
   case string(String)
   case variable(String, `Type`)
@@ -30,6 +31,8 @@ public indirect enum Expression: Equatable {
 
   func type() -> `Type` {
     switch self {
+    case .missing:
+      return .missing
     case .number(_):
       return .number
     case .string(_):

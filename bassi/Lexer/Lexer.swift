@@ -72,7 +72,7 @@ class Lexer : Sequence, IteratorProtocol {
     "LEN": .predefined("LEN", `Type`.typeStoN),
     "LOG": .predefined("LOG", `Type`.typeNtoN),
 
-    "MID$": .predefined("MID$", `Type`.typeSNNtoS),
+    "MID$": .predefined("MID$", `Type`.typeSNoptNtoS),
     "POS": .predefined("POS", `Type`.typeNtoN),
     "RIGHT$": .predefined("RIGHT$", `Type`.typeSNtoS),
     "RND": .predefined("RND", `Type`.typeNtoN),

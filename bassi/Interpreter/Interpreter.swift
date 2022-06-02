@@ -34,6 +34,9 @@ func basicFormat(_ number: (Float)) -> String {
 extension `Type` {
   func defaultValue() -> Value {
     switch self {
+    case .missing:
+      return Value.string("?? Missing value")
+
     case .number:
       return Value.number(0.0)
 
@@ -42,6 +45,8 @@ extension `Type` {
 
     case .function(_, _):
       return Value.string("?? Undefined function")
+    case .opt(_):
+      return Value.string("?? Opt type default")
     }
   }
 }
@@ -192,6 +197,8 @@ class Interpreter {
 
   func evaluate(_ value: Expression, _ store: Store) -> Value {
     switch value {
+    case .missing:
+      return Value.string("?Missing in evaluate")
     case .number(let floatValue):
       return Value.number(floatValue)
 

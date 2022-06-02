@@ -8,9 +8,11 @@
 import Foundation
 
 public indirect enum `Type` : Equatable {
+  case missing
   case number
   case string
   case function([`Type`], `Type`)
+  case opt(`Type`)
   //  case array(Int, `Type`)
 }
 
@@ -21,5 +23,5 @@ extension `Type` {
   static let typeNtoS = `Type`.function([.number], .string)
   static let typeStoN = `Type`.function([.string], .number)
   static let typeSNtoS = `Type`.function([.string, .number], .string)
-  static let typeSNNtoS = `Type`.function([.string, .number, .number], .string)
+  static let typeSNoptNtoS = `Type`.function([.string, .number, .opt(.number)], .string)
 }

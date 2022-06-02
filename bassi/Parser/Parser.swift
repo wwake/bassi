@@ -413,7 +413,7 @@ public class Parser {
   fileprivate func predefinedFunctionCall(_ name: String, _ type: `Type`) throws -> Expression  {
     nextToken()
 
-    guard case .function(let operandTypes, let resultType) = type else {
+    guard case .function(let parameterTypes, let resultType) = type else {
       throw ParseError.internalError("Function has non-function type")
     }
 
@@ -427,27 +427,50 @@ public class Parser {
       exprs.append(try expression())
     }
 
+    while exprs.count < parameterTypes.count {
+      exprs.append(.missing)
+    }
+
     try require(.rightParend, .missingRightParend)
 
-    try typeCheck(operandTypes, exprs)
+    try typeCheck(parameterTypes, exprs)
 
     return .predefined(name, exprs, resultType)
   }
 
-  fileprivate func typeCheck(_ operands: [`Type`], _ exprs: [Expression]) throws {
+  fileprivate func typeCheck(
+    _ parameterTypes: [`Type`],
+    _ arguments: [Expression]) throws {
 
-    if operands.count != exprs.count {
-      throw ParseError.argumentCountMismatch
+      if parameterTypes.count < arguments.count {
+        throw ParseError.argumentCountMismatch
+      }
+
+      try zip(parameterTypes, arguments)
+        .forEach { (parameterType, argument) in
+          if !isCompatible(parameterType, argument.type()) {
+            throw ParseError.typeMismatch
+          }
+        }
     }
 
-    try operands
-      .enumerated()
-      .forEach { (index, parameterType) in
-        if parameterType != exprs[index].type() {
-          throw ParseError.typeMismatch
+  fileprivate func isCompatible(
+    _ parameterType: `Type`,
+    _ argumentType: `Type`) -> Bool {
+      if parameterType == argumentType {
+        return true
+      }
+      if case .opt(let innerType) = parameterType {
+        if innerType == argumentType {
+          return true
+        }
+        if argumentType == .missing {
+          return true
         }
       }
-  }
+      return false
+    }
+
 
   fileprivate func userdefinedFunctionCall()  throws -> Expression {
     nextToken()

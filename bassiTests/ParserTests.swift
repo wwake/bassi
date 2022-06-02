@@ -440,7 +440,7 @@ class ParserTests: XCTestCase {
   func testPredefinedFunctionEnforcesNumberOfArguments() {
     checkError(
       "25 PRINT LEFT$(\"X\")",
-      .argumentCountMismatch
+      .typeMismatch
     )
   }
 
@@ -458,6 +458,26 @@ class ParserTests: XCTestCase {
     checkError(
       "10 PRINT LEFT$(\"S\", \"T\")",
       .typeMismatch
+    )
+  }
+
+  func testMIDworksWithThreeArguments() {
+    checkExpression(
+      "MID$(\"STR\", 1, 2)",
+      .predefined(
+        "MID$",
+        [.string("STR"), .number(1), .number(2)],
+        .string)
+    )
+  }
+
+  func testMIDworksWithTwoArguments() {
+    checkExpression(
+      "MID$(\"STR\", 1)",
+      .predefined(
+        "MID$",
+        [.string("STR"), .number(1), .missing],
+        .string)
     )
   }
 
