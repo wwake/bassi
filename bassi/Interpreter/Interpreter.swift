@@ -199,7 +199,7 @@ class Interpreter {
       return Value.string(value)
 
     case .predefined(let name, let exprs, _):
-      return callPredefinedFunction(store, name, exprs[0])
+      return callPredefinedFunction(store, name, exprs)
 
     case .userdefined(let name, let expr):
       return callUserDefinedFunction(store, name, expr)
@@ -216,7 +216,8 @@ class Interpreter {
     }
   }
 
-  fileprivate func callPredefinedFunction(_ store: Interpreter.Store, _ name: String, _ expr: Expression) -> Value {
+  fileprivate func callPredefinedFunction(_ store: Interpreter.Store, _ name: String, _ exprs: [Expression]) -> Value {
+    let expr = exprs[0]
     let function = store[name]!
     let operand = evaluate(expr, store)
 
