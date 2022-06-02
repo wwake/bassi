@@ -458,22 +458,40 @@ class InterpreterTests: XCTestCase {
       expecting: "0\n")
   }
 
-  func xtestLEFTfunction() {
+  func testLEFTfunction() {
       checkProgramResults(
         "1 PRINT LEFT$(\"ABC\", 2)",
-        expecting: "AB")
+        expecting: "AB\n")
 
     checkProgramResults(
       "1 PRINT LEFT$(\"\", 10)",
-      expecting: "")
+      expecting: "\n")
 
     checkProgramResults(
       "1 PRINT LEFT$(\"ABC\", 0)",
-      expecting: "")
+      expecting: "\n")
 
     checkProgramResults(
       "1 PRINT LEFT$(\"ABC\", 10)",
-      expecting: "ABC")
+      expecting: "ABC\n")
+  }
+
+  func testRIGHTfunction() {
+    checkProgramResults(
+      "1 PRINT RIGHT$(\"ABC\", 2)",
+      expecting: "BC\n")
+
+    checkProgramResults(
+      "1 PRINT RIGHT$(\"\", 10)",
+      expecting: "\n")
+
+    checkProgramResults(
+      "1 PRINT RIGHT$(\"ABC\", 0)",
+      expecting: "\n")
+
+    checkProgramResults(
+      "1 PRINT RIGHT$(\"ABC\", 10)",
+      expecting: "ABC\n")
   }
 
   func testVALfunction() {

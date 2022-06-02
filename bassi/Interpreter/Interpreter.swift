@@ -80,7 +80,10 @@ class Interpreter {
     "LEN" : Value.function(Fs2n({Float($0.count)})),
     "LOG":
       Value.function(Fn2n(log)),
-    "RND" :
+    "RIGHT$": Value.function(Fsn2s({
+        String($0.suffix(Int($1)))
+      })),
+      "RND" :
       Value.function(Fn2n({_ in Float.random(in: 0.0 ..< 1.0)})),
     "SGN":
       Value.function(Fn2n({
@@ -217,11 +220,15 @@ class Interpreter {
   }
 
   fileprivate func callPredefinedFunction(_ store: Interpreter.Store, _ name: String, _ exprs: [Expression]) -> Value {
-    let expr = exprs[0]
-    let function = store[name]!
-    let operand = evaluate(expr, store)
 
-    return function.apply([operand])
+    let function = store[name]!
+
+    let arguments = exprs
+      .map {
+        evaluate($0, store)
+      }
+
+    return function.apply(arguments)
   }
 
   fileprivate func callUserDefinedFunction(_ store: Interpreter.Store, _ name: String, _ expr: Expression) -> Value {
