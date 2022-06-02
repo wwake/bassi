@@ -85,10 +85,17 @@ class Interpreter {
     "LEN" : Value.function(Fs2n({Float($0.count)})),
     "LOG":
       Value.function(Fn2n(log)),
+    "MID$": Value.function(Fsnn2s({
+      let count = $0.count
+
+      let start = max(0, count - Int($1 - 1))
+      let rightString = String($0.suffix(start))
+      return String(rightString.prefix(Int($2)))
+    })),
     "RIGHT$": Value.function(Fsn2s({
         String($0.suffix(Int($1)))
       })),
-      "RND" :
+    "RND" :
       Value.function(Fn2n({_ in Float.random(in: 0.0 ..< 1.0)})),
     "SGN":
       Value.function(Fn2n({
