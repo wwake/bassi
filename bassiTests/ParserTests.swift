@@ -515,4 +515,15 @@ class ParserTests: XCTestCase {
         )
       )
   }
+
+  func testFetchFromArray() {
+    checkParsing(
+      "10 PRINT A(0)",
+      .line(
+        10,
+        .print([
+          .arrayAccess("A", .number, [.number(0)])
+        ]))
+    )
+  }
 }

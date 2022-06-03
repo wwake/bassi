@@ -188,7 +188,7 @@ public class Parser {
     guard case .variable(let name) = token else {
       return .skip /*can't happen*/
     }
-    let variable = variable(name)
+    let variable = try variable(name)
 
     try require(.equals, .assignmentMissingEqualSign)
 
@@ -381,7 +381,7 @@ public class Parser {
       nextToken()
       return .string(text)
     } else if case .variable(let name) = token {
-      return variable(name)
+      return try variable(name)
     } else if case .predefined(let name, let type) = token {
       return try predefinedFunctionCall(name, type)
     } else if case .fn = token {
@@ -407,11 +407,23 @@ public class Parser {
     return value
   }
 
-  fileprivate func variable(_ name: String) -> Expression {
+  fileprivate func variable(_ name: String) throws -> Expression  {
     nextToken()
+
     let theType : `Type` =
     name.last! == "$" ? .string : .number
-    return .variable(name, theType)
+
+    if token != .leftParend {
+      return .variable(name, theType)
+    }
+
+    try require(.leftParend, .missingLeftParend)
+
+    let expr = try expression()
+
+    try require(.rightParend, .missingRightParend)
+
+    return .arrayAccess(name, .number, [expr])
   }
 
   fileprivate func predefinedFunctionCall(_ name: String, _ type: `Type`) throws -> Expression  {

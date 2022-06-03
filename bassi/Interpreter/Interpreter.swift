@@ -253,6 +253,9 @@ class Interpreter {
     case .userdefined(let name, let expr):
       return callUserDefinedFunction(store, name, expr)
 
+    case .arrayAccess(_, _, _):
+      return .string("? array access nyi")
+      
     case .op1(let token, let expr):
       let operand = evaluate(expr, store)
       return operators1[token]!(operand)

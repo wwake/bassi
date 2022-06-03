@@ -183,13 +183,13 @@ subexpr -> term (("+"|"-") term)*
 term -> power (("*"|"/") power)*
 
 power -> "-" power
-power -> factor ("^" factor)*
+power -> factor {"^" factor}
 
 factor -> NUMBER(FLOAT)
 factor -> "(" expression ")"
-factor -> VARIABLE ("(" expression ("," expression)* ")")?
+factor -> VARIABLE ["(" expression {"," expression} ")"]
 factor -> STRING
-factor -> PREDEFINED "(" expression ("," expression)* ")"
+factor -> PREDEFINED "(" expression {"," expression} ")"
 factor -> FN LETTER ("(" expression ")")
 
 Number => [0-9]+("."[0-9]+)?([Ee][+-]?[0-9]+)?

@@ -27,6 +27,7 @@ public indirect enum Expression: Equatable {
   case variable(String, `Type`)
   case predefined(String, [Expression], `Type`)
   case userdefined(String, Expression)
+  case arrayAccess(String, `Type`, [Expression])
   
   case op1(Token, Expression)
   case op2(Token, Expression, Expression)
@@ -45,6 +46,8 @@ public indirect enum Expression: Equatable {
       return type
     case .userdefined(_,_):
       return .number
+    case .arrayAccess(_, let type, _):
+      return type
     case .op1(_, _):
       return .number
     case .op2(_, _, _):
