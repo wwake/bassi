@@ -8,6 +8,7 @@
 import Foundation
 
 public indirect enum Parse : Equatable {
+  case error(String)
   case end
   case line(Int, Parse)
   case skip
@@ -16,6 +17,7 @@ public indirect enum Parse : Equatable {
   case `if`(Expression, Int)
   case assign(Expression, Expression)
   case def(String, String, Expression, Type)
+  case dim(String, [Int])
 }
 
 public indirect enum Expression: Equatable {

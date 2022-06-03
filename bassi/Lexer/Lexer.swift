@@ -34,6 +34,7 @@ class Lexer : Sequence, IteratorProtocol {
     "CLEAR": .clear,
     "DATA": .data,
     "DEF": .def,
+    "DIM": .dim,
     
     "END": .end,
     "FN": .fn,

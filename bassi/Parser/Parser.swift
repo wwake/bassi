@@ -34,6 +34,8 @@ enum ParseError: Error, Equatable {
   case FNrequiresParameterVariable
   case DEFrequiresRightParendAfterParameter
   case DEFrequiresEqualAfterParameter
+  case variableRequired
+  case integerRequired
 }
 
 public class Parser {
@@ -73,7 +75,7 @@ public class Parser {
       return try line()
     } catch {
       errorMessages.append(error as! ParseError)
-      return .skip
+      return .error("Unrecognized statement")
     }
   }
 
@@ -117,6 +119,8 @@ public class Parser {
       result = try assign()
     case .def:
       result = try define()
+    case .dim:
+      result = try dim()
     default:
       nextToken()
       throw ParseError.unknownStatement
@@ -489,5 +493,25 @@ public class Parser {
     try typeCheck([.number], [expr])
 
     return .userdefined("FN" + parameter, expr)
+  }
+
+  func dim() throws -> Parse {
+    nextToken()
+
+    guard case .variable(let arrayName) = token else {
+      throw ParseError.variableRequired
+    }
+    nextToken()
+
+    try require(.leftParend, .missingLeftParend)
+
+    guard case .integer(let size) = token else {
+      throw ParseError.integerRequired
+    }
+    nextToken()
+
+    try require(.rightParend, .missingLeftParend)
+
+    return .dim(arrayName, [size])
   }
 }

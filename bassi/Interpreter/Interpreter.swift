@@ -168,6 +168,8 @@ class Interpreter {
   func step(_ parse: Parse, _ output: String) -> String {
 
     switch parse {
+    case .error(let message):
+      return "? " + message
     case .line(_, let statement):
       return step(statement, output)
 
@@ -194,6 +196,8 @@ class Interpreter {
     case .def(let functionName, let parameter, let definition, let theType):
       globals[functionName] = .userFunction(parameter, definition, theType)
       return output
+    case .dim(_, _):
+      return "DIM NYI"
     }
   }
 

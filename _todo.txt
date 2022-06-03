@@ -163,7 +163,7 @@ statement -> "PRINT" expression?
 statement -> "GOTO" INTEGER(int)
 statement -> "IF" expression THEN INTEGER(int)
 statement -> [LET] VARIABLE = expression
-
+statement -> DIM variable "(" INTEGER(INT) {"," INTEGER(INT)} ")"
 expression -> orExpr
 
 orExpr -> andExpr (OR andExpr)*
