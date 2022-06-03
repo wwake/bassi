@@ -247,7 +247,7 @@ class InterpreterTests: XCTestCase {
 25 PRINT 25
 40 END
 """,
-    expecting: "25\n")
+                        expecting: "25\n")
   }
 
   func testRunMultiLineProgramAndFallOffTheEnd() throws {
@@ -256,7 +256,7 @@ class InterpreterTests: XCTestCase {
 30 PRINT 30
 50 PRINT 50
 """,
-    expecting: "50\n")
+                        expecting: "50\n")
   }
 
   func ifWithFalseResultFallsThrough() throws {
@@ -265,7 +265,7 @@ class InterpreterTests: XCTestCase {
 30 PRINT 30
 50 PRINT 50
 """,
-    expecting: "30\n50\n")
+                        expecting: "30\n50\n")
   }
 
   func testIfWithTrueResultDoesGoto() throws {
@@ -274,7 +274,7 @@ class InterpreterTests: XCTestCase {
 30 PRINT 30
 50 PRINT 50
 """,
-    expecting: "50\n")
+                        expecting: "50\n")
   }
 
   func testAssignment() throws {
@@ -282,7 +282,7 @@ class InterpreterTests: XCTestCase {
 10 X = 42
 25 PRINT X
 """,
-    expecting: "42\n")
+                        expecting: "42\n")
   }
 
   func testStringRelationalOperator() {
@@ -354,7 +354,7 @@ class InterpreterTests: XCTestCase {
 10 DEF FNI(X)=X
 25 PRINT FNI(3)
 """,
-    expecting: "3\n")
+                        expecting: "3\n")
   }
 
   func testUsingStaticScope() {
@@ -364,7 +364,7 @@ class InterpreterTests: XCTestCase {
 30 Y=1
 40 PRINT FNA(3)
 """,
-    expecting: "8\n")
+                        expecting: "8\n")
   }
 
   func testPrintIntegerUsesNoDecimals() {
@@ -459,9 +459,9 @@ class InterpreterTests: XCTestCase {
   }
 
   func testLEFTfunction() {
-      checkProgramResults(
-        "1 PRINT LEFT$(\"ABC\", 2)",
-        expecting: "AB\n")
+    checkProgramResults(
+      "1 PRINT LEFT$(\"ABC\", 2)",
+      expecting: "AB\n")
 
     checkProgramResults(
       "1 PRINT LEFT$(\"\", 10)",
@@ -566,6 +566,25 @@ class InterpreterTests: XCTestCase {
 20 A(1)=17
 30 PRINT A(1)
 """,
-      expecting: "17\n")
+                        expecting: "17\n")
+  }
+
+  func testArrayAssignmentToAlreadyNonArrayVariableFails() {
+    checkProgramResults("""
+10 A=3
+20 A(1)=17
+""",
+                        expecting: "?? attempted to use non-array as an array\n")
+  }
+
+  func testArrayWithoutDIMdefaultsToSize10() {
+    let program = Program("10 A(2) = 3")
+    let interpreter = Interpreter(program)
+    let _ = interpreter.run()
+
+    XCTAssertEqual(
+      interpreter.globals["A"]!,
+      .arrayOfNumber([11], [0,0,3,0,0,0,0,0,0,0,0])
+      )
   }
 }

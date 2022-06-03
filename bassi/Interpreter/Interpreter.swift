@@ -112,13 +112,6 @@ class Interpreter {
     "LOG":
       Value.function(Fn2n(log)),
     "MID$": Value.function(midFunction),
-//    Value.function(Fsnn2s({
-//      let count = $0.count
-//
-//      let start = max(0, count - Int($1 - 1))
-//      let rightString = String($0.suffix(start))
-//      return String(rightString.prefix(Int($2)))
-//    })),
     "RIGHT$": Value.function(Fsn2s({
         String($0.suffix(Int($1)))
       })),
@@ -362,8 +355,17 @@ class Interpreter {
       let index = evaluate(exprs[0], globals).asFloat()
       let value = evaluate(rvalue, globals).asFloat()
 
+      if globals[name] == nil {
+        let array : Value = .arrayOfNumber(
+          [11],
+          Array<Float>(
+            repeating: 0.0,
+            count: 11))
+        globals[name] = array
+      }
+
       guard case .arrayOfNumber(let dimensions, let values) = globals[name]! else {
-        return "?? indexed non-array"
+        return "?? attempted to use non-array as an array\n"
       }
 
       var updatedValues = values
