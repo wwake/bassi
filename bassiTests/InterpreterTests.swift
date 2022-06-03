@@ -577,7 +577,7 @@ class InterpreterTests: XCTestCase {
                         expecting: "?? attempted to use non-array as an array\n")
   }
 
-  func testArrayWithoutDIMdefaultsToSize10() {
+  func testArrayAssignmentWithoutDIMdefaultsToSize10() {
     let program = Program("10 A(2) = 3")
     let interpreter = Interpreter(program)
     let _ = interpreter.run()
@@ -586,5 +586,16 @@ class InterpreterTests: XCTestCase {
       interpreter.globals["A"]!,
       .arrayOfNumber([11], [0,0,3,0,0,0,0,0,0,0,0])
       )
+  }
+
+  func testArrayAccessWithoutDIMdefaultsToSize10() {
+    let program = Program("10 PRINT A(2)")
+    let interpreter = Interpreter(program)
+    let _ = interpreter.run()
+
+    XCTAssertEqual(
+      interpreter.globals["A"]!,
+      .arrayOfNumber([11], [0,0,0,0,0,0,0,0,0,0,0])
+    )
   }
 }

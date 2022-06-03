@@ -246,10 +246,19 @@ class Interpreter {
     case .userdefined(let name, let expr):
       return callUserDefinedFunction(store, name, expr)
 
-    case .arrayAccess(let name, let type, let exprs):
+    case .arrayAccess(let name, _, let exprs):
 
-      let value = store[name]!
-      guard case .arrayOfNumber(let dimensions, let values) = value else {
+      if store[name] == nil {
+        let array : Value = .arrayOfNumber(
+          [11],
+          Array<Float>(
+            repeating: 0.0,
+            count: 11))
+        globals[name] = array
+      }
+
+      let value = globals[name]!
+      guard case .arrayOfNumber(_, let values) = value else {
         return .string("? tried to subscript non-array")
       }
 
