@@ -1,7 +1,9 @@
-* DIM
+* What if array name not found?
+* Bounds check
+* String arrays
+* Multi-dimensional arrays
 * Handle interpreter.format() for arrays
 * Enforce array types
-* Expressions: subscripts
 * Use test helper for parse-based tests in InterpreterTests
 
 
@@ -39,6 +41,8 @@ Parameterized tests package?
 BI-22-19: June 3, 2022
 * Parser: add support for multiple arguments on function call
 * Expression: multi-argument pre-defined string functions
+* DIM
+* Expressions: subscripts
 
 BI-22-18: June 2, 2022
 * Lexer: Add support for comma

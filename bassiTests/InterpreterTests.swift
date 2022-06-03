@@ -553,4 +553,19 @@ class InterpreterTests: XCTestCase {
       output,
       "? Can't redeclare array variable")
   }
+
+  func testArrayAccess() {
+    checkProgramResults(
+      "10 DIM A(3)\n20 PRINT A(0)",
+      expecting: "0\n")
+  }
+
+  func testAssignmentToArray() {
+    checkProgramResults("""
+10 DIM A(3)
+20 A(1)=17
+30 PRINT A(1)
+""",
+      expecting: "17\n")
+  }
 }

@@ -253,9 +253,19 @@ class Interpreter {
     case .userdefined(let name, let expr):
       return callUserDefinedFunction(store, name, expr)
 
-    case .arrayAccess(_, _, _):
-      return .string("? array access nyi")
-      
+    case .arrayAccess(let name, let type, let exprs):
+
+      let value = store[name]!
+      guard case .arrayOfNumber(let dimensions, let values) = value else {
+        return .string("? tried to subscript non-array")
+      }
+
+      let index = evaluate(exprs[0], store).asFloat()
+
+      // check in bounds
+      return .number(values[Int(index)])
+
+
     case .op1(let token, let expr):
       let operand = evaluate(expr, store)
       return operators1[token]!(operand)
@@ -338,15 +348,33 @@ class Interpreter {
   fileprivate func doAssign(
     _ output: String,
     _ lvalue: Expression,
-    _ expr: Expression)
+    _ rvalue: Expression)
   -> String {
-    guard case .variable(let name, _) = lvalue else {
-      return "?? Improper lvalue"
-    }
-    let value = evaluate(expr, globals)
+    switch lvalue {
+    case .variable(let name, _):
+      let value = evaluate(rvalue, globals)
 
-    globals[name] = value
-    return output
+      globals[name] = value
+      return output
+
+    case .arrayAccess(let name, _, let exprs):
+
+      let index = evaluate(exprs[0], globals).asFloat()
+      let value = evaluate(rvalue, globals).asFloat()
+
+      guard case .arrayOfNumber(let dimensions, let values) = globals[name]! else {
+        return "?? indexed non-array"
+      }
+
+      var updatedValues = values
+      updatedValues[Int(index)] = value
+      globals[name] = .arrayOfNumber(dimensions, updatedValues)
+
+      return output
+
+    default:
+        return "?? Improper lvalue\n"
+    }
   }
 
   func doDim(
