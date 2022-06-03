@@ -31,11 +31,35 @@ func basicFormat(_ number: (Float)) -> String {
   }
 }
 
+fileprivate func midDollar(_ string: String, _ start: Int, _ length: Int) -> String {
+  let count = string.count
+
+  let rightCount = max(0, count - start + 1)
+  let rightString = String(string.suffix(rightCount))
+  return String(rightString.prefix(length))
+}
+
+func midFunction(_ arguments: [Value]) -> Value {
+  let string = arguments[0].asString()
+  let start = Int(arguments[1].asFloat())
+
+  var length = string.count
+  if arguments[2] != .undefined {
+    length = Int(arguments[2].asFloat())
+  }
+
+  return Value.string(midDollar(
+        string,
+        start,
+        length
+  ))
+}
+
 extension `Type` {
   func defaultValue() -> Value {
     switch self {
     case .missing:
-      return Value.string("?? Missing value")
+      return .undefined
 
     case .number:
       return Value.number(0.0)
@@ -85,13 +109,14 @@ class Interpreter {
     "LEN" : Value.function(Fs2n({Float($0.count)})),
     "LOG":
       Value.function(Fn2n(log)),
-    "MID$": Value.function(Fsnn2s({
-      let count = $0.count
-
-      let start = max(0, count - Int($1 - 1))
-      let rightString = String($0.suffix(start))
-      return String(rightString.prefix(Int($2)))
-    })),
+    "MID$": Value.function(midFunction),
+//    Value.function(Fsnn2s({
+//      let count = $0.count
+//
+//      let start = max(0, count - Int($1 - 1))
+//      let rightString = String($0.suffix(start))
+//      return String(rightString.prefix(Int($2)))
+//    })),
     "RIGHT$": Value.function(Fsn2s({
         String($0.suffix(Int($1)))
       })),
@@ -205,7 +230,7 @@ class Interpreter {
   func evaluate(_ value: Expression, _ store: Store) -> Value {
     switch value {
     case .missing:
-      return Value.string("?Missing in evaluate")
+      return .undefined
     case .number(let floatValue):
       return Value.number(floatValue)
 

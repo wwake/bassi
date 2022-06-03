@@ -16,6 +16,13 @@ public enum Value : Equatable {
     case (.string(let string1), .string(let string2)):
       return string1 == string2
 
+    case (.undefined, .undefined):
+      return true
+
+    case (.function, .function),
+      (.userFunction, .userFunction):
+      return false
+
     default:
       return false
     }

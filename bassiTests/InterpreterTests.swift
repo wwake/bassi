@@ -508,6 +508,16 @@ class InterpreterTests: XCTestCase {
       expecting: "\n")
   }
 
+  func testMIDfunctionWith2Arguments() {
+    checkProgramResults(
+      "1 PRINT MID$(\"ABCDE\", 2)",
+      expecting: "BCDE\n")
+
+    checkProgramResults(
+      "1 PRINT MID$(\"\", 1)",
+      expecting: "\n")
+  }
+
   func testVALfunction() {
     checkProgramResults(
       "1 PRINT VAL(\"21.25\")",
