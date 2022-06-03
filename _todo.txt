@@ -1,10 +1,9 @@
-* Parser: add support for multiple arguments on function call
-* Expression: multi-argument pre-defined string functions
-* xtestLEFTfunction
+* DIM
+* Handle interpreter.format() for arrays
+* Enforce array types
+* Expressions: subscripts
 * Use test helper for parse-based tests in InterpreterTests
 
-* Expressions: subscripts
-* DIM
 
 * ON..GOTO
 * FOR, NEXT
@@ -37,10 +36,14 @@
 
 Parameterized tests package?
 
+BI-22-19: June 3, 2022
+* Parser: add support for multiple arguments on function call
+* Expression: multi-argument pre-defined string functions
+
 BI-22-18: June 2, 2022
 * Lexer: Add support for comma
 * Interpreter: Stop when there's a syntax error
-
+* testLEFTfunction
 
 BI-22-17: June 1, 2022
 * Use test helper in InterpreterTests

@@ -528,4 +528,29 @@ class InterpreterTests: XCTestCase {
       expecting: "0\n")
   }
 
+  func testArrayValuesEqualIfDimensionsAndContentsAreEqual() {
+
+    XCTAssertEqual(
+      Value.arrayOfNumber([3], [0, 0, 0]),
+      Value.arrayOfNumber([3], [0, 0, 0]))
+  }
+
+  func testDIMknowsTypeAndSize() {
+    let program = Program("10 DIM A(2)")
+    let interpreter = Interpreter(program)
+    let _ = interpreter.run()
+    XCTAssertEqual(
+      interpreter.globals["A"]!,
+      .arrayOfNumber([3], [0, 0, 0]))
+  }
+
+  func testDIMmayNotRedeclareVariables() {
+    let program = Program("10 DIM A(2)")
+    let interpreter = Interpreter(program)
+    interpreter.globals["A"] = .number(27)
+    let output = interpreter.run()
+    XCTAssertEqual(
+      output,
+      "? Can't redeclare array variable")
+  }
 }

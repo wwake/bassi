@@ -18,7 +18,8 @@ fileprivate func boolToFloat(
     case .string(let string):
       return .number(opString(string, y.asString()) ? 1.0 : 0.0)
     case .undefined, .function,
-        .userFunction(_, _, _):
+        .userFunction(_, _, _),
+        .arrayOfNumber:
       return .number(0.0)
     }
   }
@@ -84,6 +85,7 @@ class Interpreter {
   var done = false
 
   typealias Store = [String : Value]
+
   var globals: Store = [
     "ABS" : Value.function(Fn2n(abs)),
     "ASC" : Value.function(Fs2n( {
@@ -196,8 +198,9 @@ class Interpreter {
     case .def(let functionName, let parameter, let definition, let theType):
       globals[functionName] = .userFunction(parameter, definition, theType)
       return output
-    case .dim(_, _):
-      return "DIM NYI"
+
+    case .dim(let name, let dimensions):
+      return doDim(output, name, dimensions)
     }
   }
 
@@ -303,6 +306,9 @@ class Interpreter {
 
     case .userFunction(_, _, _):
       return "<USER-FUNCTION>"
+
+    case .arrayOfNumber:
+      return "Array<Float>"
     }
   }
 
@@ -338,5 +344,24 @@ class Interpreter {
 
     globals[name] = value
     return output
+  }
+
+  func doDim(
+    _ output: String,
+    _ name: String,
+    _ dimensions: [Int]) -> String {
+
+      if globals[name] != nil {
+        return "? Can't redeclare array variable"
+      }
+
+      let array : Value = .arrayOfNumber(
+        dimensions,
+        Array<Float>(
+          repeating: 0.0,
+          count: dimensions[0]))
+      globals[name] = array
+
+      return output
   }
 }

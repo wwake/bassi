@@ -511,7 +511,7 @@ class ParserTests: XCTestCase {
       "10 DIM A(5)",
       .line(
         10,
-        .dim("A", [5])
+        .dim("A", [6])
         )
       )
   }

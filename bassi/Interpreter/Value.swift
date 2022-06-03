@@ -19,6 +19,10 @@ public enum Value : Equatable {
     case (.undefined, .undefined):
       return true
 
+    case (.arrayOfNumber(let dimensions1, let contents1),
+          .arrayOfNumber(let dimensions2, let contents2)):
+      return dimensions1 == dimensions2 && contents1 == contents2
+      
     case (.function, .function),
       (.userFunction, .userFunction):
       return false
@@ -33,6 +37,7 @@ public enum Value : Equatable {
   case string(String)
   case function(([Value]) -> Value)
   case userFunction(String, Expression, Type)
+  case arrayOfNumber([Int], [Float])
 
   func asFloat() -> Float {
     guard case .number(let value) = self else {
