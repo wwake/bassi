@@ -517,13 +517,26 @@ public class Parser {
 
     try require(.leftParend, .missingLeftParend)
 
+    var dimensions : [Int] = []
+
     guard case .integer(let size) = token else {
       throw ParseError.integerRequired
     }
     nextToken()
+    dimensions.append(size + 1)
 
-    try require(.rightParend, .missingLeftParend)
+    while .comma == token {
+      nextToken()
 
-    return .dim(arrayName, [size+1])
+      guard case .integer(let size) = token else {
+        throw ParseError.integerRequired
+      }
+      nextToken()
+      dimensions.append(size + 1)
+    }
+
+    try require(.rightParend, .missingRightParend)
+
+    return .dim(arrayName, dimensions)
   }
 }

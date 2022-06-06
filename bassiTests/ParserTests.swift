@@ -516,6 +516,22 @@ class ParserTests: XCTestCase {
       )
   }
 
+  func testMultiDimensionalDIM() {
+    checkParsing(
+      "10 DIM Z(3,4,5)",
+      .line(
+        10,
+        .dim("Z", [4,5,6])
+        )
+      )
+  }
+
+  func testRightParendErrorInDim() {
+    checkError(
+      "10 DIM Z(3",
+      ParseError.missingRightParend)
+  }
+  
   func testFetchFromArray() {
     checkParsing(
       "10 PRINT A(0)",

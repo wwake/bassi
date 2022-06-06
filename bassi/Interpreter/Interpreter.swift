@@ -50,9 +50,9 @@ func midFunction(_ arguments: [Value]) -> Value {
   }
 
   return Value.string(midDollar(
-        string,
-        start,
-        length
+    string,
+    start,
+    length
   ))
 }
 
@@ -99,11 +99,11 @@ class Interpreter {
     })),
     "ATN" : Value.function(Fn2n(atan)),
     "CHR$" : Value.function(Fn2s( { return
-          String(
-            Character(
-              UnicodeScalar(
-                Int($0))!))
-        })),
+      String(
+        Character(
+          UnicodeScalar(
+            Int($0))!))
+    })),
     "COS" : Value.function(Fn2n(cos)),
     "EXP":
       Value.function(Fn2n(exp)),
@@ -118,8 +118,8 @@ class Interpreter {
       Value.function(Fn2n(log)),
     "MID$": Value.function(midFunction),
     "RIGHT$": Value.function(Fsn2s({
-        String($0.suffix(Int($1)))
-      })),
+      String($0.suffix(Int($1)))
+    })),
     "RND" :
       Value.function(Fn2n({_ in Float.random(in: 0.0 ..< 1.0)})),
     "SGN":
@@ -381,24 +381,19 @@ class Interpreter {
 
       do {
         let index = try indexFor(exprs, globals, dimensions)
-//      let index = Int(evaluate(exprs[0], globals).asFloat())
-//
-//      if index < 0 || index >= dimensions[0] {
-//        return "?? array access out of bounds\n"
-//      }
 
-      let value = evaluate(rvalue, globals).asFloat()
+        let value = evaluate(rvalue, globals).asFloat()
 
-      var updatedValues = values
-      updatedValues[index] = value
-      globals[name] = .arrayOfNumber(dimensions, updatedValues)
+        var updatedValues = values
+        updatedValues[index] = value
+        globals[name] = .arrayOfNumber(dimensions, updatedValues)
 
-      return output
+        return output
       } catch  {
         return output + "\(error)"
       }
     default:
-        return "?? Improper lvalue\n"
+      return "?? Improper lvalue\n"
     }
   }
 
@@ -413,14 +408,14 @@ class Interpreter {
           count: dimensions[0]))
 
       globals[name] = array
-  }
+    }
 
   fileprivate func indexFor(_ exprs: [Expression], _ store: Store, _ dimensions: [Int]) throws -> Int {
 
     let index =
-      Int(
-        evaluate(exprs[0], store)
-          .asFloat())
+    Int(
+      evaluate(exprs[0], store)
+        .asFloat())
 
     if index < 0 || index >= dimensions[0] {
       throw InterpreterError.arrayAccessOutOfBounds

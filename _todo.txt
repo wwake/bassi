@@ -1,10 +1,8 @@
-* Bounds check
-* String arrays
 * Multi-dimensional arrays
+* String arrays
 * Handle interpreter.format() for arrays
 * Enforce array types
 * Use test helper for parse-based tests in InterpreterTests
-
 
 * ON..GOTO
 * FOR, NEXT
@@ -36,6 +34,10 @@
 * What should ASC do if given an empty string?
 
 Parameterized tests package?
+
+BI-22-20: June 6, 2022
+* Bounds check 1-d arrays
+
 
 BI-22-19: June 3, 2022
 * Parser: add support for multiple arguments on function call
@@ -169,7 +171,7 @@ statement -> "REM" .*
 statement -> "PRINT" expression?
 statement -> "GOTO" INTEGER(int)
 statement -> "IF" expression THEN INTEGER(int)
-statement -> [LET] VARIABLE = expression
+statement -> [LET] VARIABLE ["(" expr {"," expr } ")"] = expression
 statement -> DIM variable "(" INTEGER(INT) {"," INTEGER(INT)} ")"
 expression -> orExpr
 
