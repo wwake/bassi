@@ -76,6 +76,11 @@ extension `Type` {
   }
 }
 
+enum InterpreterError: Error, Equatable {
+  case arrayAccessOutOfBounds
+  case cantRedeclareArray
+}
+
 class Interpreter {
   static let freeSpaceCount : Float = 100_000
 
@@ -193,7 +198,12 @@ class Interpreter {
       return output
 
     case .dim(let name, let dimensions):
-      return doDim(output, name, dimensions)
+      do {
+        try doDim(output, name, dimensions)
+      } catch {
+        return output + "\(error)"
+      }
+      return output
     }
   }
 
@@ -398,10 +408,10 @@ class Interpreter {
   func doDim(
     _ output: String,
     _ name: String,
-    _ dimensions: [Int]) -> String {
+    _ dimensions: [Int]) throws {
 
       if globals[name] != nil {
-        return "? Can't redeclare array variable"
+        throw InterpreterError.cantRedeclareArray
       }
 
       let array : Value = .arrayOfNumber(
@@ -410,7 +420,5 @@ class Interpreter {
           repeating: 0.0,
           count: dimensions[0]))
       globals[name] = array
-
-      return output
   }
 }

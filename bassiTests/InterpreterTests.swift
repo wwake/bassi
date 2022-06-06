@@ -551,7 +551,7 @@ class InterpreterTests: XCTestCase {
     let output = interpreter.run()
     XCTAssertEqual(
       output,
-      "? Can't redeclare array variable")
+      "cantRedeclareArray")
   }
 
   func testArrayAccess() {
