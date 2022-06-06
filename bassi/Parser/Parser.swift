@@ -417,13 +417,23 @@ public class Parser {
       return .variable(name, theType)
     }
 
+    var exprs: [Expression] = []
+
     try require(.leftParend, .missingLeftParend)
 
     let expr = try expression()
+    exprs.append(expr)
+
+    while token == .comma {
+      nextToken()
+
+      let expr = try expression()
+      exprs.append(expr)
+    }
 
     try require(.rightParend, .missingRightParend)
 
-    return .arrayAccess(name, .number, [expr])
+    return .arrayAccess(name, .number, exprs)
   }
 
   fileprivate func predefinedFunctionCall(_ name: String, _ type: `Type`) throws -> Expression  {

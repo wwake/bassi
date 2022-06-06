@@ -542,4 +542,16 @@ class ParserTests: XCTestCase {
         ]))
     )
   }
+
+  func testFetchFromMultiDArray() {
+    checkParsing(
+      "10 PRINT A(1,2)",
+      .line(
+        10,
+        .print([
+          .arrayAccess("A", .number, [.number(1),
+               .number(2)])
+        ]))
+    )
+  }
 }
