@@ -170,6 +170,7 @@ class Interpreter {
     switch parse {
     case .error(let message):
       return "? " + message
+
     case .line(_, let statement):
       return step(statement, output)
 
@@ -261,23 +262,7 @@ class Interpreter {
       return callUserDefinedFunction(store, name, expr)
 
     case .arrayAccess(let name, _, let exprs):
-
-      if store[name] == nil {
-        doDim(name, [11])
-      }
-
-      let value = globals[name]!
-      guard case .arrayOfNumber(let dimensions, let values) = value else {
-        return .string("? tried to subscript non-array")
-      }
-
-      do {
-        let index = try indexFor(exprs, store, dimensions)
-        return .number(values[index])
-
-      } catch {
-        return .string("\(error)")
-      }
+      return storeArrayValue(name, store, exprs)
 
     case .op1(let token, let expr):
       let operand = evaluate(expr, store)
@@ -288,6 +273,27 @@ class Interpreter {
       let operand2 = evaluate(right, store)
 
       return operators2[token]!(operand1, operand2)
+    }
+  }
+
+  fileprivate func storeArrayValue(_ name: String, _ store: Store, _ exprs: [Expression]) -> Value {
+    if store[name] == nil {
+      doDim(name, Array<Int>(
+        repeating: 11,
+        count: exprs.count))
+    }
+
+    let value = globals[name]!
+    guard case .arrayOfNumber(let dimensions, let values) = value else {
+      return .string("? tried to subscript non-array")
+    }
+
+    do {
+      let index = try indexFor(exprs, store, dimensions)
+      return .number(values[index])
+
+    } catch {
+      return .string("\(error)")
     }
   }
 
@@ -372,7 +378,9 @@ class Interpreter {
 
     case .arrayAccess(let name, _, let exprs):
       if globals[name] == nil {
-        doDim(name, [11])
+        doDim(name, Array<Int>(
+          repeating: 11,
+          count: exprs.count))
       }
 
       guard case .arrayOfNumber(let dimensions, let values) = globals[name]! else {
@@ -414,15 +422,36 @@ class Interpreter {
 
   fileprivate func indexFor(_ exprs: [Expression], _ store: Store, _ dimensions: [Int]) throws -> Int {
 
-    let index =
-    Int(
-      evaluate(exprs[0], store)
-        .asFloat())
+    let indexes = exprs
+      .map {
+        evaluate($0, store)
+      }
+      .map { Int($0.asFloat())}
 
-    if index < 0 || index >= dimensions[0] {
-      throw InterpreterError.arrayAccessOutOfBounds
-    }
+    try indexes
+      .enumerated()
+      .forEach { (i, index) in
+        if index < 0 || index >= dimensions[i] {
+          throw InterpreterError.arrayAccessOutOfBounds
+        }
+      }
 
-    return index
+    //    let index =
+    //    Int(
+    //      evaluate(exprs[0], store)
+    //        .asFloat())
+    //
+    //    if index < 0 || index >= dimensions[0] {
+    //      throw InterpreterError.arrayAccessOutOfBounds
+    //    }
+
+    return zip(
+      indexes.dropFirst(),
+      dimensions.dropFirst())
+    .reduce(indexes[0], { (total, indexDim) in
+      let (index, dim) = indexDim
+      return total * dim + index
+    })
+//    return index
   }
 }

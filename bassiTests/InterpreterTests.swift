@@ -578,9 +578,11 @@ class InterpreterTests: XCTestCase {
     checkProgramResults("""
 10 DIM A(3)
 20 A(1)=17
+25 A(2)=42
 30 PRINT A(1)
+40 PRINT A(2)
 """,
-                        expecting: "17\n")
+      expecting: "17\n42\n")
   }
 
   func testArrayAssignmentToAlreadyNonArrayVariableFails() {
@@ -633,5 +635,59 @@ class InterpreterTests: XCTestCase {
       expecting: "arrayAccessOutOfBounds")
   }
 
+  func testMultiDArrayReadAndWrite() {
+    checkProgramResults("""
+20 A(1,2)=12
+25 A(1,1)=11
+30 PRINT A(1,2)
+35 PRINT A(1,1)
+""",
+    expecting: "12\n11\n"
+    )
+  }
 
+  func testMultiDArrayFullReadAndWrite() {
+    checkProgramResults(
+"""
+10 X=1
+20 I = 0
+25 IF I > 2 THEN 220
+30 J = 0
+40 IF J > 4 THEN 100
+45 B(I,J) = X
+50 X = X+1
+55 J = J+1
+60 GOTO 40
+100 I=I+1
+110 GOTO 25
+220 I = 0
+225 IF I > 2 THEN 400
+230 J = 0
+240 IF J > 4 THEN 300
+245 PRINT B(I,J)
+255 J = J+1
+260 GOTO 240
+300 I=I+1
+310 GOTO 225
+400 END
+""",
+    expecting: """
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+
+""")
+  }
 }
