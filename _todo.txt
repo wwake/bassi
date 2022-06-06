@@ -1,4 +1,3 @@
-* What if array name not found?
 * Bounds check
 * String arrays
 * Multi-dimensional arrays
@@ -43,6 +42,7 @@ BI-22-19: June 3, 2022
 * Expression: multi-argument pre-defined string functions
 * DIM
 * Expressions: subscripts
+* What if array name not found?
 
 BI-22-18: June 2, 2022
 * Lexer: Add support for comma

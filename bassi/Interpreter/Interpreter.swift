@@ -258,14 +258,16 @@ class Interpreter {
       }
 
       let value = globals[name]!
-      guard case .arrayOfNumber(_, let values) = value else {
+      guard case .arrayOfNumber(let dimensions, let values) = value else {
         return .string("? tried to subscript non-array")
       }
 
-      let index = evaluate(exprs[0], store).asFloat()
+      let index = Int(evaluate(exprs[0], store).asFloat())
 
-      // check in bounds
-      return .number(values[Int(index)])
+      if index < 0 || index >= dimensions[0] {
+        return .string("?? array access out of bounds")
+      }
+      return .number(values[index])
 
 
     case .op1(let token, let expr):
@@ -361,7 +363,8 @@ class Interpreter {
 
     case .arrayAccess(let name, _, let exprs):
 
-      let index = evaluate(exprs[0], globals).asFloat()
+      let index = Int(evaluate(exprs[0], globals).asFloat())
+
       let value = evaluate(rvalue, globals).asFloat()
 
       if globals[name] == nil {
@@ -377,8 +380,12 @@ class Interpreter {
         return "?? attempted to use non-array as an array\n"
       }
 
+      if index < 0 || index >= dimensions[0] {
+        return "?? array access out of bounds\n"
+      }
+
       var updatedValues = values
-      updatedValues[Int(index)] = value
+      updatedValues[index] = value
       globals[name] = .arrayOfNumber(dimensions, updatedValues)
 
       return output
