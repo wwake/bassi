@@ -271,12 +271,20 @@ class Interpreter {
         return .string("? tried to subscript non-array")
       }
 
-      let index = Int(evaluate(exprs[0], store).asFloat())
+      do {
+        let index = try indexFor(exprs, store, dimensions)
+        return .number(values[index])
 
-      if index < 0 || index >= dimensions[0] {
-        return .string("?? array access out of bounds")
+      } catch {
+        return .string("\(error)")
       }
-      return .number(values[index])
+
+
+      //Int(evaluate(exprs[0], store).asFloat())
+//
+//      if index < 0 || index >= dimensions[0] {
+//        return .string("?? array access out of bounds")
+//      }
 
 
     case .op1(let token, let expr):
@@ -371,11 +379,6 @@ class Interpreter {
       return output
 
     case .arrayAccess(let name, _, let exprs):
-
-      let index = Int(evaluate(exprs[0], globals).asFloat())
-
-      let value = evaluate(rvalue, globals).asFloat()
-
       if globals[name] == nil {
         doDim(name, [11])
       }
@@ -384,9 +387,13 @@ class Interpreter {
         return "?? attempted to use non-array as an array\n"
       }
 
+      let index = Int(evaluate(exprs[0], globals).asFloat())
+
       if index < 0 || index >= dimensions[0] {
         return "?? array access out of bounds\n"
       }
+
+      let value = evaluate(rvalue, globals).asFloat()
 
       var updatedValues = values
       updatedValues[index] = value
@@ -410,5 +417,19 @@ class Interpreter {
           count: dimensions[0]))
 
       globals[name] = array
+  }
+
+  fileprivate func indexFor(_ exprs: [Expression], _ store: Store, _ dimensions: [Int]) throws -> Int {
+
+    let index =
+      Int(
+        evaluate(exprs[0], store)
+          .asFloat())
+
+    if index < 0 || index >= dimensions[0] {
+      throw InterpreterError.arrayAccessOutOfBounds
+    }
+
+    return index
   }
 }

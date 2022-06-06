@@ -604,7 +604,7 @@ class InterpreterTests: XCTestCase {
 20 PRINT A(11)
 25 PRINT A(-1)
 """,
-      expecting: "?? array access out of bounds\n?? array access out of bounds\n")
+      expecting: "arrayAccessOutOfBounds\narrayAccessOutOfBounds\n")
   }
 
   func testBoundsCheckArrayWrite() {
