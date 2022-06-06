@@ -401,11 +401,13 @@ class Interpreter {
     _ name: String,
     _ dimensions: [Int]) {
 
+      let count = dimensions.reduce(1, *)
+
       let array : Value = .arrayOfNumber(
         dimensions,
         Array<Float>(
           repeating: 0.0,
-          count: dimensions[0]))
+          count: count))
 
       globals[name] = array
     }
