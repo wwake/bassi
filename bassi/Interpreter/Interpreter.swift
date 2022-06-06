@@ -199,7 +199,11 @@ class Interpreter {
 
     case .dim(let name, let dimensions):
       do {
-        try doDim(output, name, dimensions)
+        if globals[name] != nil {
+          throw InterpreterError.cantRedeclareArray
+        }
+
+        doDim(name, dimensions)
       } catch {
         return output + "\(error)"
       }
@@ -259,12 +263,7 @@ class Interpreter {
     case .arrayAccess(let name, _, let exprs):
 
       if store[name] == nil {
-        let array : Value = .arrayOfNumber(
-          [11],
-          Array<Float>(
-            repeating: 0.0,
-            count: 11))
-        globals[name] = array
+        doDim(name, [11])
       }
 
       let value = globals[name]!
@@ -378,12 +377,7 @@ class Interpreter {
       let value = evaluate(rvalue, globals).asFloat()
 
       if globals[name] == nil {
-        let array : Value = .arrayOfNumber(
-          [11],
-          Array<Float>(
-            repeating: 0.0,
-            count: 11))
-        globals[name] = array
+        doDim(name, [11])
       }
 
       guard case .arrayOfNumber(let dimensions, let values) = globals[name]! else {
@@ -406,19 +400,15 @@ class Interpreter {
   }
 
   func doDim(
-    _ output: String,
     _ name: String,
-    _ dimensions: [Int]) throws {
-
-      if globals[name] != nil {
-        throw InterpreterError.cantRedeclareArray
-      }
+    _ dimensions: [Int]) {
 
       let array : Value = .arrayOfNumber(
         dimensions,
         Array<Float>(
           repeating: 0.0,
           count: dimensions[0]))
+
       globals[name] = array
   }
 }
