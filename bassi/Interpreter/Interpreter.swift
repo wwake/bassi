@@ -279,14 +279,6 @@ class Interpreter {
         return .string("\(error)")
       }
 
-
-      //Int(evaluate(exprs[0], store).asFloat())
-//
-//      if index < 0 || index >= dimensions[0] {
-//        return .string("?? array access out of bounds")
-//      }
-
-
     case .op1(let token, let expr):
       let operand = evaluate(expr, store)
       return operators1[token]!(operand)
@@ -387,11 +379,13 @@ class Interpreter {
         return "?? attempted to use non-array as an array\n"
       }
 
-      let index = Int(evaluate(exprs[0], globals).asFloat())
-
-      if index < 0 || index >= dimensions[0] {
-        return "?? array access out of bounds\n"
-      }
+      do {
+        let index = try indexFor(exprs, globals, dimensions)
+//      let index = Int(evaluate(exprs[0], globals).asFloat())
+//
+//      if index < 0 || index >= dimensions[0] {
+//        return "?? array access out of bounds\n"
+//      }
 
       let value = evaluate(rvalue, globals).asFloat()
 
@@ -400,7 +394,9 @@ class Interpreter {
       globals[name] = .arrayOfNumber(dimensions, updatedValues)
 
       return output
-
+      } catch  {
+        return output + "\(error)"
+      }
     default:
         return "?? Improper lvalue\n"
     }

@@ -574,7 +574,7 @@ class InterpreterTests: XCTestCase {
 10 A=3
 20 A(1)=17
 """,
-      expecting: "?? attempted to use non-array as an array\n")
+                        expecting: "?? attempted to use non-array as an array\n")
   }
 
   func testArrayAssignmentWithoutDIMdefaultsToSize10() {
@@ -585,7 +585,7 @@ class InterpreterTests: XCTestCase {
     XCTAssertEqual(
       interpreter.globals["A"]!,
       .arrayOfNumber([11], [0,0,3,0,0,0,0,0,0,0,0])
-      )
+    )
   }
 
   func testArrayAccessWithoutDIMdefaultsToSize10() {
@@ -604,18 +604,19 @@ class InterpreterTests: XCTestCase {
 20 PRINT A(11)
 25 PRINT A(-1)
 """,
-      expecting: "arrayAccessOutOfBounds\narrayAccessOutOfBounds\n")
+                        expecting: "arrayAccessOutOfBounds\narrayAccessOutOfBounds\n")
   }
 
   func testBoundsCheckArrayWrite() {
     checkProgramResults("""
 20 A(11)=5
 """,
-      expecting: "?? array access out of bounds\n")
+      expecting: "arrayAccessOutOfBounds")
+
     checkProgramResults("""
 25 A(-1)=27
 """,
-      expecting: "?? array access out of bounds\n")
+      expecting: "arrayAccessOutOfBounds")
   }
 
 
