@@ -547,6 +547,6 @@ public class Parser {
 
     try require(.rightParend, .missingRightParend)
 
-    return .dim(arrayName, dimensions)
+    return .dim(arrayName, dimensions, .number)
   }
 }

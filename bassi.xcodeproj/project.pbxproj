@@ -65,6 +65,7 @@
 		91308869282EBA6C00E5C62E /* Repl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Repl.swift; sourceTree = "<group>"; };
 		9130886B282EBADA00E5C62E /* ProgramTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgramTests.swift; sourceTree = "<group>"; };
 		9130886D282EC0C300E5C62E /* ReplTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplTests.swift; sourceTree = "<group>"; };
+		91451C1F284F95850007F544 /* bassi.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = bassi.xctestplan; path = bassi.xcodeproj/bassi.xctestplan; sourceTree = "<group>"; };
 		914A53EF2841315C00A47B35 /* Value.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Value.swift; sourceTree = "<group>"; };
 		914A53F12845249D00A47B35 /* Type.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Type.swift; sourceTree = "<group>"; };
 		9192F7322828B68F00FAFFA1 /* bassi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = bassi.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -146,6 +147,7 @@
 		9192F7292828B68F00FAFFA1 = {
 			isa = PBXGroup;
 			children = (
+				91451C1F284F95850007F544 /* bassi.xctestplan */,
 				911657622828C5F40000D3AA /* _todo.txt */,
 				9192F7342828B68F00FAFFA1 /* bassi */,
 				9192F7462828B69000FAFFA1 /* bassiTests */,

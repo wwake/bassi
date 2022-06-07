@@ -1,0 +1,37 @@
+{
+  "configurations" : [
+    {
+      "id" : "7F6A84D6-C9F6-4F42-A27E-7FB798617E88",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:bassi.xcodeproj",
+      "identifier" : "9192F7312828B68F00FAFFA1",
+      "name" : "bassi"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:bassi.xcodeproj",
+        "identifier" : "9192F7422828B69000FAFFA1",
+        "name" : "bassiTests"
+      }
+    },
+    {
+      "enabled" : false,
+      "target" : {
+        "containerPath" : "container:bassi.xcodeproj",
+        "identifier" : "9192F74C2828B69000FAFFA1",
+        "name" : "bassiUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

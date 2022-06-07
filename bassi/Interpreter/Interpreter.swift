@@ -198,7 +198,7 @@ class Interpreter {
       globals[functionName] = .userFunction(parameter, definition, theType)
       return output
 
-    case .dim(let name, let dimensions):
+    case .dim(let name, let dimensions, _):
       do {
         if globals[name] != nil {
           throw InterpreterError.cantRedeclareArray

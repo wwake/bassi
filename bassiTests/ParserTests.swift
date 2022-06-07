@@ -506,22 +506,32 @@ class ParserTests: XCTestCase {
        .floatRequired)
   }
 
-  func testDIM() {
+  func testDIMNumber() {
     checkParsing(
       "10 DIM A(5)",
       .line(
         10,
-        .dim("A", [6])
+        .dim("A", [6], .number)
         )
       )
   }
+
+//  func testDIMString() {
+//    checkParsing(
+//      "10 DIM Z9$(5)",
+//      .line(
+//        10,
+//        .dim("A", [6], .string)
+//      )
+//    )
+//  }
 
   func testMultiDimensionalDIM() {
     checkParsing(
       "10 DIM Z(3,4,5)",
       .line(
         10,
-        .dim("Z", [4,5,6])
+        .dim("Z", [4,5,6], .number)
         )
       )
   }
