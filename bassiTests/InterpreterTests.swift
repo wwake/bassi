@@ -531,8 +531,8 @@ class InterpreterTests: XCTestCase {
   func testArrayValuesEqualIfDimensionsAndContentsAreEqual() {
 
     XCTAssertEqual(
-      Value.arrayOfNumber([3], [0, 0, 0]),
-      Value.arrayOfNumber([3], [0, 0, 0]))
+      Value.arrayOfNumber([3], [.number(0), .number(0), .number(0)]),
+      Value.arrayOfNumber([3], [.number(0), .number(0), .number(0)]))
   }
 
   func testDIMknowsTypeAndSize() {
@@ -541,21 +541,24 @@ class InterpreterTests: XCTestCase {
     let _ = interpreter.run()
     XCTAssertEqual(
       interpreter.globals["A"]!,
-      .arrayOfNumber([3], [0, 0, 0]))
+      .arrayOfNumber(
+        [3],
+        [.number(0), .number(0), .number(0)]))
   }
 
   func testDIMknowsTypeAndSizeForMultiDArray() {
     let program = Program("10 DIM A(2,1,2)")
+
     let interpreter = Interpreter(program)
     let _ = interpreter.run()
+
     XCTAssertEqual(
       interpreter.globals["A"]!,
       .arrayOfNumber(
         [3,2,3],
-        [0, 0, 0, 0, 0, 0,
-         0, 0, 0, 0, 0, 0,
-         0, 0, 0, 0, 0, 0,
-          ]))
+        Array<Value>(
+          repeating: .number(0.0),
+          count: 3*2*3)))
   }
 
   func testDIMmayNotRedeclareVariables() {
@@ -598,9 +601,14 @@ class InterpreterTests: XCTestCase {
     let interpreter = Interpreter(program)
     let _ = interpreter.run()
 
+    var expected = Array<Value>(
+      repeating: .number(0),
+      count: 11)
+    expected[2] = .number(3)
+
     XCTAssertEqual(
       interpreter.globals["A"]!,
-      .arrayOfNumber([11], [0,0,3,0,0,0,0,0,0,0,0])
+      .arrayOfNumber([11], expected)
     )
   }
 
@@ -611,7 +619,7 @@ class InterpreterTests: XCTestCase {
 
     XCTAssertEqual(
       interpreter.globals["A"]!,
-      .arrayOfNumber([11], [0,0,0,0,0,0,0,0,0,0,0])
+      .arrayOfNumber([11], Array<Value>(repeating: .number(0), count: 11))
     )
   }
 

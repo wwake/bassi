@@ -276,7 +276,10 @@ class Interpreter {
     }
   }
 
-  fileprivate func storeArrayValue(_ name: String, _ store: Store, _ exprs: [Expression]) -> Value {
+  fileprivate func storeArrayValue(
+    _ name: String,
+    _ store: Store,
+    _ exprs: [Expression]) -> Value {
     if store[name] == nil {
       doDim(name, Array<Int>(
         repeating: 11,
@@ -290,7 +293,7 @@ class Interpreter {
 
     do {
       let index = try indexFor(exprs, store, dimensions)
-      return .number(values[index])
+      return values[index]
 
     } catch {
       return .string("\(error)")
@@ -390,7 +393,7 @@ class Interpreter {
       do {
         let index = try indexFor(exprs, globals, dimensions)
 
-        let value = evaluate(rvalue, globals).asFloat()
+        let value = evaluate(rvalue, globals)
 
         var updatedValues = values
         updatedValues[index] = value
@@ -413,8 +416,8 @@ class Interpreter {
 
       let array : Value = .arrayOfNumber(
         dimensions,
-        Array<Float>(
-          repeating: 0.0,
+        Array<Value>(
+          repeating: .number(0.0),
           count: count))
 
       globals[name] = array
