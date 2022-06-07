@@ -1,5 +1,6 @@
-* String arrays
-* Xcode - Jump to last destination keystroke, refactoring keystrokes
+* Simplify lexer
+* Improve error handling in interpreter
+
 * Handle interpreter.format() for arrays
 * Enforce array types
 * Use test helper for parse-based tests in InterpreterTests
@@ -35,10 +36,13 @@
 
 Parameterized tests package?
 
+BI-22-21: June 7, 2022
+* String arrays
+* Xcode - Jump to last destination keystroke (^B), refactoring keystrokes (ctrl-command-M / R / V)
+
 BI-22-20: June 6, 2022
 * Bounds check 1-d arrays
 * Multi-dimensional arrays
-
 
 BI-22-19: June 3, 2022
 * Parser: add support for multiple arguments on function call

@@ -154,6 +154,11 @@ class Lexer : Sequence, IteratorProtocol {
       return .atEnd
     }
 
+//    let possibleToken = prefixTokensMatch()
+//    if possible != .unknown {
+//      return possibleToken
+//    }
+
     switch program[index] {
     case "\n":
       index += 1
@@ -263,29 +268,25 @@ class Lexer : Sequence, IteratorProtocol {
   }
 
   fileprivate func keywordsAndNames() -> Token? {
-    let startingIndex = index
-    var value = repeatAny("A", "Z")
-    if program[index] == "$" {
-      value += "$"
-    }
-    index = startingIndex
+    let start = program.index(program.startIndex, offsetBy: index)
+    let input = program[start...]
 
     let answer = reservedWords.first { (word, token) in
-      value.starts(with: word)
+      input.starts(with: word)
     }
 
-    if answer == nil {
-      return handleVariable()
+    if answer != nil {
+      skipWord(answer!.0)
+      let keyword = answer!.1
+
+      if keyword == .remark {
+        ignoreUntil("\n")
+      }
+
+      return keyword
     }
 
-    skipWord(answer!.0)
-    let keyword = answer!.1
-
-    if keyword == .remark {
-      ignoreUntil("\n")
-    }
-    
-    return keyword
+    return handleVariable()
   }
 
   fileprivate func handleVariable() -> Token? {
