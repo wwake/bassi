@@ -17,7 +17,7 @@ class Lexer : Sequence, IteratorProtocol {
 
   typealias Element = Token
 
-  let oneCharOperators: [Character : Token] = [
+  let prefixTokens: [String : Token] = [
     "+": .plus,
     "-": .minus,
     "*": .times,
@@ -26,10 +26,9 @@ class Lexer : Sequence, IteratorProtocol {
     "=": .equals,
     "(": .leftParend,
     ")": .rightParend,
-    ",": .comma
-  ]
+    ",": .comma,
+    "\n": .eol,
 
-  let reservedWords: [String : Token] = [
     "AND": .and,
     "CLEAR": .clear,
     "DATA": .data,
@@ -161,17 +160,13 @@ class Lexer : Sequence, IteratorProtocol {
 
     switch program[index] {
     case "\n":
-      index += 1
-      return .eol
+      return nil
 
     case "0"..."9":
         return number()
 
     case "\"":
       return string()
-
-    case "+", "-", "*", "/", "^", "=", "(", ")", ",":
-      return oneCharacterOperator()
 
     case "<":
       return lessThanOperators()
@@ -236,12 +231,6 @@ class Lexer : Sequence, IteratorProtocol {
     return .string(body)
   }
 
-  fileprivate func oneCharacterOperator() -> Token? {
-    let result = oneCharOperators[program[index]]
-    index += 1
-    return result
-  }
-
   fileprivate func lessThanOperators() -> Token? {
     index += 1
     if program[index] == "=" {
@@ -271,7 +260,7 @@ class Lexer : Sequence, IteratorProtocol {
     let start = program.index(program.startIndex, offsetBy: index)
     let input = program[start...]
 
-    let answer = reservedWords.first { (word, token) in
+    let answer = prefixTokens.first { (word, token) in
       input.starts(with: word)
     }
 
