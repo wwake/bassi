@@ -154,6 +154,11 @@ class Lexer : Sequence, IteratorProtocol {
       return .atEnd
     }
 
+    let possibleToken = findPrefixToken()
+    if possibleToken != nil {
+      return possibleToken
+    }
+
     switch program[index] {
     case "\n":
       index += 1
@@ -175,10 +180,6 @@ class Lexer : Sequence, IteratorProtocol {
       return greaterThanOperators()
 
     case "A"..."Z":
-      let possibleToken = findPrefixToken()
-      if possibleToken != nil {
-        return possibleToken
-      }
       return handleVariable()
 
     default:
