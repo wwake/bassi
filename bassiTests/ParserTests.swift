@@ -516,15 +516,15 @@ class ParserTests: XCTestCase {
       )
   }
 
-//  func testDIMString() {
-//    checkParsing(
-//      "10 DIM Z9$(5)",
-//      .line(
-//        10,
-//        .dim("A", [6], .string)
-//      )
-//    )
-//  }
+  func testDIMString() {
+    checkParsing(
+      "10 DIM Z9$(5)",
+      .line(
+        10,
+        .dim("Z9$", [6], .string)
+      )
+    )
+  }
 
   func testMultiDimensionalDIM() {
     checkParsing(

@@ -198,13 +198,13 @@ class Interpreter {
       globals[functionName] = .userFunction(parameter, definition, theType)
       return output
 
-    case .dim(let name, let dimensions, _):
+    case .dim(let name, let dimensions, let type):
       do {
         if globals[name] != nil {
           throw InterpreterError.cantRedeclareArray
         }
 
-        doDim(name, dimensions)
+        doDim(name, dimensions, type)
       } catch {
         return output + "\(error)"
       }
@@ -261,8 +261,8 @@ class Interpreter {
     case .userdefined(let name, let expr):
       return callUserDefinedFunction(store, name, expr)
 
-    case .arrayAccess(let name, _, let exprs):
-      return storeArrayValue(name, store, exprs)
+    case .arrayAccess(let name, let type, let exprs):
+      return fetchArrayValue(name, store, exprs, type)
 
     case .op1(let token, let expr):
       let operand = evaluate(expr, store)
@@ -276,14 +276,18 @@ class Interpreter {
     }
   }
 
-  fileprivate func storeArrayValue(
+  fileprivate func fetchArrayValue(
     _ name: String,
     _ store: Store,
-    _ exprs: [Expression]) -> Value {
+    _ exprs: [Expression],
+    _ type: `Type`) -> Value {
     if store[name] == nil {
-      doDim(name, Array<Int>(
-        repeating: 11,
-        count: exprs.count))
+      doDim(
+        name,
+        Array<Int>(
+          repeating: 11,
+          count: exprs.count),
+        type)
     }
 
     let value = globals[name]!
@@ -379,11 +383,14 @@ class Interpreter {
       globals[name] = value
       return output
 
-    case .arrayAccess(let name, _, let exprs):
+    case .arrayAccess(let name, let type, let exprs):
       if globals[name] == nil {
-        doDim(name, Array<Int>(
-          repeating: 11,
-          count: exprs.count))
+        doDim(
+          name,
+          Array<Int>(
+            repeating: 11,
+            count: exprs.count),
+          type)
       }
 
       guard case .array(let dimensions, let values) = globals[name]! else {
@@ -410,14 +417,15 @@ class Interpreter {
 
   func doDim(
     _ name: String,
-    _ dimensions: [Int]) {
+    _ dimensions: [Int],
+    _ type: `Type`) {
 
       let count = dimensions.reduce(1, *)
 
       let array : Value = .array(
         dimensions,
         Array<Value>(
-          repeating: .number(0.0),
+          repeating: type.defaultValue(),
           count: count))
 
       globals[name] = array

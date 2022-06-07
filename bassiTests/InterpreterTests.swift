@@ -698,4 +698,21 @@ class InterpreterTests: XCTestCase {
 
 """)
   }
+
+  func testStringArrayElementsStartEmpty() {
+    checkProgramResults(
+      "10 PRINT A$(2)",
+      expecting: "\n")
+  }
+
+  func testStringArray() {
+    checkProgramResults(
+"""
+10 DIM A$(3)
+20 A$(3)="hello"
+30 PRINT A$(3)
+""",
+      expecting: "hello\n")
+  }
+
 }

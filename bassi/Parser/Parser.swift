@@ -410,11 +410,11 @@ public class Parser {
   fileprivate func variable(_ name: String) throws -> Expression  {
     nextToken()
 
-    let theType : `Type` =
+    let type : `Type` =
     name.last! == "$" ? .string : .number
 
     if token != .leftParend {
-      return .variable(name, theType)
+      return .variable(name, type)
     }
 
     var exprs: [Expression] = []
@@ -433,7 +433,7 @@ public class Parser {
 
     try require(.rightParend, .missingRightParend)
 
-    return .arrayAccess(name, .number, exprs)
+    return .arrayAccess(name, type, exprs)
   }
 
   fileprivate func predefinedFunctionCall(_ name: String, _ type: `Type`) throws -> Expression  {
@@ -547,6 +547,6 @@ public class Parser {
 
     try require(.rightParend, .missingRightParend)
 
-    return .dim(arrayName, dimensions, .number)
+    return .dim(arrayName, dimensions, typeFor(arrayName))
   }
 }
