@@ -154,11 +154,6 @@ class Lexer : Sequence, IteratorProtocol {
       return .atEnd
     }
 
-//    let possibleToken = prefixTokensMatch()
-//    if possible != .unknown {
-//      return possibleToken
-//    }
-
     switch program[index] {
     case "\n":
       index += 1
@@ -180,7 +175,11 @@ class Lexer : Sequence, IteratorProtocol {
       return greaterThanOperators()
 
     case "A"..."Z":
-      return keywordsAndNames()
+      let possibleToken = keywordsAndNames()
+      if possibleToken != nil {
+        return possibleToken
+      }
+      return handleVariable()
 
     default:
       return Token.error("not yet implemented")
@@ -286,7 +285,7 @@ class Lexer : Sequence, IteratorProtocol {
       return keyword
     }
 
-    return handleVariable()
+    return nil
   }
 
   fileprivate func handleVariable() -> Token? {
