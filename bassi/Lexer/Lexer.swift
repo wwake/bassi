@@ -160,20 +160,11 @@ class Lexer : Sequence, IteratorProtocol {
     }
 
     switch program[index] {
-    case "\n":
-      return nil
-
     case "0"..."9":
         return number()
 
     case "\"":
       return string()
-
-    case "<":
-      return nil //lessThanOperators()
-
-    case ">":
-      return nil //greaterThanOperators()
 
     case "A"..."Z":
       return handleVariable()
@@ -230,27 +221,6 @@ class Lexer : Sequence, IteratorProtocol {
     index += 1
 
     return .string(body)
-  }
-
-  fileprivate func lessThanOperators() -> Token? {
-    index += 1
-    if program[index] == "=" {
-      index += 1
-      return .lessThanOrEqualTo
-    } else if program[index] == ">" {
-      index += 1
-      return .notEqual
-    }
-    return .lessThan
-  }
-
-  fileprivate func greaterThanOperators() -> Token? {
-    index += 1
-    if program[index] == "=" {
-      index += 1
-      return .greaterThanOrEqualTo
-    }
-    return .greaterThan
   }
 
   fileprivate func isDigit() -> Bool {
