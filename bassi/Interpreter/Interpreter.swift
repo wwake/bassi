@@ -19,7 +19,7 @@ fileprivate func boolToFloat(
       return .number(opString(string, y.asString()) ? 1.0 : 0.0)
     case .undefined, .function,
         .userFunction(_, _, _),
-        .arrayOfNumber:
+        .array:
       return .number(0.0)
     }
   }
@@ -287,7 +287,7 @@ class Interpreter {
     }
 
     let value = globals[name]!
-    guard case .arrayOfNumber(let dimensions, let values) = value else {
+    guard case .array(let dimensions, let values) = value else {
       return .string("? tried to subscript non-array")
     }
 
@@ -342,7 +342,7 @@ class Interpreter {
     case .userFunction(_, _, _):
       return "<USER-FUNCTION>"
 
-    case .arrayOfNumber:
+    case .array:
       return "Array<Float>"
     }
   }
@@ -386,7 +386,7 @@ class Interpreter {
           count: exprs.count))
       }
 
-      guard case .arrayOfNumber(let dimensions, let values) = globals[name]! else {
+      guard case .array(let dimensions, let values) = globals[name]! else {
         return "?? attempted to use non-array as an array\n"
       }
 
@@ -397,7 +397,7 @@ class Interpreter {
 
         var updatedValues = values
         updatedValues[index] = value
-        globals[name] = .arrayOfNumber(dimensions, updatedValues)
+        globals[name] = .array(dimensions, updatedValues)
 
         return output
       } catch  {
@@ -414,7 +414,7 @@ class Interpreter {
 
       let count = dimensions.reduce(1, *)
 
-      let array : Value = .arrayOfNumber(
+      let array : Value = .array(
         dimensions,
         Array<Value>(
           repeating: .number(0.0),

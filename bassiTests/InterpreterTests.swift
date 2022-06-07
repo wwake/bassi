@@ -531,8 +531,8 @@ class InterpreterTests: XCTestCase {
   func testArrayValuesEqualIfDimensionsAndContentsAreEqual() {
 
     XCTAssertEqual(
-      Value.arrayOfNumber([3], [.number(0), .number(0), .number(0)]),
-      Value.arrayOfNumber([3], [.number(0), .number(0), .number(0)]))
+      Value.array([3], [.number(0), .number(0), .number(0)]),
+      Value.array([3], [.number(0), .number(0), .number(0)]))
   }
 
   func testDIMknowsTypeAndSize() {
@@ -541,7 +541,7 @@ class InterpreterTests: XCTestCase {
     let _ = interpreter.run()
     XCTAssertEqual(
       interpreter.globals["A"]!,
-      .arrayOfNumber(
+      .array(
         [3],
         [.number(0), .number(0), .number(0)]))
   }
@@ -554,7 +554,7 @@ class InterpreterTests: XCTestCase {
 
     XCTAssertEqual(
       interpreter.globals["A"]!,
-      .arrayOfNumber(
+      .array(
         [3,2,3],
         Array<Value>(
           repeating: .number(0.0),
@@ -608,7 +608,7 @@ class InterpreterTests: XCTestCase {
 
     XCTAssertEqual(
       interpreter.globals["A"]!,
-      .arrayOfNumber([11], expected)
+      .array([11], expected)
     )
   }
 
@@ -619,7 +619,7 @@ class InterpreterTests: XCTestCase {
 
     XCTAssertEqual(
       interpreter.globals["A"]!,
-      .arrayOfNumber([11], Array<Value>(repeating: .number(0), count: 11))
+      .array([11], Array<Value>(repeating: .number(0), count: 11))
     )
   }
 
@@ -628,7 +628,7 @@ class InterpreterTests: XCTestCase {
 20 PRINT A(11)
 25 PRINT A(-1)
 """,
-                        expecting: "arrayAccessOutOfBounds\narrayAccessOutOfBounds\n")
+      expecting: "arrayAccessOutOfBounds\narrayAccessOutOfBounds\n")
   }
 
   func testBoundsCheckArrayWrite() {
