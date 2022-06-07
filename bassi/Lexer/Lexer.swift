@@ -175,7 +175,7 @@ class Lexer : Sequence, IteratorProtocol {
       return greaterThanOperators()
 
     case "A"..."Z":
-      let possibleToken = keywordsAndNames()
+      let possibleToken = findPrefixToken()
       if possibleToken != nil {
         return possibleToken
       }
@@ -266,7 +266,7 @@ class Lexer : Sequence, IteratorProtocol {
     return program[index] >= "0" && program[index] <= "9"
   }
 
-  fileprivate func keywordsAndNames() -> Token? {
+  fileprivate func findPrefixToken() -> Token? {
     let start = program.index(program.startIndex, offsetBy: index)
     let input = program[start...]
 
