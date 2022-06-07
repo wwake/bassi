@@ -145,6 +145,7 @@ class LexerTests: XCTestCase {
     checkToken(">=", .greaterThanOrEqualTo)
   }
 
+
   func checkNumber(_ input: String, _ expected: Token) {
     let lexer = Lexer("10 PRINT \(input)")
 

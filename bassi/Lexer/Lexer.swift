@@ -17,76 +17,77 @@ class Lexer : Sequence, IteratorProtocol {
 
   typealias Element = Token
 
-  let prefixTokens: [String : Token] = [
-    "+": .plus,
-    "-": .minus,
-    "*": .times,
-    "/": .divide,
-    "^": .exponent,
-    "=": .equals,
-    "(": .leftParend,
-    ")": .rightParend,
-    ",": .comma,
-    "\n": .eol,
+  let prefixTokens: [(String, Token)] = [
+    ("+", .plus),
+    ("-", .minus),
+    ("*", .times),
+    ("/", .divide),
+    ("^", .exponent),
+    ("=", .equals),
+    ("(", .leftParend),
+    (")", .rightParend),
+    (",", .comma),
+    ("\n", .eol),
+    ("<=", .lessThanOrEqualTo),
+    ("<>", .notEqual),
+    ("<", .lessThan),
+    (">=", .greaterThanOrEqualTo),
+    (">", .greaterThan),
 
-    "AND": .and,
-    "CLEAR": .clear,
-    "DATA": .data,
-    "DEF": .def,
-    "DIM": .dim,
-    
-    "END": .end,
-    "FN": .fn,
-    "FOR": .forKeyword,
-    "GOTO": .goto,
-    "GOSUB": .gosub,
+    ("AND", .and),
+    ("CLEAR", .clear),
+    ("DATA", .data),
+    ("DEF", .def),
+    ("DIM", .dim),
 
-    "IF": .ifKeyword,
-    "INPUT": .input,
-    "LET": .letKeyword,
-    "NEXT": .next,
-    "NOT": .not,
+    ("END", .end),
+    ("FN", .fn),
+    ("FOR", .forKeyword),
+    ("GOTO", .goto),
+    ("GOSUB", .gosub),
 
-    "ON": .on,
-    "OR": .or,
-    "POKE": .poke,
-    "PRINT": .print,
-    "READ": .read,
-    "REM": .remark,
+    ("IF", .ifKeyword),
+    ("INPUT", .input),
+    ("LET", .letKeyword),
+    ("NEXT", .next),
+    ("NOT", .not),
+    ("ON", .on),
+    ("OR", .or),
 
-    "RESTORE": .restore,
-    "RETURN": .returnKeyword,
-    "STOP": .stop,
-    "THEN": .then,
+    ("POKE", .poke),
+    ("PRINT", .print),
+    ("READ", .read),
+    ("REM", .remark),
+    ("RESTORE", .restore),
+    ("RETURN", .returnKeyword),
 
-    "ABS": .predefined("ABS", `Type`.typeNtoN),
-    "ASC": .predefined("ASC", `Type`.typeStoN),
-    "ATN": .predefined("ATN", `Type`.typeNtoN),
-    "CHR$": .predefined("CHR$", `Type`.typeNtoS),
-    "COS": .predefined("COS", `Type`.typeNtoN),
+    ("STOP", .stop),
+    ("THEN", .then),
 
-    "EXP": .predefined("EXP", `Type`.typeNtoN),
-    "FRE": .predefined("FRE", `Type`.typeNtoN),
-    "INT": .predefined("INT", `Type`.typeNtoN),
-    "LEFT$": .predefined("LEFT$", `Type`.typeSNtoS),
-    "LEN": .predefined("LEN", `Type`.typeStoN),
-    "LOG": .predefined("LOG", `Type`.typeNtoN),
-
-    "MID$": .predefined("MID$", `Type`.typeSNoptNtoS),
-    "POS": .predefined("POS", `Type`.typeNtoN),
-    "RIGHT$": .predefined("RIGHT$", `Type`.typeSNtoS),
-    "RND": .predefined("RND", `Type`.typeNtoN),
-
-    "SGN": .predefined("SGN", `Type`.typeNtoN),
-    "SIN": .predefined("SIN", `Type`.typeNtoN),
-    "SPC": .predefined("SPC", `Type`.typeNtoS),
-    "SQR": .predefined("SQR", `Type`.typeNtoN),
-    "STR$": .predefined("STR$", `Type`.typeNtoS),
-
-    "TAB": .predefined("TAB", `Type`.typeNtoS),
-    "TAN": .predefined("TAN", `Type`.typeNtoN),
-    "USR": .predefined("USR", `Type`.typeNtoN),
-    "VAL": .predefined("VAL", `Type`.typeStoN),
+    ("ABS", .predefined("ABS", `Type`.typeNtoN)),
+    ("ASC", .predefined("ASC", `Type`.typeStoN)),
+    ("ATN", .predefined("ATN", `Type`.typeNtoN)),
+    ("CHR$", .predefined("CHR$", `Type`.typeNtoS)),
+    ("COS", .predefined("COS", `Type`.typeNtoN)),
+    ("EXP", .predefined("EXP", `Type`.typeNtoN)),
+    ("FRE", .predefined("FRE", `Type`.typeNtoN)),
+    ("INT", .predefined("INT", `Type`.typeNtoN)),
+    ("LEFT$", .predefined("LEFT$", `Type`.typeSNtoS)),
+    ("LEN", .predefined("LEN", `Type`.typeStoN)),
+    ("LOG", .predefined("LOG", `Type`.typeNtoN)),
+    ("MID$", .predefined("MID$", `Type`.typeSNoptNtoS)),
+    ("POS", .predefined("POS", `Type`.typeNtoN)),
+    ("RIGHT$", .predefined("RIGHT$", `Type`.typeSNtoS)),
+    ("RND", .predefined("RND", `Type`.typeNtoN)),
+    ("SGN", .predefined("SGN", `Type`.typeNtoN)),
+    ("SIN", .predefined("SIN", `Type`.typeNtoN)),
+    ("SPC", .predefined("SPC", `Type`.typeNtoS)),
+    ("SQR", .predefined("SQR", `Type`.typeNtoN)),
+    ("STR$", .predefined("STR$", `Type`.typeNtoS)),
+    ("TAB", .predefined("TAB", `Type`.typeNtoS)),
+    ("TAN", .predefined("TAN", `Type`.typeNtoN)),
+    ("USR", .predefined("USR", `Type`.typeNtoN)),
+    ("VAL", .predefined("VAL", `Type`.typeStoN)),
   ]
 
   let program: String
@@ -169,10 +170,10 @@ class Lexer : Sequence, IteratorProtocol {
       return string()
 
     case "<":
-      return lessThanOperators()
+      return nil //lessThanOperators()
 
     case ">":
-      return greaterThanOperators()
+      return nil //greaterThanOperators()
 
     case "A"..."Z":
       return handleVariable()
