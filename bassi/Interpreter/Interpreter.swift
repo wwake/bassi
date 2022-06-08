@@ -310,13 +310,8 @@ class Interpreter {
       throw InterpreterError.error(lineNumber, "Tried to subscript non-array " + name)
     }
 
-    do {
-      let index = try indexFor(exprs, store, dimensions)
-      return values[index]
-
-    } catch {
-      return .string("\(error)")
-    }
+    let index = try indexFor(exprs, store, dimensions)
+    return values[index]
   }
 
   fileprivate func callPredefinedFunction(
