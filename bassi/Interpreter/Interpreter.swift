@@ -212,15 +212,11 @@ class Interpreter {
       return output
 
     case .dim(let name, let dimensions, let type):
-      do {
-        if globals[name] != nil {
-          throw InterpreterError.error(lineNumber, "Can't redeclare array " + name)
-        }
-
-        doDim(name, dimensions, type)
-      } catch {
-        return output + "\(error)"
+      if globals[name] != nil {
+        throw InterpreterError.error(lineNumber, "Can't redeclare array " + name)
       }
+
+      doDim(name, dimensions, type)
       return output
     }
   }
