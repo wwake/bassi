@@ -367,6 +367,12 @@ class InterpreterTests: XCTestCase {
                         expecting: "8\n")
   }
 
+  func testCallOnUndefinedFunctionFails() {
+    checkProgramResults(
+      "10 PRINT FNX(0)",
+      expecting: "error(10, \"Attempted call on undefined function FNX\")\n")
+  }
+  
   func testPrintIntegerUsesNoDecimals() {
     checkProgramResults(
       "1 PRINT 42",

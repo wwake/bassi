@@ -33,7 +33,6 @@ public enum Value : Equatable {
   }
 
   case undefined
-  
   case number(Float)
   case string(String)
 
@@ -60,8 +59,8 @@ public enum Value : Equatable {
 
   func apply(_ args: [Value]) -> Value {
     guard case .function(let fn) = self else {
-      print("apply() called on non-function")
-      return Value.string("???")
+      // can't happen
+      return Value.undefined
     }
 
     return fn(args)

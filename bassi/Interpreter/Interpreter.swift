@@ -252,36 +252,41 @@ class Interpreter {
   ]
 
   func evaluate(_ value: Expression, _ store: Store) -> Value {
-    switch value {
-    case .missing:
-      return .undefined
-    case .number(let floatValue):
-      return Value.number(floatValue)
+    do {
+      switch value {
+      case .missing:
+        return .undefined
 
-    case .variable(let name, let theType):
-      return store[name] ?? theType.defaultValue()
+      case .number(let floatValue):
+        return Value.number(floatValue)
 
-    case .string(let value):
-      return Value.string(value)
+      case .variable(let name, let theType):
+        return store[name] ?? theType.defaultValue()
 
-    case .predefined(let name, let exprs, _):
-      return callPredefinedFunction(store, name, exprs)
+      case .string(let value):
+        return Value.string(value)
 
-    case .userdefined(let name, let expr):
-      return callUserDefinedFunction(store, name, expr)
+      case .predefined(let name, let exprs, _):
+        return callPredefinedFunction(store, name, exprs)
 
-    case .arrayAccess(let name, let type, let exprs):
-      return fetchArrayValue(name, store, exprs, type)
+      case .userdefined(let name, let expr):
+        return try callUserDefinedFunction(store, name, expr)
 
-    case .op1(let token, let expr):
-      let operand = evaluate(expr, store)
-      return operators1[token]!(operand)
+      case .arrayAccess(let name, let type, let exprs):
+        return fetchArrayValue(name, store, exprs, type)
 
-    case .op2(let token, let left, let right):
-      let operand1 = evaluate(left, store)
-      let operand2 = evaluate(right, store)
+      case .op1(let token, let expr):
+        let operand = evaluate(expr, store)
+        return operators1[token]!(operand)
 
-      return operators2[token]!(operand1, operand2)
+      case .op2(let token, let left, let right):
+        let operand1 = evaluate(left, store)
+        let operand2 = evaluate(right, store)
+
+        return operators2[token]!(operand1, operand2)
+      }
+    } catch {
+      return Value.string("\(error)")
     }
   }
 
@@ -313,7 +318,10 @@ class Interpreter {
     }
   }
 
-  fileprivate func callPredefinedFunction(_ store: Interpreter.Store, _ name: String, _ exprs: [Expression]) -> Value {
+  fileprivate func callPredefinedFunction(
+    _ store: Interpreter.Store,
+    _ name: String,
+    _ exprs: [Expression]) -> Value {
 
     let function = store[name]!
 
@@ -325,12 +333,20 @@ class Interpreter {
     return function.apply(arguments)
   }
 
-  fileprivate func callUserDefinedFunction(_ store: Interpreter.Store, _ name: String, _ expr: Expression) -> Value {
-    let operand = evaluate(expr, store)
+  fileprivate func callUserDefinedFunction(
+    _ store: Interpreter.Store,
+    _ name: String,
+    _ expr: Expression) throws -> Value {
+
+    if store[name] == nil {
+      throw InterpreterError.error(lineNumber, "Attempted call on undefined function " + name)
+    }
 
     guard case .userFunction(let parameter, let definition, _) = store[name]! else {
       return .string("?? Internal error - function not found")
     }
+
+    let operand = evaluate(expr, store)
 
     var locals = globals
     locals[parameter] = operand
@@ -356,7 +372,7 @@ class Interpreter {
       return "<USER-FUNCTION>"
 
     case .array:
-      return "Array<Float>"
+      return "Array<Value>"
     }
   }
 
