@@ -1,4 +1,6 @@
-* Improve error handling in interpreter
+* Handle parser errors better in interpreter
+* Should parser be generating .error?
+* Error if you redefine a user-defined function
 * Make running write to an output stream
 
 * Handle interpreter.format() for arrays
@@ -33,6 +35,9 @@
 * What should ASC do if given an empty string?
 
 Parameterized tests package?
+
+BI-22-22: June 8, 2022
+* Improve error handling in interpreter
 
 BI-22-21: June 7, 2022
 * String arrays

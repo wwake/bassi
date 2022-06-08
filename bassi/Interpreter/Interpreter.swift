@@ -70,6 +70,7 @@ extension `Type` {
 
     case .function(_, _):
       return Value.string("?? Undefined function")
+
     case .opt(_):
       return Value.string("?? Opt type default")
     }
@@ -79,8 +80,6 @@ extension `Type` {
 enum InterpreterError: Error, Equatable {
   case error(Int, String)
   case cantHappen(Int, String)
-  case arrayAccessOutOfBounds
-  case cantRedeclareArray
 }
 
 class Interpreter {
@@ -462,12 +461,11 @@ class Interpreter {
         }
       }
 
-    return zip(
-      indexes.dropFirst(),
-      dimensions.dropFirst())
-    .reduce(indexes[0], { (total, indexDim) in
-      let (index, dim) = indexDim
-      return total * dim + index
+    return zip(indexes, dimensions)
+      .dropFirst()
+      .reduce(indexes[0], { (total, indexDim) in
+        let (index, dim) = indexDim
+        return total * dim + index
     })
   }
 }
