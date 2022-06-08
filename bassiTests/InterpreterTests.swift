@@ -657,6 +657,17 @@ class InterpreterTests: XCTestCase {
     )
   }
 
+  func testErrorMessageIncludesLineNumber() throws {
+    do {
+      let program = "20 PRINT A(-2)"
+      let interpreter = Interpreter(Program(program))
+      let _ = try interpreter.run()
+      XCTFail("Should have thrown error")
+    } catch InterpreterError.error(let lineNumber, _) {
+      XCTAssertEqual(lineNumber, 20)
+    }
+  }
+  
   func testBoundsCheckArrayAccess() {
     checkExpectedError(
       "20 PRINT A(11)",
