@@ -11,9 +11,13 @@ import XCTest
 class InterpreterTests: XCTestCase {
 
   fileprivate func checkProgramResults(_ program: String, expecting: String) {
-    let interpreter = Interpreter(Program(program))
-    let output = interpreter.run()
-    XCTAssertEqual(output, expecting)
+    do {
+      let interpreter = Interpreter(Program(program))
+      let output = try interpreter.run()
+      XCTAssertEqual(output, expecting)
+    } catch {
+      XCTFail("\(error)")
+    }
   }
 
   fileprivate func checkPrintWithRelop(_ op: Token, _ expected: Int) throws {
@@ -54,17 +58,17 @@ class InterpreterTests: XCTestCase {
       expecting: "42\n")
   }
 
-  func testEnd() {
+  func testEnd() throws {
     let program = Program("999 END")
     let interpreter = Interpreter(program)
-    let _ = interpreter.run()
+    let _ = try interpreter.run()
     XCTAssertTrue(interpreter.done)
   }
 
   func testSyntaxErrorStopsInterpreter() throws {
     let program = "10 PRINT {}"
     let interpreter = Interpreter(Program(program))
-    let actual = interpreter.run()
+    let actual = try interpreter.run()
     XCTAssertEqual(
       actual,
       "? expectedStartOfExpression\n")
@@ -145,17 +149,17 @@ class InterpreterTests: XCTestCase {
     XCTAssertEqual(output, "7\n")
   }
 
-  func testLogicalOperationsOnIntegers() {
+  func testLogicalOperationsOnIntegers() throws {
     let program = Program("25 PRINT NOT -8 OR 5 AND 4")
     let interpreter = Interpreter(program)
-    let output = interpreter.run()
+    let output = try interpreter.run()
     XCTAssertEqual(output, "7\n")
   }
 
-  func testVariableDefaultsToZero() {
+  func testVariableDefaultsToZero() throws {
     let program = Program("25 PRINT Y9")
     let interpreter = Interpreter(program)
-    let output = interpreter.run()
+    let output = try interpreter.run()
     XCTAssertEqual(output, "0\n")
   }
 
@@ -431,10 +435,10 @@ class InterpreterTests: XCTestCase {
       expecting: "-0.001593\n")
   }
 
-  func testRandomNumbers() {
-    (1...1000).forEach { _ in
+  func testRandomNumbers() throws {
+    try (1...1000).forEach { _ in
       let interpreter = Interpreter(Program("1 PRINT RND(0)"))
-      let output = interpreter.run()
+      let output = try interpreter.run()
       let value = Float(output.dropLast())!
       XCTAssertTrue(value >= 0 && value < 1)
     }
@@ -540,10 +544,10 @@ class InterpreterTests: XCTestCase {
       Value.array([3], [.number(0), .number(0), .number(0)]))
   }
 
-  func testDIMknowsTypeAndSize() {
+  func testDIMknowsTypeAndSize() throws {
     let program = Program("10 DIM A(2)")
     let interpreter = Interpreter(program)
-    let _ = interpreter.run()
+    let _ = try interpreter.run()
     XCTAssertEqual(
       interpreter.globals["A"]!,
       .array(
@@ -551,11 +555,11 @@ class InterpreterTests: XCTestCase {
         [.number(0), .number(0), .number(0)]))
   }
 
-  func testDIMknowsTypeAndSizeForMultiDArray() {
+  func testDIMknowsTypeAndSizeForMultiDArray() throws {
     let program = Program("10 DIM A(2,1,2)")
 
     let interpreter = Interpreter(program)
-    let _ = interpreter.run()
+    let _ = try interpreter.run()
 
     XCTAssertEqual(
       interpreter.globals["A"]!,
@@ -566,11 +570,11 @@ class InterpreterTests: XCTestCase {
           count: 3*2*3)))
   }
 
-  func testDIMmayNotRedeclareVariables() {
+  func testDIMmayNotRedeclareVariables() throws {
     let program = Program("10 DIM A(2)")
     let interpreter = Interpreter(program)
     interpreter.globals["A"] = .number(27)
-    let output = interpreter.run()
+    let output = try interpreter.run()
     XCTAssertEqual(
       output,
       "error(10, \"Can\\'t redeclare array A\")")
@@ -607,10 +611,10 @@ class InterpreterTests: XCTestCase {
       expecting: "error(20, \"Tried to subscript non-array A\")")
   }
 
-  func testArrayAssignmentWithoutDIMdefaultsToSize10() {
+  func testArrayAssignmentWithoutDIMdefaultsToSize10() throws {
     let program = Program("10 A(2) = 3")
     let interpreter = Interpreter(program)
-    let _ = interpreter.run()
+    let _ = try interpreter.run()
 
     var expected = Array<Value>(
       repeating: .number(0),
@@ -623,10 +627,10 @@ class InterpreterTests: XCTestCase {
     )
   }
 
-  func testArrayAccessWithoutDIMdefaultsToSize10() {
+  func testArrayAccessWithoutDIMdefaultsToSize10() throws {
     let program = Program("10 PRINT A(2)")
     let interpreter = Interpreter(program)
-    let _ = interpreter.run()
+    let _ = try interpreter.run()
 
     XCTAssertEqual(
       interpreter.globals["A"]!,

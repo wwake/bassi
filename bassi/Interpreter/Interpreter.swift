@@ -149,7 +149,7 @@ class Interpreter {
     nextLineNumber = program.firstLineNumber()
   }
 
-  func run() -> String {
+  func run() throws -> String {
     var output = ""
 
     while !done {
