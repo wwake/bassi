@@ -604,7 +604,7 @@ class InterpreterTests: XCTestCase {
 10 A=3
 20 A(1)=17
 """,
-                        expecting: "?? attempted to use non-array as an array\n")
+      expecting: "error(20, \"Tried to subscript non-array A\")")
   }
 
   func testArrayAssignmentWithoutDIMdefaultsToSize10() {

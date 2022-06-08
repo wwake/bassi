@@ -342,12 +342,12 @@ class Interpreter {
       throw InterpreterError.cantHappen(lineNumber, "Function not found: " + name)
     }
 
-      let operand = try evaluate(expr, store)
+    let operand = try evaluate(expr, store)
 
     var locals = globals
     locals[parameter] = operand
 
-      return try evaluate(definition, locals)
+    return try evaluate(definition, locals)
   }
 
   func format(_ input: Expression) throws -> String {
@@ -416,7 +416,7 @@ class Interpreter {
       }
 
       guard case .array(let dimensions, let values) = globals[name]! else {
-        return "?? attempted to use non-array as an array\n"
+        throw InterpreterError.error(lineNumber, "Tried to subscript non-array " + name)
       }
 
       do {
