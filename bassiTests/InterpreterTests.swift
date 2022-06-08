@@ -222,11 +222,11 @@ class InterpreterTests: XCTestCase {
 
     let interpreter = Interpreter(Program("10 GOTO 10"))
 
-    XCTAssertEqual(interpreter.lineNumber, 10)
+    XCTAssertEqual(interpreter.nextLineNumber, 10)
 
     let _ = interpreter.step(parse, "")
 
-    XCTAssertEqual(interpreter.lineNumber, 10)
+    XCTAssertEqual(interpreter.nextLineNumber, 10)
   }
 
   func testStepWillEvenGotoMissingLine() {
@@ -239,7 +239,7 @@ class InterpreterTests: XCTestCase {
 
     let _ = interpreter.step(parse, "")
 
-    XCTAssertEqual(interpreter.lineNumber, 20)
+    XCTAssertEqual(interpreter.nextLineNumber, 20)
   }
 
   func testTwoLineProgramRunsBothLines() throws {

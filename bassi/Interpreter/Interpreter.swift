@@ -87,6 +87,8 @@ class Interpreter {
   let program: Program
 
   var lineNumber : Int
+  var nextLineNumber: Int?
+
   var done = false
 
   typealias Store = [String : Value]
@@ -142,15 +144,17 @@ class Interpreter {
 
   init(_ program: Program) {
     self.program = program
-    lineNumber = program.firstLineNumber()
+    lineNumber = 0
+    nextLineNumber = program.firstLineNumber()
   }
 
   func run() -> String {
     var output = ""
 
     while !done {
+      lineNumber = nextLineNumber!
       let line = program[lineNumber]
-      lineNumber = program.lineAfter(lineNumber)
+      nextLineNumber = program.lineAfter(lineNumber)
       let parser = Parser()
       let parse = parser.parse(line)
       if parser.errorMessages.count > 0 {
@@ -185,7 +189,7 @@ class Interpreter {
       return doPrint(output, values)
 
     case .goto(let newLineNumber):
-      lineNumber = newLineNumber
+      nextLineNumber = newLineNumber
       return output
 
     case .`if`(let expr, let target):
@@ -366,7 +370,7 @@ class Interpreter {
   fileprivate func doIfThen(_ output: String, _ expr: Expression, _ target: Int) -> String {
     let condition = evaluate(expr, globals)
     if condition != .number(0.0) {
-      lineNumber = target
+      nextLineNumber = target
     }
     return output
   }
