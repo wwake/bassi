@@ -78,6 +78,7 @@ extension `Type` {
 
 enum InterpreterError: Error, Equatable {
   case error(Int, String)
+  case cantHappen(Int, String)
   case arrayAccessOutOfBounds
   case cantRedeclareArray
 }
@@ -343,7 +344,7 @@ class Interpreter {
     }
 
     guard case .userFunction(let parameter, let definition, _) = store[name]! else {
-      return .string("?? Internal error - function not found")
+      throw InterpreterError.cantHappen(lineNumber, "Function not found: " + name)
     }
 
     let operand = evaluate(expr, store)
