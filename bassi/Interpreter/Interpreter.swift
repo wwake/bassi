@@ -167,12 +167,7 @@ class Interpreter {
         break
       }
 
-      do {
-        output = try step(parse, output)
-      } catch {
-        output = "\(error)"
-        done = true
-      }
+      output = try step(parse, output)
     }
 
     return output
@@ -208,6 +203,10 @@ class Interpreter {
       return try doAssign(output, variable, expr)
 
     case .def(let functionName, let parameter, let definition, let theType):
+      if globals[functionName] != nil {
+        throw InterpreterError.error(lineNumber, "Can't redefine function " + functionName)
+      }
+
       globals[functionName] = .userFunction(parameter, definition, theType)
       return output
 

@@ -1,6 +1,6 @@
+* Error if you redefine a user-defined function
 * Handle parser errors better in interpreter
 * Should parser be generating .error?
-* Error if you redefine a user-defined function
 * Make running write to an output stream
 
 * Handle interpreter.format() for arrays

@@ -20,6 +20,18 @@ class InterpreterTests: XCTestCase {
     }
   }
 
+  fileprivate func checkExpectedError(_ program: String, expecting: String) {
+    do {
+      let interpreter = Interpreter(Program(program))
+      let _ = try interpreter.run()
+      XCTFail("Should have thrown error")
+    } catch InterpreterError.error(_, let message){
+      XCTAssertEqual(message, expecting)
+    } catch {
+      XCTFail("Unexpected error \(error)")
+    }
+  }
+
   fileprivate func checkPrintWithRelop(_ op: Token, _ expected: Int) throws {
     let parse =
     Parse.line(
@@ -353,6 +365,12 @@ class InterpreterTests: XCTestCase {
     XCTAssertNotNil(interpreter.globals["FNI"])
   }
 
+  func testDEFcantRedefineFunction() {
+    checkExpectedError(
+      "10 DEF FNA(X)=X\n20 DEF FNA(Y)=42",
+      expecting: "Can't redefine function FNA")
+  }
+
   func testCallUserDefinedFunction() {
     checkProgramResults("""
 10 DEF FNI(X)=X
@@ -372,9 +390,9 @@ class InterpreterTests: XCTestCase {
   }
 
   func testCallOnUndefinedFunctionFails() {
-    checkProgramResults(
+    checkExpectedError(
       "10 PRINT FNX(0)",
-      expecting: "error(10, \"Attempted call on undefined function FNX\")")
+      expecting: "Attempted call on undefined function FNX")
   }
   
   func testPrintIntegerUsesNoDecimals() {
@@ -571,13 +589,14 @@ class InterpreterTests: XCTestCase {
   }
 
   func testDIMmayNotRedeclareVariables() throws {
-    let program = Program("10 DIM A(2)")
-    let interpreter = Interpreter(program)
-    interpreter.globals["A"] = .number(27)
-    let output = try interpreter.run()
-    XCTAssertEqual(
-      output,
-      "error(10, \"Can\\'t redeclare array A\")")
+    do {
+      let program = Program("10 DIM A(2)")
+      let interpreter = Interpreter(program)
+      interpreter.globals["A"] = .number(27)
+      let _ = try interpreter.run()
+    } catch InterpreterError.error(_, let message) {
+      XCTAssertEqual(message, "Can't redeclare array A")
+    }
   }
 
   func testArrayAccess() {
@@ -587,9 +606,9 @@ class InterpreterTests: XCTestCase {
   }
 
   func testCantAccessNonArrayWithSubscript() {
-    checkProgramResults(
+    checkExpectedError(
       "10 A = 7\n20 PRINT A(0)",
-      expecting: "error(20, \"Tried to subscript non-array A\")")
+      expecting: "Tried to subscript non-array A")
   }
 
   func testAssignmentToArray() {
@@ -604,11 +623,11 @@ class InterpreterTests: XCTestCase {
   }
 
   func testArrayAssignmentToAlreadyNonArrayVariableFails() {
-    checkProgramResults("""
+    checkExpectedError("""
 10 A=3
 20 A(1)=17
 """,
-      expecting: "error(20, \"Tried to subscript non-array A\")")
+      expecting: "Tried to subscript non-array A")
   }
 
   func testArrayAssignmentWithoutDIMdefaultsToSize10() throws {
@@ -639,27 +658,25 @@ class InterpreterTests: XCTestCase {
   }
 
   func testBoundsCheckArrayAccess() {
-    checkProgramResults(
+    checkExpectedError(
       "20 PRINT A(11)",
-      expecting: "error(20, \"array access out of bounds\")"
+      expecting: "array access out of bounds"
     )
 
-    checkProgramResults(
+    checkExpectedError(
       "25 PRINT A(-1)",
-      expecting: "error(25, \"array access out of bounds\")"
+      expecting: "array access out of bounds"
     )
   }
 
   func testBoundsCheckArrayWrite() {
-    checkProgramResults("""
-20 A(11)=5
-""",
-      expecting: "error(20, \"array access out of bounds\")")
+    checkExpectedError(
+      "20 A(11)=5",
+      expecting: "array access out of bounds")
 
-    checkProgramResults("""
-25 A(-1)=27
-""",
-      expecting: "error(25, \"array access out of bounds\")")
+    checkExpectedError(
+      "25 A(-1)=27",
+      expecting: "array access out of bounds")
   }
 
   func testMultiDArrayReadAndWrite() {
