@@ -152,9 +152,11 @@ class Interpreter {
     var output = ""
 
     while !done {
-      lineNumber = nextLineNumber!
+      lineNumber = (nextLineNumber != nil) ? nextLineNumber! : program.lineAfter(lineNumber)
+      nextLineNumber = nil
+
       let line = program[lineNumber]
-      nextLineNumber = program.lineAfter(lineNumber)
+
       let parser = Parser()
       let parse = parser.parse(line)
       if parser.errorMessages.count > 0 {
