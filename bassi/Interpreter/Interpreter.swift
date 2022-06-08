@@ -274,7 +274,7 @@ class Interpreter {
         return try callUserDefinedFunction(store, name, expr)
 
       case .arrayAccess(let name, let type, let exprs):
-        return fetchArrayValue(name, store, exprs, type)
+        return try fetchArrayValue(name, store, exprs, type)
 
       case .op1(let token, let expr):
         let operand = evaluate(expr, store)
@@ -295,7 +295,7 @@ class Interpreter {
     _ name: String,
     _ store: Store,
     _ exprs: [Expression],
-    _ type: `Type`) -> Value {
+    _ type: `Type`) throws -> Value {
     if store[name] == nil {
       doDim(
         name,
@@ -307,7 +307,7 @@ class Interpreter {
 
     let value = globals[name]!
     guard case .array(let dimensions, let values) = value else {
-      return .string("? tried to subscript non-array")
+      throw InterpreterError.error(lineNumber, "Tried to subscript non-array " + name)
     }
 
     do {
@@ -469,7 +469,7 @@ class Interpreter {
       .enumerated()
       .forEach { (i, index) in
         if index < 0 || index >= dimensions[i] {
-          throw InterpreterError.arrayAccessOutOfBounds
+          throw InterpreterError.error(lineNumber, "array access out of bounds")
         }
       }
 

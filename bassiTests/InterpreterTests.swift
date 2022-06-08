@@ -535,7 +535,6 @@ class InterpreterTests: XCTestCase {
   }
 
   func testArrayValuesEqualIfDimensionsAndContentsAreEqual() {
-
     XCTAssertEqual(
       Value.array([3], [.number(0), .number(0), .number(0)]),
       Value.array([3], [.number(0), .number(0), .number(0)]))
@@ -581,6 +580,12 @@ class InterpreterTests: XCTestCase {
     checkProgramResults(
       "10 DIM A(3)\n20 PRINT A(0)",
       expecting: "0\n")
+  }
+
+  func testCantAccessNonArrayWithSubscript() {
+    checkProgramResults(
+      "10 A = 7\n20 PRINT A(0)",
+      expecting: "error(20, \"Tried to subscript non-array A\")\n")
   }
 
   func testAssignmentToArray() {
@@ -634,19 +639,24 @@ class InterpreterTests: XCTestCase {
 20 PRINT A(11)
 25 PRINT A(-1)
 """,
-      expecting: "arrayAccessOutOfBounds\narrayAccessOutOfBounds\n")
+      expecting:
+"""
+error(20, "array access out of bounds")
+error(25, "array access out of bounds")
+
+""")
   }
 
   func testBoundsCheckArrayWrite() {
     checkProgramResults("""
 20 A(11)=5
 """,
-      expecting: "arrayAccessOutOfBounds")
+      expecting: "error(20, \"array access out of bounds\")")
 
     checkProgramResults("""
 25 A(-1)=27
 """,
-      expecting: "arrayAccessOutOfBounds")
+      expecting: "error(25, \"array access out of bounds\")")
   }
 
   func testMultiDArrayReadAndWrite() {
