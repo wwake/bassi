@@ -1,5 +1,5 @@
-* Simplify lexer
 * Improve error handling in interpreter
+* Make running write to an output stream
 
 * Handle interpreter.format() for arrays
 * Enforce array types
@@ -11,8 +11,6 @@
 
 * Multiple statements on one line
 * IF relation-expr THEN statements
-
-* Make running write to an output stream
 
 * PRINT with multiple expressions
    25 PRINT "A" 4221    -- is legal - puts a space between them
@@ -39,6 +37,7 @@ Parameterized tests package?
 BI-22-21: June 7, 2022
 * String arrays
 * Xcode - Jump to last destination keystroke (^B), refactoring keystrokes (ctrl-command-M / R / V)
+* Simplify lexer
 
 BI-22-20: June 6, 2022
 * Bounds check 1-d arrays
@@ -129,7 +128,6 @@ BI-22-07: May 18, 2022
 * Expressions with relational operators
 * Exponentiation has higher precedence than unary minus
 * Add all reserved words to lexer
-
 
 BI-22-06: May 17, 2022
 * REPL - LIST (sort line numbers numerically)

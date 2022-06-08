@@ -447,15 +447,6 @@ class Interpreter {
         }
       }
 
-    //    let index =
-    //    Int(
-    //      evaluate(exprs[0], store)
-    //        .asFloat())
-    //
-    //    if index < 0 || index >= dimensions[0] {
-    //      throw InterpreterError.arrayAccessOutOfBounds
-    //    }
-
     return zip(
       indexes.dropFirst(),
       dimensions.dropFirst())
@@ -463,6 +454,5 @@ class Interpreter {
       let (index, dim) = indexDim
       return total * dim + index
     })
-//    return index
   }
 }
