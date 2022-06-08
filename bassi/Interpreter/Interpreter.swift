@@ -77,6 +77,7 @@ extension `Type` {
 }
 
 enum InterpreterError: Error, Equatable {
+  case error(Int, String)
   case arrayAccessOutOfBounds
   case cantRedeclareArray
 }
@@ -165,20 +166,26 @@ class Interpreter {
         }
         break
       }
-      output = step(parse, output)
+
+      do {
+        output = try step(parse, output)
+      } catch {
+        output = "\(error)"
+        done = true
+      }
     }
 
     return output
   }
 
-  func step(_ parse: Parse, _ output: String) -> String {
+  func step(_ parse: Parse, _ output: String) throws -> String {
 
     switch parse {
     case .error(let message):
       return "? " + message
 
     case .line(_, let statement):
-      return step(statement, output)
+      return try step(statement, output)
 
     case .end:
       done = true
@@ -207,7 +214,7 @@ class Interpreter {
     case .dim(let name, let dimensions, let type):
       do {
         if globals[name] != nil {
-          throw InterpreterError.cantRedeclareArray
+          throw InterpreterError.error(lineNumber, "Can't redeclare array " + name)
         }
 
         doDim(name, dimensions, type)

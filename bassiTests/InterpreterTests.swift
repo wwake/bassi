@@ -16,7 +16,7 @@ class InterpreterTests: XCTestCase {
     XCTAssertEqual(output, expecting)
   }
 
-  fileprivate func checkPrintWithRelop(_ op: Token, _ expected: Int) {
+  fileprivate func checkPrintWithRelop(_ op: Token, _ expected: Int) throws {
     let parse =
     Parse.line(
       40,
@@ -25,15 +25,15 @@ class InterpreterTests: XCTestCase {
       ]))
 
     let interpreter = Interpreter(Program())
-    let output = interpreter.step(parse, "")
+    let output = try interpreter.step(parse, "")
     XCTAssertEqual(output, "\(expected)\n")
   }
 
   fileprivate func checkRelop(
     _ op1ExpectedTrue: Token,
-    _ op2ExpectedFalse: Token) {
-      checkPrintWithRelop(op1ExpectedTrue, 1)
-      checkPrintWithRelop(op2ExpectedFalse, 0)
+    _ op2ExpectedFalse: Token) throws {
+      try checkPrintWithRelop(op1ExpectedTrue, 1)
+      try checkPrintWithRelop(op2ExpectedFalse, 0)
     }
 
   func test10REM() throws {
@@ -75,7 +75,7 @@ class InterpreterTests: XCTestCase {
 
     let interpreter = Interpreter(Program())
 
-    let output = interpreter.step(parse, "")
+    let output = try interpreter.step(parse, "")
     XCTAssertEqual(output, "")
   }
 
@@ -84,29 +84,29 @@ class InterpreterTests: XCTestCase {
     Parse.line(10, Parse.print([]))
 
     let interpreter = Interpreter(Program())
-    let output = interpreter.step(parse, "")
+    let output = try interpreter.step(parse, "")
     XCTAssertEqual(output, "\n")
   }
 
-  func testPrintWithNumericValue() {
+  func testPrintWithNumericValue() throws {
     let parse =
     Parse.line(
       35,
       .print([.number(22.0)]))
 
     let interpreter = Interpreter(Program())
-    let output = interpreter.step(parse, "")
+    let output = try interpreter.step(parse, "")
     XCTAssertEqual(output, "22\n")
   }
 
-  func testPrintWithStringValue() {
+  func testPrintWithStringValue() throws {
     let parse =
     Parse.line(
       35,
       .print([.string("hello")]))
 
     let interpreter = Interpreter(Program())
-    let output = interpreter.step(parse, "")
+    let output = try interpreter.step(parse, "")
     XCTAssertEqual(output, "hello\n")
   }
 
@@ -116,7 +116,7 @@ class InterpreterTests: XCTestCase {
       expecting: "64\n")
   }
 
-  func testLogicalOperationsOnIntegersTree() {
+  func testLogicalOperationsOnIntegersTree() throws {
     // NOT -8 OR 5 AND 4
     // 11111..1000  -8
     // 0000....111  7 = NOT -8
@@ -141,7 +141,7 @@ class InterpreterTests: XCTestCase {
       .print([expression]))
 
     let interpreter = Interpreter(Program())
-    let output = interpreter.step(parse, "")
+    let output = try interpreter.step(parse, "")
     XCTAssertEqual(output, "7\n")
   }
 
@@ -168,7 +168,7 @@ class InterpreterTests: XCTestCase {
     XCTAssertEqual(output, .number(-21))
   }
 
-  func testPrintWithAddition() {
+  func testPrintWithAddition() throws {
     let parse =
     Parse.line(
       40,
@@ -178,11 +178,11 @@ class InterpreterTests: XCTestCase {
     )
     
     let interpreter = Interpreter(Program())
-    let output = interpreter.step(parse, "")
+    let output = try interpreter.step(parse, "")
     XCTAssertEqual(output, "6\n")
   }
 
-  func testPrintWithSubtraction() {
+  func testPrintWithSubtraction() throws {
     let parse =
     Parse.line(
       40,
@@ -191,11 +191,11 @@ class InterpreterTests: XCTestCase {
       ]))
 
     let interpreter = Interpreter(Program())
-    let output = interpreter.step(parse, "")
+    let output = try interpreter.step(parse, "")
     XCTAssertEqual(output, "-4\n")
   }
 
-  func testPrintWithMultiplyDivide() {
+  func testPrintWithMultiplyDivide() throws {
     let parse =
     Parse.line(
       40,
@@ -204,17 +204,17 @@ class InterpreterTests: XCTestCase {
       ]))
 
     let interpreter = Interpreter(Program())
-    let output = interpreter.step(parse, "")
+    let output = try interpreter.step(parse, "")
     XCTAssertEqual(output, "2\n")
   }
 
-  func testPrintWithEqualityComparison() {
-    checkRelop(.equals, .notEqual)
-    checkRelop(.greaterThanOrEqualTo, .lessThan)
-    checkRelop(.lessThanOrEqualTo, .greaterThan)
+  func testPrintWithEqualityComparison() throws {
+    try checkRelop(.equals, .notEqual)
+    try checkRelop(.greaterThanOrEqualTo, .lessThan)
+    try checkRelop(.lessThanOrEqualTo, .greaterThan)
   }
 
-  func test10Goto10() {
+  func test10Goto10() throws {
     let parse =
     Parse.line(
       10,
@@ -224,12 +224,12 @@ class InterpreterTests: XCTestCase {
 
     XCTAssertEqual(interpreter.nextLineNumber, 10)
 
-    let _ = interpreter.step(parse, "")
+    let _ = try interpreter.step(parse, "")
 
     XCTAssertEqual(interpreter.nextLineNumber, 10)
   }
 
-  func testStepWillEvenGotoMissingLine() {
+  func testStepWillEvenGotoMissingLine() throws {
     let parse =
     Parse.line(
       10,
@@ -237,7 +237,7 @@ class InterpreterTests: XCTestCase {
 
     let interpreter = Interpreter(Program())
 
-    let _ = interpreter.step(parse, "")
+    let _ = try interpreter.step(parse, "")
 
     XCTAssertEqual(interpreter.nextLineNumber, 20)
   }
@@ -333,7 +333,7 @@ class InterpreterTests: XCTestCase {
     XCTAssertEqual(globals["B"], "Ball")
   }
 
-  func testDEFstoresItsFunctionForLater() {
+  func testDEFstoresItsFunctionForLater() throws {
     let parse =
     Parse.line(
       40,
@@ -345,7 +345,7 @@ class InterpreterTests: XCTestCase {
       ))
 
     let interpreter = Interpreter(Program())
-    let _ = interpreter.step(parse, "")
+    let _ = try interpreter.step(parse, "")
     XCTAssertNotNil(interpreter.globals["FNI"])
   }
 
@@ -568,7 +568,7 @@ class InterpreterTests: XCTestCase {
     let output = interpreter.run()
     XCTAssertEqual(
       output,
-      "cantRedeclareArray")
+      "error(10, \"Can\\'t redeclare array A\")")
   }
 
   func testArrayAccess() {
