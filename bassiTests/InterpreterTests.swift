@@ -159,12 +159,12 @@ class InterpreterTests: XCTestCase {
     XCTAssertEqual(output, "0\n")
   }
 
-  func testPrintWithUnaryMinus() {
+  func testPrintWithUnaryMinus() throws {
     let expr = Expression.op1(
       .minus,
       .number(21.0))
     let interpreter = Interpreter(Program())
-    let output = interpreter.evaluate(expr, [:])
+    let output = try interpreter.evaluate(expr, [:])
     XCTAssertEqual(output, .number(-21))
   }
 

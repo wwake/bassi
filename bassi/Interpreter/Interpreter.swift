@@ -196,17 +196,17 @@ class Interpreter {
       return output
 
     case .print(let values):
-      return doPrint(output, values)
+      return try doPrint(output, values)
 
     case .goto(let newLineNumber):
       nextLineNumber = newLineNumber
       return output
 
     case .`if`(let expr, let target):
-      return doIfThen(output, expr, target)
+      return try doIfThen(output, expr, target)
 
     case .assign(let variable, let expr):
-      return doAssign(output, variable, expr)
+      return try doAssign(output, variable, expr)
 
     case .def(let functionName, let parameter, let definition, let theType):
       globals[functionName] = .userFunction(parameter, definition, theType)
@@ -252,7 +252,7 @@ class Interpreter {
    }
   ]
 
-  func evaluate(_ value: Expression, _ store: Store) -> Value {
+  func evaluate(_ value: Expression, _ store: Store) throws -> Value {
     do {
       switch value {
       case .missing:
@@ -268,7 +268,7 @@ class Interpreter {
         return Value.string(value)
 
       case .predefined(let name, let exprs, _):
-        return callPredefinedFunction(store, name, exprs)
+        return try callPredefinedFunction(store, name, exprs)
 
       case .userdefined(let name, let expr):
         return try callUserDefinedFunction(store, name, expr)
@@ -277,12 +277,12 @@ class Interpreter {
         return try fetchArrayValue(name, store, exprs, type)
 
       case .op1(let token, let expr):
-        let operand = evaluate(expr, store)
+        let operand = try evaluate(expr, store)
         return operators1[token]!(operand)
 
       case .op2(let token, let left, let right):
-        let operand1 = evaluate(left, store)
-        let operand2 = evaluate(right, store)
+        let operand1 = try evaluate(left, store)
+        let operand2 = try evaluate(right, store)
 
         return operators2[token]!(operand1, operand2)
       }
@@ -317,13 +317,13 @@ class Interpreter {
   fileprivate func callPredefinedFunction(
     _ store: Interpreter.Store,
     _ name: String,
-    _ exprs: [Expression]) -> Value {
+    _ exprs: [Expression]) throws -> Value {
 
     let function = store[name]!
 
-    let arguments = exprs
+    let arguments = try exprs
       .map {
-        evaluate($0, store)
+        try evaluate($0, store)
       }
 
     return function.apply(arguments)
@@ -342,16 +342,17 @@ class Interpreter {
       throw InterpreterError.cantHappen(lineNumber, "Function not found: " + name)
     }
 
-    let operand = evaluate(expr, store)
+      let operand = try evaluate(expr, store)
 
     var locals = globals
     locals[parameter] = operand
 
-    return evaluate(definition, locals)
+      return try evaluate(definition, locals)
   }
 
-  func format(_ input: Expression) -> String {
-    let value = evaluate(input, globals)
+  func format(_ input: Expression) throws -> String {
+    let value = try evaluate(input, globals)
+
     switch value {
     case .number(let number):
       return basicFormat(number)
@@ -372,10 +373,10 @@ class Interpreter {
     }
   }
 
-  fileprivate func doPrint(_ output: String, _ values : [Expression]) -> String {
+  fileprivate func doPrint(_ output: String, _ values : [Expression]) throws -> String {
     var result = output
 
-    let printedOutput = values
+    let printedOutput = try values
       .map(format)
       .joined(separator: " ")
 
@@ -384,8 +385,8 @@ class Interpreter {
     return result
   }
 
-  fileprivate func doIfThen(_ output: String, _ expr: Expression, _ target: Int) -> String {
-    let condition = evaluate(expr, globals)
+  fileprivate func doIfThen(_ output: String, _ expr: Expression, _ target: Int) throws -> String {
+    let condition = try evaluate(expr, globals)
     if condition != .number(0.0) {
       nextLineNumber = target
     }
@@ -395,11 +396,11 @@ class Interpreter {
   fileprivate func doAssign(
     _ output: String,
     _ lvalue: Expression,
-    _ rvalue: Expression)
+    _ rvalue: Expression) throws
   -> String {
     switch lvalue {
     case .variable(let name, _):
-      let value = evaluate(rvalue, globals)
+      let value = try evaluate(rvalue, globals)
 
       globals[name] = value
       return output
@@ -421,7 +422,7 @@ class Interpreter {
       do {
         let index = try indexFor(exprs, globals, dimensions)
 
-        let value = evaluate(rvalue, globals)
+        let value = try evaluate(rvalue, globals)
 
         var updatedValues = values
         updatedValues[index] = value
@@ -454,9 +455,9 @@ class Interpreter {
 
   fileprivate func indexFor(_ exprs: [Expression], _ store: Store, _ dimensions: [Int]) throws -> Int {
 
-    let indexes = exprs
+    let indexes = try exprs
       .map {
-        evaluate($0, store)
+        try evaluate($0, store)
       }
       .map { Int($0.asFloat())}
 
