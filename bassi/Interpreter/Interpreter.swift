@@ -419,21 +419,18 @@ class Interpreter {
         throw InterpreterError.error(lineNumber, "Tried to subscript non-array " + name)
       }
 
-      do {
-        let index = try indexFor(exprs, globals, dimensions)
+      let index = try indexFor(exprs, globals, dimensions)
 
-        let value = try evaluate(rvalue, globals)
+      let value = try evaluate(rvalue, globals)
 
-        var updatedValues = values
-        updatedValues[index] = value
-        globals[name] = .array(dimensions, updatedValues)
+      var updatedValues = values
+      updatedValues[index] = value
+      globals[name] = .array(dimensions, updatedValues)
 
-        return output
-      } catch  {
-        return output + "\(error)"
-      }
+      return output
+
     default:
-      return "?? Improper lvalue\n"
+      throw InterpreterError.cantHappen(lineNumber, "?? Lvalue must be either variable or array access")
     }
   }
 
