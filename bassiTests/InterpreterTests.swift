@@ -370,7 +370,7 @@ class InterpreterTests: XCTestCase {
   func testCallOnUndefinedFunctionFails() {
     checkProgramResults(
       "10 PRINT FNX(0)",
-      expecting: "error(10, \"Attempted call on undefined function FNX\")\n")
+      expecting: "error(10, \"Attempted call on undefined function FNX\")")
   }
   
   func testPrintIntegerUsesNoDecimals() {
@@ -585,7 +585,7 @@ class InterpreterTests: XCTestCase {
   func testCantAccessNonArrayWithSubscript() {
     checkProgramResults(
       "10 A = 7\n20 PRINT A(0)",
-      expecting: "error(20, \"Tried to subscript non-array A\")\n")
+      expecting: "error(20, \"Tried to subscript non-array A\")")
   }
 
   func testAssignmentToArray() {
@@ -635,16 +635,15 @@ class InterpreterTests: XCTestCase {
   }
 
   func testBoundsCheckArrayAccess() {
-    checkProgramResults("""
-20 PRINT A(11)
-25 PRINT A(-1)
-""",
-      expecting:
-"""
-error(20, "array access out of bounds")
-error(25, "array access out of bounds")
+    checkProgramResults(
+      "20 PRINT A(11)",
+      expecting: "error(20, \"array access out of bounds\")"
+    )
 
-""")
+    checkProgramResults(
+      "25 PRINT A(-1)",
+      expecting: "error(25, \"array access out of bounds\")"
+    )
   }
 
   func testBoundsCheckArrayWrite() {

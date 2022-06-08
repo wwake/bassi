@@ -253,41 +253,37 @@ class Interpreter {
   ]
 
   func evaluate(_ value: Expression, _ store: Store) throws -> Value {
-    do {
-      switch value {
-      case .missing:
-        return .undefined
+    switch value {
+    case .missing:
+      return .undefined
 
-      case .number(let floatValue):
-        return Value.number(floatValue)
+    case .number(let floatValue):
+      return Value.number(floatValue)
 
-      case .variable(let name, let theType):
-        return store[name] ?? theType.defaultValue()
+    case .variable(let name, let theType):
+      return store[name] ?? theType.defaultValue()
 
-      case .string(let value):
-        return Value.string(value)
+    case .string(let value):
+      return Value.string(value)
 
-      case .predefined(let name, let exprs, _):
-        return try callPredefinedFunction(store, name, exprs)
+    case .predefined(let name, let exprs, _):
+      return try callPredefinedFunction(store, name, exprs)
 
-      case .userdefined(let name, let expr):
-        return try callUserDefinedFunction(store, name, expr)
+    case .userdefined(let name, let expr):
+      return try callUserDefinedFunction(store, name, expr)
 
-      case .arrayAccess(let name, let type, let exprs):
-        return try fetchArrayValue(name, store, exprs, type)
+    case .arrayAccess(let name, let type, let exprs):
+      return try fetchArrayValue(name, store, exprs, type)
 
-      case .op1(let token, let expr):
-        let operand = try evaluate(expr, store)
-        return operators1[token]!(operand)
+    case .op1(let token, let expr):
+      let operand = try evaluate(expr, store)
+      return operators1[token]!(operand)
 
-      case .op2(let token, let left, let right):
-        let operand1 = try evaluate(left, store)
-        let operand2 = try evaluate(right, store)
+    case .op2(let token, let left, let right):
+      let operand1 = try evaluate(left, store)
+      let operand2 = try evaluate(right, store)
 
-        return operators2[token]!(operand1, operand2)
-      }
-    } catch {
-      return Value.string("\(error)")
+      return operators2[token]!(operand1, operand2)
     }
   }
 
