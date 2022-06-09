@@ -160,12 +160,12 @@ class Interpreter {
 
       let parser = Parser()
       let parse = parser.parse(line)
-      if parser.errorMessages.count > 0 {
-        parser.errorMessages.forEach {
-          output += "? " + String(describing: $0) + "\n"
-        }
-        break
-      }
+//      if parser.errorMessages.count > 0 {
+//        parser.errorMessages.forEach {
+//          output += "? " + String(describing: $0) + "\n"
+//        }
+//        break
+//      }
 
       output = try step(parse, output)
     }
@@ -178,7 +178,7 @@ class Interpreter {
     switch parse {
     case .error(let error):
       done = true
-      return "? \(error)"
+      return output + "? \(error)\n"
 
     case .line(_, let statement):
       return try step(statement, output)
