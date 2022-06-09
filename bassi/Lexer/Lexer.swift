@@ -92,8 +92,13 @@ class Lexer {
   let program: String
   var index = 0
 
+  var lineNumber : Int?
+  var column : Int
+
   init(_ program: String) {
     self.program = Lexer.normalize(program)
+    lineNumber = nil
+    column = 0
   }
 
   fileprivate static func normalize(_ program: String) -> String {
@@ -152,12 +157,15 @@ class Lexer {
   }
 
   func next() -> Token {
-    let type = next2()
+    let type = nextTokenType()
 
-    return Token(type: type, line: 0, column: 0)
+    return Token(
+      type: type,
+      line: lineNumber == nil ? 0 : lineNumber!,
+      column: column)
   }
 
-  func next2() -> TokenType {
+  func nextTokenType() -> TokenType {
     if index >= program.count {
       return .atEnd
     }
@@ -209,8 +217,15 @@ class Lexer {
       value += exponent
     }
 
-    return isFloat ?  TokenType.number(Float(value)!)
-    : TokenType.integer(Int(value)!)
+    if isFloat {
+      return TokenType.number(Float(value)!)
+    } else {
+      let intValue = Int(value)!
+      if lineNumber == nil {
+        lineNumber = intValue
+      }
+      return TokenType.integer(intValue)
+    }
   }
 
   func string() -> TokenType {

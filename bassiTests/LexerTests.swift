@@ -43,6 +43,30 @@ class LexerTests: XCTestCase {
     checkToken("\n", .eol)
   }
 
+  func testTokenKnowsLineNumber() {
+    let lexer = Lexer("10 PRINT")
+    let token1 = lexer.next()
+    XCTAssertEqual(token1.line, 10)
+
+    let token2 = lexer.next()
+    XCTAssertEqual(token2.line, 10)
+  }
+
+  func testFirstIntegerOnLineIsTreatedAsLineNumber() {
+    let lexer = Lexer("PRINT 10")
+    let token1 = lexer.next()
+    XCTAssertEqual(token1.line, 0)
+
+    let token2 = lexer.next()
+    XCTAssertEqual(token2.line, 10)
+  }
+
+  func testTokenDefaultLineNumberIsZero() {
+    let lexer = Lexer("PRINT")
+    let token = lexer.next()
+    XCTAssertEqual(token.line, 0)
+  }
+
   func testInteger() throws {
     checkToken("10  REM Comment", .integer(10))
   }
