@@ -170,9 +170,9 @@ class Interpreter {
   func step(_ parse: Parse, _ output: String) throws -> String {
 
     switch parse {
-    case .error(let error):
+    case .error(let message):
       done = true
-      return output + "? \(error)\n"
+      return output + "? \(message)\n"
 
     case .line(_, let statement):
       return try step(statement, output)
