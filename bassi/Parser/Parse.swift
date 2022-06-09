@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum ParseError: Error, Equatable {
+public enum ParseError: Error, Equatable {
   case internalError(String)
   case unknownStatement
   case notYetImplemented
@@ -39,7 +39,7 @@ enum ParseError: Error, Equatable {
 }
 
 public indirect enum Parse : Equatable {
-  case error(String)
+  case error(ParseError)
   case end
   case line(Int, Parse)
   case skip

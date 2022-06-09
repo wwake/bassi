@@ -176,8 +176,9 @@ class Interpreter {
   func step(_ parse: Parse, _ output: String) throws -> String {
 
     switch parse {
-    case .error(let message):
-      return "? " + message
+    case .error(let error):
+      done = true
+      return "? \(error)"
 
     case .line(_, let statement):
       return try step(statement, output)

@@ -44,7 +44,7 @@ public class Parser {
       return try line()
     } catch {
       errorMessages.append(error as! ParseError)
-      return .error("Unrecognized statement")
+      return .error(error as! ParseError)
     }
   }
 
