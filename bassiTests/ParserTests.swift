@@ -82,7 +82,7 @@ class ParserTests: XCTestCase {
   func testNoLineNumber() {
     checkError(
       "REM remark",
-      .noLineNumber)
+      .error("Line number is required"))
   }
 
   func testPrintStatement() {
@@ -120,7 +120,7 @@ class ParserTests: XCTestCase {
   func testGotoWithMissingTarget() throws {
     checkError(
       "10 GOTO",
-      .missingTarget
+      .error("Missing target of GOTO")
     )
   }
 
@@ -272,7 +272,7 @@ class ParserTests: XCTestCase {
   func testIfThenMissingTargetGetsError() throws {
     checkError(
       "42 IF 0 THEN",
-      .missingTarget
+      .error("Missing target of THEN")
     )
   }
 
@@ -308,7 +308,7 @@ class ParserTests: XCTestCase {
   func testLETMissingAssignment() {
     checkError(
       "42 LET",
-      ParseError.letMissingAssignment
+      ParseError.error("LET is missing variable to assign to")
     )
   }
 

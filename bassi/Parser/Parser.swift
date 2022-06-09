@@ -55,7 +55,7 @@ public class Parser {
       return Parse.line(lineNumber, statementParse)
     }
     nextToken()
-    throw ParseError.noLineNumber
+    throw ParseError.error("Line number is required")
   }
 
   func statement() throws -> Parse {
@@ -93,7 +93,7 @@ public class Parser {
 
     default:
       nextToken()
-      throw ParseError.unknownStatement
+      throw ParseError.error("Unknown statement")
     }
 
     return result
@@ -122,7 +122,7 @@ public class Parser {
       return .goto(lineNumber)
     }
     
-    throw ParseError.missingTarget
+    throw ParseError.error("Missing target of GOTO")
   }
 
   func ifThen() throws -> Parse {
@@ -138,7 +138,7 @@ public class Parser {
       return .`if`(expr, target)
     }
 
-    throw ParseError.missingTarget
+    throw ParseError.error("Missing target of THEN")
   }
 
   func letAssign() throws -> Parse {
@@ -147,7 +147,7 @@ public class Parser {
     if case .variable(_) = token {
       return try assign()
     }
-    throw ParseError.letMissingAssignment
+    throw ParseError.error("LET is missing variable to assign to")
   }
 
   func typeFor(_ name: String) -> `Type` {
