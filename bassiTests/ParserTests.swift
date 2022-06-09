@@ -104,7 +104,7 @@ class ParserTests: XCTestCase {
   func testPrintPrintIsError() {
     checkError(
       "25 PRINT PRINT",
-      .expectedStartOfExpression
+      .error("Expected start of expression")
     )
   }
 
@@ -220,14 +220,14 @@ class ParserTests: XCTestCase {
   func testPrintImproperExpression() {
     checkError(
       "10 PRINT +",
-      .expectedStartOfExpression
+      .error("Expected start of expression")
     )
   }
   func testErrorWhenFactorIsNotValid() {
     let expression = "(((*"
     checkError(
       "10 PRINT \(expression)",
-      .expectedStartOfExpression
+      .error("Expected start of expression")
     )
   }
 
@@ -259,7 +259,7 @@ class ParserTests: XCTestCase {
   func testIfMustCheckNumericType() throws {
     checkError(
       "42 IF A$ THEN 43",
-      .floatRequired)
+      .error("Numeric type is required"))
   }
 
   func testIfMissingThenGetsError() throws {
@@ -341,7 +341,7 @@ class ParserTests: XCTestCase {
   }
 
   func testStringCantDoArithmetic() {
-    checkError("17 A=-B$", .floatRequired)
+    checkError("17 A=-B$", .error("Numeric type is required"))
 
     checkError("17 A=B$^3", .error("Type mismatch"))
     checkError("17 A=3^B$", .error("Type mismatch"))
@@ -352,7 +352,7 @@ class ParserTests: XCTestCase {
     checkError("17 A=B$+C$", .error("Type mismatch"))
     checkError("17 A=3-B$", .error("Type mismatch"))
 
-    checkError("17 A=NOT B$", .floatRequired)
+    checkError("17 A=NOT B$", .error("Numeric type is required"))
     checkError("17 A=B$ AND 3", .error("Type mismatch"))
     checkError("17 A=42 OR B$", .error("Type mismatch"))
   }
@@ -379,10 +379,10 @@ class ParserTests: XCTestCase {
 
   func testDefErrorMessages() {
     checkError("17 DEF F(X)=X", .DEFfunctionMustStartWithFn)
-    checkError("17 DEF FN(x)=X", .DEFrequiresVariableAfterFn)
-    checkError("17 DEF FNX9(x)=X", .DEFfunctionNameMustBeFnFollowedBySingleLetter)
+    checkError("17 DEF FN(x)=X", .error("DEF requires a name of the form FNx"))
+    checkError("17 DEF FNX9(x)=X", .error("DEF function name cannot be followed by extra letters"))
     checkError("17 DEF FNI x)=X", .missingLeftParend)
-    checkError("17 DEF FNZ()=X", .FNrequiresParameterVariable)
+    checkError("17 DEF FNZ()=X", .error("DEF requires a parameter variable"))
     checkError("17 DEF FNA(x=X", .DEFrequiresRightParendAfterParameter)
     checkError("17 DEF FNP(x) -> X", .DEFrequiresEqualAfterParameter)
   }
@@ -501,7 +501,7 @@ class ParserTests: XCTestCase {
     checkError("""
 10 DEF FNA(Y)="string"
 """,
-       .floatRequired)
+               .error("Numeric type is required"))
   }
 
   func testDIMNumber() {

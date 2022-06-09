@@ -83,7 +83,7 @@ class InterpreterTests: XCTestCase {
     let actual = try interpreter.run()
     XCTAssertEqual(
       actual,
-      "? expectedStartOfExpression\n")
+      "? error(\"Expected start of expression\")\n")
   }
 
   func testSkip() throws {

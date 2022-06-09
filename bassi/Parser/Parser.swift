@@ -175,18 +175,18 @@ public class Parser {
     try require(.fn, .DEFfunctionMustStartWithFn)
 
     guard case .variable(let name) = token else {
-      throw ParseError.DEFrequiresVariableAfterFn
+      throw ParseError.error("DEF requires a name of the form FNx")
     }
     nextToken()
 
     if name.count != 1 {
-      throw ParseError.DEFfunctionNameMustBeFnFollowedBySingleLetter
+      throw ParseError.error("DEF function name cannot be followed by extra letters")
     }
 
     try require(.leftParend, .missingLeftParend)
 
     guard case .variable(let parameter) = token else {
-      throw ParseError.FNrequiresParameterVariable
+      throw ParseError.error("DEF requires a parameter variable")
     }
     nextToken()
 
@@ -206,7 +206,7 @@ public class Parser {
 
   fileprivate func requireFloatType(_ expr: Expression) throws {
     if expr.type() != .number {
-      throw ParseError.floatRequired
+      throw ParseError.error("Numeric type is required")
     }
   }
 
@@ -357,7 +357,7 @@ public class Parser {
     } else if case .fn = token {
       return try userdefinedFunctionCall()
     } else {
-      throw ParseError.expectedStartOfExpression
+      throw ParseError.error("Expected start of expression")
     }
   }
 
