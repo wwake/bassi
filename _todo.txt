@@ -1,10 +1,8 @@
 * Handle parser errors better in interpreter
-  + How does interpreter access parser errors?
-  + Should parser be generating .error?
   + Make errors report line & column number
   + Should lexer just handle spaces without normalization?
-  + There can only be one error message per line
   + Do we want so many independent parser errors?
+  
 * Use test helper for parse-based tests in InterpreterTests
 
 * Make running write to an output stream
@@ -38,6 +36,12 @@
 * What should ASC do if given an empty string?
 
 Parameterized tests package?
+
+BI-22-23: June 9, 2022
+* Handle parser errors better in interpreter
+  + Should parser be generating .error? YES
+  + There can only be one error message per line
+  + Make interpreter handle errors through .error() parse
 
 BI-22-22: June 8, 2022
 * Improve error handling in interpreter

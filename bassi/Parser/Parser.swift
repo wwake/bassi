@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 public class Parser {
   let maxLineNumber = 99999
 
@@ -46,7 +45,7 @@ public class Parser {
       nextToken()
 
       if lineNumber <= 0 || lineNumber > maxLineNumber {
-        throw ParseError.lineNumberRange
+        throw ParseError.error("Line number must be between 1 and \(maxLineNumber)")
       }
 
       let statementParse = try statement()
@@ -215,7 +214,7 @@ public class Parser {
     _ left: Expression,
     _ right: Expression) throws {
       if left.type() != .number || right.type() != .number {
-        throw ParseError.typeMismatch
+        throw ParseError.error("Type mismatch")
       }
     }
 
@@ -223,7 +222,7 @@ public class Parser {
     _ left: Expression,
     _ right: Expression) throws {
       if left.type() != right.type() {
-        throw ParseError.typeMismatch
+        throw ParseError.error("Type mismatch")
       }
     }
 
@@ -411,7 +410,7 @@ public class Parser {
     nextToken()
 
     guard case .function(let parameterTypes, let resultType) = type else {
-      throw ParseError.internalError("Function has non-function type")
+      throw ParseError.error("Internal error: Function has non-function type")
     }
 
     try require(.leftParend, .missingLeftParend)
@@ -440,13 +439,13 @@ public class Parser {
     _ arguments: [Expression]) throws {
 
       if parameterTypes.count < arguments.count {
-        throw ParseError.argumentCountMismatch
+        throw ParseError.error("Function not called with correct number of arguments")
       }
 
       try zip(parameterTypes, arguments)
         .forEach { (parameterType, argument) in
           if !isCompatible(parameterType, argument.type()) {
-            throw ParseError.typeMismatch
+            throw ParseError.error("Type mismatch")
           }
         }
     }
@@ -473,7 +472,7 @@ public class Parser {
     nextToken()
 
     guard case .variable(let parameter) = token else {
-      throw ParseError.FNrequiresParameterVariable
+      throw ParseError.error("Function requires a parameter")
     }
     nextToken()
 
@@ -492,7 +491,7 @@ public class Parser {
     nextToken()
 
     guard case .variable(let arrayName) = token else {
-      throw ParseError.variableRequired
+      throw ParseError.error("Variable required")
     }
     nextToken()
 
@@ -501,7 +500,7 @@ public class Parser {
     var dimensions : [Int] = []
 
     guard case .integer(let size) = token else {
-      throw ParseError.integerRequired
+      throw ParseError.error("Integer dimension size is required")
     }
     nextToken()
     dimensions.append(size + 1)
@@ -510,7 +509,7 @@ public class Parser {
       nextToken()
 
       guard case .integer(let size) = token else {
-        throw ParseError.integerRequired
+        throw ParseError.error("Integer dimension size is required")
       }
       nextToken()
       dimensions.append(size + 1)

@@ -66,10 +66,10 @@ class ParserTests: XCTestCase {
 
   func testLineNumberIsInRange0to99999() {
     checkError(
-      "0 END", ParseError.lineNumberRange)
+      "0 END", ParseError.error("Line number must be between 1 and 99999"))
 
     checkError(
-      "100000 END", ParseError.lineNumberRange)
+      "100000 END", ParseError.error("Line number must be between 1 and 99999"))
   }
 
   func test10REM() throws {
@@ -315,7 +315,7 @@ class ParserTests: XCTestCase {
   func testAssignStringToNumberFails() {
     checkError(
       "17 A=B$",
-      .typeMismatch
+      .error("Type mismatch")
     )
   }
 
@@ -343,23 +343,23 @@ class ParserTests: XCTestCase {
   func testStringCantDoArithmetic() {
     checkError("17 A=-B$", .floatRequired)
 
-    checkError("17 A=B$^3", .typeMismatch)
-    checkError("17 A=3^B$", .typeMismatch)
+    checkError("17 A=B$^3", .error("Type mismatch"))
+    checkError("17 A=3^B$", .error("Type mismatch"))
 
-    checkError("17 A=B$*C$", .typeMismatch)
-    checkError("17 A=3/B$", .typeMismatch)
+    checkError("17 A=B$*C$", .error("Type mismatch"))
+    checkError("17 A=3/B$", .error("Type mismatch"))
 
-    checkError("17 A=B$+C$", .typeMismatch)
-    checkError("17 A=3-B$", .typeMismatch)
+    checkError("17 A=B$+C$", .error("Type mismatch"))
+    checkError("17 A=3-B$", .error("Type mismatch"))
 
     checkError("17 A=NOT B$", .floatRequired)
-    checkError("17 A=B$ AND 3", .typeMismatch)
-    checkError("17 A=42 OR B$", .typeMismatch)
+    checkError("17 A=B$ AND 3", .error("Type mismatch"))
+    checkError("17 A=42 OR B$", .error("Type mismatch"))
   }
 
   func testRelationalOperatorNeedsSameTypes() {
-    checkError("17 A=B$ < 3", .typeMismatch)
-    checkError("17 A=33=B$", .typeMismatch)
+    checkError("17 A=B$ < 3", .error("Type mismatch"))
+    checkError("17 A=33=B$", .error("Type mismatch"))
   }
 
   func testDefDefinesHelperFunctions() {
@@ -424,21 +424,21 @@ class ParserTests: XCTestCase {
   func testPredefinedFunctionEnforcesTypes() {
     checkError(
       "25 PRINT SQR(\"X\")",
-      .typeMismatch
+      .error("Type mismatch")
     )
   }
 
   func testCantAssignPredefinedStringFunctionCallToNumericVariable() {
     checkError(
       "25 A=CHR$(17)",
-      .typeMismatch
+      .error("Type mismatch")
     )
   }
 
   func testPredefinedFunctionEnforcesNumberOfArguments() {
     checkError(
       "25 PRINT LEFT$(\"X\")",
-      .typeMismatch
+      .error("Type mismatch")
     )
   }
 
@@ -455,7 +455,7 @@ class ParserTests: XCTestCase {
   func testPredefinedFunctionDetectsTypeMismatchForMultipleArguments() {
     checkError(
       "10 PRINT LEFT$(\"S\", \"T\")",
-      .typeMismatch
+      .error("Type mismatch")
     )
   }
 
@@ -494,7 +494,7 @@ class ParserTests: XCTestCase {
   func testDefCallMustTakeNumericArgument() {
     checkError(
       "10 PRINT FNI(\"str\")",
-      .typeMismatch)
+      .error("Type mismatch"))
   }
 
   func testUserDefinedFunctionsMustHaveNumericResult() {

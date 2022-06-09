@@ -8,6 +8,7 @@
 import Foundation
 
 public enum ParseError: Error, Equatable {
+  case error(String)
   case internalError(String)
   case unknownStatement
   case notYetImplemented
