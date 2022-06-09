@@ -13,14 +13,8 @@ public class Parser {
 
   var lexer: Lexer = Lexer("")
   var token: Token = .unknown
-  
-  var errorMessages: [ParseError] = []
 
   let relops: [Token] = [.equals, .lessThan, .lessThanOrEqualTo, .notEqual, .greaterThan, .greaterThanOrEqualTo]
-
-  func errors() -> [ParseError] {
-    errorMessages
-  }
 
   func nextToken() {
     token = lexer.next()!
@@ -43,7 +37,6 @@ public class Parser {
     do {
       return try line()
     } catch {
-      errorMessages.append(error as! ParseError)
       return .error(error as! ParseError)
     }
   }

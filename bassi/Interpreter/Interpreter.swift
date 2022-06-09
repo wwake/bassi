@@ -160,12 +160,6 @@ class Interpreter {
 
       let parser = Parser()
       let parse = parser.parse(line)
-//      if parser.errorMessages.count > 0 {
-//        parser.errorMessages.forEach {
-//          output += "? " + String(describing: $0) + "\n"
-//        }
-//        break
-//      }
 
       output = try step(parse, output)
     }

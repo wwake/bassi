@@ -15,10 +15,10 @@ class ParserTests: XCTestCase {
   {
     let line = program
     let parser = Parser()
-    _ = parser.parse(line)
+    let output = parser.parse(line)
     XCTAssertEqual(
-      parser.errors(),
-      [expected])
+      output,
+      .error(expected))
   }
 
   func checkParsing(
@@ -31,7 +31,6 @@ class ParserTests: XCTestCase {
       result,
       expected
     )
-    XCTAssertEqual(parser.errorMessages, [])
   }
 
   func checkExpression(
@@ -47,7 +46,6 @@ class ParserTests: XCTestCase {
           10,
           .print([expected]))
       )
-      XCTAssertEqual(parser.errorMessages, [])
     }
 
   func checkRelational(_ relation: String, _ token: Token) throws {
