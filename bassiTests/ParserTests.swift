@@ -209,11 +209,10 @@ class ParserTests: XCTestCase {
   }
 
   func testMissingRightParentheses() {
-
     let expression = "(((21)"
     checkError(
       "10 PRINT \(expression)",
-      .missingRightParend
+      .error("Missing ')'")
     )
   }
 
@@ -265,7 +264,7 @@ class ParserTests: XCTestCase {
   func testIfMissingThenGetsError() throws {
     checkError(
       "42 IF 0 PRINT",
-      .missingTHEN
+      .error("Missing 'THEN'")
     )
   }
 
@@ -301,7 +300,7 @@ class ParserTests: XCTestCase {
   func testAssignMissingEqualSign() {
     checkError(
       "42 HUH REMARK",
-      .assignmentMissingEqualSign
+      .error("Assignment is missing '='")
     )
   }
 
@@ -378,13 +377,13 @@ class ParserTests: XCTestCase {
   }
 
   func testDefErrorMessages() {
-    checkError("17 DEF F(X)=X", .DEFfunctionMustStartWithFn)
+    checkError("17 DEF F(X)=X", .error("DEF requires a name of the form FNx"))
     checkError("17 DEF FN(x)=X", .error("DEF requires a name of the form FNx"))
     checkError("17 DEF FNX9(x)=X", .error("DEF function name cannot be followed by extra letters"))
-    checkError("17 DEF FNI x)=X", .missingLeftParend)
+    checkError("17 DEF FNI x)=X", .error("Missing '('"))
     checkError("17 DEF FNZ()=X", .error("DEF requires a parameter variable"))
-    checkError("17 DEF FNA(x=X", .DEFrequiresRightParendAfterParameter)
-    checkError("17 DEF FNP(x) -> X", .DEFrequiresEqualAfterParameter)
+    checkError("17 DEF FNA(x=X", .error("DEF requires ')' after parameter"))
+    checkError("17 DEF FNP(x) -> X", .error("DEF requires '=' after parameter definition"))
   }
 
   func testPredefinedFunction() {
@@ -537,7 +536,7 @@ class ParserTests: XCTestCase {
   func testRightParendErrorInDim() {
     checkError(
       "10 DIM Z(3",
-      ParseError.missingRightParend)
+      ParseError.error("Missing ')'"))
   }
   
   func testFetchFromArray() {

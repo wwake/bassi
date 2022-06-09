@@ -19,9 +19,9 @@ public class Parser {
     token = lexer.next()!
   }
 
-  fileprivate func require(_ expected: Token, _ error: ParseError) throws {
+  fileprivate func require(_ expected: Token, _ message: String) throws {
     if token != expected {
-      throw error
+      throw ParseError.error(message)
     }
     nextToken()
   }
@@ -50,7 +50,7 @@ public class Parser {
 
       let statementParse = try statement()
 
-      try require(.eol, .extraCharactersAtEol)
+      try require(.eol, "Extra characters at end of line")
 
       return Parse.line(lineNumber, statementParse)
     }
@@ -131,7 +131,7 @@ public class Parser {
     let expr = try expression()
     try requireFloatType(expr)
     
-    try require(.then, .missingTHEN)
+    try require(.then, "Missing 'THEN'")
 
     if case .integer(let target) = token {
       nextToken()
@@ -160,7 +160,7 @@ public class Parser {
     }
     let variable = try variable(name)
 
-    try require(.equals, .assignmentMissingEqualSign)
+    try require(.equals, "Assignment is missing '='")
 
     let expr = try expression()
 
@@ -172,7 +172,7 @@ public class Parser {
   func define() throws -> Parse {
     nextToken()
 
-    try require(.fn, .DEFfunctionMustStartWithFn)
+    try require(.fn, "DEF requires a name of the form FNx")
 
     guard case .variable(let name) = token else {
       throw ParseError.error("DEF requires a name of the form FNx")
@@ -183,16 +183,16 @@ public class Parser {
       throw ParseError.error("DEF function name cannot be followed by extra letters")
     }
 
-    try require(.leftParend, .missingLeftParend)
+    try require(.leftParend, "Missing '('")
 
     guard case .variable(let parameter) = token else {
       throw ParseError.error("DEF requires a parameter variable")
     }
     nextToken()
 
-    try require(.rightParend, .DEFrequiresRightParendAfterParameter)
+    try require(.rightParend, "DEF requires ')' after parameter")
 
-    try require(.equals, .DEFrequiresEqualAfterParameter)
+    try require(.equals, "DEF requires '=' after parameter definition")
 
     let expr = try expression()
     try requireFloatType(expr)
@@ -366,7 +366,7 @@ public class Parser {
 
     let expr = try expression()
 
-    try require(.rightParend, .missingRightParend)
+    try require(.rightParend, "Missing ')'")
 
     return expr
   }
@@ -389,7 +389,7 @@ public class Parser {
 
     var exprs: [Expression] = []
 
-    try require(.leftParend, .missingLeftParend)
+    try require(.leftParend, "Missing '('")
 
     let expr = try expression()
     exprs.append(expr)
@@ -401,7 +401,7 @@ public class Parser {
       exprs.append(expr)
     }
 
-    try require(.rightParend, .missingRightParend)
+    try require(.rightParend, "Missing ')'")
 
     return .arrayAccess(name, type, exprs)
   }
@@ -413,7 +413,7 @@ public class Parser {
       throw ParseError.error("Internal error: Function has non-function type")
     }
 
-    try require(.leftParend, .missingLeftParend)
+    try require(.leftParend, "Missing '('")
 
     var exprs: [Expression] = []
     exprs.append(try expression())
@@ -427,7 +427,7 @@ public class Parser {
       exprs.append(.missing)
     }
 
-    try require(.rightParend, .missingRightParend)
+    try require(.rightParend, "Missing ')'")
 
     try typeCheck(parameterTypes, exprs)
 
@@ -476,11 +476,11 @@ public class Parser {
     }
     nextToken()
 
-    try require(.leftParend, .missingLeftParend)
+    try require(.leftParend, "Missing '('")
 
     let expr = try expression()
 
-    try require(.rightParend, .missingRightParend)
+    try require(.rightParend, "Missing ')'")
 
     try typeCheck([.number], [expr])
 
@@ -495,7 +495,7 @@ public class Parser {
     }
     nextToken()
 
-    try require(.leftParend, .missingLeftParend)
+    try require(.leftParend, "Missing '('")
 
     var dimensions : [Int] = []
 
@@ -515,7 +515,7 @@ public class Parser {
       dimensions.append(size + 1)
     }
 
-    try require(.rightParend, .missingRightParend)
+    try require(.rightParend, "Missing ')'")
 
     return .dim(arrayName, dimensions, typeFor(arrayName))
   }
