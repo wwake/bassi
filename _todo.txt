@@ -1,11 +1,15 @@
-* Error if you redefine a user-defined function
 * Handle parser errors better in interpreter
-* Should parser be generating .error?
+  + How does interpreter access parser errors?
+  + Should parser be generating .error?
+  + Make errors report line & column number
+  + Should lexer just handle spaces without normalization?
+  + There can only be one error message per line
+  + Do we want so many independent parser errors?
+* Use test helper for parse-based tests in InterpreterTests
+
 * Make running write to an output stream
 
 * Handle interpreter.format() for arrays
-* Enforce array types
-* Use test helper for parse-based tests in InterpreterTests
 
 * ON..GOTO
 * FOR, NEXT
@@ -31,13 +35,13 @@
 
 * DATA, READ, RESTORE
 * STOP
-* Format for printing floats - no trailing 0's after decimal point?
 * What should ASC do if given an empty string?
 
 Parameterized tests package?
 
 BI-22-22: June 8, 2022
 * Improve error handling in interpreter
+* Error if you redefine a user-defined function
 
 BI-22-21: June 7, 2022
 * String arrays
@@ -153,6 +157,7 @@ BI-22-03: May 11, 2022
 * PRINT with numbers
 * Expressions with parentheses
 * PRINT with expressions
+* Format for printing floats - no trailing 0's after decimal point
 
 BI-22-02: May 10, 2022
 * Should Lexer be a Sequence? Yes, and IteratorProtocol too.

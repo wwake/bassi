@@ -7,6 +7,37 @@
 
 import Foundation
 
+enum ParseError: Error, Equatable {
+  case internalError(String)
+  case unknownStatement
+  case notYetImplemented
+
+  case noLineNumber
+  case lineNumberRange
+
+  case missingLeftParend
+  case missingRightParend
+  case expectedStartOfExpression
+  case extraCharactersAtEol
+  case missingTarget
+  case missingTHEN
+  case assignmentMissingEqualSign
+  case letMissingAssignment
+  case typeMismatch
+  case argumentCountMismatch
+
+  case floatRequired
+
+  case DEFfunctionMustStartWithFn
+  case DEFrequiresVariableAfterFn
+  case DEFfunctionNameMustBeFnFollowedBySingleLetter
+  case FNrequiresParameterVariable
+  case DEFrequiresRightParendAfterParameter
+  case DEFrequiresEqualAfterParameter
+  case variableRequired
+  case integerRequired
+}
+
 public indirect enum Parse : Equatable {
   case error(String)
   case end

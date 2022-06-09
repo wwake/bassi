@@ -7,36 +7,6 @@
 
 import Foundation
 
-enum ParseError: Error, Equatable {
-  case internalError(String)
-  case unknownStatement
-  case notYetImplemented
-
-  case noLineNumber
-  case lineNumberRange
-
-  case missingLeftParend
-  case missingRightParend
-  case expectedStartOfExpression
-  case extraCharactersAtEol
-  case missingTarget
-  case missingTHEN
-  case assignmentMissingEqualSign
-  case letMissingAssignment
-  case typeMismatch
-  case argumentCountMismatch
-
-  case floatRequired
-
-  case DEFfunctionMustStartWithFn
-  case DEFrequiresVariableAfterFn
-  case DEFfunctionNameMustBeFnFollowedBySingleLetter
-  case FNrequiresParameterVariable
-  case DEFrequiresRightParendAfterParameter
-  case DEFrequiresEqualAfterParameter
-  case variableRequired
-  case integerRequired
-}
 
 public class Parser {
   let maxLineNumber = 99999
@@ -57,7 +27,6 @@ public class Parser {
   }
 
   fileprivate func require(_ expected: Token, _ error: ParseError) throws {
-
     if token != expected {
       throw error
     }
@@ -104,23 +73,32 @@ public class Parser {
     case .end:
       nextToken()
       result = Parse.end
+
     case .remark:
       nextToken()
       result = Parse.skip
+
     case .print:
       result = try printStatement()
+
     case .goto:
       result = try goto()
+
     case .ifKeyword:
       result = try ifThen()
+
     case .letKeyword:
       result = try letAssign()
+
     case .variable(_):
       result = try assign()
+
     case .def:
       result = try define()
+
     case .dim:
       result = try dim()
+
     default:
       nextToken()
       throw ParseError.unknownStatement

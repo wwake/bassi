@@ -108,10 +108,13 @@ class Lexer : Sequence, IteratorProtocol {
       pieces
       .enumerated()
       .map { n, piece in
-        n % 2 == 0 ?
-          String(piece).replacingOccurrences(of:" ", with:"")
-          .uppercased()
-        : String("\"" + piece + "\"")
+        n % 2 == 0
+        ?
+          String(piece)
+            .replacingOccurrences(of:" ", with:"")
+            .uppercased()
+        :
+          String("\"" + piece + "\"")
       }
 
     return normalizedPieces.joined()
