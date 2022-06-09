@@ -67,6 +67,18 @@ class LexerTests: XCTestCase {
     XCTAssertEqual(token.line, 0)
   }
 
+  func testTokenColumnIsTrackedAgainstNormalizedLine() {
+    let lexer = Lexer("1  0  PR INT 40")
+    let token1 = lexer.next()
+    XCTAssertEqual(token1.column, 0)
+
+    let token2 = lexer.next()
+    XCTAssertEqual(token2.column, 2)
+
+    let token3 = lexer.next()
+    XCTAssertEqual(token3.column, 7)
+  }
+
   func testInteger() throws {
     checkToken("10  REM Comment", .integer(10))
   }

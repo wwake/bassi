@@ -157,6 +157,7 @@ class Lexer {
   }
 
   func next() -> Token {
+    column = index
     let type = nextTokenType()
 
     return Token(
