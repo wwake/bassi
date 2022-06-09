@@ -11,15 +11,15 @@ public class Parser {
   let maxLineNumber = 99999
 
   var lexer: Lexer = Lexer("")
-  var token: Token = .unknown
+  var token: TokenType = .unknown
 
-  let relops: [Token] = [.equals, .lessThan, .lessThanOrEqualTo, .notEqual, .greaterThan, .greaterThanOrEqualTo]
+  let relops: [TokenType] = [.equals, .lessThan, .lessThanOrEqualTo, .notEqual, .greaterThan, .greaterThanOrEqualTo]
 
   func nextToken() {
     token = lexer.next()!
   }
 
-  fileprivate func require(_ expected: Token, _ message: String) throws {
+  fileprivate func require(_ expected: TokenType, _ message: String) throws {
     if token != expected {
       throw ParseError.error(message)
     }

@@ -11,13 +11,13 @@ import XCTest
 
 class LexerTests: XCTestCase {
 
-  func checkToken(_ program: String, _ expected: Token) {
+  func checkToken(_ program: String, _ expected: TokenType) {
     let lexer = Lexer(program)
     let token = lexer.next()
     XCTAssertEqual(token, expected)
   }
 
-  func checkString(_ item: String, _ expected: Token) {
+  func checkString(_ item: String, _ expected: TokenType) {
     let lexer = Lexer("10 PRINT \(item)")
 
     var token = lexer.next()
@@ -146,7 +146,7 @@ class LexerTests: XCTestCase {
   }
 
 
-  func checkNumber(_ input: String, _ expected: Token) {
+  func checkNumber(_ input: String, _ expected: TokenType) {
     let lexer = Lexer("10 PRINT \(input)")
 
     var token = lexer.next()
@@ -234,15 +234,15 @@ class LexerTests: XCTestCase {
   }
 
   func testReservedWordFn() {
-    checkToken("FNA(X)", Token.fn)
+    checkToken("FNA(X)", TokenType.fn)
   }
 
   func testFunctionCallWithSqr() {
-    checkToken("SQR(4)", Token.predefined("SQR", `Type`.typeNtoN))
+    checkToken("SQR(4)", TokenType.predefined("SQR", `Type`.typeNtoN))
   }
 
   func testFunctionNameWithDollarSign() {
-    checkToken("LEFT$(", Token.predefined("LEFT$", `Type`.typeSNtoS))
+    checkToken("LEFT$(", TokenType.predefined("LEFT$", `Type`.typeSNtoS))
   }
 
 }

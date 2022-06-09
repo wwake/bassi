@@ -32,7 +32,7 @@ class InterpreterTests: XCTestCase {
     }
   }
 
-  fileprivate func checkPrintWithRelop(_ op: Token, _ expected: Int) throws {
+  fileprivate func checkPrintWithRelop(_ op: TokenType, _ expected: Int) throws {
     let parse =
     Parse.line(
       40,
@@ -46,8 +46,8 @@ class InterpreterTests: XCTestCase {
   }
 
   fileprivate func checkRelop(
-    _ op1ExpectedTrue: Token,
-    _ op2ExpectedFalse: Token) throws {
+    _ op1ExpectedTrue: TokenType,
+    _ op2ExpectedFalse: TokenType) throws {
       try checkPrintWithRelop(op1ExpectedTrue, 1)
       try checkPrintWithRelop(op2ExpectedFalse, 0)
     }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum Token  {
+public enum TokenType  {
   case unknown
   case atEnd
   case eol
@@ -68,8 +68,8 @@ public enum Token  {
   case predefined(String, `Type`)
 }
 
-extension Token : Equatable {
+extension TokenType : Equatable {
 }
 
-extension Token : Hashable {
+extension TokenType : Hashable {
 }

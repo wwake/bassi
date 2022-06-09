@@ -48,7 +48,7 @@ class ParserTests: XCTestCase {
       )
     }
 
-  func checkRelational(_ relation: String, _ token: Token) throws {
+  func checkRelational(_ relation: String, _ token: TokenType) throws {
     checkExpression(
       "1" + relation + "2",
       Expression.make(1, token, 2)

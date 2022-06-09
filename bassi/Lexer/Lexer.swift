@@ -15,9 +15,9 @@ extension StringProtocol {
 
 class Lexer : Sequence, IteratorProtocol {
 
-  typealias Element = Token
+  typealias Element = TokenType
 
-  let prefixTokens: [(String, Token)] = [
+  let prefixTokens: [(String, TokenType)] = [
     ("+", .plus),
     ("-", .minus),
     ("*", .times),
@@ -152,7 +152,7 @@ class Lexer : Sequence, IteratorProtocol {
     }
   }
 
-  func next() -> Token? {
+  func next() -> TokenType? {
     if index >= program.count {
       return .atEnd
     }
@@ -173,11 +173,11 @@ class Lexer : Sequence, IteratorProtocol {
       return handleVariable()
 
     default:
-      return Token.error("not yet implemented")
+      return TokenType.error("not yet implemented")
     }
   }
 
-  fileprivate func number() -> Token? {
+  fileprivate func number() -> TokenType? {
     var isFloat = false
 
     var value = repeatAny("0", "9")
@@ -204,11 +204,11 @@ class Lexer : Sequence, IteratorProtocol {
       value += exponent
     }
 
-    return isFloat ?  Token.number(Float(value)!)
-    : Token.integer(Int(value)!)
+    return isFloat ?  TokenType.number(Float(value)!)
+    : TokenType.integer(Int(value)!)
   }
 
-  func string() -> Token? {
+  func string() -> TokenType? {
     var body = ""
     index += 1
 
@@ -230,7 +230,7 @@ class Lexer : Sequence, IteratorProtocol {
     return program[index] >= "0" && program[index] <= "9"
   }
 
-  fileprivate func findPrefixToken() -> Token? {
+  fileprivate func findPrefixToken() -> TokenType? {
     let start = program.index(program.startIndex, offsetBy: index)
     let input = program[start...]
 
@@ -252,7 +252,7 @@ class Lexer : Sequence, IteratorProtocol {
     return nil
   }
 
-  fileprivate func handleVariable() -> Token? {
+  fileprivate func handleVariable() -> TokenType? {
     var name: String = String(program[index])
     index += 1
 
@@ -266,6 +266,6 @@ class Lexer : Sequence, IteratorProtocol {
       index += 1
     }
 
-    return Token.variable(name)
+    return TokenType.variable(name)
   }
 }

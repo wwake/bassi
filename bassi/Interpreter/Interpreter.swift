@@ -215,13 +215,13 @@ class Interpreter {
     }
   }
 
-  let operators1 : [Token : (Value) -> Value] =
+  let operators1 : [TokenType : (Value) -> Value] =
   [
     .minus : {.number(-($0.asFloat()))},
     .not : { .number(Float(~Int16($0.asFloat()))) }
   ]
 
-  let operators2 : [Token : (Value, Value) -> Value] =
+  let operators2 : [TokenType : (Value, Value) -> Value] =
   [.plus : {.number($0.asFloat() + $1.asFloat())},
    .minus: {.number($0.asFloat() - $1.asFloat())},
    .times: {.number($0.asFloat() * $1.asFloat())},

@@ -33,8 +33,8 @@ public indirect enum Expression: Equatable {
   case userdefined(String, Expression)
   case arrayAccess(String, `Type`, [Expression])
   
-  case op1(Token, Expression)
-  case op2(Token, Expression, Expression)
+  case op1(TokenType, Expression)
+  case op2(TokenType, Expression, Expression)
 
   func type() -> `Type` {
     switch self {
