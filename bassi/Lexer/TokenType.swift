@@ -7,6 +7,12 @@
 
 import Foundation
 
+struct Token {
+  var type: TokenType
+  var line: Int
+  var column: Int
+}
+
 public enum TokenType  {
   case unknown
   case atEnd

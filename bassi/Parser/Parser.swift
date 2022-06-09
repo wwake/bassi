@@ -11,12 +11,16 @@ public class Parser {
   let maxLineNumber = 99999
 
   var lexer: Lexer = Lexer("")
+
   var token: TokenType = .unknown
+  var lineNumber = 0
+  var columnNumber = 0
 
   let relops: [TokenType] = [.equals, .lessThan, .lessThanOrEqualTo, .notEqual, .greaterThan, .greaterThanOrEqualTo]
 
   func nextToken() {
-    token = lexer.next()!
+    let theToken = lexer.next()
+    token = theToken.type
   }
 
   fileprivate func require(_ expected: TokenType, _ message: String) throws {

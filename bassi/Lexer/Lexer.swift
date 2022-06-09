@@ -13,9 +13,8 @@ extension StringProtocol {
   }
 }
 
-class Lexer : Sequence, IteratorProtocol {
-
-  typealias Element = TokenType
+class Lexer {
+  typealias Element = Token
 
   let prefixTokens: [(String, TokenType)] = [
     ("+", .plus),
@@ -152,14 +151,20 @@ class Lexer : Sequence, IteratorProtocol {
     }
   }
 
-  func next() -> TokenType? {
+  func next() -> Token {
+    let type = next2()
+
+    return Token(type: type, line: 0, column: 0)
+  }
+
+  func next2() -> TokenType {
     if index >= program.count {
       return .atEnd
     }
 
     let possibleToken = findPrefixToken()
     if possibleToken != nil {
-      return possibleToken
+      return possibleToken!
     }
 
     switch program[index] {
@@ -177,7 +182,7 @@ class Lexer : Sequence, IteratorProtocol {
     }
   }
 
-  fileprivate func number() -> TokenType? {
+  fileprivate func number() -> TokenType {
     var isFloat = false
 
     var value = repeatAny("0", "9")
@@ -208,7 +213,7 @@ class Lexer : Sequence, IteratorProtocol {
     : TokenType.integer(Int(value)!)
   }
 
-  func string() -> TokenType? {
+  func string() -> TokenType {
     var body = ""
     index += 1
 
@@ -252,7 +257,7 @@ class Lexer : Sequence, IteratorProtocol {
     return nil
   }
 
-  fileprivate func handleVariable() -> TokenType? {
+  fileprivate func handleVariable() -> TokenType {
     var name: String = String(program[index])
     index += 1
 
