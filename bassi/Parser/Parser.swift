@@ -95,8 +95,8 @@ public class Parser {
     case .letKeyword:
       result = try letAssign()
 
-    case .variable(_):
-      result = try assign()
+    case .variable(let name):
+      result = try assign(name)
 
     case .def:
       result = try define()
@@ -163,8 +163,8 @@ public class Parser {
   func letAssign() throws -> Parse {
     nextToken()
 
-    if case .variable(_) = token {
-      return try assign()
+    if case .variable(let name) = token {
+      return try assign(name)
     }
     throw ParseError.error("LET is missing variable to assign to")
   }
@@ -173,10 +173,7 @@ public class Parser {
     name.last! == "$" ? .string : .number
   }
 
-  func assign() throws -> Parse {
-    guard case .variable(let name) = token else {
-      return .skip /*can't happen*/
-    }
+  func assign(_ name: String) throws -> Parse {
     let variable = try variable(name)
 
     try require(.equals, "Assignment is missing '='")
@@ -488,7 +485,7 @@ public class Parser {
     nextToken()
 
     guard case .variable(let parameter) = token else {
-      throw ParseError.error("Function requires a parameter")
+      throw ParseError.error("Call to FNx must have letter after FN")
     }
     nextToken()
 
