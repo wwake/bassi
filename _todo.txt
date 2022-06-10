@@ -1,8 +1,10 @@
 * FOR, NEXT - ORIGINAL BASIC SEMANTICS  (#4 BELOW)
-  + Test variable required in FOR
-  + Test '=' required
-  + Test 'TO' required
-  + Test variable required in NEXT
+  + Expressions in FOR-NEXT must be numeric
+  + NEXT checks for empty stack
+  + NEXT check for name mismatch
+  + Straighten out use of type Int for LineNumber
+  + Straighten out use of type String for variable names
+* Interpreter - if-handling should return output at top level
 * GOSUB, RETURN
 * ON..GOTO
 
@@ -40,6 +42,13 @@
 * What should ASC do if given an empty string?
 
 Parameterized tests package?
+
+BI-22-24: June 10, 2022
+* FOR-NEXT
+  + Test variable required in FOR
+  + Test '=' required
+  + Test 'TO' required
+  + Test variable required in NEXT
 
 BI-22-23: June 9, 2022
 * Handle parser errors better in interpreter
@@ -280,10 +289,13 @@ FOR
     STEP = e3     +1
 
     X = X - STEP    2
+  PUSH (x, limit, step, & body)
 
-Loop:
-    IF X + STEP > LIMIT THEN GOTO End    // Neg step => use <
-      X = X + STEP
+//Loop:
+//    IF X + STEP > LIMIT THEN GOTO End    // Neg step => use <
+//      X = X + STEP
+    Find NEXT
+    GOTO NEXT
 
 BODY:
     body
@@ -291,9 +303,15 @@ BODY:
 
 
 NEXT:
-  GOTO Loop:
-  End:
+  peek stuff   ; CHECK VARIABLE
+  IF X+STEP > LIMIT THEN { pop stuff ; GOTO End }
+  X = X + STEP
+  GOTO BODY
 
+  End:
+    statement after next
+
+Loopstack: (X, limit, step, ?? body)
 
 
 expression -> orExpr

@@ -762,4 +762,16 @@ class InterpreterTests: XCTestCase {
       expecting: "hello\n")
   }
 
+  func testFORthatStartsOutOfRange_DoesntExecute_and_AdjustsVariable()
+  {
+    checkProgramResults(
+"""
+10 FOR X=4 TO 2
+20 PRINT 999
+30 NEXT X
+40 PRINT X
+""",
+      expecting: "3\n"
+    )
+  }
 }

@@ -94,6 +94,10 @@ class Interpreter {
 
   typealias Store = [String : Value]
 
+  typealias ForInfo = (String, Value, Value, Int)
+
+  var forLoopStack: [ForInfo] = []
+
   var globals: Store = [
     "ABS" : Value.function(Fn2n(abs)),
     "ASC" : Value.function(Fs2n( {
@@ -167,6 +171,10 @@ class Interpreter {
     return output
   }
 
+  fileprivate func doGoto(_ newLineNumber: (Int)) {
+    nextLineNumber = newLineNumber
+  }
+
   func step(_ parse: Parse, _ output: String) throws -> String {
 
     switch parse {
@@ -188,14 +196,15 @@ class Interpreter {
       return try doPrint(output, values)
 
     case .goto(let newLineNumber):
-      nextLineNumber = newLineNumber
+      doGoto(newLineNumber)
       return output
 
     case .`if`(let expr, let target):
       return try doIfThen(output, expr, target)
 
     case .assign(let variable, let expr):
-      return try doAssign(output, variable, expr)
+      try doAssign(variable, expr)
+      return output
 
     case .def(let functionName, let parameter, let definition, let theType):
       if globals[functionName] != nil {
@@ -213,9 +222,13 @@ class Interpreter {
       doDim(name, dimensions, type)
       return output
 
-    case .`for`, .next:
-      done = true
-      return output + "? FOR-NEXT NYI\n"
+    case .`for`(let variable, let initial, let final, let step):
+      try doFor(variable, initial, final, step)
+      return output
+
+    case .next(let variable):
+      try doNext(variable)
+      return output
     }
   }
 
@@ -387,16 +400,13 @@ class Interpreter {
   }
 
   fileprivate func doAssign(
-    _ output: String,
     _ lvalue: Expression,
-    _ rvalue: Expression) throws
-  -> String {
+    _ rvalue: Expression) throws {
     switch lvalue {
     case .variable(let name, _):
       let value = try evaluate(rvalue, globals)
 
       globals[name] = value
-      return output
 
     case .arrayAccess(let name, let type, let exprs):
       if globals[name] == nil {
@@ -419,8 +429,6 @@ class Interpreter {
       var updatedValues = values
       updatedValues[index] = value
       globals[name] = .array(dimensions, updatedValues)
-
-      return output
 
     default:
       throw InterpreterError.cantHappen(lineNumber, "?? Lvalue must be either variable or array access")
@@ -465,5 +473,42 @@ class Interpreter {
         let (index, dim) = indexDim
         return total * dim + index
     })
+  }
+
+  func doFor(_ variable: String, _ initial: Expression, _ final: Expression, _ step: Expression) throws {
+
+    let typedVariable: Expression = .variable(variable, .number)
+    try doAssign(typedVariable, initial)
+
+    let limit = try evaluate(final, globals)
+    let stepSize = try evaluate(step, globals)
+    try doAssign(typedVariable, .op2(.minus, typedVariable, .number(stepSize.asFloat())))
+
+    let bodyLineNumber = program.lineAfter(lineNumber)
+
+    forLoopStack.append((variable, limit, stepSize, bodyLineNumber))
+
+    let nextLineNumber = try findNext(with: variable)
+    doGoto(nextLineNumber)
+  }
+
+  func findNext(with variable: String) throws -> Int {
+    return 30
+  }
+  
+  func doNext(_ variable: String) throws {
+    let (pushedName, limit, stepSize, bodyLineNumber) = forLoopStack.last!
+    let typedVariable: Expression = .variable(variable, .number)
+    let counterValue = try evaluate(typedVariable, globals)
+
+    if counterValue.asFloat() > limit.asFloat() {
+      forLoopStack.removeLast()
+      let endLineNumber = program.lineAfter(lineNumber)
+      doGoto(endLineNumber)
+    } else {
+      try doAssign(typedVariable, .op2(.plus, typedVariable, .number(stepSize.asFloat())))
+
+      doGoto(bodyLineNumber)
+    }
   }
 }
