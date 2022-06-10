@@ -212,6 +212,10 @@ class Interpreter {
 
       doDim(name, dimensions, type)
       return output
+
+    case .`for`, .next:
+      done = true
+      return output + "? FOR-NEXT NYI\n"
     }
   }
 

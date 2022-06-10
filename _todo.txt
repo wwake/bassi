@@ -1,3 +1,11 @@
+* FOR, NEXT - ORIGINAL BASIC SEMANTICS  (#4 BELOW)
+  + Test variable required in FOR
+  + Test '=' required
+  + Test 'TO' required
+  + Test variable required in NEXT
+* GOSUB, RETURN
+* ON..GOTO
+
   + Make errors report line & column number
   + Should lexer just handle spaces without normalization?
 * Handle parser errors better in interpreter
@@ -8,9 +16,6 @@
 
 * Handle interpreter.format() for arrays
 
-* ON..GOTO
-* FOR, NEXT
-* GOSUB, RETURN
 
 * Multiple statements on one line
 * IF relation-expr THEN statements
@@ -191,6 +196,106 @@ statement -> "GOTO" INTEGER(int)
 statement -> "IF" expression THEN INTEGER(int)
 statement -> [LET] VARIABLE ["(" expr {"," expr } ")"] = expression
 statement -> DIM variable "(" INTEGER(INT) {"," INTEGER(INT)} ")"
+statement -> FOR variable = expression TO expression [ STEP expression ]
+statement -> NEXT variable     // or [variable] - OSI; or [variable, {, variable }] -- C64
+
+FOR loop semantics:
+   FOR X = e1 TO e2 STEP e3
+     body
+   NEXT X
+
+  50 loopStarted = FALSE
+  60  IF !loopStarted THEN 100
+   90 NEXT X
+   95 GOTO 200
+  100 LoopStarted = true
+  105  FOR X = 1 TO 10
+  110    PRINT X
+  120    GOTO 60
+  200  do stuff
+
+
+#1
+FOR:
+    X = e1
+    LIMIT = e2
+    STEP = e3
+
+   Top:
+    IF X > LIMIT GOTO Bottom
+
+BODY:
+    body
+
+NEXT:
+      X = X + STEP
+    GOTO Top
+
+  Bottom:
+
+
+#2
+FOR:
+    X = e1
+    LIMIT = e2
+    STEP = e3
+
+   GOTO Start
+   Repeat:
+    X = X + STEP
+   Start:
+    IF X > LIMIT GOTO End
+
+BODY:
+    body
+
+NEXT:
+    GOTO Repeat
+
+  End:
+
+
+#3  - C64  - no scan for NEXT
+FOR:
+    X = e1
+    LIMIT = e2
+    STEP = e3
+
+Repeat:
+
+BODY:
+    body
+
+NEXT:
+    X = X + STEP
+    IF X < LIMIT GOTO Repeat
+
+    Rest:
+
+
+#4:    -- Original BASIC - must scan for NEXT
+FOR
+    X = e1        3
+    LIMIT = e2    2
+    STEP = e3     +1
+
+    X = X - STEP    2
+
+Loop:
+    IF X + STEP > LIMIT THEN GOTO End    // Neg step => use <
+      X = X + STEP
+
+BODY:
+    body
+
+
+
+NEXT:
+  GOTO Loop:
+  End:
+
+
+
 expression -> orExpr
 
 orExpr -> andExpr (OR andExpr)*

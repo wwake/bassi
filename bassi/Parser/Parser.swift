@@ -95,6 +95,12 @@ public class Parser {
     case .dim:
       result = try dim()
 
+    case .for:
+      result = try doFor()
+
+    case .next:
+      result = try doNext()
+
     default:
       nextToken()
       throw ParseError.error("Unknown statement")
@@ -522,5 +528,41 @@ public class Parser {
     try require(.rightParend, "Missing ')'")
 
     return .dim(arrayName, dimensions, typeFor(arrayName))
+  }
+
+  func doFor() throws -> Parse {
+    nextToken()
+
+    guard case .variable(let variable) = token else {
+      throw ParseError.error("Variable is required")
+    }
+    nextToken()
+
+    try require(.equals, "'=' is required")
+
+    let initial = try expression()
+
+    try require(.to, "'TO' is required")
+
+    let final = try expression()
+
+    var step = Expression.number(1)
+    if token == .step {
+      nextToken()
+      step = try expression()
+    }
+
+    return .`for`(variable, initial, final, step)
+  }
+
+  func doNext() throws -> Parse {
+    nextToken()
+
+    guard case .variable(let variable) = token else {
+      throw ParseError.error("Variable is required")
+    }
+    nextToken()
+
+    return .next(variable)
   }
 }

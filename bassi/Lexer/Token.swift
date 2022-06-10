@@ -49,7 +49,7 @@ public enum TokenType  {
 
   case end
   case fn
-  case forKeyword
+  case `for`
   case goto
   case gosub
 
@@ -68,8 +68,10 @@ public enum TokenType  {
 
   case restore
   case returnKeyword
+  case step
   case stop
   case then
+  case to
 
   case predefined(String, `Type`)
 }

@@ -41,7 +41,7 @@ class Lexer {
 
     ("END", .end),
     ("FN", .fn),
-    ("FOR", .forKeyword),
+    ("FOR", .`for`),
     ("GOTO", .goto),
     ("GOSUB", .gosub),
 
@@ -60,8 +60,10 @@ class Lexer {
     ("RESTORE", .restore),
     ("RETURN", .returnKeyword),
 
+    ("STEP", .step),
     ("STOP", .stop),
     ("THEN", .then),
+    ("TO", .to),
 
     ("ABS", .predefined("ABS", `Type`.typeNtoN)),
     ("ASC", .predefined("ASC", `Type`.typeStoN)),

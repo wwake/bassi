@@ -22,6 +22,8 @@ public indirect enum Parse : Equatable {
   case assign(Expression, Expression)
   case def(String, String, Expression, `Type`)
   case dim(String, [Int], `Type`)
+  case `for`(String, Expression, Expression, Expression)
+  case next(String)
 }
 
 public indirect enum Expression: Equatable {

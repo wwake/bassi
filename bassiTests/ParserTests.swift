@@ -561,4 +561,54 @@ class ParserTests: XCTestCase {
         ]))
     )
   }
+
+  func testFORwithoutSTEP() {
+    checkParsing(
+      "10 FOR X=1 TO 10",
+      .line(
+        10,
+        .`for`("X", .number(1), .number(10), .number(1)))
+    )
+  }
+
+  func testFORwithSTEP() {
+    checkParsing(
+      "10 FOR X=1 TO 10 STEP 5",
+      .line(
+        10,
+        .`for`("X", .number(1), .number(10), .number(5)))
+    )
+  }
+
+  func testFORrequiresVariableEqualsAndTO() {
+    checkError(
+      "10 FOR 1 TO 10",
+      ParseError.error("Variable is required")
+    )
+    checkError(
+      "10 FOR X (1) TO 10",
+      ParseError.error("'=' is required")
+    )
+    checkError(
+      "10 FOR X = 1, 10",
+      ParseError.error("'TO' is required")
+    )
+  }
+
+
+  func testNEXTwithVariable() {
+    checkParsing(
+      "10 NEXT Z9",
+      .line(
+        10,
+        .next("Z9"))
+    )
+  }
+
+  func testNEXTrequiresVariable() {
+    checkError(
+      "10 NEXT",
+      ParseError.error("Variable is required")
+    )
+  }
 }
