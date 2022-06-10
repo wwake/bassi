@@ -497,7 +497,15 @@ class Interpreter {
   }
   
   func doNext(_ variable: String) throws {
+    guard !forLoopStack.isEmpty else {
+      throw InterpreterError.error(lineNumber, "Found NEXT without preceding FOR")
+    }
+
     let (pushedName, limit, stepSize, bodyLineNumber) = forLoopStack.last!
+    guard variable == pushedName else {
+      throw InterpreterError.error(lineNumber, "NEXT variable must match corresponding FOR")
+    }
+    
     let typedVariable: Expression = .variable(variable, .number)
     let counterValue = try evaluate(typedVariable, globals)
 
