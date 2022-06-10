@@ -381,7 +381,7 @@ class ParserTests: XCTestCase {
     checkError("17 DEF FN(x)=X", .error("DEF requires a name of the form FNx"))
     checkError("17 DEF FNX9(x)=X", .error("DEF function name cannot be followed by extra letters"))
     checkError("17 DEF FNI x)=X", .error("Missing '('"))
-    checkError("17 DEF FNZ()=X", .error("DEF requires a parameter variable"))
+    checkError("17 DEF FNZ()=X", .error("Variable is required"))
     checkError("17 DEF FNA(x=X", .error("DEF requires ')' after parameter"))
     checkError("17 DEF FNP(x) -> X", .error("DEF requires '=' after parameter definition"))
   }

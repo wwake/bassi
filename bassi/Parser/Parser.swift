@@ -30,6 +30,15 @@ public class Parser {
     nextToken()
   }
 
+  func requireVariable() throws -> String {
+    guard case .variable(let variable) = token else {
+      throw ParseError.error("Variable is required")
+    }
+    nextToken()
+    return variable
+  }
+
+
   func parse(_ input: String) -> Parse {
     lexer = Lexer(input)
     nextToken()
@@ -195,10 +204,7 @@ public class Parser {
 
     try require(.leftParend, "Missing '('")
 
-    guard case .variable(let parameter) = token else {
-      throw ParseError.error("DEF requires a parameter variable")
-    }
-    nextToken()
+    let parameter = try requireVariable()
 
     try require(.rightParend, "DEF requires ')' after parameter")
 
@@ -500,10 +506,7 @@ public class Parser {
   func dim() throws -> Parse {
     nextToken()
 
-    guard case .variable(let arrayName) = token else {
-      throw ParseError.error("Variable required")
-    }
-    nextToken()
+    let arrayName = try requireVariable()
 
     try require(.leftParend, "Missing '('")
 
@@ -533,10 +536,7 @@ public class Parser {
   func doFor() throws -> Parse {
     nextToken()
 
-    guard case .variable(let variable) = token else {
-      throw ParseError.error("Variable is required")
-    }
-    nextToken()
+    let variable = try requireVariable()
 
     try require(.equals, "'=' is required")
 
@@ -558,10 +558,7 @@ public class Parser {
   func doNext() throws -> Parse {
     nextToken()
 
-    guard case .variable(let variable) = token else {
-      throw ParseError.error("Variable is required")
-    }
-    nextToken()
+    let variable = try requireVariable()
 
     return .next(variable)
   }
