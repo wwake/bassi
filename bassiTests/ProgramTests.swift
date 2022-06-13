@@ -23,16 +23,16 @@ class ProgramTests: XCTestCase {
     XCTAssertEqual(program[10], "10 PRINT 43")
   }
 
-  func testNonExistentLinesAreEmpty() {
+  func testNonExistentLinesAreNil() {
     let program = Program()
-    XCTAssertEqual(program[20], "")
+    XCTAssertNil(program[20])
   }
 
   func testJustLineNumberErasesEntry() {
     let program = Program()
     program[25] = "25 PRINT"
     program[25] = "25"
-    XCTAssertEqual(program[25], "")
+    XCTAssertEqual(program[25], nil)
   }
 
   func testProgramKnowsItsFirstLineNumber() {
@@ -58,12 +58,12 @@ class ProgramTests: XCTestCase {
     XCTAssertEqual(program[40], "40 END")
   }
 
-  func testUnknownNextLineNumberIsZeroEnd() {
+  func testUnknownNextLineNumberIsMaxLineNumber() {
     let program = Program()
     XCTAssertEqual(program.lineAfter(10), program.maxLineNumber)
   }
 
-  func testLineAfterOnlyLineIsZeroEnd() {
+  func testLineAfterOnlyLineIsMaxLineNumber() {
     let program = Program("""
 10 PRINT 10
 """)

@@ -1,4 +1,5 @@
   + Find the textually next NEXT with the same variable
+  + Make sure NEXT statements tests X+step (not just X)
   + Straighten out use of type Int for LineNumber
   + Straighten out use of type String for variable names
   + Make sure loop works when range not exceeded (normal case)

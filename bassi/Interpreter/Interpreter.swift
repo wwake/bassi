@@ -160,7 +160,10 @@ class Interpreter {
       lineNumber = (nextLineNumber != nil) ? nextLineNumber! : program.lineAfter(lineNumber)
       nextLineNumber = nil
 
-      let line = program[lineNumber]
+      guard let line = program[lineNumber] else {
+        done = true
+        return output + "? Attempted to execute non-existent line: \(lineNumber)\n"
+      }
 
       let parser = Parser()
       let parse = parser.parse(line)

@@ -67,8 +67,9 @@ public class Parser {
 
       return Parse.line(lineNumber, statementParse)
     }
+    let errorToken = token
     nextToken()
-    throw ParseError.error("Line number is required")
+    throw ParseError.error("Line number is required; found \(errorToken)")
   }
 
   func statement() throws -> Parse {

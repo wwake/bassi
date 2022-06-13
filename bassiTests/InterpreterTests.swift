@@ -245,7 +245,7 @@ class InterpreterTests: XCTestCase {
     XCTAssertEqual(interpreter.nextLineNumber, 10)
   }
 
-  func testStepWillEvenGotoMissingLine() throws {
+  func testStepWillTryToGotoMissingLine() throws {
     let parse =
     Parse.line(
       10,
@@ -256,6 +256,12 @@ class InterpreterTests: XCTestCase {
     let _ = try interpreter.step(parse, "")
 
     XCTAssertEqual(interpreter.nextLineNumber, 20)
+  }
+
+  func testGotoNonExistentLine() {
+    checkProgramResults(
+      "10 GOTO 20",
+      expecting: "? Attempted to execute non-existent line: 20\n")
   }
 
   func testTwoLineProgramRunsBothLines() throws {

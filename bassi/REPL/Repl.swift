@@ -59,6 +59,6 @@ class Repl : ObservableObject {
   }
 
   func contains(_ lineNumber: Int) -> Bool {
-    program[lineNumber].count != 0
+    program[lineNumber] != nil
   }
 }

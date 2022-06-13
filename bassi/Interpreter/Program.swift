@@ -29,14 +29,14 @@ class Program {
 
   init() {}
 
-  subscript(_ lineNumber: Int) -> String {
-    get { program[lineNumber] ?? "" }
+  subscript(_ lineNumber: Int) -> String? {
+    get { program[lineNumber] }
     set {
-      if Int(newValue) == nil {
+      if Int(newValue!) == nil {
         program[lineNumber] = newValue
         return
       }
-      program.removeValue(forKey: Int(newValue)!)
+      program.removeValue(forKey: Int(newValue!)!)
     }
   }
 
