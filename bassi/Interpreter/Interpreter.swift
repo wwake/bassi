@@ -509,14 +509,15 @@ class Interpreter {
     let typedVariable: Expression = .variable(variable, .number)
     let counterValue = try evaluate(typedVariable, globals)
 
-    if counterValue.asFloat() > limit.asFloat() {
-      forLoopStack.removeLast()
-      let endLineNumber = program.lineAfter(lineNumber)
-      doGoto(endLineNumber)
-    } else {
+    if counterValue.asFloat() <= limit.asFloat() {
       try doAssign(typedVariable, .op2(.plus, typedVariable, .number(stepSize.asFloat())))
 
       doGoto(bodyLineNumber)
+    } else {
+      forLoopStack.removeLast()
+      let endLineNumber = program.lineAfter(lineNumber)
+      doGoto(endLineNumber)
+
     }
   }
 }

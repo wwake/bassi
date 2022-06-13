@@ -1,9 +1,12 @@
-* FOR, NEXT - ORIGINAL BASIC SEMANTICS  (#4 BELOW)
-  + Expressions in FOR-NEXT must be numeric
-  + NEXT checks for empty stack
-  + NEXT check for name mismatch
+  + Find the textually next NEXT with the same variable
   + Straighten out use of type Int for LineNumber
   + Straighten out use of type String for variable names
+  + Make sure loop works when range not exceeded (normal case)
+  + Make sure loop works for negative step values
+  + Expressions in FOR-NEXT must be numeric
+  + Check properly nested loops
+* FOR, NEXT - ORIGINAL BASIC SEMANTICS  (#4 BELOW)
+
 * Interpreter - if-handling should return output at top level
 * GOSUB, RETURN
 * ON..GOTO
@@ -49,7 +52,9 @@ BI-22-24: June 10, 2022
   + Test '=' required
   + Test 'TO' required
   + Test variable required in NEXT
-
+  + NEXT checks for empty stack
+  + NEXT check for name mismatch
+  + FOR-NEXT skips body when the initial value is past the limit, with proper value in the variable
 BI-22-23: June 9, 2022
 * Handle parser errors better in interpreter
   + Should parser be generating .error? YES
@@ -289,7 +294,7 @@ FOR
     STEP = e3     +1
 
     X = X - STEP    2
-  PUSH (x, limit, step, & body)
+    PUSH (x, limit, step, & body)
 
 //Loop:
 //    IF X + STEP > LIMIT THEN GOTO End    // Neg step => use <
