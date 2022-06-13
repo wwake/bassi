@@ -1,4 +1,3 @@
-  + Make sure loop works when range not exceeded (normal case)
   + Make sure loop works for negative step values
   + Expressions in FOR-NEXT must be numeric
 * FOR, NEXT - ORIGINAL BASIC SEMANTICS  (#4 BELOW)
@@ -51,6 +50,8 @@ BI-22-25: June 13, 2022
   + Find the textually next NEXT with the same variable
   + Make sure NEXT statements tests X+step (not just X)
   + Check properly nested loops
+  + Make sure loop works when range not exceeded (normal case)
+
 * Refactor: Straighten out use of type Int for LineNumber (used typealias)
 * Refactor: Get rid of .line as a separate Parse
 
