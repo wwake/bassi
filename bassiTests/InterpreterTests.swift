@@ -774,11 +774,17 @@ class InterpreterTests: XCTestCase {
 """
 10 FOR X=4 TO 2
 20 PRINT 999
-30 NEXT X
+35 NEXT X
 40 PRINT X
 """,
       expecting: "3\n"
     )
+  }
+
+  func testFORwithoutNEXTreportsError() {
+    checkExpectedError(
+      "10 FOR A0=1 TO 3",
+      expecting: "Found FOR without NEXT: A0")
   }
 
   func testNEXTwithoutFORreportsError() {
@@ -790,8 +796,9 @@ class InterpreterTests: XCTestCase {
   func testNEXTvariableMustMatchFORvariable() {
     checkExpectedError(
 """
-10 FOR A=4 TO 2
+10 FOR A=1 TO 2
 30 NEXT Z
+40 NEXT A
 """,
       expecting: "NEXT variable must match corresponding FOR")
   }

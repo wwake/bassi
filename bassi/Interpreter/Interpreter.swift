@@ -496,7 +496,21 @@ class Interpreter {
   }
 
   func findNext(with variable: String) throws -> Int {
-    return 30
+    var currentLine = program.lineAfter(lineNumber)
+
+    while currentLine < program.maxLineNumber {
+      let parser = Parser()
+      let parse = parser.parse(program[currentLine]!)
+
+      guard case .line(_, let statement) = parse else {
+        throw InterpreterError.cantHappen(currentLine, "Found statement without line")
+      }
+      if case .next(let actualVariable) = statement {
+        if variable == actualVariable { return currentLine }
+      }
+      currentLine = program.lineAfter(currentLine)
+    }
+    throw InterpreterError.error(currentLine, "Found FOR without NEXT: \(variable)")
   }
   
   func doNext(_ variable: String) throws {

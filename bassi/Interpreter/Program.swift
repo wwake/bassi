@@ -58,8 +58,7 @@ class Program {
     let keys = program.keys.sorted(by: <)
 
     let startIndex = keys
-      .firstIndex { $0 == lineNumber
-      }
+      .firstIndex { $0 == lineNumber }
 
     if startIndex == nil {
       return maxLineNumber
