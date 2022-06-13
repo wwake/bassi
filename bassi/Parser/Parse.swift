@@ -11,14 +11,16 @@ public enum ParseError: Error, Equatable {
   case error(String)
 }
 
+public typealias LineNumber = Int
+
 public indirect enum Parse : Equatable {
   case error(ParseError)
   case end
-  case line(Int, Parse)
+  case line(LineNumber, Parse)
   case skip
   case print([Expression])
-  case goto(Int)
-  case `if`(Expression, Int)
+  case goto(LineNumber)
+  case `if`(Expression, LineNumber)
   case assign(Expression, Expression)
   case def(String, String, Expression, `Type`)
   case dim(String, [Int], `Type`)

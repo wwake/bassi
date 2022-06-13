@@ -78,8 +78,8 @@ extension `Type` {
 }
 
 enum InterpreterError: Error, Equatable {
-  case error(Int, String)
-  case cantHappen(Int, String)
+  case error(LineNumber, String)
+  case cantHappen(LineNumber, String)
 }
 
 class Interpreter {
@@ -88,14 +88,14 @@ class Interpreter {
   let program: Program
   let parser = Parser()
 
-  var lineNumber : Int
-  var nextLineNumber: Int?
+  var lineNumber : LineNumber
+  var nextLineNumber: LineNumber?
 
   var done = false
 
   typealias Store = [String : Value]
 
-  typealias ForInfo = (String, Value, Value, Int)
+  typealias ForInfo = (String, Value, Value, LineNumber)
 
   var forLoopStack: [ForInfo] = []
 
@@ -151,7 +151,7 @@ class Interpreter {
   init(_ program: Program) {
     self.program = program
 
-    lineNumber = 0
+    lineNumber = LineNumber(0)
     nextLineNumber = program.firstLineNumber()
   }
 
@@ -175,7 +175,7 @@ class Interpreter {
     return output
   }
 
-  fileprivate func doGoto(_ newLineNumber: (Int)) {
+  fileprivate func doGoto(_ newLineNumber: LineNumber) {
     nextLineNumber = newLineNumber
   }
 

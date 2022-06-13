@@ -1,12 +1,10 @@
-  + Make sure NEXT statements tests X+step (not just X)
-  + Straighten out use of type Int for LineNumber
-  + Straighten out use of type String for variable names
   + Make sure loop works when range not exceeded (normal case)
   + Make sure loop works for negative step values
   + Expressions in FOR-NEXT must be numeric
-  + Check properly nested loops
 * FOR, NEXT - ORIGINAL BASIC SEMANTICS  (#4 BELOW)
 
+* Straighten out use of type Int for LineNumber
+* Straighten out use of type String for variable names
 * Get rid of .line as a separate Parse
 * Should .number take a Value instead of a Float?
 
@@ -52,6 +50,8 @@ Parameterized tests package?
 BI-22-25: June 13, 2022
 * FOR, NEXT - ORIGINAL BASIC SEMANTICS
   + Find the textually next NEXT with the same variable
+  + Make sure NEXT statements tests X+step (not just X)
+  + Check properly nested loops
 
 BI-22-24: June 10, 2022
 * FOR-NEXT
