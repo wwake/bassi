@@ -767,6 +767,17 @@ class InterpreterTests: XCTestCase {
       expecting: "hello\n")
   }
 
+  func testFORwithPositiveStep() {
+    checkProgramResults(
+"""
+10 FOR X=1 TO 3
+20 PRINT X
+35 NEXT X
+40 PRINT X
+""",
+    expecting: "1\n2\n3\n3\n")
+  }
+
   func testFORthatStartsOutOfRange_DoesntExecute_and_AdjustsVariable()
   {
     checkProgramResults(
