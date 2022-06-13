@@ -595,6 +595,20 @@ class ParserTests: XCTestCase {
     )
   }
 
+  func testFORrequiresNumericExpressions() {
+    checkError(
+      "10 FOR X=\"string\" TO 10",
+      ParseError.error("Numeric type is required")
+    )
+    checkError(
+      "10 FOR X=1 TO \"10\"",
+      ParseError.error("Numeric type is required")
+    )
+    checkError(
+      "10 FOR X = 1 TO 10 STEP \"X\"",
+      ParseError.error("Numeric type is required")
+    )
+  }
 
   func testNEXTwithVariable() {
     checkParsing(

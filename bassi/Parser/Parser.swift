@@ -540,15 +540,18 @@ public class Parser {
     try require(.equals, "'=' is required")
 
     let initial = try expression()
+    try requireFloatType(initial)
 
     try require(.to, "'TO' is required")
 
     let final = try expression()
+    try requireFloatType(final)
 
     var step = Expression.number(1)
     if token == .step {
       nextToken()
       step = try expression()
+      try requireFloatType(step)
     }
 
     return .`for`(variable, initial, final, step)
