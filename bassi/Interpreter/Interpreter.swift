@@ -515,9 +515,6 @@ class Interpreter {
       doGoto(bodyLineNumber)
     } else {
       forLoopStack.removeLast()
-      let endLineNumber = program.lineAfter(lineNumber)
-      doGoto(endLineNumber)
-
     }
   }
 }
