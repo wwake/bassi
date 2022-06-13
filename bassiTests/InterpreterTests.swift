@@ -781,6 +781,19 @@ class InterpreterTests: XCTestCase {
     )
   }
 
+  func testFORtestsVarPlusStep()
+  {
+    checkProgramResults(
+"""
+10 FOR X=2 TO 2
+20 PRINT 999
+35 NEXT X
+40 PRINT X
+""",
+expecting: "999\n2\n"
+    )
+  }
+
   func testFORwithoutNEXTreportsError() {
     checkExpectedError(
       "10 FOR A0=1 TO 3",

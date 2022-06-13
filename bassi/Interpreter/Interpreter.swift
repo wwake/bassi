@@ -524,7 +524,7 @@ class Interpreter {
     }
     
     let typedVariable: Expression = .variable(variable, .number)
-    let counterValue = try evaluate(typedVariable, globals)
+    let counterValue = try evaluate(.op2(.plus, typedVariable, .number(stepSize.asFloat())), globals)
 
     if counterValue.asFloat() <= limit.asFloat() {
       try doAssign(typedVariable, .op2(.plus, typedVariable, .number(stepSize.asFloat())))
