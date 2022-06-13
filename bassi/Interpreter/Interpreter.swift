@@ -514,6 +514,7 @@ class Interpreter {
     }
 
     let (pushedName, limit, stepSize, bodyLineNumber) = forLoopStack.last!
+
     guard variable == pushedName else {
       throw InterpreterError.error(lineNumber, "NEXT variable must match corresponding FOR")
     }
@@ -521,9 +522,10 @@ class Interpreter {
     let typedVariable: Expression = .variable(variable, .number)
     let nextValue = try evaluate(.op2(.plus, typedVariable, .number(stepSize.asFloat())), globals)
 
-    if nextValue.asFloat() <= limit.asFloat() {
+    if (stepSize.asFloat() >= 0 && nextValue.asFloat() <= limit.asFloat())
+    || (stepSize.asFloat() < 0 && nextValue.asFloat() >= limit.asFloat()) {
+      
       try doAssign(typedVariable, .number(nextValue.asFloat()))
-
       doGoto(bodyLineNumber)
     } else {
       forLoopStack.removeLast()
