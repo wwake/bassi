@@ -3,9 +3,9 @@
   + Expressions in FOR-NEXT must be numeric
 * FOR, NEXT - ORIGINAL BASIC SEMANTICS  (#4 BELOW)
 
-* Get rid of .line as a separate Parse
 * Straighten out use of type String for variable names
 * Should .number take a Value instead of a Float?
+* Errors should return line number
 
 * Interpreter - if-handling should return output at top level
 * GOSUB, RETURN
@@ -52,6 +52,7 @@ BI-22-25: June 13, 2022
   + Make sure NEXT statements tests X+step (not just X)
   + Check properly nested loops
 * Refactor: Straighten out use of type Int for LineNumber (used typealias)
+* Refactor: Get rid of .line as a separate Parse
 
 BI-22-24: June 10, 2022
 * FOR-NEXT

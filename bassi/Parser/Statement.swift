@@ -13,17 +13,19 @@ public enum ParseError: Error, Equatable {
 
 public typealias LineNumber = Int
 
-public typealias Parse = Statement
+public struct Parse : Equatable {
+  let lineNumber: LineNumber
+  let statement: Statement
 
-//public struct Parse {
-//  let lineNumber: LineNumber
-//  let statement: Statement
-//}
+  init(_ lineNumber: LineNumber, _ statement: Statement) {
+    self.lineNumber = lineNumber
+    self.statement = statement
+  }
+}
 
 public indirect enum Statement : Equatable {
   case error(ParseError)
   case end
-  case line(LineNumber, Statement)
   case skip
   case print([Expression])
   case goto(LineNumber)

@@ -38,7 +38,6 @@ public class Parser {
     return variable
   }
 
-
   func parse(_ input: String) -> Parse {
     lexer = Lexer(input)
     nextToken()
@@ -49,7 +48,9 @@ public class Parser {
     do {
       return try line()
     } catch {
-      return .error(error as! ParseError)
+      return Parse(
+        LineNumber(0),
+        .error(error as! ParseError))
     }
   }
 
@@ -65,7 +66,7 @@ public class Parser {
 
       try require(.eol, "Extra characters at end of line")
 
-      return Statement.line(lineNumber, statementParse)
+      return Parse(lineNumber, statementParse)
     }
     let errorToken = token
     nextToken()

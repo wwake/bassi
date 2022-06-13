@@ -180,14 +180,12 @@ class Interpreter {
   }
 
   func step(_ parse: Parse, _ output: String) throws -> String {
+    let statement = parse.statement
 
-    switch parse {
+    switch statement {
     case .error(let message):
       done = true
       return output + "? \(message)\n"
-
-    case .line(_, let statement):
-      return try step(statement, output)
 
     case .end:
       done = true
@@ -502,10 +500,7 @@ class Interpreter {
     while currentLine < program.maxLineNumber {
       let parse = parser.parse(program[currentLine]!)
 
-      guard case .line(_, let statement) = parse else {
-        throw InterpreterError.cantHappen(currentLine, "Found statement without line")
-      }
-      if case .next(let actualVariable) = statement {
+      if case .next(let actualVariable) = parse.statement {
         if variable == actualVariable { return currentLine }
       }
       currentLine = program.lineAfter(currentLine)
