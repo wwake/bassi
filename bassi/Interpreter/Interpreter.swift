@@ -524,10 +524,10 @@ class Interpreter {
     }
     
     let typedVariable: Expression = .variable(variable, .number)
-    let counterValue = try evaluate(.op2(.plus, typedVariable, .number(stepSize.asFloat())), globals)
+    let nextValue = try evaluate(.op2(.plus, typedVariable, .number(stepSize.asFloat())), globals)
 
-    if counterValue.asFloat() <= limit.asFloat() {
-      try doAssign(typedVariable, .op2(.plus, typedVariable, .number(stepSize.asFloat())))
+    if nextValue.asFloat() <= limit.asFloat() {
+      try doAssign(typedVariable, .number(nextValue.asFloat()))
 
       doGoto(bodyLineNumber)
     } else {
