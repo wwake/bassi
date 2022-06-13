@@ -23,7 +23,7 @@ class ParserTests: XCTestCase {
 
   func checkParsing(
     _ program: String,
-    _ expected: Parse)
+    _ expected: Statement)
   {
     let parser = Parser()
     let result = parser.parse(program)

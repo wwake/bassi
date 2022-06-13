@@ -179,7 +179,7 @@ class Interpreter {
     nextLineNumber = newLineNumber
   }
 
-  func step(_ parse: Parse, _ output: String) throws -> String {
+  func step(_ parse: Statement, _ output: String) throws -> String {
 
     switch parse {
     case .error(let message):

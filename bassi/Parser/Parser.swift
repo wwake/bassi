@@ -39,13 +39,13 @@ public class Parser {
   }
 
 
-  func parse(_ input: String) -> Parse {
+  func parse(_ input: String) -> Statement {
     lexer = Lexer(input)
     nextToken()
     return singleLine()
   }
 
-  func singleLine() -> Parse {
+  func singleLine() -> Statement {
     do {
       return try line()
     } catch {
@@ -53,7 +53,7 @@ public class Parser {
     }
   }
 
-  func line() throws -> Parse  {
+  func line() throws -> Statement  {
     if case .integer(let lineNumber) = token {
       nextToken()
 
@@ -65,24 +65,24 @@ public class Parser {
 
       try require(.eol, "Extra characters at end of line")
 
-      return Parse.line(lineNumber, statementParse)
+      return Statement.line(lineNumber, statementParse)
     }
     let errorToken = token
     nextToken()
     throw ParseError.error("Line number is required; found \(errorToken)")
   }
 
-  func statement() throws -> Parse {
-    var result: Parse
+  func statement() throws -> Statement {
+    var result: Statement
 
     switch token {
     case .end:
       nextToken()
-      result = Parse.end
+      result = Statement.end
 
     case .remark:
       nextToken()
-      result = Parse.skip
+      result = Statement.skip
 
     case .print:
       result = try printStatement()
@@ -119,11 +119,11 @@ public class Parser {
     return result
   }
 
-  func printStatement() throws -> Parse {
+  func printStatement() throws -> Statement {
     nextToken()
 
     if token == .eol {
-      return Parse.print([])
+      return Statement.print([])
     }
 
     var values: [Expression] = []
@@ -131,10 +131,10 @@ public class Parser {
     let value = try expression()
     values.append(value)
 
-    return Parse.print(values)
+    return Statement.print(values)
   }
 
-  func goto() throws -> Parse {
+  func goto() throws -> Statement {
     nextToken()
 
     if case .integer(let lineNumber) = token {
@@ -145,7 +145,7 @@ public class Parser {
     throw ParseError.error("Missing target of GOTO")
   }
 
-  func ifThen() throws -> Parse {
+  func ifThen() throws -> Statement {
     nextToken()
 
     let expr = try expression()
@@ -161,7 +161,7 @@ public class Parser {
     throw ParseError.error("Missing target of THEN")
   }
 
-  func letAssign() throws -> Parse {
+  func letAssign() throws -> Statement {
     nextToken()
 
     if case .variable(let name) = token {
@@ -174,7 +174,7 @@ public class Parser {
     name.last! == "$" ? .string : .number
   }
 
-  func assign(_ name: String) throws -> Parse {
+  func assign(_ name: String) throws -> Statement {
     let variable = try variable(name)
 
     try require(.equals, "Assignment is missing '='")
@@ -186,7 +186,7 @@ public class Parser {
     return .assign(variable, expr)
   }
 
-  func define() throws -> Parse {
+  func define() throws -> Statement {
     nextToken()
 
     try require(.fn, "DEF requires a name of the form FNx")
@@ -501,7 +501,7 @@ public class Parser {
     return .userdefined("FN" + parameter, expr)
   }
 
-  func dim() throws -> Parse {
+  func dim() throws -> Statement {
     nextToken()
 
     let arrayName = try requireVariable()
@@ -531,7 +531,7 @@ public class Parser {
     return .dim(arrayName, dimensions, typeFor(arrayName))
   }
 
-  func doFor() throws -> Parse {
+  func doFor() throws -> Statement {
     nextToken()
 
     let variable = try requireVariable()
@@ -553,7 +553,7 @@ public class Parser {
     return .`for`(variable, initial, final, step)
   }
 
-  func doNext() throws -> Parse {
+  func doNext() throws -> Statement {
     nextToken()
 
     let variable = try requireVariable()

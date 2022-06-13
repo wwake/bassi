@@ -34,7 +34,7 @@ class InterpreterTests: XCTestCase {
 
   fileprivate func checkPrintWithRelop(_ op: TokenType, _ expected: Int) throws {
     let parse =
-    Parse.line(
+    Statement.line(
       40,
       .print([
         Expression.make(10, op, 10)
@@ -87,7 +87,7 @@ class InterpreterTests: XCTestCase {
   }
 
   func testSkip() throws {
-    let parse = Parse.line(10, Parse.skip)
+    let parse = Statement.line(10, Statement.skip)
 
     let interpreter = Interpreter(Program())
 
@@ -97,7 +97,7 @@ class InterpreterTests: XCTestCase {
 
   func testSimplePrint() throws {
     let parse =
-    Parse.line(10, Parse.print([]))
+    Statement.line(10, Statement.print([]))
 
     let interpreter = Interpreter(Program())
     let output = try interpreter.step(parse, "")
@@ -106,7 +106,7 @@ class InterpreterTests: XCTestCase {
 
   func testPrintWithNumericValue() throws {
     let parse =
-    Parse.line(
+    Statement.line(
       35,
       .print([.number(22.0)]))
 
@@ -117,7 +117,7 @@ class InterpreterTests: XCTestCase {
 
   func testPrintWithStringValue() throws {
     let parse =
-    Parse.line(
+    Statement.line(
       35,
       .print([.string("hello")]))
 
@@ -152,7 +152,7 @@ class InterpreterTests: XCTestCase {
     )
 
     let parse =
-    Parse.line(
+    Statement.line(
       40,
       .print([expression]))
 
@@ -186,7 +186,7 @@ class InterpreterTests: XCTestCase {
 
   func testPrintWithAddition() throws {
     let parse =
-    Parse.line(
+    Statement.line(
       40,
       .print([
         Expression.make(1, .plus, 2, .plus, 3)
@@ -200,7 +200,7 @@ class InterpreterTests: XCTestCase {
 
   func testPrintWithSubtraction() throws {
     let parse =
-    Parse.line(
+    Statement.line(
       40,
       .print([
         Expression.make(1, .minus, 2, .minus, 3)
@@ -213,7 +213,7 @@ class InterpreterTests: XCTestCase {
 
   func testPrintWithMultiplyDivide() throws {
     let parse =
-    Parse.line(
+    Statement.line(
       40,
       .print([
         Expression.make(1, .times, 6, .divide, 3)
@@ -232,7 +232,7 @@ class InterpreterTests: XCTestCase {
 
   func test10Goto10() throws {
     let parse =
-    Parse.line(
+    Statement.line(
       10,
       .goto(10))
 
@@ -247,7 +247,7 @@ class InterpreterTests: XCTestCase {
 
   func testStepWillTryToGotoMissingLine() throws {
     let parse =
-    Parse.line(
+    Statement.line(
       10,
       .goto(20))
 
@@ -357,7 +357,7 @@ class InterpreterTests: XCTestCase {
 
   func testDEFstoresItsFunctionForLater() throws {
     let parse =
-    Parse.line(
+    Statement.line(
       40,
       .def(
         "FNI",

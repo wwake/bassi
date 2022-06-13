@@ -13,10 +13,10 @@ public enum ParseError: Error, Equatable {
 
 public typealias LineNumber = Int
 
-public indirect enum Parse : Equatable {
+public indirect enum Statement : Equatable {
   case error(ParseError)
   case end
-  case line(LineNumber, Parse)
+  case line(LineNumber, Statement)
   case skip
   case print([Expression])
   case goto(LineNumber)

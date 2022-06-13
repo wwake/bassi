@@ -3,9 +3,8 @@
   + Expressions in FOR-NEXT must be numeric
 * FOR, NEXT - ORIGINAL BASIC SEMANTICS  (#4 BELOW)
 
-* Straighten out use of type Int for LineNumber
-* Straighten out use of type String for variable names
 * Get rid of .line as a separate Parse
+* Straighten out use of type String for variable names
 * Should .number take a Value instead of a Float?
 
 * Interpreter - if-handling should return output at top level
@@ -52,6 +51,7 @@ BI-22-25: June 13, 2022
   + Find the textually next NEXT with the same variable
   + Make sure NEXT statements tests X+step (not just X)
   + Check properly nested loops
+* Refactor: Straighten out use of type Int for LineNumber (used typealias)
 
 BI-22-24: June 10, 2022
 * FOR-NEXT
