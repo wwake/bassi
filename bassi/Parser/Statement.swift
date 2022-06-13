@@ -13,6 +13,13 @@ public enum ParseError: Error, Equatable {
 
 public typealias LineNumber = Int
 
+public typealias Parse = Statement
+
+//public struct Parse {
+//  let lineNumber: LineNumber
+//  let statement: Statement
+//}
+
 public indirect enum Statement : Equatable {
   case error(ParseError)
   case end

@@ -39,13 +39,13 @@ public class Parser {
   }
 
 
-  func parse(_ input: String) -> Statement {
+  func parse(_ input: String) -> Parse {
     lexer = Lexer(input)
     nextToken()
     return singleLine()
   }
 
-  func singleLine() -> Statement {
+  func singleLine() -> Parse {
     do {
       return try line()
     } catch {
@@ -53,7 +53,7 @@ public class Parser {
     }
   }
 
-  func line() throws -> Statement  {
+  func line() throws -> Parse  {
     if case .integer(let lineNumber) = token {
       nextToken()
 
