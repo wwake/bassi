@@ -86,6 +86,7 @@ class Interpreter {
   static let freeSpaceCount : Float = 100_000
 
   let program: Program
+  let parser = Parser()
 
   var lineNumber : Int
   var nextLineNumber: Int?
@@ -149,6 +150,7 @@ class Interpreter {
 
   init(_ program: Program) {
     self.program = program
+
     lineNumber = 0
     nextLineNumber = program.firstLineNumber()
   }
@@ -165,7 +167,6 @@ class Interpreter {
         return output + "? Attempted to execute non-existent line: \(lineNumber)\n"
       }
 
-      let parser = Parser()
       let parse = parser.parse(line)
 
       output = try step(parse, output)
@@ -499,7 +500,6 @@ class Interpreter {
     var currentLine = program.lineAfter(lineNumber)
 
     while currentLine < program.maxLineNumber {
-      let parser = Parser()
       let parse = parser.parse(program[currentLine]!)
 
       guard case .line(_, let statement) = parse else {
