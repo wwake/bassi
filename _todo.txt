@@ -1,13 +1,11 @@
-  + Expressions in FOR-NEXT must be numeric
-* FOR, NEXT - ORIGINAL BASIC SEMANTICS  (#4 BELOW)
+* GOSUB, RETURN
+* ON..GOTO
 
 * Straighten out use of type String for variable names
 * Should .number take a Value instead of a Float?
 * Parse errors should return line number
 
 * Interpreter - if-handling should return output at top level
-* GOSUB, RETURN
-* ON..GOTO
 
   + Make errors report line & column number
   + Should lexer just handle spaces without normalization?
@@ -51,6 +49,7 @@ BI-22-25: June 13, 2022
   + Check properly nested loops
   + Make sure loop works when range not exceeded (normal case)
   + Make sure loop works for negative step values
+  + Expressions in FOR-NEXT must be numeric
 
 * Refactor: Straighten out use of type Int for LineNumber (used typealias)
 * Refactor: Get rid of .line as a separate Parse

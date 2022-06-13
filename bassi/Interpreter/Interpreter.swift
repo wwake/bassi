@@ -202,7 +202,8 @@ class Interpreter {
       return output
 
     case .`if`(let expr, let target):
-      return try doIfThen(output, expr, target)
+      try doIfThen(expr, target)
+      return output
 
     case .assign(let variable, let expr):
       try doAssign(variable, expr)
@@ -393,12 +394,11 @@ class Interpreter {
     return result
   }
 
-  fileprivate func doIfThen(_ output: String, _ expr: Expression, _ target: Int) throws -> String {
+  fileprivate func doIfThen(_ expr: Expression, _ target: Int) throws {
     let condition = try evaluate(expr, globals)
     if condition != .number(0.0) {
       nextLineNumber = target
     }
-    return output
   }
 
   fileprivate func doAssign(
@@ -524,7 +524,7 @@ class Interpreter {
 
     if (stepSize.asFloat() >= 0 && nextValue.asFloat() <= limit.asFloat())
     || (stepSize.asFloat() < 0 && nextValue.asFloat() >= limit.asFloat()) {
-      
+
       try doAssign(typedVariable, .number(nextValue.asFloat()))
       doGoto(bodyLineNumber)
     } else {
