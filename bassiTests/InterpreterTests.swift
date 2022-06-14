@@ -79,42 +79,29 @@ class InterpreterTests: XCTestCase {
   }
 
   func testSkip() throws {
-    let parse = Parse(10, Statement.skip)
-
-    let interpreter = Interpreter(Program())
-
-    let output = try interpreter.step(parse, "")
-    XCTAssertEqual(output, "")
+    checkProgramResults(
+"""
+10 REM Skip this line
+20 PRINT 20
+""",
+      expecting: "20\n"
+    )
   }
 
   func testSimplePrint() throws {
-    let parse = Parse(10, Statement.print([]))
-
-    let interpreter = Interpreter(Program())
-    let output = try interpreter.step(parse, "")
-    XCTAssertEqual(output, "\n")
+    checkProgramResults("10 PRINT", expecting: "\n")
   }
 
   func testPrintWithNumericValue() throws {
-    let parse =
-    Parse(
-      35,
-      .print([.number(22.0)]))
-
-    let interpreter = Interpreter(Program())
-    let output = try interpreter.step(parse, "")
-    XCTAssertEqual(output, "22\n")
+    checkProgramResults(
+      "35 PRINT 22.0",
+      expecting: "22\n")
   }
 
   func testPrintWithStringValue() throws {
-    let parse =
-    Parse(
-      35,
-      .print([.string("hello")]))
-
-    let interpreter = Interpreter(Program())
-    let output = try interpreter.step(parse, "")
-    XCTAssertEqual(output, "hello\n")
+    checkProgramResults(
+      "35 PRINT \"hello\"",
+      expecting: "hello\n")
   }
 
   func testPowers() {
@@ -176,43 +163,15 @@ class InterpreterTests: XCTestCase {
   }
 
   func testPrintWithAddition() throws {
-    let parse =
-    Parse(
-      40,
-      .print([
-        Expression.make(1, .plus, 2, .plus, 3)
-      ])
-    )
-    
-    let interpreter = Interpreter(Program())
-    let output = try interpreter.step(parse, "")
-    XCTAssertEqual(output, "6\n")
+    checkProgramResults("40 PRINT 1+2+3", expecting: "6\n")
   }
 
   func testPrintWithSubtraction() throws {
-    let parse =
-    Parse(
-      40,
-      .print([
-        Expression.make(1, .minus, 2, .minus, 3)
-      ]))
-
-    let interpreter = Interpreter(Program())
-    let output = try interpreter.step(parse, "")
-    XCTAssertEqual(output, "-4\n")
+    checkProgramResults("40 PRINT 1-2-3", expecting: "-4\n")
   }
 
   func testPrintWithMultiplyDivide() throws {
-    let parse =
-    Parse(
-      40,
-      .print([
-        Expression.make(1, .times, 6, .divide, 3)
-      ]))
-
-    let interpreter = Interpreter(Program())
-    let output = try interpreter.step(parse, "")
-    XCTAssertEqual(output, "2\n")
+    checkProgramResults("40 PRINT 1*6/3", expecting: "2\n")
   }
 
   func testPrintWithEqualityComparison() throws {
