@@ -12,6 +12,7 @@ public enum ParseError: Error, Equatable {
 }
 
 public typealias LineNumber = Int
+public typealias Name = String
 
 public struct Parse : Equatable {
   let lineNumber: LineNumber
@@ -27,14 +28,14 @@ public indirect enum Statement : Equatable {
   case error(ParseError)
 
   case assign(Expression, Expression)
-  case def(String, String, Expression, `Type`)
-  case dim(String, [Int], `Type`)
+  case def(Name, Name, Expression, `Type`)
+  case dim(Name, [Int], `Type`)
   case end
-  case `for`(String, Expression, Expression, Expression)
+  case `for`(Name, Expression, Expression, Expression)
   case gosub(LineNumber)
   case goto(LineNumber)
   case `if`(Expression, LineNumber)
-  case next(String)
+  case next(Name)
   case onGoto(Expression, [LineNumber])
   case print([Expression])
   case `return`
@@ -45,10 +46,10 @@ public indirect enum Expression: Equatable {
   case missing
   case number(Float)
   case string(String)
-  case variable(String, `Type`)
-  case predefined(String, [Expression], `Type`)
-  case userdefined(String, Expression)
-  case arrayAccess(String, `Type`, [Expression])
+  case variable(Name, `Type`)
+  case predefined(Name, [Expression], `Type`)
+  case userdefined(Name, Expression)
+  case arrayAccess(Name, `Type`, [Expression])
   
   case op1(TokenType, Expression)
   case op2(TokenType, Expression, Expression)

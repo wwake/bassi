@@ -3,6 +3,8 @@
    20 GOSUB 100: PRINT 30
    25 PRINT 25
 
+* Make running write to an output stream
+
 * IF relation-expr THEN statements
 
 * ON..GOSUB
@@ -10,13 +12,8 @@
 * Straighten out use of type String for variable names
 * Should .number take a Value instead of a Float?
 
-
 * Handle parser errors better in interpreter
   + Make errors report line & column number
-
-* Use test helper for parse-based tests in InterpreterTests
-
-* Make running write to an output stream
 
 * Handle interpreter.format() for arrays
 
@@ -58,6 +55,9 @@ BI-22-26: June 14, 2022
   + Error if negative
   + Fallthrough if not in range
 
+Refactor:
+* Extract ParserExpressionTests.swift from ParserTests.swift
+* Use test helper for parse-based tests in InterpreterTests
 
 BI-22-25: June 13, 2022
 * FOR, NEXT - ORIGINAL BASIC SEMANTICS
