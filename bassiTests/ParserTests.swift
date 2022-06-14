@@ -612,4 +612,18 @@ class ParserTests: XCTestCase {
       "10 RETURN X",
       ParseError.error("Extra characters at end of line"))
   }
+
+  func testON_GOTO() {
+    checkStatement(
+      "10 ON 2 GOTO 10,20,30",
+      .onGoto(
+        .number(2),
+        [10, 20, 30]))
+  }
+
+  func testONmissingGOTOisError() {
+    checkError(
+      "10 ON 2 THEN 10,20,30",
+      ParseError.error("GOTO is missing"))
+  }
 }

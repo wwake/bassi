@@ -105,6 +105,9 @@ public class Parser {
     case .next:
       result = try doNext()
 
+    case .on:
+      result = try on()
+
     case .print:
       result = try printStatement()
 
@@ -215,6 +218,34 @@ public class Parser {
       return try assign(name)
     }
     throw ParseError.error("LET is missing variable to assign to")
+  }
+
+  func on() throws -> Statement {
+    nextToken()
+
+    let expr = try expression()
+
+    try require(.goto, "GOTO is missing")
+    
+    var targets : [LineNumber] = []
+    if case .integer(let target) = token {
+      nextToken()
+
+      targets.append(target)
+
+      while token == .comma {
+        nextToken()
+
+        if case .integer(let target) = token {
+          nextToken()
+          targets.append(target)
+        }
+      }
+
+      return .onGoto(expr, targets)
+    }
+
+    throw ParseError.error("ONGOTO")
   }
 
   func printStatement() throws -> Statement {

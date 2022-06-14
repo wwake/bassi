@@ -1,9 +1,13 @@
-  + Interpret GOSUB/RETURN
-  + What if returnStack is empty on RETURN?
-* GOSUB, RETURN
-* ON..GOSUB
+  + Parsing
+  + Error if GOTO not seen
+  + Error if line #s not seen
 * ON..GOTO
+* ON..GOSUB
 * Multiple statements on one line
+   10 IF 1=0 THEN 20: PRINT 30
+   20 GOSUB 100: PRINT 30
+   25 PRINT 25
+
 * IF relation-expr THEN statements
 
 * Straighten out use of type String for variable names
@@ -47,6 +51,8 @@ BI-22-26: June 14, 2022
   + Parse GOSUB
   + Error if line # not present
   + Parse RETURN; error if anything follows it
+  + Interpret GOSUB/RETURN, including nested calls
+  + Error if returnStack is empty on RETURN
 
 
 BI-22-25: June 13, 2022

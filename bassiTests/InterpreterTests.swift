@@ -842,6 +842,21 @@ expecting: "999\n2\n"
       expecting: "42\n52\n")
   }
 
+  func testGOSUBinSubroutine() {
+    checkProgramResults(
+"""
+10 GOSUB 100
+20 PRINT 20
+30 END
+50 PRINT 50
+60 RETURN
+100 PRINT 100
+110 GOSUB 50
+120 RETURN
+""",
+  expecting: "100\n50\n20\n")
+  }
+
   func testRETURNwithoutGOSUB() {
     checkExpectedError("10 RETURN", expecting: "RETURN called before GOSUB")
   }

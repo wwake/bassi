@@ -211,6 +211,9 @@ class Interpreter {
       try doGosub(lineNumber)
       return output
 
+    case .onGoto(_, _):
+      throw InterpreterError.cantHappen(lineNumber, "NYI")
+      
     case .`return`:
       try doReturn()
       return output
