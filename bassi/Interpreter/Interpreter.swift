@@ -332,7 +332,7 @@ class Interpreter {
   }
 
   fileprivate func fetchArrayValue(
-    _ name: String,
+    _ name: Name,
     _ store: Store,
     _ exprs: [Expression],
     _ type: `Type`) throws -> Value {
@@ -356,7 +356,7 @@ class Interpreter {
 
   fileprivate func callPredefinedFunction(
     _ store: Interpreter.Store,
-    _ name: String,
+    _ name: Name,
     _ exprs: [Expression]) throws -> Value {
 
     let function = store[name]!
@@ -371,7 +371,7 @@ class Interpreter {
 
   fileprivate func callUserDefinedFunction(
     _ store: Interpreter.Store,
-    _ name: String,
+    _ name: Name,
     _ expr: Expression) throws -> Value {
 
     if store[name] == nil {
@@ -469,7 +469,7 @@ class Interpreter {
   }
 
   func doDim(
-    _ name: String,
+    _ name: Name,
     _ dimensions: [Int],
     _ type: `Type`) {
 
@@ -508,7 +508,7 @@ class Interpreter {
     })
   }
 
-  func doFor(_ variable: String, _ initial: Expression, _ final: Expression, _ step: Expression) throws {
+  func doFor(_ variable: Name, _ initial: Expression, _ final: Expression, _ step: Expression) throws {
 
     let typedVariable: Expression = .variable(variable, .number)
     try doAssign(typedVariable, initial)
@@ -525,7 +525,7 @@ class Interpreter {
     doGoto(nextLineNumber)
   }
 
-  func findNext(with variable: String) throws -> Int {
+  func findNext(with variable: Name) throws -> Int {
     var currentLine = program.lineAfter(lineNumber)
 
     while currentLine < program.maxLineNumber {
@@ -539,7 +539,7 @@ class Interpreter {
     throw InterpreterError.error(currentLine, "Found FOR without NEXT: \(variable)")
   }
   
-  func doNext(_ variable: String) throws {
+  func doNext(_ variable: Name) throws {
     guard !forLoopStack.isEmpty else {
       throw InterpreterError.error(lineNumber, "Found NEXT without preceding FOR")
     }

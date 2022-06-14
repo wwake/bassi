@@ -447,7 +447,7 @@ public class Parser {
     return value
   }
 
-  fileprivate func variable(_ name: String) throws -> Expression  {
+  fileprivate func variable(_ name: Name) throws -> Expression  {
     nextToken()
 
     let type : `Type` =
@@ -476,7 +476,7 @@ public class Parser {
     return .arrayAccess(name, type, exprs)
   }
 
-  fileprivate func predefinedFunctionCall(_ name: String, _ type: `Type`) throws -> Expression  {
+  fileprivate func predefinedFunctionCall(_ name: Name, _ type: `Type`) throws -> Expression  {
     nextToken()
 
     guard case .function(let parameterTypes, let resultType) = type else {
