@@ -126,24 +126,48 @@ public class Parser {
     return result
   }
 
-  func printStatement() throws -> Statement {
-    nextToken()
+  func assign(_ name: String) throws -> Statement {
+    let variable = try variable(name)
 
-    if token == .eol {
-      return Statement.print([])
-    }
+    try require(.equals, "Assignment is missing '='")
 
-    var values: [Expression] = []
+    let expr = try expression()
 
-    let value = try expression()
-    values.append(value)
+    try requireMatchingTypes(variable, expr)
 
-    return Statement.print(values)
+    return .assign(variable, expr)
   }
 
-  func returnStatement() throws -> Statement {
+  func define() throws -> Statement {
     nextToken()
-    return .`return`
+
+    try require(.fn, "DEF requires a name of the form FNx")
+
+    guard case .variable(let name) = token else {
+      throw ParseError.error("DEF requires a name of the form FNx")
+    }
+    nextToken()
+
+    if name.count != 1 {
+      throw ParseError.error("DEF function name cannot be followed by extra letters")
+    }
+
+    try require(.leftParend, "Missing '('")
+
+    let parameter = try requireVariable()
+
+    try require(.rightParend, "DEF requires ')' after parameter")
+
+    try require(.equals, "DEF requires '=' after parameter definition")
+
+    let expr = try expression()
+    try requireFloatType(expr)
+
+    return .def(
+      "FN"+name,
+      parameter,
+      expr,
+      .function([.number], .number))
   }
 
   func gosub() throws -> Statement {
@@ -193,52 +217,29 @@ public class Parser {
     throw ParseError.error("LET is missing variable to assign to")
   }
 
+  func printStatement() throws -> Statement {
+    nextToken()
+
+    if token == .eol {
+      return Statement.print([])
+    }
+
+    var values: [Expression] = []
+
+    let value = try expression()
+    values.append(value)
+
+    return Statement.print(values)
+  }
+
+  func returnStatement() throws -> Statement {
+    nextToken()
+    return .`return`
+  }
+
+
   func typeFor(_ name: String) -> `Type` {
     name.last! == "$" ? .string : .number
-  }
-
-  func assign(_ name: String) throws -> Statement {
-    let variable = try variable(name)
-
-    try require(.equals, "Assignment is missing '='")
-
-    let expr = try expression()
-
-    try requireMatchingTypes(variable, expr)
-
-    return .assign(variable, expr)
-  }
-
-  func define() throws -> Statement {
-    nextToken()
-
-    try require(.fn, "DEF requires a name of the form FNx")
-
-    guard case .variable(let name) = token else {
-      throw ParseError.error("DEF requires a name of the form FNx")
-    }
-    nextToken()
-
-    if name.count != 1 {
-      throw ParseError.error("DEF function name cannot be followed by extra letters")
-    }
-
-    try require(.leftParend, "Missing '('")
-
-    let parameter = try requireVariable()
-
-    try require(.rightParend, "DEF requires ')' after parameter")
-
-    try require(.equals, "DEF requires '=' after parameter definition")
-
-    let expr = try expression()
-    try requireFloatType(expr)
-
-    return .def(
-      "FN"+name,
-      parameter,
-      expr,
-      .function([.number], .number))
   }
 
   fileprivate func requireFloatType(_ expr: Expression) throws {

@@ -829,4 +829,20 @@ expecting: "999\n2\n"
 """,
       expecting: "NEXT variable must match corresponding FOR")
   }
+
+  func testGOSUB() {
+    checkProgramResults(
+"""
+10 GOSUB 100
+15 PRINT 52
+20 END
+100 PRINT 42
+110 RETURN
+""",
+      expecting: "42\n52\n")
+  }
+
+  func testRETURNwithoutGOSUB() {
+    checkExpectedError("10 RETURN", expecting: "RETURN called before GOSUB")
+  }
 }

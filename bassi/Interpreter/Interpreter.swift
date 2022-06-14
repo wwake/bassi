@@ -99,6 +99,8 @@ class Interpreter {
 
   var forLoopStack: [ForInfo] = []
 
+  var returnStack: [LineNumber] = []
+
   var globals: Store = [
     "ABS" : Value.function(Fn2n(abs)),
     "ASC" : Value.function(Fs2n( {
@@ -175,6 +177,20 @@ class Interpreter {
     return output
   }
 
+  func doGosub(_ subroutineLineNumber: LineNumber) throws {
+    returnStack.append(program.lineAfter(lineNumber))
+    doGoto(subroutineLineNumber)
+  }
+
+  func doReturn() throws {
+    guard !returnStack.isEmpty else {
+      throw InterpreterError.error(lineNumber, "RETURN called before GOSUB")
+    }
+
+    let returnTarget = returnStack.popLast()!
+    doGoto(returnTarget)
+  }
+
   fileprivate func doGoto(_ newLineNumber: LineNumber) {
     nextLineNumber = newLineNumber
   }
@@ -191,11 +207,13 @@ class Interpreter {
       done = true
       return output
 
-    case .gosub(_):
-      throw InterpreterError.cantHappen(lineNumber, "NYI")
+    case .gosub(let lineNumber):
+      try doGosub(lineNumber)
+      return output
 
     case .`return`:
-      throw InterpreterError.cantHappen(lineNumber, "NYI")
+      try doReturn()
+      return output
 
     case .skip:
       return output
