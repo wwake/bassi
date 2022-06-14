@@ -632,4 +632,10 @@ class ParserTests: XCTestCase {
       "10 ON 2 GOTO X",
       ParseError.error("ON..GOTO requires at least one line number after GOTO"))
   }
+
+  func testONmissingLineNumberAfterCommaIsError() {
+    checkError(
+      "10 ON 2 GOTO 10,",
+      ParseError.error("ON..GOTO requires line number after comma"))
+  }
 }
