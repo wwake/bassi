@@ -626,4 +626,10 @@ class ParserTests: XCTestCase {
       "10 ON 2 THEN 10,20,30",
       ParseError.error("GOTO is missing"))
   }
+
+  func testONmissingLineNumbersIsError() {
+    checkError(
+      "10 ON 2 GOTO X",
+      ParseError.error("ON..GOTO requires at least one line number after GOTO"))
+  }
 }

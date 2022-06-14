@@ -245,7 +245,7 @@ public class Parser {
       return .onGoto(expr, targets)
     }
 
-    throw ParseError.error("ONGOTO")
+    throw ParseError.error("ON..GOTO requires at least one line number after GOTO")
   }
 
   func printStatement() throws -> Statement {
