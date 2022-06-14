@@ -204,6 +204,9 @@ class Interpreter {
       return output + "? \(message)\n"
 
     case .end:
+      guard returnStack.isEmpty else {
+        throw InterpreterError.error(lineNumber, "Ended program without returning from active subroutine")
+      }
       done = true
       return output
 

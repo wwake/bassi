@@ -69,6 +69,18 @@ class InterpreterTests: XCTestCase {
     XCTAssertTrue(interpreter.done)
   }
 
+  func testEndThrowsErrorIfAnyActiveSubroutines() throws {
+    let program =
+"""
+10 GOSUB 20
+20 X=1
+"""
+
+    checkExpectedError(
+      program,
+      expecting: "Ended program without returning from active subroutine")
+  }
+
   func testSyntaxErrorStopsInterpreter() throws {
     let program = "10 PRINT {}"
     let interpreter = Interpreter(Program(program))
