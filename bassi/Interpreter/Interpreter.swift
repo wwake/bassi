@@ -203,39 +203,6 @@ class Interpreter {
       done = true
       return output + "? \(message)\n"
 
-    case .end:
-      guard returnStack.isEmpty else {
-        throw InterpreterError.error(lineNumber, "Ended program without returning from active subroutine")
-      }
-      done = true
-      return output
-
-    case .gosub(let lineNumber):
-      try doGosub(lineNumber)
-      return output
-
-    case .onGoto(let expr, let targets):
-      try doOnGoto(expr, targets)
-      return output
-
-    case .`return`:
-      try doReturn()
-      return output
-
-    case .skip:
-      return output
-
-    case .print(let values):
-      return try doPrint(output, values)
-
-    case .goto(let newLineNumber):
-      doGoto(newLineNumber)
-      return output
-
-    case .`if`(let expr, let target):
-      try doIfThen(expr, target)
-      return output
-
     case .assign(let variable, let expr):
       try doAssign(variable, expr)
       return output
@@ -260,8 +227,41 @@ class Interpreter {
       try doFor(variable, initial, final, step)
       return output
 
+    case .end:
+      guard returnStack.isEmpty else {
+        throw InterpreterError.error(lineNumber, "Ended program without returning from active subroutine")
+      }
+      done = true
+      return output
+
+    case .gosub(let lineNumber):
+      try doGosub(lineNumber)
+      return output
+
+    case .goto(let newLineNumber):
+      doGoto(newLineNumber)
+      return output
+
+    case .`if`(let expr, let target):
+      try doIfThen(expr, target)
+      return output
+
     case .next(let variable):
       try doNext(variable)
+      return output
+
+    case .onGoto(let expr, let targets):
+      try doOnGoto(expr, targets)
+      return output
+
+    case .print(let values):
+      return try doPrint(output, values)
+
+    case .`return`:
+      try doReturn()
+      return output
+
+    case .skip:
       return output
     }
   }
