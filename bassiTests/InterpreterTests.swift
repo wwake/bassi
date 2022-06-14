@@ -32,22 +32,14 @@ class InterpreterTests: XCTestCase {
     }
   }
 
-  fileprivate func checkPrintWithRelop(_ op: TokenType, _ expected: Int) throws {
-    let parse =
-    Parse(
-      40,
-      .print([
-        Expression.make(10, op, 10)
-      ]))
-
-    let interpreter = Interpreter(Program())
-    let output = try interpreter.step(parse, "")
-    XCTAssertEqual(output, "\(expected)\n")
+  fileprivate func checkPrintWithRelop(_ op: String, _ expected: Int) throws {
+    let program = "40 PRINT 10 \(op) 10"
+    checkProgramResults(program, expecting: "\(expected)\n")
   }
 
-  fileprivate func checkRelop(
-    _ op1ExpectedTrue: TokenType,
-    _ op2ExpectedFalse: TokenType) throws {
+  fileprivate func checkOppositeRelationalOps(
+    _ op1ExpectedTrue: String,
+    _ op2ExpectedFalse: String) throws {
       try checkPrintWithRelop(op1ExpectedTrue, 1)
       try checkPrintWithRelop(op2ExpectedFalse, 0)
     }
@@ -224,9 +216,9 @@ class InterpreterTests: XCTestCase {
   }
 
   func testPrintWithEqualityComparison() throws {
-    try checkRelop(.equals, .notEqual)
-    try checkRelop(.greaterThanOrEqualTo, .lessThan)
-    try checkRelop(.lessThanOrEqualTo, .greaterThan)
+    try checkOppositeRelationalOps("=", "<>")
+    try checkOppositeRelationalOps(">=", "<")
+    try checkOppositeRelationalOps("<=", ">")
   }
 
   func test10Goto10() throws {
@@ -882,7 +874,6 @@ expecting: "999\n2\n"
 """,
 expecting: "?ILLEGAL QUANTITY")
   }
-
 
   func testON_GOTOwith0GoesToNextLine() {
     checkProgramResults(
