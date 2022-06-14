@@ -91,10 +91,10 @@ public class Parser {
     case .goto:
       result = try goto()
 
-    case .ifKeyword:
+    case .`if`:
       result = try ifThen()
 
-    case .letKeyword:
+    case .`let`:
       result = try letAssign()
 
     case .variable(let name):

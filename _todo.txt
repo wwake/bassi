@@ -3,7 +3,6 @@
 * Multiple statements on one line
 * IF relation-expr THEN statements
 
-* testMultiDArrayFullReadAndWrite - use FOR
 * Straighten out use of type String for variable names
 * Should .number take a Value instead of a Float?
 
@@ -40,6 +39,8 @@
 Parameterized tests package?
 
 BI-22-26: June 14, 2022
+* testMultiDArrayFullReadAndWrite - use nested FOR loops
+
 
 BI-22-25: June 13, 2022
 * FOR, NEXT - ORIGINAL BASIC SEMANTICS

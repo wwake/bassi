@@ -53,9 +53,9 @@ public enum TokenType  {
   case goto
   case gosub
 
-  case ifKeyword
+  case `if`
   case input
-  case letKeyword
+  case `let`
   case next
   case not
   case on
@@ -67,7 +67,7 @@ public enum TokenType  {
   case remark
 
   case restore
-  case returnKeyword
+  case `return`
   case step
   case stop
   case then

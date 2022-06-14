@@ -45,9 +45,9 @@ class Lexer {
     ("GOTO", .goto),
     ("GOSUB", .gosub),
 
-    ("IF", .ifKeyword),
+    ("IF", .`if`),
     ("INPUT", .input),
-    ("LET", .letKeyword),
+    ("LET", .`let`),
     ("NEXT", .next),
     ("NOT", .not),
     ("ON", .on),
@@ -58,7 +58,7 @@ class Lexer {
     ("READ", .read),
     ("REM", .remark),
     ("RESTORE", .restore),
-    ("RETURN", .returnKeyword),
+    ("RETURN", .`return`),
 
     ("STEP", .step),
     ("STOP", .stop),
