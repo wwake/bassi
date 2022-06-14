@@ -625,4 +625,32 @@ class ParserTests: XCTestCase {
       ParseError.error("Variable is required")
     )
   }
+
+  func testGOSUB() {
+    checkParsing(
+      "10 GOSUB 20",
+      Parse(10, .gosub(20)))
+  }
+
+  func testGOSUBrequiresLineNumber() {
+    checkError(
+      "10 GOSUB",
+      ParseError.error("Missing target of GOSUB"))
+
+    checkError(
+      "10 GOSUB X",
+      ParseError.error("Missing target of GOSUB"))
+  }
+
+  func testRETURN() {
+    checkParsing(
+      "10 RETURN",
+      Parse(10, .`return`))
+  }
+
+  func testRETURNstandsAlone() {
+    checkError(
+      "10 RETURN X",
+      ParseError.error("Extra characters at end of line"))
+  }
 }

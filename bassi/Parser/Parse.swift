@@ -25,16 +25,19 @@ public struct Parse : Equatable {
 
 public indirect enum Statement : Equatable {
   case error(ParseError)
-  case end
-  case skip
-  case print([Expression])
-  case goto(LineNumber)
-  case `if`(Expression, LineNumber)
+
   case assign(Expression, Expression)
   case def(String, String, Expression, `Type`)
   case dim(String, [Int], `Type`)
+  case end
   case `for`(String, Expression, Expression, Expression)
+  case gosub(LineNumber)
+  case goto(LineNumber)
+  case `if`(Expression, LineNumber)
   case next(String)
+  case print([Expression])
+  case `return`
+  case skip
 }
 
 public indirect enum Expression: Equatable {

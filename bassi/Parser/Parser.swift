@@ -90,6 +90,9 @@ public class Parser {
       nextToken()
       result = Statement.end
 
+    case .gosub:
+      result = try gosub()
+
     case .goto:
       result = try goto()
 
@@ -108,6 +111,9 @@ public class Parser {
     case .remark:
       nextToken()
       result = Statement.skip
+
+    case .`return`:
+      result = try returnStatement()
 
     case .variable(let name):
       result = try assign(name)
@@ -133,6 +139,22 @@ public class Parser {
     values.append(value)
 
     return Statement.print(values)
+  }
+
+  func returnStatement() throws -> Statement {
+    nextToken()
+    return .`return`
+  }
+
+  func gosub() throws -> Statement {
+    nextToken()
+
+    if case .integer(let lineNumber) = token {
+      nextToken()
+      return .gosub(lineNumber)
+    }
+
+    throw ParseError.error("Missing target of GOSUB")
   }
 
   func goto() throws -> Statement {

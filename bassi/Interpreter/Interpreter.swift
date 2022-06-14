@@ -191,6 +191,12 @@ class Interpreter {
       done = true
       return output
 
+    case .gosub(_):
+      throw InterpreterError.cantHappen(lineNumber, "NYI")
+
+    case .`return`:
+      throw InterpreterError.cantHappen(lineNumber, "NYI")
+
     case .skip:
       return output
 
