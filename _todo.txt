@@ -1,6 +1,6 @@
-  + Parsing
-  + Error if GOTO not seen
-  + Error if line #s not seen
+  + ON GOTO interpreter
+  + Error if negative
+  + Fallthrough if not in range
 * ON..GOTO
 * ON..GOSUB
 * Multiple statements on one line
@@ -53,6 +53,11 @@ BI-22-26: June 14, 2022
   + Parse RETURN; error if anything follows it
   + Interpret GOSUB/RETURN, including nested calls
   + Error if returnStack is empty on RETURN
+
+* ON..GOTO
+  + Parsing
+  + Error if GOTO not seen
+  + Error if line #s not seen
 
 
 BI-22-25: June 13, 2022

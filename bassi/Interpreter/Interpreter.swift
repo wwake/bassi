@@ -211,9 +211,10 @@ class Interpreter {
       try doGosub(lineNumber)
       return output
 
-    case .onGoto(_, _):
-      throw InterpreterError.cantHappen(lineNumber, "NYI")
-      
+    case .onGoto(let expr, let targets):
+      try doOnGoto(expr, targets)
+      return output
+
     case .`return`:
       try doReturn()
       return output
@@ -557,5 +558,20 @@ class Interpreter {
     } else {
       forLoopStack.removeLast()
     }
+  }
+
+  func doOnGoto(_ expr: Expression, _ targets: [LineNumber]) throws {
+    let floatValue = try evaluate(expr, globals).asFloat()
+    let value = Int(floatValue)
+
+    guard value >= 0 else {
+      throw InterpreterError.error(lineNumber, "?ILLEGAL QUANTITY")
+    }
+    
+    if value == 0 || value > targets.count {
+      return
+    }
+
+    doGoto(targets[value - 1])
   }
 }
