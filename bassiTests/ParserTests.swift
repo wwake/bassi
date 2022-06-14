@@ -9,18 +9,6 @@ import XCTest
 @testable import bassi
 
 class ParserTests: XCTestCase {
-  func checkError(
-    _ program: String,
-    _ expected: ParseError)
-  {
-    let line = program
-    let parser = Parser()
-    let output = parser.parse(line)
-    XCTAssertEqual(
-      output,
-      Parse(output.lineNumber, .error(expected)))
-  }
-
   func checkStatement(
     _ program: String,
     _ expected: Statement)
@@ -48,11 +36,16 @@ class ParserTests: XCTestCase {
       )
     }
 
-  func checkRelational(_ relation: String, _ token: TokenType) throws {
-    checkExpression(
-      "1" + relation + "2",
-      Expression.make(1, token, 2)
-    )
+  func checkError(
+    _ program: String,
+    _ expected: ParseError)
+  {
+    let line = program
+    let parser = Parser()
+    let output = parser.parse(line)
+    XCTAssertEqual(
+      output,
+      Parse(output.lineNumber, .error(expected)))
   }
 
   func test10END() throws {
@@ -154,8 +147,8 @@ class ParserTests: XCTestCase {
     checkStatement(
       "25 X = 42",
       .assign(
-          .variable("X", .number),
-          .number(42.0))
+        .variable("X", .number),
+        .number(42.0))
     )
   }
 
@@ -163,8 +156,8 @@ class ParserTests: XCTestCase {
     checkStatement(
       "25 LET A = 2",
       .assign(
-          .variable("A", .number),
-          .number(2.0))
+        .variable("A", .number),
+        .number(2.0))
     )
   }
 
@@ -193,8 +186,8 @@ class ParserTests: XCTestCase {
     checkStatement(
       "25 A$ = \"body\"",
       .assign(
-          .variable("A$", .string),
-          .string("body"))
+        .variable("A$", .string),
+        .string("body"))
     )
   }
 
@@ -202,7 +195,7 @@ class ParserTests: XCTestCase {
     checkStatement(
       "25 PRINT \"body\"",
       .print(
-          [.string("body")])
+        [.string("body")])
     )
   }
 
@@ -227,11 +220,11 @@ class ParserTests: XCTestCase {
     checkStatement(
       "25 DEF FNI(x)=x",
       .def(
-          "FNI",
-          "X",
-          .variable("X", .number),
-          .function([.number], .number)
-        )
+        "FNI",
+        "X",
+        .variable("X", .number),
+        .function([.number], .number)
+      )
     )
   }
 
@@ -249,8 +242,8 @@ class ParserTests: XCTestCase {
     checkStatement(
       "25 PRINT SQR(4)",
       .print(
-          [.predefined("SQR", [.number(4)], .number)]
-        )
+        [.predefined("SQR", [.number(4)], .number)]
+      )
     )
   }
 
@@ -258,9 +251,9 @@ class ParserTests: XCTestCase {
     checkStatement(
       "25 PRINT CHR$(4)",
       .print(
-          [.predefined("CHR$", [.number(4)], .string)]
-        )
+        [.predefined("CHR$", [.number(4)], .string)]
       )
+    )
   }
 
   func testChrParsesString() {
@@ -301,7 +294,7 @@ class ParserTests: XCTestCase {
         "LEFT$",
         [.string("S"), .number(1)],
         .string)
-      )
+    )
   }
 
   func testPredefinedFunctionDetectsTypeMismatchForMultipleArguments() {
@@ -335,10 +328,10 @@ class ParserTests: XCTestCase {
     checkStatement(
       "10 PRINT FNI(3)",
       .print([
-          .userdefined(
-            "FNI",
-            .number(3) )
-        ]))
+        .userdefined(
+          "FNI",
+          .number(3) )
+      ]))
   }
 
   func testDefCallMustTakeNumericArgument() {
@@ -372,7 +365,7 @@ class ParserTests: XCTestCase {
     checkStatement(
       "10 DIM Z(3,4,5)",
       .dim("Z", [4,5,6], .number)
-      )
+    )
   }
 
   func testRightParendErrorInDim() {
@@ -385,8 +378,8 @@ class ParserTests: XCTestCase {
     checkStatement(
       "10 PRINT A(0)",
       .print([
-          .arrayAccess("A", .number, [.number(0)])
-        ])
+        .arrayAccess("A", .number, [.number(0)])
+      ])
     )
   }
 
@@ -394,9 +387,9 @@ class ParserTests: XCTestCase {
     checkStatement(
       "10 PRINT A(1,2)",
       .print([
-          .arrayAccess("A", .number, [.number(1),
-               .number(2)])
-        ])
+        .arrayAccess("A", .number, [.number(1),
+                                    .number(2)])
+      ])
     )
   }
 
