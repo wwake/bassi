@@ -381,7 +381,7 @@ class InterpreterTests: XCTestCase {
 10 DEF FNI(X)=X
 25 PRINT FNI(3)
 """,
-                        expecting: "3\n")
+      expecting: "3\n")
   }
 
   func testUsingStaticScope() {
@@ -391,7 +391,7 @@ class InterpreterTests: XCTestCase {
 30 Y=1
 40 PRINT FNA(3)
 """,
-                        expecting: "8\n")
+     expecting: "8\n")
   }
 
   func testCallOnUndefinedFunctionFails() {
