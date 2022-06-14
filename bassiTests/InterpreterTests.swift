@@ -710,25 +710,18 @@ class InterpreterTests: XCTestCase {
     checkProgramResults(
 """
 10 X=1
-20 I = 0
-25 IF I > 2 THEN 220
-30 J = 0
-40 IF J > 4 THEN 100
-45 B(I,J) = X
+20 FOR I=0 TO 2
+30 FOR J=0 TO 4
+40 B(I,J) = X
 50 X = X+1
-55 J = J+1
-60 GOTO 40
-100 I=I+1
-110 GOTO 25
-220 I = 0
-225 IF I > 2 THEN 400
-230 J = 0
-240 IF J > 4 THEN 300
-245 PRINT B(I,J)
-255 J = J+1
-260 GOTO 240
-300 I=I+1
-310 GOTO 225
+60 NEXT J
+70 NEXT I
+80 REM
+220 FOR I=0 TO 2
+230 FOR J=0 TO 4
+240 PRINT B(I,J)
+250 NEXT J
+260 NEXT I
 400 END
 """,
     expecting: """
