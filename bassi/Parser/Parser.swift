@@ -77,16 +77,18 @@ public class Parser {
     var result: Statement
 
     switch token {
+    case .def:
+      result = try define()
+
+    case .dim:
+      result = try dim()
+
+    case .for:
+      result = try doFor()
+
     case .end:
       nextToken()
       result = Statement.end
-
-    case .remark:
-      nextToken()
-      result = Statement.skip
-
-    case .print:
-      result = try printStatement()
 
     case .goto:
       result = try goto()
@@ -97,20 +99,18 @@ public class Parser {
     case .`let`:
       result = try letAssign()
 
-    case .variable(let name):
-      result = try assign(name)
-
-    case .def:
-      result = try define()
-
-    case .dim:
-      result = try dim()
-
-    case .for:
-      result = try doFor()
-
     case .next:
       result = try doNext()
+
+    case .print:
+      result = try printStatement()
+
+    case .remark:
+      nextToken()
+      result = Statement.skip
+
+    case .variable(let name):
+      result = try assign(name)
 
     default:
       nextToken()
