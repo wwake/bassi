@@ -116,6 +116,12 @@ class InterpreterTests: XCTestCase {
       expecting: "hello\n")
   }
 
+  func testMultiplePRINTonOneLine() {
+    checkProgramResults(
+      "35 PRINT 135: PRINT 136",
+      expecting: "135\n136\n")
+  }
+
   func testPowers() {
     checkProgramResults(
       "25 PRINT 2^3^2",

@@ -264,12 +264,20 @@ class Interpreter {
       try doReturn()
       return output
 
-    case .sequence:
-      throw InterpreterError.cantHappen(lineNumber, "NYI")
+    case .sequence(let statements):
+      return try doSequence(output, statements)
       
     case .skip:
       return output
     }
+  }
+
+  func doSequence(_ output: String, _ statements: [Statement]) throws -> String {
+    var result = output
+    try statements.forEach {
+      result += try step(Parse(lineNumber, $0), "")
+    }
+    return result
   }
 
   let operators1 : [TokenType : (Value) -> Value] =
