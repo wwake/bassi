@@ -43,6 +43,7 @@ public enum TokenType  {
 
   case and
   case clear
+  case colon
   case data
   case def
   case dim

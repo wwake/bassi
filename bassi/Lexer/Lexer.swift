@@ -32,6 +32,7 @@ class Lexer {
     ("<", .lessThan),
     (">=", .greaterThanOrEqualTo),
     (">", .greaterThan),
+    (":", .colon),
 
     ("AND", .and),
     ("CLEAR", .clear),

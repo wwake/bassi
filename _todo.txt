@@ -1,8 +1,8 @@
-IF relation-expr THEN statement[s]
 Multiple statements on one line
    10 IF 1=0 THEN 20: PRINT 30
    20 GOSUB 100: PRINT 30
    25 PRINT 25
+Test IF with multiple :-separated statements
 
 * Make running write to an output stream
 
@@ -39,6 +39,8 @@ Multiple statements on one line
 Parameterized tests package?
 
 BI-22-27: June 15, 2022
+* Multiple statements per line
+  + IF relation-expr THEN statement[s]
 
 BI-22-26: June 14, 2022
 * testMultiDArrayFullReadAndWrite - use nested FOR loops

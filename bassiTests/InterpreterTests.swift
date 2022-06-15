@@ -249,7 +249,7 @@ class InterpreterTests: XCTestCase {
 30 PRINT 30
 50 PRINT 50
 """,
-                        expecting: "30\n50\n")
+      expecting: "30\n50\n")
   }
 
   func testIfWithTrueResultDoesGoto() throws {
@@ -258,7 +258,15 @@ class InterpreterTests: XCTestCase {
 30 PRINT 30
 50 PRINT 50
 """,
-                        expecting: "50\n")
+      expecting: "50\n")
+  }
+
+  func testIfWithStatementRunsWhenTrue() throws {
+    checkProgramResults("""
+25 IF 1 THEN PRINT 25
+50 PRINT 50
+""",
+      expecting: "25\n50\n")
   }
 
   func testAssignment() throws {

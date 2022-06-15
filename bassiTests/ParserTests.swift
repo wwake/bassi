@@ -102,6 +102,13 @@ class ParserTests: XCTestCase {
     )
   }
 
+  func testMultipleStatementsOnOneLine() {
+    checkStatement(
+      "10 PRINT 10: PRINT 20",
+      .sequence([.print([.number(10)]), .print([.number(20)])])
+    )
+  }
+  
   func testGoto() throws {
     checkStatement(
       "10 GOTO 10",

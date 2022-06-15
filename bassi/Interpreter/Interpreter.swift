@@ -242,11 +242,11 @@ class Interpreter {
       doGoto(newLineNumber)
       return output
 
-    case .`if`(_, _):
-      throw InterpreterError.cantHappen(lineNumber, "NYI")
-      
+    case .`if`(let expression, let statements):
+      return try doIf(output, expression, statements)
+
     case .ifGoto(let expr, let target):
-      try doIfThen(expr, target)
+      try doIfGoto(expr, target)
       return output
 
     case .next(let variable):
@@ -264,6 +264,9 @@ class Interpreter {
       try doReturn()
       return output
 
+    case .sequence:
+      throw InterpreterError.cantHappen(lineNumber, "NYI")
+      
     case .skip:
       return output
     }
@@ -428,7 +431,21 @@ class Interpreter {
     return result
   }
 
-  fileprivate func doIfThen(_ expr: Expression, _ target: Int) throws {
+  fileprivate func doIf(_ output: String, _ expr: Expression, _ statements: [Statement]) throws -> String {
+    let condition = try evaluate(expr, globals)
+
+    if condition != .number(0.0) {
+      var result = output
+      try statements.forEach {
+        result += try step(Parse(lineNumber, $0), "")
+      }
+      return result
+    }
+
+    return output
+  }
+
+  fileprivate func doIfGoto(_ expr: Expression, _ target: Int) throws {
     let condition = try evaluate(expr, globals)
     if condition != .number(0.0) {
       nextLineNumber = target

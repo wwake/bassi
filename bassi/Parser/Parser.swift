@@ -62,7 +62,7 @@ public class Parser {
         throw ParseError.error("Line number must be between 1 and \(maxLineNumber)")
       }
 
-      let statementParse = try statement()
+      let statementParse = try statements()
 
       try require(.eol, "Extra characters at end of line")
 
@@ -73,6 +73,23 @@ public class Parser {
     throw ParseError.error("Line number is required; found \(errorToken)")
   }
 
+  func statements() throws -> Statement {
+    let stmt = try statement()
+
+    if token != .colon {
+      return stmt
+    }
+
+    var statements: [Statement] = [stmt]
+
+    while token == .colon {
+      nextToken()
+      statements.append(try statement())
+    }
+
+    return .sequence(statements)
+  }
+  
   func statement() throws -> Statement {
     var result: Statement
 
