@@ -1,8 +1,6 @@
-Multiple statements on one line
-   10 IF 1=0 THEN 20: PRINT 30
-   20 GOSUB 100: PRINT 30
-   25 PRINT 25
-Test IF with multiple :-separated statements
+Test IF with multiple colon-separated statements
+FOR statement returning to middle of line
+GOSUB returning to middle of line
 
 * Make running write to an output stream
 
@@ -40,7 +38,8 @@ Parameterized tests package?
 
 BI-22-27: June 15, 2022
 * Multiple statements per line
-  + IF relation-expr THEN statement[s]
+  + IF relation-expr THEN statement  -- single statement only for now
+  + Multiple statements on one line at top level
 
 BI-22-26: June 14, 2022
 * testMultiDArrayFullReadAndWrite - use nested FOR loops

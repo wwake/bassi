@@ -225,7 +225,7 @@ public class Parser {
       return .ifGoto(expr, target)
     }
 
-    let statement = try statement()
+    let statement = try statements()
     return .`if`(expr, [statement])
   }
 

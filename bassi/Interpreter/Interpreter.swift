@@ -443,11 +443,7 @@ class Interpreter {
     let condition = try evaluate(expr, globals)
 
     if condition != .number(0.0) {
-      var result = output
-      try statements.forEach {
-        result += try step(Parse(lineNumber, $0), "")
-      }
-      return result
+      return try doSequence(output, statements)
     }
 
     return output

@@ -108,7 +108,7 @@ class ParserTests: XCTestCase {
       .sequence([.print([.number(10)]), .print([.number(20)])])
     )
   }
-  
+
   func testGoto() throws {
     checkStatement(
       "10 GOTO 10",
@@ -157,6 +157,16 @@ class ParserTests: XCTestCase {
     )
   }
   
+  func testIfWithMultipleStatements() {
+    checkStatement(
+      "42 IF 1 THEN PRINT 42: PRINT 43",
+      .`if`(
+        .number(1),
+        [.sequence([.print([.number(42)]),
+         .print([.number(43)])])])
+    )
+  }
+
   func testAssignmentStatementWithNumber() {
     checkStatement(
       "25 X = 42",
