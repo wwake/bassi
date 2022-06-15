@@ -242,7 +242,10 @@ class Interpreter {
       doGoto(newLineNumber)
       return output
 
-    case .`if`(let expr, let target):
+    case .`if`(_, _):
+      throw InterpreterError.cantHappen(lineNumber, "NYI")
+      
+    case .ifGoto(let expr, let target):
       try doIfThen(expr, target)
       return output
 

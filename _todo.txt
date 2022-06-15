@@ -1,15 +1,15 @@
-* Multiple statements on one line
+IF relation-expr THEN statement[s]
+Multiple statements on one line
    10 IF 1=0 THEN 20: PRINT 30
    20 GOSUB 100: PRINT 30
    25 PRINT 25
 
 * Make running write to an output stream
 
-* IF relation-expr THEN statements
+* Move token to the lexer itself, then share the lexer between Parser & a new class ExpressionParser
 
 * ON..GOSUB
 
-* Straighten out use of type String for variable names
 * Should .number take a Value instead of a Float?
 
 * Handle parser errors better in interpreter
@@ -38,6 +38,8 @@
 
 Parameterized tests package?
 
+BI-22-27: June 15, 2022
+
 BI-22-26: June 14, 2022
 * testMultiDArrayFullReadAndWrite - use nested FOR loops
 * GOSUB-RETURN
@@ -58,6 +60,7 @@ BI-22-26: June 14, 2022
 Refactor:
 * Extract ParserExpressionTests.swift from ParserTests.swift
 * Use test helper for parse-based tests in InterpreterTests
+* Straighten out use of type String for variable names
 
 BI-22-25: June 13, 2022
 * FOR, NEXT - ORIGINAL BASIC SEMANTICS
@@ -234,7 +237,8 @@ line-number -> INTEGER(INT)
 statement -> "REM" .*
 statement -> "PRINT" expression?
 statement -> "GOTO" INTEGER(int)
-statement -> "IF" expression THEN INTEGER(int)
+statement -> "IF" expression "THEN" INTEGER(int)
+statement -> "IF" expression "THEN" statement
 statement -> [LET] VARIABLE ["(" expr {"," expr } ")"] = expression
 statement -> DIM variable "(" INTEGER(INT) {"," INTEGER(INT)} ")"
 statement -> FOR variable = expression TO expression [ STEP expression ]

@@ -119,7 +119,7 @@ class ParserTests: XCTestCase {
   func testIfThenLineNumber() throws {
     checkStatement(
       "42 IF 0 THEN 43",
-      .`if`(.number(0), 43)
+      .ifGoto(.number(0), 43)
     )
   }
 
@@ -139,10 +139,17 @@ class ParserTests: XCTestCase {
   func testIfThenMissingTargetGetsError() throws {
     checkError(
       "42 IF 0 THEN",
-      .error("Missing target of THEN")
+      .error("Unknown statement")
     )
   }
 
+  func testIfWithStatement() {
+    checkStatement(
+      "42 IF 1 THEN PRINT 42",
+      .`if`(.number(1), [.print([.number(42)])])
+    )
+  }
+  
   func testAssignmentStatementWithNumber() {
     checkStatement(
       "25 X = 42",

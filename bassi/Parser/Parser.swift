@@ -205,10 +205,11 @@ public class Parser {
 
     if case .integer(let target) = token {
       nextToken()
-      return .`if`(expr, target)
+      return .ifGoto(expr, target)
     }
 
-    throw ParseError.error("Missing target of THEN")
+    let statement = try statement()
+    return .`if`(expr, [statement])
   }
 
   func letAssign() throws -> Statement {
