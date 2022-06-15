@@ -179,9 +179,9 @@ class Interpreter {
       lineNumber = location.lineNumber
       nextLineNumber = nil
 
-      guard let line = program[lineNumber] else {
+      guard let line = program[location.lineNumber] else {
         done = true
-        return output + "? Attempted to execute non-existent line: \(lineNumber)\n"
+        return output + "? Attempted to execute non-existent line: \(location.lineNumber)\n"
       }
 
       let parse = parser.parse(line)
@@ -193,13 +193,13 @@ class Interpreter {
   }
 
   func doGosub(_ subroutineLineNumber: LineNumber) throws {
-    returnStack.append(program.lineAfter(lineNumber))
+    returnStack.append(program.lineAfter(location.lineNumber))
     doGoto(subroutineLineNumber)
   }
 
   func doReturn() throws {
     guard !returnStack.isEmpty else {
-      throw InterpreterError.error(lineNumber, "RETURN called before GOSUB")
+      throw InterpreterError.error(location.lineNumber, "RETURN called before GOSUB")
     }
 
     let returnTarget = returnStack.popLast()!
@@ -224,7 +224,7 @@ class Interpreter {
 
     case .def(let functionName, let parameter, let definition, let theType):
       if globals[functionName] != nil {
-        throw InterpreterError.error(lineNumber, "Can't redefine function " + functionName)
+        throw InterpreterError.error(location.lineNumber, "Can't redefine function " + functionName)
       }
 
       globals[functionName] = .userFunction(parameter, definition, theType)
@@ -232,7 +232,7 @@ class Interpreter {
 
     case .dim(let name, let dimensions, let type):
       if globals[name] != nil {
-        throw InterpreterError.error(lineNumber, "Can't redeclare array " + name)
+        throw InterpreterError.error(location.lineNumber, "Can't redeclare array " + name)
       }
 
       doDim(name, dimensions, type)
@@ -244,7 +244,7 @@ class Interpreter {
 
     case .end:
       guard returnStack.isEmpty else {
-        throw InterpreterError.error(lineNumber, "Ended program without returning from active subroutine")
+        throw InterpreterError.error(location.lineNumber, "Ended program without returning from active subroutine")
       }
       done = true
       return output
@@ -290,7 +290,7 @@ class Interpreter {
   func doSequence(_ output: String, _ statements: [Statement]) throws -> String {
     var result = output
     try statements.forEach {
-      result += try step(Parse(lineNumber, $0), "")
+      result += try step(Parse(location.lineNumber, $0), "")
     }
     return result
   }
@@ -376,7 +376,7 @@ class Interpreter {
 
     let value = globals[name]!
     guard case .array(let dimensions, let values) = value else {
-      throw InterpreterError.error(lineNumber, "Tried to subscript non-array " + name)
+      throw InterpreterError.error(location.lineNumber, "Tried to subscript non-array " + name)
     }
 
     let index = try indexFor(exprs, store, dimensions)
@@ -404,11 +404,11 @@ class Interpreter {
     _ expr: Expression) throws -> Value {
 
     if store[name] == nil {
-      throw InterpreterError.error(lineNumber, "Attempted call on undefined function " + name)
+      throw InterpreterError.error(location.lineNumber, "Attempted call on undefined function " + name)
     }
 
     guard case .userFunction(let parameter, let definition, _) = store[name]! else {
-      throw InterpreterError.cantHappen(lineNumber, "Function not found: " + name)
+      throw InterpreterError.cantHappen(location.lineNumber, "Function not found: " + name)
     }
 
     let operand = try evaluate(expr, store)
@@ -458,7 +458,7 @@ class Interpreter {
     let condition = try evaluate(expr, globals)
 
     if condition != .number(0.0) {
-      return try step(Parse(lineNumber, statement), output)
+      return try step(Parse(location.lineNumber, statement), output)
     }
 
     return output
@@ -491,7 +491,7 @@ class Interpreter {
       }
 
       guard case .array(let dimensions, let values) = globals[name]! else {
-        throw InterpreterError.error(lineNumber, "Tried to subscript non-array " + name)
+        throw InterpreterError.error(location.lineNumber, "Tried to subscript non-array " + name)
       }
 
       let index = try indexFor(exprs, globals, dimensions)
@@ -503,7 +503,7 @@ class Interpreter {
       globals[name] = .array(dimensions, updatedValues)
 
     default:
-      throw InterpreterError.cantHappen(lineNumber, "?? Lvalue must be either variable or array access")
+      throw InterpreterError.cantHappen(location.lineNumber, "?? Lvalue must be either variable or array access")
     }
   }
 
@@ -535,7 +535,7 @@ class Interpreter {
       .enumerated()
       .forEach { (i, index) in
         if index < 0 || index >= dimensions[i] {
-          throw InterpreterError.error(lineNumber, "array access out of bounds")
+          throw InterpreterError.error(location.lineNumber, "array access out of bounds")
         }
       }
 
@@ -556,7 +556,7 @@ class Interpreter {
     let stepSize = try evaluate(step, globals)
     try doAssign(typedVariable, .op2(.minus, typedVariable, .number(stepSize.asFloat())))
 
-    let bodyLineNumber = program.lineAfter(lineNumber)
+    let bodyLineNumber = program.lineAfter(location.lineNumber)
 
     forLoopStack.append((variable, limit, stepSize, bodyLineNumber))
 
@@ -565,7 +565,7 @@ class Interpreter {
   }
 
   func findNext(with variable: Name) throws -> Int {
-    var currentLine = program.lineAfter(lineNumber)
+    var currentLine = program.lineAfter(location.lineNumber)
 
     while currentLine < program.maxLineNumber {
       let parse = parser.parse(program[currentLine]!)
@@ -580,13 +580,13 @@ class Interpreter {
   
   func doNext(_ variable: Name) throws {
     guard !forLoopStack.isEmpty else {
-      throw InterpreterError.error(lineNumber, "Found NEXT without preceding FOR")
+      throw InterpreterError.error(location.lineNumber, "Found NEXT without preceding FOR")
     }
 
     let (pushedName, limit, stepSize, bodyLineNumber) = forLoopStack.last!
 
     guard variable == pushedName else {
-      throw InterpreterError.error(lineNumber, "NEXT variable must match corresponding FOR")
+      throw InterpreterError.error(location.lineNumber, "NEXT variable must match corresponding FOR")
     }
     
     let typedVariable: Expression = .variable(variable, .number)
@@ -607,7 +607,7 @@ class Interpreter {
     let value = Int(floatValue)
 
     guard value >= 0 else {
-      throw InterpreterError.error(lineNumber, "?ILLEGAL QUANTITY")
+      throw InterpreterError.error(location.lineNumber, "?ILLEGAL QUANTITY")
     }
     
     if value == 0 || value > targets.count {
