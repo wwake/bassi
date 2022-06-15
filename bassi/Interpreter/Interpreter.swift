@@ -82,12 +82,23 @@ enum InterpreterError: Error, Equatable {
   case cantHappen(LineNumber, String)
 }
 
+struct Location {
+  var lineNumber: LineNumber
+  var sequencePoint: Int
+
+  init(_ lineNumber: LineNumber, _ sequencePoint: Int) {
+    self.lineNumber = lineNumber
+    self.sequencePoint = sequencePoint
+  }
+}
+
 class Interpreter {
   static let freeSpaceCount : Float = 100_000
 
   let program: Program
   let parser = Parser()
 
+  var location: Location
   var lineNumber : LineNumber
   var nextLineNumber: LineNumber?
 
@@ -154,6 +165,8 @@ class Interpreter {
     self.program = program
 
     lineNumber = LineNumber(0)
+    location = Location(lineNumber, 0)
+
     nextLineNumber = program.firstLineNumber()
   }
 
@@ -162,6 +175,7 @@ class Interpreter {
 
     while !done {
       lineNumber = (nextLineNumber != nil) ? nextLineNumber! : program.lineAfter(lineNumber)
+      location = Location(lineNumber, 0)
       nextLineNumber = nil
 
       guard let line = program[lineNumber] else {

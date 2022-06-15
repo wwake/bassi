@@ -1,5 +1,6 @@
-Test IF with multiple colon-separated statements
+Make "currentLine" more sophisticated 
 FOR statement returning to middle of line
+testFORandNEXTonSameLine
 GOSUB returning to middle of line
 
 * Make running write to an output stream
@@ -40,6 +41,7 @@ BI-22-27: June 15, 2022
 * Multiple statements per line
   + IF relation-expr THEN statement  -- single statement only for now
   + Multiple statements on one line at top level
+  + Test IF with multiple colon-separated statements
 
 BI-22-26: June 14, 2022
 * testMultiDArrayFullReadAndWrite - use nested FOR loops

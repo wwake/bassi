@@ -168,6 +168,21 @@ class ParserTests: XCTestCase {
     )
   }
 
+  func testNestedIFsWithMultipleStatements() {
+    checkStatement(
+      "42 IF 1 THEN PRINT 42: IF 0 THEN PRINT 43: PRINT 44",
+      .`if`(
+        .number(1),
+        .sequence([
+          .print([.number(42)]),
+          .`if`(
+            .number(0),
+            .sequence([
+              .print([.number(43)]),
+              .print([.number(44)])]))]))
+    )
+  }
+
   func testAssignmentStatementWithNumber() {
     checkStatement(
       "25 X = 42",

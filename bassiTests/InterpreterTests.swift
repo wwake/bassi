@@ -807,6 +807,15 @@ expecting: "999\n2\n"
       expecting: "NEXT variable must match corresponding FOR")
   }
 
+  func xtestFORandNEXTonSameLine() {
+    checkProgramResults(
+"""
+10 FOR I=1 TO 2:PRINT I: NEXT I
+20 PRINT 20
+""",
+      expecting: "1\n2\n20\n")
+  }
+
   func testGOSUB() {
     checkProgramResults(
 """
