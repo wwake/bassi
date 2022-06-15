@@ -1,7 +1,18 @@
-Make "currentLine" more sophisticated 
+Spike: index at top level can find nested statements
+Spike: function to count total statements
+
+Make "currentLine" more sophisticated
 FOR statement returning to middle of line
 testFORandNEXTonSameLine
 GOSUB returning to middle of line
+
+25 X=1: GOSUB 3000: PRINT X
+30 ...
+
+Location
+  - hierarchical numbering 1.2.3.1 [1,2,3,1]
+  - hierarchical numbering 1231  - limit to 10 statements/level
+  - number segments at top level, then recurse in, peeling off preceding statements
 
 * Make running write to an output stream
 
