@@ -99,7 +99,6 @@ class Interpreter {
   let parser = Parser()
 
   var location: Location
-  var lineNumber : LineNumber
   var nextLineNumber: LineNumber?
 
   var done = false
@@ -165,7 +164,6 @@ class Interpreter {
     self.program = program
 
     location = Location(0, 0)
-    lineNumber = location.lineNumber
 
     nextLineNumber = program.firstLineNumber()
   }
@@ -176,7 +174,6 @@ class Interpreter {
     while !done {
       let temp = (nextLineNumber != nil) ? nextLineNumber! : program.lineAfter(location.lineNumber)
       location = Location(temp, 0)
-      lineNumber = location.lineNumber
       nextLineNumber = nil
 
       guard let line = program[location.lineNumber] else {
