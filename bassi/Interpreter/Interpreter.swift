@@ -164,8 +164,8 @@ class Interpreter {
   init(_ program: Program) {
     self.program = program
 
-    lineNumber = LineNumber(0)
-    location = Location(lineNumber, 0)
+    location = Location(0, 0)
+    lineNumber = location.lineNumber
 
     nextLineNumber = program.firstLineNumber()
   }
@@ -174,8 +174,9 @@ class Interpreter {
     var output = ""
 
     while !done {
-      lineNumber = (nextLineNumber != nil) ? nextLineNumber! : program.lineAfter(lineNumber)
-      location = Location(lineNumber, 0)
+      let temp = (nextLineNumber != nil) ? nextLineNumber! : program.lineAfter(location.lineNumber)
+      location = Location(temp, 0)
+      lineNumber = location.lineNumber
       nextLineNumber = nil
 
       guard let line = program[lineNumber] else {
