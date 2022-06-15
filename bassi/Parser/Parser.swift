@@ -226,7 +226,7 @@ public class Parser {
     }
 
     let statement = try statements()
-    return .`if`(expr, [statement])
+    return .`if`(expr, statement)
   }
 
   func letAssign() throws -> Statement {

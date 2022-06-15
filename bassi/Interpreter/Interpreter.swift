@@ -439,11 +439,11 @@ class Interpreter {
     return result
   }
 
-  fileprivate func doIf(_ output: String, _ expr: Expression, _ statements: [Statement]) throws -> String {
+  fileprivate func doIf(_ output: String, _ expr: Expression, _ statement: Statement) throws -> String {
     let condition = try evaluate(expr, globals)
 
     if condition != .number(0.0) {
-      return try doSequence(output, statements)
+      return try step(Parse(lineNumber, statement), output)
     }
 
     return output
