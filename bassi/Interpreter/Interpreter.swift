@@ -97,6 +97,7 @@ class Interpreter {
 
   let program: Program
   let parser = Parser()
+  var parse: Parse
 
   var location: Location
   var nextLineNumber: LineNumber?
@@ -163,16 +164,27 @@ class Interpreter {
   init(_ program: Program) {
     self.program = program
 
-    location = Location(0, 0)
-
     nextLineNumber = program.firstLineNumber()
+    location = Location(nextLineNumber!, 0)
+
+    let line = program[nextLineNumber!]!
+    parse = parser.parse(line)
   }
 
   func run() throws -> String {
     var output = ""
 
+    //output = try step(parse, output)
+
     while !done {
-      let temp = (nextLineNumber != nil) ? nextLineNumber! : program.lineAfter(location.lineNumber)
+      var temp = -1
+      if nextLineNumber != nil {
+        temp = nextLineNumber!
+
+      } else {
+        temp = program.lineAfter(location.lineNumber)
+      }
+
       location = Location(temp, 0)
       nextLineNumber = nil
 
@@ -181,7 +193,7 @@ class Interpreter {
         return output + "? Attempted to execute non-existent line: \(location.lineNumber)\n"
       }
 
-      let parse = parser.parse(line)
+      parse = parser.parse(line)
 
       output = try step(parse, output)
     }

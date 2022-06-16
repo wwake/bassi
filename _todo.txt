@@ -6,6 +6,7 @@ FOR statement returning to middle of line
 testFORandNEXTonSameLine
 GOSUB returning to middle of line
 
+20 X=1: Y=2: PRINT X
 25 X=1: GOSUB 3000: PRINT X
 30 ...
 
