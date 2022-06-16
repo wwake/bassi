@@ -282,9 +282,6 @@ class Interpreter {
       try doReturn()
       return output
 
-    case .sequence(let statements):
-      return try doSequence(output, statements)
-
     case .skip:
       return output
     }

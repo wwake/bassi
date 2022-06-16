@@ -900,7 +900,7 @@ expecting: "15\n")
   }
 
   func at(_ list: [Statement], _ index: Int) -> Statement {
-    if index >= list.count - 1, case .sequence(let inner) = list.last! {
+    if index >= list.count - 1, case .if(_, let inner) = list.last! {
       return at(inner, index - list.count + 1)
     }
     return list[index]
@@ -911,9 +911,11 @@ expecting: "15\n")
     let list : [Statement] = [
       .gosub(0),
       .gosub(1),
-      .sequence([
+      .`if`(.number(0),
+        [
         .gosub(2),
-        .sequence([
+        .`if`(.number(0),
+          [
           .gosub(3),
           .gosub(4)])])]
 
