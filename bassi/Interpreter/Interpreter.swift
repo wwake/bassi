@@ -177,26 +177,14 @@ class Interpreter {
     output = try step1(parse.statements[location.part], output)
 
     while !done {
-      var temp = -1
-      if nextLineNumber == nil {
-        if (location.part + 1 < parse.statements.count) {
-          location = Location(location.lineNumber, location.part + 1)
-        } else {
+      if nextLineNumber == nil && (location.part + 1 < parse.statements.count) {
+        location = Location(location.lineNumber, location.part + 1)
+      } else if nextLineNumber == nil {
+        nextLineNumber = program.lineAfter(location.lineNumber)
+      }
 
-          temp = program.lineAfter(location.lineNumber)
-
-          location = Location(temp, 0)
-          nextLineNumber = nil
-
-          guard let line = program[location.lineNumber] else {
-            done = true
-            return output + "? Attempted to execute non-existent line: \(location.lineNumber)\n"
-          }
-          parse = parser.parse(line)
-        }
-      } else {
-        temp = nextLineNumber!
-        location = Location(temp, 0)
+      if nextLineNumber != nil {
+        location = Location(nextLineNumber!, 0)
         nextLineNumber = nil
 
         guard let line = program[location.lineNumber] else {
@@ -204,11 +192,8 @@ class Interpreter {
           return output + "? Attempted to execute non-existent line: \(location.lineNumber)\n"
         }
         parse = parser.parse(line)
-
       }
 
-
-//      output = try step(parse, output)
       output = try step1(parse.statements[location.part], output)
     }
 
@@ -311,13 +296,6 @@ class Interpreter {
     case .skip:
       return output
     }
-  }
-  func doSequence(_ output: String, _ statements: [Statement]) throws -> String {
-    var result = output
-    try statements.forEach {
-      result += try step(Parse(location.lineNumber, [$0]), "")
-    }
-    return result
   }
 
   let operators1 : [TokenType : (Value) -> Value] =
