@@ -206,7 +206,7 @@ class InterpreterTests: XCTestCase {
 
     let interpreter = Interpreter(Program("10 GOTO 10"))
 
-    XCTAssertEqual(interpreter.nextLineNumber, 10)
+    XCTAssertEqual(interpreter.nextLineNumber, nil)
 
     let _ = try interpreter.step(parse, "")
 

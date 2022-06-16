@@ -164,17 +164,17 @@ class Interpreter {
   init(_ program: Program) {
     self.program = program
 
-    nextLineNumber = program.firstLineNumber()
-    location = Location(nextLineNumber!, 0)
+    location = Location(program.firstLineNumber(), 0)
+    nextLineNumber = nil
 
-    let line = program[nextLineNumber!]!
+    let line = program[location.lineNumber]!
     parse = parser.parse(line)
   }
 
   func run() throws -> String {
     var output = ""
 
-    //output = try step(parse, output)
+    output = try step(parse, output)
 
     while !done {
       var temp = -1
