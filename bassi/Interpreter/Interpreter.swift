@@ -84,11 +84,11 @@ enum InterpreterError: Error, Equatable {
 
 struct Location {
   var lineNumber: LineNumber
-  var sequencePoint: Int
+  var part: Int
 
-  init(_ lineNumber: LineNumber, _ sequencePoint: Int) {
+  init(_ lineNumber: LineNumber, _ part: Int) {
     self.lineNumber = lineNumber
-    self.sequencePoint = sequencePoint
+    self.part = part
   }
 }
 
@@ -174,28 +174,42 @@ class Interpreter {
   func run() throws -> String {
     var output = ""
 
-    output = try step(parse, output)
+    output = try step1(parse.statements[location.part], output)
 
     while !done {
       var temp = -1
-      if nextLineNumber != nil {
-        temp = nextLineNumber!
+      if nextLineNumber == nil {
+        if (location.part + 1 < parse.statements.count) {
+          location = Location(location.lineNumber, location.part + 1)
+        } else {
 
+          temp = program.lineAfter(location.lineNumber)
+
+          location = Location(temp, 0)
+          nextLineNumber = nil
+
+          guard let line = program[location.lineNumber] else {
+            done = true
+            return output + "? Attempted to execute non-existent line: \(location.lineNumber)\n"
+          }
+          parse = parser.parse(line)
+        }
       } else {
-        temp = program.lineAfter(location.lineNumber)
+        temp = nextLineNumber!
+        location = Location(temp, 0)
+        nextLineNumber = nil
+
+        guard let line = program[location.lineNumber] else {
+          done = true
+          return output + "? Attempted to execute non-existent line: \(location.lineNumber)\n"
+        }
+        parse = parser.parse(line)
+
       }
 
-      location = Location(temp, 0)
-      nextLineNumber = nil
 
-      guard let line = program[location.lineNumber] else {
-        done = true
-        return output + "? Attempted to execute non-existent line: \(location.lineNumber)\n"
-      }
-
-      parse = parser.parse(line)
-
-      output = try step(parse, output)
+//      output = try step(parse, output)
+      output = try step1(parse.statements[location.part], output)
     }
 
     return output

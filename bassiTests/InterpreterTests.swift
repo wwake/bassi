@@ -122,7 +122,7 @@ class InterpreterTests: XCTestCase {
       expecting: "135\n136\n")
   }
 
-  func xtestRemainingPartsOfLineDontExecuteIfControlTransfered() {
+  func testRemainingPartsOfLineDontExecuteIfControlTransfered() {
     checkProgramResults(
 """
 10 GOTO 20: PRINT 10
