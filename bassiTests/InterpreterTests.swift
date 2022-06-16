@@ -899,7 +899,7 @@ expecting: "15\n")
   }
 
   func testLocationNumberingSpike() {
-    // skip : skip : if c then skip: if c2 then skip: skip
+    // gosub : gosub : if c then gosub: if c2 then gosub: gosub
     let list : [Statement] = [
       .gosub(0),
       .gosub(1),

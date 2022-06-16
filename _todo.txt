@@ -49,10 +49,11 @@ Location
 Parameterized tests package?
 
 BI-22-27: June 15, 2022
-* Multiple statements per line
+* Multiple statements per line (except FOR/NEXT and GOSUB)
   + IF relation-expr THEN statement  -- single statement only for now
   + Multiple statements on one line at top level
   + Test IF with multiple colon-separated statements
+* Spike: index at top level can find nested statements
 
 BI-22-26: June 14, 2022
 * testMultiDArrayFullReadAndWrite - use nested FOR loops

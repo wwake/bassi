@@ -34,7 +34,7 @@ public indirect enum Statement : Equatable {
   case `for`(Name, Expression, Expression, Expression)
   case gosub(LineNumber)
   case goto(LineNumber)
-  case `if`(Expression, Statement)
+  case `if`(Expression, [Statement])
   case ifGoto(Expression, LineNumber)
   case next(Name)
   case onGoto(Expression, [LineNumber])

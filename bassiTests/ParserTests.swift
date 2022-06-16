@@ -153,7 +153,7 @@ class ParserTests: XCTestCase {
   func testIfWithStatement() {
     checkStatement(
       "42 IF 1 THEN PRINT 42",
-      .`if`(.number(1), .print([.number(42)]))
+      .`if`(.number(1), [.print([.number(42)])])
     )
   }
   
@@ -162,9 +162,9 @@ class ParserTests: XCTestCase {
       "42 IF 1 THEN PRINT 42: PRINT 43",
       .`if`(
         .number(1),
-        .sequence([
+        [.sequence([
           .print([.number(42)]),
-          .print([.number(43)])]))
+          .print([.number(43)])])])
     )
   }
 
@@ -173,13 +173,13 @@ class ParserTests: XCTestCase {
       "42 IF 1 THEN PRINT 42: IF 0 THEN PRINT 43: PRINT 44",
       .`if`(
         .number(1),
-        .sequence([
+        [.sequence([
           .print([.number(42)]),
           .`if`(
             .number(0),
-            .sequence([
+            [.sequence([
               .print([.number(43)]),
-              .print([.number(44)])]))]))
+              .print([.number(44)])])])])])
     )
   }
 

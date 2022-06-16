@@ -451,7 +451,9 @@ class Interpreter {
     return result
   }
 
-  fileprivate func doIf(_ output: String, _ expr: Expression, _ statement: Statement) throws -> String {
+  fileprivate func doIf(_ output: String, _ expr: Expression, _ statements: [Statement]) throws -> String {
+    let statement = statements.last!
+    
     let condition = try evaluate(expr, globals)
 
     if condition != .number(0.0) {
