@@ -41,6 +41,13 @@ public indirect enum Statement : Equatable {
   case print([Expression])
   case `return`
   case skip
+
+  static func count(_ statements: [Statement]) -> Int {
+    if case .if(_, let inner) = statements.last! {
+      return statements.count - 1 + Statement.count(inner)
+    }
+    return statements.count
+  }
 }
 
 public indirect enum Expression: Equatable {

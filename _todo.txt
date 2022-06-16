@@ -1,7 +1,6 @@
-Make 'if' use [Statement] instead of .sequence
-Spike: function to count total statements
+Create function to count total statements
+xtestRemainingPartsOfLineDontExecuteIfControlTransfered
 
-Make "currentLine" more sophisticated
 FOR statement returning to middle of line
 testFORandNEXTonSameLine
 GOSUB returning to middle of line
@@ -50,6 +49,9 @@ Location
 Parameterized tests package?
 
 BI-22-28: June 16, 2022
+* Multiple statements per line
+  + Make 'if' use [Statement] instead of .sequence
+  + Make Parse take [Statement] instead of Statement
 
 BI-22-27: June 15, 2022
 * Multiple statements per line (except FOR/NEXT and GOSUB)

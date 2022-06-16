@@ -122,6 +122,14 @@ class InterpreterTests: XCTestCase {
       expecting: "135\n136\n")
   }
 
+  func xtestRemainingPartsOfLineDontExecuteIfControlTransfered() {
+    checkProgramResults(
+"""
+10 GOTO 20: PRINT 10
+20 PRINT 20
+""", expecting: "20\n")
+  }
+
   func testPowers() {
     checkProgramResults(
       "25 PRINT 2^3^2",

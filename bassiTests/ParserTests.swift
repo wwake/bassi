@@ -557,4 +557,39 @@ class ParserTests: XCTestCase {
       "10 ON 2 GOTO 10,",
       ParseError.error("ON..GOTO requires line number after comma"))
   }
+
+  func testSimpleStatementsJustCount() {
+    XCTAssertEqual(
+      Statement.count([.gosub(1), .gosub(2), .goto(3)]),
+      3)
+  }
+
+  func testIfStatementAddsCountOfChildren() {
+    XCTAssertEqual(
+      Statement.count(
+      [
+        .goto(1),
+        .if(.number(1),
+            [.goto(2), .gosub(3)])
+      ]),
+      3
+      )
+  }
+
+  func testIfStatementAddsCountOfChildrenRecursively() {
+    XCTAssertEqual(
+      Statement.count(
+        [
+          .goto(1),
+          .if(.number(1),
+              [.goto(2),
+               .if(.number(3),
+                   [.gosub(3),
+                    .gosub(4),
+                    .gosub(5)])])
+        ]),
+      5
+    )
+  }
+
 }
