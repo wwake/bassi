@@ -89,7 +89,24 @@ public class Parser {
 
     return .sequence(statements)
   }
-  
+
+  func statements2() throws -> [Statement] {
+    let stmt = try statement()
+
+    if token != .colon {
+      return [stmt]
+    }
+
+    var statements: [Statement] = [stmt]
+
+    while token == .colon {
+      nextToken()
+      statements.append(try statement())
+    }
+
+    return statements
+  }
+
   func statement() throws -> Statement {
     var result: Statement
 
@@ -225,8 +242,8 @@ public class Parser {
       return .ifGoto(expr, target)
     }
 
-    let statement = try statements()
-    return .`if`(expr, [statement])
+    let statements = try statements2()
+    return .`if`(expr, statements)
   }
 
   func letAssign() throws -> Statement {

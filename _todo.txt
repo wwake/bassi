@@ -1,4 +1,4 @@
-Spike: index at top level can find nested statements
+Make 'if' use [Statement] instead of .sequence
 Spike: function to count total statements
 
 Make "currentLine" more sophisticated
@@ -47,6 +47,8 @@ Location
 * What should ASC do if given an empty string?
 
 Parameterized tests package?
+
+BI-22-28: June 16, 2022
 
 BI-22-27: June 15, 2022
 * Multiple statements per line (except FOR/NEXT and GOSUB)
