@@ -906,31 +906,4 @@ expecting: "15\n")
 """,
 expecting: "15\n")
   }
-
-  func at(_ list: [Statement], _ index: Int) -> Statement {
-    if index >= list.count - 1, case .if(_, let inner) = list.last! {
-      return at(inner, index - list.count + 1)
-    }
-    return list[index]
-  }
-
-  func testLocationNumberingSpike() {
-    // gosub : gosub : if c then gosub: if c2 then gosub: gosub
-    let list : [Statement] = [
-      .gosub(0),
-      .gosub(1),
-      .`if`(.number(0),
-        [
-        .gosub(2),
-        .`if`(.number(0),
-          [
-          .gosub(3),
-          .gosub(4)])])]
-
-    XCTAssertEqual(at(list, 0), .gosub(0))
-    XCTAssertEqual(at(list, 1), .gosub(1))
-    XCTAssertEqual(at(list, 2), .gosub(2))
-    XCTAssertEqual(at(list, 3), .gosub(3))
-    XCTAssertEqual(at(list, 4), .gosub(4))
-  }
 }

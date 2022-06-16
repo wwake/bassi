@@ -48,6 +48,13 @@ public indirect enum Statement : Equatable {
     }
     return statements.count
   }
+
+  static func at(_ list: [Statement], _ index: Int) -> Statement {
+    if index >= list.count - 1, case .if(_, let inner) = list.last! {
+      return at(inner, index - list.count + 1)
+    }
+    return list[index]
+  }
 }
 
 public indirect enum Expression: Equatable {
