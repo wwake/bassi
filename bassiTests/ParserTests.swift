@@ -9,14 +9,26 @@ import XCTest
 @testable import bassi
 
 class ParserTests: XCTestCase {
-  func checkStatement(
+  func checkOneStatement(
     _ program: String,
     _ expected: Statement)
   {
     let parser = Parser()
     let result = parser.parse(program)
     XCTAssertEqual(
-      result.statement,
+      result.statements,
+      [expected]
+    )
+  }
+
+  func checkStatements(
+    _ program: String,
+    _ expected: [Statement])
+  {
+    let parser = Parser()
+    let result = parser.parse(program)
+    XCTAssertEqual(
+      result.statements,
       expected
     )
   }
@@ -32,7 +44,7 @@ class ParserTests: XCTestCase {
         result,
         Parse(
           10,
-          .print([expected]))
+          [.print([expected])])
       )
     }
 
@@ -45,7 +57,7 @@ class ParserTests: XCTestCase {
     let output = parser.parse(line)
     XCTAssertEqual(
       output,
-      Parse(output.lineNumber, .error(expected)))
+      Parse(output.lineNumber, [.error(expected)]))
   }
 
   func test10END() throws {
@@ -53,11 +65,11 @@ class ParserTests: XCTestCase {
 
     XCTAssertEqual(
       parser.parse("1 END"),
-      Parse(1, .end))
+      Parse(1, [.end]))
 
     XCTAssertEqual(
       parser.parse("99999 END"),
-      Parse(99999, .end))
+      Parse(99999, [.end]))
   }
 
   func testLineNumberIsInRange0to99999() {
@@ -69,7 +81,7 @@ class ParserTests: XCTestCase {
   }
 
   func test10REM() throws {
-    checkStatement(
+    checkOneStatement(
       "10 REM whatever",
       .skip
     )
@@ -82,14 +94,14 @@ class ParserTests: XCTestCase {
   }
 
   func testPrintStatement() {
-    checkStatement(
+    checkOneStatement(
       "25 PRINT",
       .print([])
     )
   }
 
   func testPrintStatementWithNumber() {
-    checkStatement(
+    checkOneStatement(
       "25 PRINT 42",
       .print([.number(42.0)])
     )
@@ -103,14 +115,14 @@ class ParserTests: XCTestCase {
   }
 
   func testMultipleStatementsOnOneLine() {
-    checkStatement(
+    checkStatements(
       "10 PRINT 10: PRINT 20",
-      .sequence([.print([.number(10)]), .print([.number(20)])])
+      [.print([.number(10)]), .print([.number(20)])]
     )
   }
 
   func testGoto() throws {
-    checkStatement(
+    checkOneStatement(
       "10 GOTO 10",
       .goto(10)
     )
@@ -124,7 +136,7 @@ class ParserTests: XCTestCase {
   }
 
   func testIfThenLineNumber() throws {
-    checkStatement(
+    checkOneStatement(
       "42 IF 0 THEN 43",
       .ifGoto(.number(0), 43)
     )
@@ -151,14 +163,14 @@ class ParserTests: XCTestCase {
   }
 
   func testIfWithStatement() {
-    checkStatement(
+    checkOneStatement(
       "42 IF 1 THEN PRINT 42",
       .`if`(.number(1), [.print([.number(42)])])
     )
   }
   
   func testIfWithMultipleStatements() {
-    checkStatement(
+    checkOneStatement(
       "42 IF 1 THEN PRINT 42: PRINT 43",
       .`if`(
         .number(1),
@@ -170,7 +182,7 @@ class ParserTests: XCTestCase {
   }
 
   func testNestedIFsWithMultipleStatements() {
-    checkStatement(
+    checkOneStatement(
       "42 IF 1 THEN PRINT 42: IF 0 THEN PRINT 43: PRINT 44",
       .`if`(
         .number(1),
@@ -185,7 +197,7 @@ class ParserTests: XCTestCase {
   }
 
   func testAssignmentStatementWithNumber() {
-    checkStatement(
+    checkOneStatement(
       "25 X = 42",
       .assign(
         .variable("X", .number),
@@ -194,7 +206,7 @@ class ParserTests: XCTestCase {
   }
 
   func testAssignmentStatementWithLET() {
-    checkStatement(
+    checkOneStatement(
       "25 LET A = 2",
       .assign(
         .variable("A", .number),
@@ -224,7 +236,7 @@ class ParserTests: XCTestCase {
   }
 
   func testStandaloneStringInExpression() {
-    checkStatement(
+    checkOneStatement(
       "25 A$ = \"body\"",
       .assign(
         .variable("A$", .string),
@@ -233,7 +245,7 @@ class ParserTests: XCTestCase {
   }
 
   func testPrintString() {
-    checkStatement(
+    checkOneStatement(
       "25 PRINT \"body\"",
       .print(
         [.string("body")])
@@ -258,7 +270,7 @@ class ParserTests: XCTestCase {
   }
 
   func testDefDefinesHelperFunctions() {
-    checkStatement(
+    checkOneStatement(
       "25 DEF FNI(x)=x",
       .def(
         "FNI",
@@ -280,7 +292,7 @@ class ParserTests: XCTestCase {
   }
 
   func testPredefinedFunction() {
-    checkStatement(
+    checkOneStatement(
       "25 PRINT SQR(4)",
       .print(
         [.predefined("SQR", [.number(4)], .number)]
@@ -289,7 +301,7 @@ class ParserTests: XCTestCase {
   }
 
   func testPredefinedStringFunctionReturnType() {
-    checkStatement(
+    checkOneStatement(
       "25 PRINT CHR$(4)",
       .print(
         [.predefined("CHR$", [.number(4)], .string)]
@@ -366,7 +378,7 @@ class ParserTests: XCTestCase {
   }
 
   func testDefCall() {
-    checkStatement(
+    checkOneStatement(
       "10 PRINT FNI(3)",
       .print([
         .userdefined(
@@ -389,21 +401,21 @@ class ParserTests: XCTestCase {
   }
 
   func testDIMNumber() {
-    checkStatement(
+    checkOneStatement(
       "10 DIM A(5)",
       .dim("A", [6], .number)
     )
   }
 
   func testDIMString() {
-    checkStatement(
+    checkOneStatement(
       "10 DIM Z9$(5)",
       .dim("Z9$", [6], .string)
     )
   }
 
   func testMultiDimensionalDIM() {
-    checkStatement(
+    checkOneStatement(
       "10 DIM Z(3,4,5)",
       .dim("Z", [4,5,6], .number)
     )
@@ -416,7 +428,7 @@ class ParserTests: XCTestCase {
   }
   
   func testFetchFromArray() {
-    checkStatement(
+    checkOneStatement(
       "10 PRINT A(0)",
       .print([
         .arrayAccess("A", .number, [.number(0)])
@@ -425,7 +437,7 @@ class ParserTests: XCTestCase {
   }
 
   func testFetchFromMultiDArray() {
-    checkStatement(
+    checkOneStatement(
       "10 PRINT A(1,2)",
       .print([
         .arrayAccess("A", .number, [.number(1),
@@ -435,14 +447,14 @@ class ParserTests: XCTestCase {
   }
 
   func testFORwithoutSTEP() {
-    checkStatement(
+    checkOneStatement(
       "10 FOR X=1 TO 10",
       .`for`("X", .number(1), .number(10), .number(1))
     )
   }
 
   func testFORwithSTEP() {
-    checkStatement(
+    checkOneStatement(
       "10 FOR X=1 TO 10 STEP 5",
       .`for`("X", .number(1), .number(10), .number(5))
     )
@@ -479,7 +491,7 @@ class ParserTests: XCTestCase {
   }
 
   func testNEXTwithVariable() {
-    checkStatement(
+    checkOneStatement(
       "10 NEXT Z9",
       .next("Z9")
     )
@@ -493,7 +505,7 @@ class ParserTests: XCTestCase {
   }
 
   func testGOSUB() {
-    checkStatement(
+    checkOneStatement(
       "10 GOSUB 20",
       .gosub(20))
   }
@@ -509,7 +521,7 @@ class ParserTests: XCTestCase {
   }
 
   func testRETURN() {
-    checkStatement(
+    checkOneStatement(
       "10 RETURN",
       .`return`)
   }
@@ -521,7 +533,7 @@ class ParserTests: XCTestCase {
   }
 
   func testON_GOTO() {
-    checkStatement(
+    checkOneStatement(
       "10 ON 2 GOTO 10,20,30",
       .onGoto(
         .number(2),

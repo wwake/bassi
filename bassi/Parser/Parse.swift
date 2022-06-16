@@ -16,11 +16,11 @@ public typealias Name = String
 
 public struct Parse : Equatable {
   let lineNumber: LineNumber
-  let statement: Statement
+  let statements: [Statement]
 
-  init(_ lineNumber: LineNumber, _ statement: Statement) {
+  init(_ lineNumber: LineNumber, _ statements: [Statement]) {
     self.lineNumber = lineNumber
-    self.statement = statement
+    self.statements = statements
   }
 }
 

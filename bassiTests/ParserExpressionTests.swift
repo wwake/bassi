@@ -20,7 +20,7 @@ class ParserExpressionTests: XCTestCase {
         result,
         Parse(
           10,
-          .print([expected]))
+          [.print([expected])])
       )
     }
 
@@ -40,7 +40,7 @@ class ParserExpressionTests: XCTestCase {
     let output = parser.parse(line)
     XCTAssertEqual(
       output,
-      Parse(output.lineNumber, .error(expected)))
+      Parse(output.lineNumber, [.error(expected)]))
   }
 
   func testOrExpr() throws {

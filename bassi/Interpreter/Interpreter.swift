@@ -208,8 +208,14 @@ class Interpreter {
   }
 
   func step(_ parse: Parse, _ output: String) throws -> String {
-    let statement = parse.statement
+    var result = output
+    try parse.statements.forEach {
+      result = try step1($0, result)
+    }
+    return result
+  }
 
+  func step1(_ statement: Statement, _ output: String) throws -> String {
     switch statement {
     case .error(let message):
       done = true
@@ -278,16 +284,15 @@ class Interpreter {
 
     case .sequence(let statements):
       return try doSequence(output, statements)
-      
+
     case .skip:
       return output
     }
   }
-
   func doSequence(_ output: String, _ statements: [Statement]) throws -> String {
     var result = output
     try statements.forEach {
-      result += try step(Parse(location.lineNumber, $0), "")
+      result += try step(Parse(location.lineNumber, [$0]), "")
     }
     return result
   }
@@ -457,7 +462,7 @@ class Interpreter {
 
     if condition != .number(0.0) {
       return try step(
-        Parse(location.lineNumber, .sequence(statements)),
+        Parse(location.lineNumber, statements),
         output)
     }
 
@@ -570,7 +575,8 @@ class Interpreter {
     while currentLine < program.maxLineNumber {
       let parse = parser.parse(program[currentLine]!)
 
-      if case .next(let actualVariable) = parse.statement {
+      // TODO - should find NEXT anywhere in line
+      if case .next(let actualVariable) = parse.statements.first! {
         if variable == actualVariable { return currentLine }
       }
       currentLine = program.lineAfter(currentLine)

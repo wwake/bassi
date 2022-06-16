@@ -50,7 +50,7 @@ public class Parser {
     } catch {
       return Parse(
         LineNumber(0),
-        .error(error as! ParseError))
+        [.error(error as! ParseError)])
     }
   }
 
@@ -73,24 +73,7 @@ public class Parser {
     throw ParseError.error("Line number is required; found \(errorToken)")
   }
 
-  func statements() throws -> Statement {
-    let stmt = try statement()
-
-    if token != .colon {
-      return stmt
-    }
-
-    var statements: [Statement] = [stmt]
-
-    while token == .colon {
-      nextToken()
-      statements.append(try statement())
-    }
-
-    return .sequence(statements)
-  }
-
-  func statements2() throws -> [Statement] {
+  func statements() throws -> [Statement] {
     let stmt = try statement()
 
     if token != .colon {
@@ -242,7 +225,7 @@ public class Parser {
       return .ifGoto(expr, target)
     }
 
-    let statements = try statements2()
+    let statements = try statements()
     return .`if`(expr, statements)
   }
 

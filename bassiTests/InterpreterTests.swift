@@ -150,7 +150,7 @@ class InterpreterTests: XCTestCase {
     let parse =
     Parse(
       40,
-      .print([expression]))
+      [.print([expression])])
 
     let interpreter = Interpreter(Program())
     let output = try interpreter.step(parse, "")
@@ -202,7 +202,7 @@ class InterpreterTests: XCTestCase {
     let parse =
     Parse(
       10,
-      .goto(10))
+      [.goto(10)])
 
     let interpreter = Interpreter(Program("10 GOTO 10"))
 
@@ -217,7 +217,7 @@ class InterpreterTests: XCTestCase {
     let parse =
     Parse(
       10,
-      .goto(20))
+      [.goto(20)])
 
     let interpreter = Interpreter(Program())
 
@@ -343,12 +343,12 @@ class InterpreterTests: XCTestCase {
     let parse =
     Parse(
       40,
-      .def(
+      [.def(
         "FNI",
         "X",
         .variable("X", .number),
         .string
-      ))
+      )])
 
     let interpreter = Interpreter(Program())
     let _ = try interpreter.step(parse, "")
