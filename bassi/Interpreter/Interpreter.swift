@@ -177,7 +177,7 @@ class Interpreter {
     output = try step1(parse.statements[location.part], output)
 
     while !done {
-      if nextLineNumber == nil && (location.part + 1 < Statement.count(parse.statements)) {
+      if nextLineNumber == nil && (location.part < Statement.count(parse.statements) - 1) {
         location = Location(location.lineNumber, location.part + 1)
       } else if nextLineNumber == nil {
         nextLineNumber = program.lineAfter(location.lineNumber)
@@ -200,24 +200,6 @@ class Interpreter {
     }
 
     return output
-  }
-
-  func doGosub(_ subroutineLineNumber: LineNumber) throws {
-    returnStack.append(program.lineAfter(location.lineNumber))
-    doGoto(subroutineLineNumber)
-  }
-
-  func doReturn() throws {
-    guard !returnStack.isEmpty else {
-      throw InterpreterError.error(location.lineNumber, "RETURN called before GOSUB")
-    }
-
-    let returnTarget = returnStack.popLast()!
-    doGoto(returnTarget)
-  }
-
-  fileprivate func doGoto(_ newLineNumber: LineNumber) {
-    nextLineNumber = newLineNumber
   }
 
   func step(_ parse: Parse, _ output: String) throws -> String {
@@ -459,12 +441,30 @@ class Interpreter {
     return result
   }
 
+  func doGosub(_ subroutineLineNumber: LineNumber) throws {
+    returnStack.append(program.lineAfter(location.lineNumber))
+    doGoto(subroutineLineNumber)
+  }
+
+  func doReturn() throws {
+    guard !returnStack.isEmpty else {
+      throw InterpreterError.error(location.lineNumber, "RETURN called before GOSUB")
+    }
+
+    let returnTarget = returnStack.popLast()!
+    doGoto(returnTarget)
+  }
+
+  fileprivate func doGoto(_ newLineNumber: LineNumber) {
+    nextLineNumber = newLineNumber
+  }
+
   fileprivate func doIf(_ output: String, _ expr: Expression, _ statements: [Statement]) throws -> String {
 
     let condition = try evaluate(expr, globals)
 
     if condition == .number(0.0) {
-      location = Location(location.lineNumber, Int.max)
+      doGoto(program.lineAfter(location.lineNumber))
     }
 
     return output
