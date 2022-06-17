@@ -44,16 +44,19 @@ public indirect enum Statement : Equatable {
 
   static func count(_ statements: [Statement]) -> Int {
     if case .if(_, let inner) = statements.last! {
-      return statements.count - 1 + Statement.count(inner)
+      return statements.count + Statement.count(inner)
     }
     return statements.count
   }
 
   static func at(_ list: [Statement], _ index: Int) -> Statement {
-    if index >= list.count - 1, case .if(_, let inner) = list.last! {
-      return at(inner, index - list.count + 1)
+    if index < list.count {
+      return list[index]
     }
-    return list[index]
+    if case .if(_, let inner) = list.last! {
+      return at(inner, index - list.count)
+    }
+    return .error(.error("Statement.at: index too big - internal error"))
   }
 }
 

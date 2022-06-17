@@ -1,5 +1,5 @@
-Create function to count total statements
-xtestRemainingPartsOfLineDontExecuteIfControlTransfered
+Adjust numbering to account for both IF and its first child
+Look at how if statements execute their body
 
 FOR statement returning to middle of line
 testFORandNEXTonSameLine
@@ -8,11 +8,6 @@ GOSUB returning to middle of line
 20 X=1: Y=2: PRINT X
 25 X=1: GOSUB 3000: PRINT X
 30 ...
-
-Location
-  - hierarchical numbering 1.2.3.1 [1,2,3,1]
-  - hierarchical numbering 1231  - limit to 10 statements/level
-  - number segments at top level, then recurse in, peeling off preceding statements
 
 * Make running write to an output stream
 
@@ -52,6 +47,8 @@ BI-22-28: June 16, 2022
 * Multiple statements per line
   + Make 'if' use [Statement] instead of .sequence
   + Make Parse take [Statement] instead of Statement
+  + Create function to count total statements
+  + testRemainingPartsOfLineDontExecuteIfControlTransfered
 
 BI-22-27: June 15, 2022
 * Multiple statements per line (except FOR/NEXT and GOSUB)

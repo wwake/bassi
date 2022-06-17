@@ -572,7 +572,7 @@ class ParserTests: XCTestCase {
         .if(.number(1),
             [.goto(2), .gosub(3)])
       ]),
-      3
+      4
       )
   }
 
@@ -588,28 +588,29 @@ class ParserTests: XCTestCase {
                     .gosub(4),
                     .gosub(5)])])
         ]),
-      5
+      7
     )
   }
 
   func testLocationNumbering() {
     // gosub : gosub : if c then gosub: if c2 then gosub: gosub
+    let innerIf : Statement = .`if`(.number(0), [.gosub(5), .gosub(6)])
+    let outerIf : Statement = .`if`(.number(0), [.gosub(3), innerIf])
+
     let list : [Statement] = [
       .gosub(0),
       .gosub(1),
-      .`if`(.number(0),
-            [
-              .gosub(2),
-              .`if`(.number(0),
-                    [
-                      .gosub(3),
-                      .gosub(4)])])]
+      outerIf
+    ]
 
     XCTAssertEqual(Statement.at(list, 0), .gosub(0))
     XCTAssertEqual(Statement.at(list, 1), .gosub(1))
-    XCTAssertEqual(Statement.at(list, 2), .gosub(2))
+    XCTAssertEqual(Statement.at(list, 2), outerIf)
     XCTAssertEqual(Statement.at(list, 3), .gosub(3))
-    XCTAssertEqual(Statement.at(list, 4), .gosub(4))
+    XCTAssertEqual(Statement.at(list, 4), innerIf)
+    XCTAssertEqual(Statement.at(list, 5), .gosub(5))
+    XCTAssertEqual(Statement.at(list, 6), .gosub(6))
+
   }
 
 }
