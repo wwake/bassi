@@ -190,15 +190,17 @@ class Interpreter {
         nextLocation = nextLocationFor(location)
       }
 
-      guard let line = program[nextLocation!.lineNumber] else {
-        done = true
-        return output + "? Attempted to execute non-existent line: \(nextLocation!.lineNumber)\n"
+      if nextLocation!.lineNumber != location.lineNumber {
+        guard let line = program[nextLocation!.lineNumber] else {
+          done = true
+          return output + "? Attempted to execute non-existent line: \(nextLocation!.lineNumber)\n"
+        }
+
+        parse = parser.parse(line)
       }
 
       location = nextLocation!
       nextLocation = nil
-
-      parse = parser.parse(line)
 
       output = try step(
         Statement.at(parse.statements, location.part),
