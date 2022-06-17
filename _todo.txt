@@ -1,12 +1,7 @@
-GOSUB returning to middle of line
 Re-parse only if line changes
 
 FOR statement returning to middle of line
 testFORandNEXTonSameLine
-
-20 X=1: Y=2: PRINT X
-25 X=1: GOSUB 3000: PRINT X
-30 ...
 
 * Make running write to an output stream
 
@@ -45,6 +40,7 @@ Parameterized tests package?
 BI-22-29: June 17, 2022
 * Adjust numbering to account for both IF and its first child
 * Make sure IF statements work with multiple statements in a line
+* GOSUB can return to middle of line
 
 BI-22-28: June 16, 2022
 * Multiple statements per line

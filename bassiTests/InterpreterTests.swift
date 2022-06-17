@@ -161,7 +161,7 @@ class InterpreterTests: XCTestCase {
       [.print([expression])])
 
     let interpreter = Interpreter(Program())
-    let output = try interpreter.step1(parse.statements[0], "")
+    let output = try interpreter.step(parse.statements[0], "")
     XCTAssertEqual(output, "7\n")
   }
 
@@ -216,7 +216,7 @@ class InterpreterTests: XCTestCase {
 
     XCTAssertEqual(interpreter.nextLocation, nil)
 
-    let _ = try interpreter.step1(parse.statements[0], "")
+    let _ = try interpreter.step(parse.statements[0], "")
 
     XCTAssertEqual(interpreter.nextLocation, Location(10,0))
   }
@@ -229,7 +229,7 @@ class InterpreterTests: XCTestCase {
 
     let interpreter = Interpreter(Program())
 
-    let _ = try interpreter.step1(parse.statements[0], "")
+    let _ = try interpreter.step(parse.statements[0], "")
 
     XCTAssertEqual(interpreter.nextLocation, Location(20,0))
   }
@@ -367,7 +367,7 @@ class InterpreterTests: XCTestCase {
       )])
 
     let interpreter = Interpreter(Program())
-    let _ = try interpreter.step1(parse.statements[0], "")
+    let _ = try interpreter.step(parse.statements[0], "")
     XCTAssertNotNil(interpreter.globals["FNI"])
   }
 

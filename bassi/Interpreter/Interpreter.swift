@@ -183,7 +183,7 @@ class Interpreter {
   func run() throws -> String {
     var output = ""
 
-    output = try step1(parse.statements[location.part], output)
+    output = try step(parse.statements[location.part], output)
 
     while !done {
       if nextLocation == nil {
@@ -200,7 +200,7 @@ class Interpreter {
 
       parse = parser.parse(line)
 
-      output = try step1(
+      output = try step(
         Statement.at(parse.statements, location.part),
         output)
     }
@@ -208,15 +208,7 @@ class Interpreter {
     return output
   }
 
-  func step(_ parse: Parse, _ output: String) throws -> String {
-    var result = output
-    try parse.statements.forEach {
-      result = try step1($0, result)
-    }
-    return result
-  }
-
-  func step1(_ statement: Statement, _ output: String) throws -> String {
+  func step(_ statement: Statement, _ output: String) throws -> String {
     switch statement {
     case .error(let message):
       done = true
