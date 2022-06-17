@@ -171,7 +171,6 @@ class Interpreter {
     parse = parser.parse(line)
   }
 
-
   func nextLocationFor(_ location: Location) -> Location {
     if location.part < Statement.count(parse.statements) - 1 {
       return Location(location.lineNumber, location.part + 1)
@@ -236,15 +235,15 @@ class Interpreter {
       doDim(name, dimensions, type)
       return output
 
-    case .`for`(let variable, let initial, let final, let step):
-      try doFor(variable, initial, final, step)
-      return output
-
     case .end:
       guard returnStack.isEmpty else {
         throw InterpreterError.error(location.lineNumber, "Ended program without returning from active subroutine")
       }
       done = true
+      return output
+
+    case .`for`(let variable, let initial, let final, let step):
+      try doFor(variable, initial, final, step)
       return output
 
     case .gosub(let lineNumber):
@@ -567,22 +566,22 @@ class Interpreter {
     forLoopStack.append((variable, limit, stepSize, bodyLineNumber))
 
     let nextLineNumber = try findNext(with: variable)
-    doGoto(Location(nextLineNumber))
+    doGoto(nextLineNumber)
   }
 
-  func findNext(with variable: Name) throws -> Int {
-    var currentLine = program.lineAfter(location.lineNumber)
+  func findNext(with variable: Name) throws -> Location {
+    var currentLine = Location(program.lineAfter(location.lineNumber))
 
-    while currentLine < program.maxLineNumber {
-      let parse = parser.parse(program[currentLine]!)
+    while currentLine.lineNumber < program.maxLineNumber {
+      let parse = parser.parse(program[currentLine.lineNumber]!)
 
       // TODO - should find NEXT anywhere in line
       if case .next(let actualVariable) = parse.statements.first! {
         if variable == actualVariable { return currentLine }
       }
-      currentLine = program.lineAfter(currentLine)
+      currentLine = Location(program.lineAfter(currentLine.lineNumber))
     }
-    throw InterpreterError.error(currentLine, "Found FOR without NEXT: \(variable)")
+    throw InterpreterError.error(currentLine.lineNumber, "Found FOR without NEXT: \(variable)")
   }
   
   func doNext(_ variable: Name) throws {

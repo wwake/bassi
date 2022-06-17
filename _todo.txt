@@ -1,7 +1,8 @@
-Re-parse only if line changes
-
 FOR statement returning to middle of line
 testFORandNEXTonSameLine
+
+10 FOR i=1 to 10: PRINT X
+20 PRINT I: NEXT I
 
 * Make running write to an output stream
 
@@ -41,6 +42,7 @@ BI-22-29: June 17, 2022
 * Adjust numbering to account for both IF and its first child
 * Make sure IF statements work with multiple statements in a line
 * GOSUB can return to middle of line
+* Re-parse only if line changes
 
 BI-22-28: June 16, 2022
 * Multiple statements per line
