@@ -82,11 +82,11 @@ enum InterpreterError: Error, Equatable {
   case cantHappen(LineNumber, String)
 }
 
-struct Location {
+struct Location : Equatable {
   var lineNumber: LineNumber
   var part: Int
 
-  init(_ lineNumber: LineNumber, _ part: Int) {
+  init(_ lineNumber: LineNumber, _ part: Int = 0) {
     self.lineNumber = lineNumber
     self.part = part
   }
@@ -100,7 +100,7 @@ class Interpreter {
   var parse: Parse
 
   var location: Location
-  var nextLineNumber: LineNumber?
+  var nextLocation: Location?
 
   var done = false
 
@@ -110,7 +110,7 @@ class Interpreter {
 
   var forLoopStack: [ForInfo] = []
 
-  var returnStack: [LineNumber] = []
+  var returnStack: [Location] = []
 
   var globals: Store = [
     "ABS" : Value.function(Fn2n(abs)),
@@ -165,10 +165,19 @@ class Interpreter {
     self.program = program
 
     location = Location(program.firstLineNumber(), 0)
-    nextLineNumber = nil
+    nextLocation = nil
 
     let line = program[location.lineNumber]!
     parse = parser.parse(line)
+  }
+
+
+  func nextLocationFor(_ location: Location) -> Location {
+    if location.part < Statement.count(parse.statements) - 1 {
+      return Location(location.lineNumber, location.part + 1)
+    } else {
+      return Location(program.lineAfter(location.lineNumber), 0)
+    }
   }
 
   func run() throws -> String {
@@ -177,22 +186,19 @@ class Interpreter {
     output = try step1(parse.statements[location.part], output)
 
     while !done {
-      if nextLineNumber == nil && (location.part < Statement.count(parse.statements) - 1) {
-        location = Location(location.lineNumber, location.part + 1)
-      } else if nextLineNumber == nil {
-        nextLineNumber = program.lineAfter(location.lineNumber)
+      if nextLocation == nil {
+        nextLocation = nextLocationFor(location)
       }
 
-      if nextLineNumber != nil {
-        location = Location(nextLineNumber!, 0)
-        nextLineNumber = nil
-
-        guard let line = program[location.lineNumber] else {
-          done = true
-          return output + "? Attempted to execute non-existent line: \(location.lineNumber)\n"
-        }
-        parse = parser.parse(line)
+      guard let line = program[nextLocation!.lineNumber] else {
+        done = true
+        return output + "? Attempted to execute non-existent line: \(nextLocation!.lineNumber)\n"
       }
+
+      location = nextLocation!
+      nextLocation = nil
+
+      parse = parser.parse(line)
 
       output = try step1(
         Statement.at(parse.statements, location.part),
@@ -252,7 +258,7 @@ class Interpreter {
       return output
 
     case .goto(let newLineNumber):
-      doGoto(newLineNumber)
+      doGoto(Location(newLineNumber))
       return output
 
     case .`if`(let expression, let statements):
@@ -352,59 +358,59 @@ class Interpreter {
     _ store: Store,
     _ exprs: [Expression],
     _ type: `Type`) throws -> Value {
-    if store[name] == nil {
-      doDim(
-        name,
-        Array<Int>(
-          repeating: 11,
-          count: exprs.count),
-        type)
-    }
+      if store[name] == nil {
+        doDim(
+          name,
+          Array<Int>(
+            repeating: 11,
+            count: exprs.count),
+          type)
+      }
 
-    let value = globals[name]!
-    guard case .array(let dimensions, let values) = value else {
-      throw InterpreterError.error(location.lineNumber, "Tried to subscript non-array " + name)
-    }
+      let value = globals[name]!
+      guard case .array(let dimensions, let values) = value else {
+        throw InterpreterError.error(location.lineNumber, "Tried to subscript non-array " + name)
+      }
 
-    let index = try indexFor(exprs, store, dimensions)
-    return values[index]
-  }
+      let index = try indexFor(exprs, store, dimensions)
+      return values[index]
+    }
 
   fileprivate func callPredefinedFunction(
     _ store: Interpreter.Store,
     _ name: Name,
     _ exprs: [Expression]) throws -> Value {
 
-    let function = store[name]!
+      let function = store[name]!
 
-    let arguments = try exprs
-      .map {
-        try evaluate($0, store)
-      }
+      let arguments = try exprs
+        .map {
+          try evaluate($0, store)
+        }
 
-    return function.apply(arguments)
-  }
+      return function.apply(arguments)
+    }
 
   fileprivate func callUserDefinedFunction(
     _ store: Interpreter.Store,
     _ name: Name,
     _ expr: Expression) throws -> Value {
 
-    if store[name] == nil {
-      throw InterpreterError.error(location.lineNumber, "Attempted call on undefined function " + name)
+      if store[name] == nil {
+        throw InterpreterError.error(location.lineNumber, "Attempted call on undefined function " + name)
+      }
+
+      guard case .userFunction(let parameter, let definition, _) = store[name]! else {
+        throw InterpreterError.cantHappen(location.lineNumber, "Function not found: " + name)
+      }
+
+      let operand = try evaluate(expr, store)
+
+      var locals = globals
+      locals[parameter] = operand
+
+      return try evaluate(definition, locals)
     }
-
-    guard case .userFunction(let parameter, let definition, _) = store[name]! else {
-      throw InterpreterError.cantHappen(location.lineNumber, "Function not found: " + name)
-    }
-
-    let operand = try evaluate(expr, store)
-
-    var locals = globals
-    locals[parameter] = operand
-
-    return try evaluate(definition, locals)
-  }
 
   func format(_ input: Expression) throws -> String {
     let value = try evaluate(input, globals)
@@ -442,7 +448,7 @@ class Interpreter {
   }
 
   func doGosub(_ subroutineLineNumber: LineNumber) throws {
-    returnStack.append(program.lineAfter(location.lineNumber))
+    returnStack.append(nextLocationFor(location))
     doGoto(subroutineLineNumber)
   }
 
@@ -456,7 +462,11 @@ class Interpreter {
   }
 
   fileprivate func doGoto(_ newLineNumber: LineNumber) {
-    nextLineNumber = newLineNumber
+    nextLocation = Location(newLineNumber, 0)
+  }
+
+  fileprivate func doGoto(_ newLocation: Location) {
+    nextLocation = newLocation
   }
 
   fileprivate func doIf(_ output: String, _ expr: Expression, _ statements: [Statement]) throws -> String {
@@ -473,45 +483,45 @@ class Interpreter {
   fileprivate func doIfGoto(_ expr: Expression, _ target: Int) throws {
     let condition = try evaluate(expr, globals)
     if condition != .number(0.0) {
-      nextLineNumber = target
+      nextLocation = Location(target, 0)
     }
   }
 
   fileprivate func doAssign(
     _ lvalue: Expression,
     _ rvalue: Expression) throws {
-    switch lvalue {
-    case .variable(let name, _):
-      let value = try evaluate(rvalue, globals)
+      switch lvalue {
+      case .variable(let name, _):
+        let value = try evaluate(rvalue, globals)
 
-      globals[name] = value
+        globals[name] = value
 
-    case .arrayAccess(let name, let type, let exprs):
-      if globals[name] == nil {
-        doDim(
-          name,
-          Array<Int>(
-            repeating: 11,
-            count: exprs.count),
-          type)
+      case .arrayAccess(let name, let type, let exprs):
+        if globals[name] == nil {
+          doDim(
+            name,
+            Array<Int>(
+              repeating: 11,
+              count: exprs.count),
+            type)
+        }
+
+        guard case .array(let dimensions, let values) = globals[name]! else {
+          throw InterpreterError.error(location.lineNumber, "Tried to subscript non-array " + name)
+        }
+
+        let index = try indexFor(exprs, globals, dimensions)
+
+        let value = try evaluate(rvalue, globals)
+
+        var updatedValues = values
+        updatedValues[index] = value
+        globals[name] = .array(dimensions, updatedValues)
+
+      default:
+        throw InterpreterError.cantHappen(location.lineNumber, "?? Lvalue must be either variable or array access")
       }
-
-      guard case .array(let dimensions, let values) = globals[name]! else {
-        throw InterpreterError.error(location.lineNumber, "Tried to subscript non-array " + name)
-      }
-
-      let index = try indexFor(exprs, globals, dimensions)
-
-      let value = try evaluate(rvalue, globals)
-
-      var updatedValues = values
-      updatedValues[index] = value
-      globals[name] = .array(dimensions, updatedValues)
-
-    default:
-      throw InterpreterError.cantHappen(location.lineNumber, "?? Lvalue must be either variable or array access")
     }
-  }
 
   func doDim(
     _ name: Name,
@@ -550,7 +560,7 @@ class Interpreter {
       .reduce(indexes[0], { (total, indexDim) in
         let (index, dim) = indexDim
         return total * dim + index
-    })
+      })
   }
 
   func doFor(_ variable: Name, _ initial: Expression, _ final: Expression, _ step: Expression) throws {
@@ -600,7 +610,7 @@ class Interpreter {
     let nextValue = try evaluate(.op2(.plus, typedVariable, .number(stepSize.asFloat())), globals)
 
     if (stepSize.asFloat() >= 0 && nextValue.asFloat() <= limit.asFloat())
-    || (stepSize.asFloat() < 0 && nextValue.asFloat() >= limit.asFloat()) {
+        || (stepSize.asFloat() < 0 && nextValue.asFloat() >= limit.asFloat()) {
 
       try doAssign(typedVariable, .number(nextValue.asFloat()))
       doGoto(bodyLineNumber)

@@ -214,11 +214,11 @@ class InterpreterTests: XCTestCase {
 
     let interpreter = Interpreter(Program("10 GOTO 10"))
 
-    XCTAssertEqual(interpreter.nextLineNumber, nil)
+    XCTAssertEqual(interpreter.nextLocation, nil)
 
     let _ = try interpreter.step1(parse.statements[0], "")
 
-    XCTAssertEqual(interpreter.nextLineNumber, 10)
+    XCTAssertEqual(interpreter.nextLocation, Location(10,0))
   }
 
   func testStepWillTryToGotoMissingLine() throws {
@@ -231,7 +231,7 @@ class InterpreterTests: XCTestCase {
 
     let _ = try interpreter.step1(parse.statements[0], "")
 
-    XCTAssertEqual(interpreter.nextLineNumber, 20)
+    XCTAssertEqual(interpreter.nextLocation, Location(20,0))
   }
 
   func testGotoNonExistentLine() {
@@ -869,6 +869,18 @@ expecting: "999\n2\n"
 
   func testRETURNwithoutGOSUB() {
     checkExpectedError("10 RETURN", expecting: "RETURN called before GOSUB")
+  }
+
+  func testGOSUBreturningInsideLine() {
+    checkProgramResults(
+"""
+10 GOSUB 100: PRINT 10
+20 PRINT 20
+30 END
+100 PRINT 100
+110 RETURN
+""",
+      expecting: "100\n10\n20\n")
   }
 
   func testON_GOTO() {
