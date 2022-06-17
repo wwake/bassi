@@ -254,7 +254,7 @@ class Interpreter {
       return output
 
     case .gosub(let lineNumber):
-      try doGosub(lineNumber)
+      try doGosub(Location(lineNumber))
       return output
 
     case .goto(let newLineNumber):
@@ -265,7 +265,7 @@ class Interpreter {
       return try doIf(output, expression, statements)
 
     case .ifGoto(let expr, let target):
-      try doIfGoto(expr, target)
+      try doIfGoto(expr, Location(target))
       return output
 
     case .next(let variable):
@@ -447,9 +447,9 @@ class Interpreter {
     return result
   }
 
-  func doGosub(_ subroutineLineNumber: LineNumber) throws {
+  func doGosub(_ subroutineLocation: Location) throws {
     returnStack.append(nextLocationFor(location))
-    doGoto(subroutineLineNumber)
+    doGoto(subroutineLocation)
   }
 
   func doReturn() throws {
@@ -461,10 +461,6 @@ class Interpreter {
     doGoto(returnTarget)
   }
 
-  fileprivate func doGoto(_ newLineNumber: LineNumber) {
-    nextLocation = Location(newLineNumber, 0)
-  }
-
   fileprivate func doGoto(_ newLocation: Location) {
     nextLocation = newLocation
   }
@@ -474,16 +470,16 @@ class Interpreter {
     let condition = try evaluate(expr, globals)
 
     if condition == .number(0.0) {
-      doGoto(program.lineAfter(location.lineNumber))
+      doGoto(Location(program.lineAfter(location.lineNumber)))
     }
 
     return output
   }
 
-  fileprivate func doIfGoto(_ expr: Expression, _ target: Int) throws {
+  fileprivate func doIfGoto(_ expr: Expression, _ target: Location) throws {
     let condition = try evaluate(expr, globals)
     if condition != .number(0.0) {
-      nextLocation = Location(target, 0)
+      nextLocation = target
     }
   }
 
@@ -577,7 +573,7 @@ class Interpreter {
     forLoopStack.append((variable, limit, stepSize, bodyLineNumber))
 
     let nextLineNumber = try findNext(with: variable)
-    doGoto(nextLineNumber)
+    doGoto(Location(nextLineNumber))
   }
 
   func findNext(with variable: Name) throws -> Int {
@@ -613,7 +609,7 @@ class Interpreter {
         || (stepSize.asFloat() < 0 && nextValue.asFloat() >= limit.asFloat()) {
 
       try doAssign(typedVariable, .number(nextValue.asFloat()))
-      doGoto(bodyLineNumber)
+      doGoto(Location(bodyLineNumber))
     } else {
       forLoopStack.removeLast()
     }
@@ -631,6 +627,6 @@ class Interpreter {
       return
     }
 
-    doGoto(targets[value - 1])
+    doGoto(Location(targets[value - 1]))
   }
 }
