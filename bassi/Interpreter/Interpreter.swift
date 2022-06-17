@@ -177,7 +177,7 @@ class Interpreter {
     output = try step1(parse.statements[location.part], output)
 
     while !done {
-      if nextLineNumber == nil && (location.part + 1 < parse.statements.count) {
+      if nextLineNumber == nil && (location.part + 1 < Statement.count(parse.statements)) {
         location = Location(location.lineNumber, location.part + 1)
       } else if nextLineNumber == nil {
         nextLineNumber = program.lineAfter(location.lineNumber)
@@ -194,7 +194,9 @@ class Interpreter {
         parse = parser.parse(line)
       }
 
-      output = try step1(parse.statements[location.part], output)
+      output = try step1(
+        Statement.at(parse.statements, location.part),
+        output)
     }
 
     return output
@@ -461,10 +463,8 @@ class Interpreter {
 
     let condition = try evaluate(expr, globals)
 
-    if condition != .number(0.0) {
-      return try step(
-        Parse(location.lineNumber, statements),
-        output)
+    if condition == .number(0.0) {
+      location = Location(location.lineNumber, Int.max)
     }
 
     return output
