@@ -573,10 +573,9 @@ class Interpreter {
     doGoto(nextLineNumber)
   }
 
-  //10 FOR I=1 TO 2:PRINT I: NEXT I
   func findNextInLine(_ location: Location, _ statements: [Statement], dropping: Int, with variable: Name) throws -> Location? {
 
-    let currentStatements = Array(statements.dropFirst(dropping))
+    let currentStatements = statements.dropFirst(dropping)
 
     let index = currentStatements.firstIndex(where: {
       if case .next(let actualVariable) = $0 {
@@ -586,7 +585,7 @@ class Interpreter {
     })
 
     if index != nil {
-      return Location(location.lineNumber, dropping + index!)
+      return Location(location.lineNumber, index!)
     }
 
     return nil
@@ -594,10 +593,9 @@ class Interpreter {
 
   func findNext(with variable: Name) throws -> Location {
 
-    let existingStatements = parse.statements
     let nextLocation = try findNextInLine(
       location,
-      existingStatements,
+      parse.statements,
       dropping: location.part + 1,
       with: variable)
     if nextLocation != nil {
@@ -617,19 +615,11 @@ class Interpreter {
         return nextLocation!
       }
 
-//      let index = parse.statements.firstIndex(where: {
-//        if case .next(let actualVariable) = $0 {
-//          if variable == actualVariable { return true }
-//        }
-//        return false
-//      })
-//      if index != nil {
-//        return Location(currentLine.lineNumber, index!)
-//      }
-
       currentLine = Location(program.lineAfter(currentLine.lineNumber))
     }
-    throw InterpreterError.error(currentLine.lineNumber, "Found FOR without NEXT: \(variable)")
+    throw InterpreterError.error(
+      currentLine.lineNumber,
+      "Found FOR without NEXT: \(variable)")
   }
   
   func doNext(_ variable: Name) throws {
