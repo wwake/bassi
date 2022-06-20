@@ -10,7 +10,7 @@ import Foundation
 class Program {
   let maxLineNumber = 99999
 
-  var program : [Int: String] =
+  var program : [LineNumber: String] =
     [99999 : "99999 END"]
 
   init(_ lines: String) {

@@ -565,19 +565,18 @@ class Interpreter {
     let stepSize = try evaluate(step, globals)
     try doAssign(typedVariable, .op2(.minus, typedVariable, .number(stepSize.asFloat())))
 
-    // TODO Body could be in middle of line
-    let bodyLineNumber = Location(program.lineAfter(location.lineNumber))
+    let bodyLocation = nextLocationFor(location)
 
-    forLoopStack.append((variable, limit, stepSize, bodyLineNumber))
+    forLoopStack.append((variable, limit, stepSize, bodyLocation))
 
     let nextLineNumber = try findNext(with: variable)
     doGoto(nextLineNumber)
   }
 
-  func findNext(with variable: Name) throws -> Location {
+  //10 FOR I=1 TO 2:PRINT I: NEXT I
+  func findNextInLine(_ location: Location, _ statements: [Statement], dropping: Int, with variable: Name) throws -> Location? {
 
-    let existingStatements = parse.statements
-    let currentStatements = existingStatements.dropFirst(location.part + 1)
+    let currentStatements = Array(statements.dropFirst(dropping))
 
     let index = currentStatements.firstIndex(where: {
       if case .next(let actualVariable) = $0 {
@@ -587,17 +586,47 @@ class Interpreter {
     })
 
     if index != nil {
-      return Location(location.lineNumber, location.part + index!)
+      return Location(location.lineNumber, dropping + index!)
+    }
+
+    return nil
+  }
+
+  func findNext(with variable: Name) throws -> Location {
+
+    let existingStatements = parse.statements
+    let nextLocation = try findNextInLine(
+      location,
+      existingStatements,
+      dropping: location.part + 1,
+      with: variable)
+    if nextLocation != nil {
+      return nextLocation!
     }
 
     var currentLine = Location(program.lineAfter(location.lineNumber))
     while currentLine.lineNumber < program.maxLineNumber {
       let parse = parser.parse(program[currentLine.lineNumber]!)
 
-      // TODO - should find NEXT anywhere in line
-      if case .next(let actualVariable) = parse.statements.first! {
-        if variable == actualVariable { return currentLine }
+      let nextLocation = try findNextInLine(
+        currentLine,
+        parse.statements,
+        dropping: 0,
+        with: variable)
+      if nextLocation != nil {
+        return nextLocation!
       }
+
+//      let index = parse.statements.firstIndex(where: {
+//        if case .next(let actualVariable) = $0 {
+//          if variable == actualVariable { return true }
+//        }
+//        return false
+//      })
+//      if index != nil {
+//        return Location(currentLine.lineNumber, index!)
+//      }
+
       currentLine = Location(program.lineAfter(currentLine.lineNumber))
     }
     throw InterpreterError.error(currentLine.lineNumber, "Found FOR without NEXT: \(variable)")
@@ -608,7 +637,7 @@ class Interpreter {
       throw InterpreterError.error(location.lineNumber, "Found NEXT without preceding FOR")
     }
 
-    let (pushedName, limit, stepSize, bodyLineNumber) = forLoopStack.last!
+    let (pushedName, limit, stepSize, bodyLocation) = forLoopStack.last!
 
     guard variable == pushedName else {
       throw InterpreterError.error(location.lineNumber, "NEXT variable must match corresponding FOR")
@@ -621,7 +650,7 @@ class Interpreter {
         || (stepSize.asFloat() < 0 && nextValue.asFloat() >= limit.asFloat()) {
 
       try doAssign(typedVariable, .number(nextValue.asFloat()))
-      doGoto(bodyLineNumber)
+      doGoto(bodyLocation)
     } else {
       forLoopStack.removeLast()
     }
