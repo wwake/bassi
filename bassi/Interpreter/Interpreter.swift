@@ -569,8 +569,8 @@ class Interpreter {
 
     forLoopStack.append((variable, limit, stepSize, bodyLocation))
 
-    let nextLineNumber = try findNext(with: variable)
-    doGoto(nextLineNumber)
+    let nextLocation = try findNext(with: variable)
+    doGoto(nextLocation)
   }
 
   func findNextInLine(_ location: Location, _ statements: [Statement], dropping: Int, with variable: Name) throws -> Location? {
