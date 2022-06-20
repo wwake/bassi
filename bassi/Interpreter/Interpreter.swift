@@ -558,12 +558,16 @@ class Interpreter {
 
   func doFor(_ variable: Name, _ initial: Expression, _ final: Expression, _ step: Expression) throws {
 
-    let typedVariable: Expression = .variable(variable, .number)
-    try doAssign(typedVariable, initial)
-
+    let initialValue = try evaluate(initial, globals)
     let limit = try evaluate(final, globals)
     let stepSize = try evaluate(step, globals)
-    try doAssign(typedVariable, .op2(.minus, typedVariable, .number(stepSize.asFloat())))
+
+    let typedVariable: Expression = .variable(variable, .number)
+    try doAssign(
+      typedVariable,
+        .op2(.minus,
+          .number(initialValue.asFloat()),
+          .number(stepSize.asFloat())))
 
     let bodyLocation = nextLocationFor(location)
 
