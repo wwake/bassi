@@ -104,9 +104,9 @@ class Interpreter {
 
   var done = false
 
-  typealias Store = [String : Value]
+  typealias Store = [Name : Value]
 
-  typealias ForInfo = (String, Value, Value, LineNumber)
+  typealias ForInfo = (Name, Value, Value, LineNumber)
 
   var forLoopStack: [ForInfo] = []
 
@@ -561,6 +561,7 @@ class Interpreter {
     let stepSize = try evaluate(step, globals)
     try doAssign(typedVariable, .op2(.minus, typedVariable, .number(stepSize.asFloat())))
 
+    // TODO Body could be in middle of line
     let bodyLineNumber = program.lineAfter(location.lineNumber)
 
     forLoopStack.append((variable, limit, stepSize, bodyLineNumber))
@@ -570,8 +571,22 @@ class Interpreter {
   }
 
   func findNext(with variable: Name) throws -> Location {
-    var currentLine = Location(program.lineAfter(location.lineNumber))
 
+    let existingStatements = parse.statements
+    let currentStatements = existingStatements.dropFirst(location.part + 1)
+
+    let index = currentStatements.firstIndex(where: {
+      if case .next(let actualVariable) = $0 {
+        if variable == actualVariable { return true }
+      }
+      return false
+    })
+
+    if index != nil {
+      return Location(location.lineNumber, location.part + index!)
+    }
+
+    var currentLine = Location(program.lineAfter(location.lineNumber))
     while currentLine.lineNumber < program.maxLineNumber {
       let parse = parser.parse(program[currentLine.lineNumber]!)
 

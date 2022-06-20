@@ -840,6 +840,16 @@ expecting: "999\n2\n"
       expecting: "1\n2\n20\n")
   }
 
+  func xtestFORandNEXTonDifferentLineWithMultipleParts() {
+    checkProgramResults(
+"""
+10 FOR I=1 TO 2: REM
+15 PRINT I: NEXT I
+20 PRINT 20
+""",
+expecting: "1\n2\n20\n")
+  }
+
   func testGOSUB() {
     checkProgramResults(
 """
