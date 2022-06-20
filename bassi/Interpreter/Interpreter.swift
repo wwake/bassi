@@ -110,7 +110,7 @@ class Interpreter {
 
   typealias Store = [Name : Value]
 
-  typealias ForInfo = (Name, Value, Value, LineNumber)
+  typealias ForInfo = (Name, Value, Value, Location)
 
   var forLoopStack: [ForInfo] = []
 
@@ -566,7 +566,7 @@ class Interpreter {
     try doAssign(typedVariable, .op2(.minus, typedVariable, .number(stepSize.asFloat())))
 
     // TODO Body could be in middle of line
-    let bodyLineNumber = program.lineAfter(location.lineNumber)
+    let bodyLineNumber = Location(program.lineAfter(location.lineNumber))
 
     forLoopStack.append((variable, limit, stepSize, bodyLineNumber))
 
@@ -621,7 +621,7 @@ class Interpreter {
         || (stepSize.asFloat() < 0 && nextValue.asFloat() >= limit.asFloat()) {
 
       try doAssign(typedVariable, .number(nextValue.asFloat()))
-      doGoto(Location(bodyLineNumber))
+      doGoto(bodyLineNumber)
     } else {
       forLoopStack.removeLast()
     }
