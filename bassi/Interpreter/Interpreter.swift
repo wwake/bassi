@@ -90,6 +90,10 @@ struct Location : Equatable {
     self.lineNumber = lineNumber
     self.part = part
   }
+
+  func next() -> Location {
+    return Location(self.lineNumber, self.part + 1)
+  }
 }
 
 class Interpreter {
@@ -164,7 +168,7 @@ class Interpreter {
   init(_ program: Program) {
     self.program = program
 
-    location = Location(program.firstLineNumber(), 0)
+    location = Location(program.firstLineNumber())
     nextLocation = nil
 
     let line = program[location.lineNumber]!
@@ -173,9 +177,9 @@ class Interpreter {
 
   func nextLocationFor(_ location: Location) -> Location {
     if location.part < Statement.count(parse.statements) - 1 {
-      return Location(location.lineNumber, location.part + 1)
+      return location.next()
     } else {
-      return Location(program.lineAfter(location.lineNumber), 0)
+      return Location(program.lineAfter(location.lineNumber))
     }
   }
 
