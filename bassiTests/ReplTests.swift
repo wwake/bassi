@@ -11,13 +11,15 @@ class ReplTests: XCTestCase {
 
   func testCommandGetsEchoed() {
     let repl = Repl()
-    repl.execute("10 PRINT")
-    XCTAssertTrue(repl.output.contains("10 PRINT\n"))
+    let output = Output()
+    repl.execute("10 PRINT", output)
+    XCTAssertTrue(output.output.contains("10 PRINT\n"))
   }
 
   func testAddingLineSavesIt() {
     let repl = Repl()
-    repl.execute("10 PRINT 42")
+    let output = Output()
+    repl.execute("10 PRINT 42", output)
 
     XCTAssertTrue(repl.contains(10))
     XCTAssertFalse(repl.contains(20))
@@ -25,11 +27,13 @@ class ReplTests: XCTestCase {
 
   func testListKnowsProgram() {
     let repl = Repl()
-    repl.execute("10 PRINT 42")
-    repl.execute("LisT")
+    let output = Output()
+
+    repl.execute("10 PRINT 42", output)
+    repl.execute("LisT", output)
 
     XCTAssertEqual(
-      repl.output,
+      output.output,
 """
 HELLO
 10 PRINT 42
@@ -41,13 +45,15 @@ LisT
 
   func testListSortsByLineNumber() {
     let repl = Repl()
-    repl.execute("10 PRINT 42")
-    repl.execute("20 PRINT 22")
-    repl.execute("5 PRINT 5")
-    repl.execute("LIST")
+    let output = Output()
+
+    repl.execute("10 PRINT 42", output)
+    repl.execute("20 PRINT 22", output)
+    repl.execute("5 PRINT 5", output)
+    repl.execute("LIST", output)
 
     XCTAssertEqual(
-      repl.output,
+      output.output,
 """
 HELLO
 10 PRINT 42
@@ -63,9 +69,11 @@ LIST
 
   func testReplRun() {
     let repl = Repl()
-    repl.execute("10 PRINT 42")
+    let output = Output()
 
-    repl.execute("run")
+    repl.execute("10 PRINT 42", output)
+
+    repl.execute("run", output)
 
     let expected = """
 HELLO
@@ -75,8 +83,7 @@ run
 
 """
 
-    XCTAssertEqual(repl.output.count, expected.count)
-    XCTAssertEqual(repl.output, expected)
-
+    XCTAssertEqual(output.output.count, expected.count)
+    XCTAssertEqual(output.output, expected)
   }
 }

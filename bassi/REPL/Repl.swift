@@ -7,11 +7,22 @@
 
 import Foundation
 
+class Output: ObservableObject {
+  @Published var output: String = "HELLO\n"
+
+  func append(_ line: String) {
+    output.append(line)
+  }
+}
+
 class Repl : ObservableObject {
-  var output: String = "HELLO\n"
+  var oldOutput: String = "HELLO\n"
+  var output: Output!
+
   var program = Program()
   
-  func execute(_ command: String) {
+  func execute(_ command: String, _ output: Output) {
+    self.output = output
     append(command)
     append("\n")
 
@@ -22,7 +33,7 @@ class Repl : ObservableObject {
     } else if command.uppercased() == "LIST" {
       doList()
     }  else if command.uppercased() == "RUN" {
-      doRun()
+      doRun(output)
     }
   }
 
@@ -42,9 +53,9 @@ class Repl : ObservableObject {
       }
   }
 
-  func doRun() {
+  func doRun(_ output: Output) {
     do {
-      let interpreter = Interpreter(program)
+      let interpreter = Interpreter(program, output)
       let result = try interpreter.run()
       append(result)
     } catch InterpreterError.error(let lineNumber, let message) {
@@ -56,6 +67,7 @@ class Repl : ObservableObject {
 
   func append(_ line: String) {
     output.append(line)
+    oldOutput.append(line)
   }
 
   func contains(_ lineNumber: Int) -> Bool {

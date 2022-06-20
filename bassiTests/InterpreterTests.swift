@@ -12,7 +12,8 @@ class InterpreterTests: XCTestCase {
 
   fileprivate func checkProgramResults(_ program: String, expecting: String) {
     do {
-      let interpreter = Interpreter(Program(program))
+      let outputter = Output()
+      let interpreter = Interpreter(Program(program), outputter)
       let output = try interpreter.run()
       XCTAssertEqual(output, expecting)
     } catch {
@@ -22,7 +23,9 @@ class InterpreterTests: XCTestCase {
 
   fileprivate func checkExpectedError(_ program: String, expecting: String) {
     do {
-      let interpreter = Interpreter(Program(program))
+      let outputter = Output()
+
+      let interpreter = Interpreter(Program(program), outputter)
       let _ = try interpreter.run()
       XCTFail("Should have thrown error")
     } catch InterpreterError.error(_, let message){
@@ -64,7 +67,8 @@ class InterpreterTests: XCTestCase {
 
   func testEnd() throws {
     let program = Program("999 END")
-    let interpreter = Interpreter(program)
+    let outputter = Output()
+    let interpreter = Interpreter(program, outputter)
     let _ = try interpreter.run()
     XCTAssertTrue(interpreter.done)
   }
@@ -83,7 +87,8 @@ class InterpreterTests: XCTestCase {
 
   func testSyntaxErrorStopsInterpreter() throws {
     let program = "10 PRINT {}"
-    let interpreter = Interpreter(Program(program))
+    let outputter = Output()
+    let interpreter = Interpreter(Program(program), outputter)
     let actual = try interpreter.run()
     XCTAssertEqual(
       actual,
@@ -160,30 +165,30 @@ class InterpreterTests: XCTestCase {
       40,
       [.print([expression])])
 
-    let interpreter = Interpreter(Program())
+    let outputter = Output()
+    let interpreter = Interpreter(Program(), outputter)
     let output = try interpreter.step(parse.statements[0], "")
     XCTAssertEqual(output, "7\n")
   }
 
   func testLogicalOperationsOnIntegers() throws {
-    let program = Program("25 PRINT NOT -8 OR 5 AND 4")
-    let interpreter = Interpreter(program)
-    let output = try interpreter.run()
-    XCTAssertEqual(output, "7\n")
+    checkProgramResults(
+      "25 PRINT NOT -8 OR 5 AND 4",
+      expecting: "7\n")
   }
 
   func testVariableDefaultsToZero() throws {
-    let program = Program("25 PRINT Y9")
-    let interpreter = Interpreter(program)
-    let output = try interpreter.run()
-    XCTAssertEqual(output, "0\n")
+    checkProgramResults(
+      "25 PRINT Y9",
+      expecting: "0\n")
   }
 
   func testPrintWithUnaryMinus() throws {
     let expr = Expression.op1(
       .minus,
       .number(21.0))
-    let interpreter = Interpreter(Program())
+    let outputter = Output()
+    let interpreter = Interpreter(Program(), outputter)
     let output = try interpreter.evaluate(expr, [:])
     XCTAssertEqual(output, .number(-21))
   }
@@ -212,7 +217,8 @@ class InterpreterTests: XCTestCase {
       10,
       [.goto(10)])
 
-    let interpreter = Interpreter(Program("10 GOTO 10"))
+    let outputter = Output()
+    let interpreter = Interpreter(Program("10 GOTO 10"), outputter)
 
     XCTAssertEqual(interpreter.nextLocation, nil)
 
@@ -227,7 +233,8 @@ class InterpreterTests: XCTestCase {
       10,
       [.goto(20)])
 
-    let interpreter = Interpreter(Program())
+    let outputter = Output()
+    let interpreter = Interpreter(Program(), outputter)
 
     let _ = try interpreter.step(parse.statements[0], "")
 
@@ -366,7 +373,8 @@ class InterpreterTests: XCTestCase {
         .string
       )])
 
-    let interpreter = Interpreter(Program())
+    let outputter = Output()
+    let interpreter = Interpreter(Program(), outputter)
     let _ = try interpreter.step(parse.statements[0], "")
     XCTAssertNotNil(interpreter.globals["FNI"])
   }
@@ -461,7 +469,8 @@ class InterpreterTests: XCTestCase {
 
   func testRandomNumbers() throws {
     try (1...1000).forEach { _ in
-      let interpreter = Interpreter(Program("1 PRINT RND(0)"))
+      let outputter = Output()
+      let interpreter = Interpreter(Program("1 PRINT RND(0)"), outputter)
       let output = try interpreter.run()
       let value = Float(output.dropLast())!
       XCTAssertTrue(value >= 0 && value < 1)
@@ -570,7 +579,8 @@ class InterpreterTests: XCTestCase {
 
   func testDIMknowsTypeAndSize() throws {
     let program = Program("10 DIM A(2)")
-    let interpreter = Interpreter(program)
+    let outputter = Output()
+    let interpreter = Interpreter(program, outputter)
     let _ = try interpreter.run()
     XCTAssertEqual(
       interpreter.globals["A"]!,
@@ -581,8 +591,8 @@ class InterpreterTests: XCTestCase {
 
   func testDIMknowsTypeAndSizeForMultiDArray() throws {
     let program = Program("10 DIM A(2,1,2)")
-
-    let interpreter = Interpreter(program)
+    let outputter = Output()
+    let interpreter = Interpreter(program, outputter)
     let _ = try interpreter.run()
 
     XCTAssertEqual(
@@ -597,7 +607,8 @@ class InterpreterTests: XCTestCase {
   func testDIMmayNotRedeclareVariables() throws {
     do {
       let program = Program("10 DIM A(2)")
-      let interpreter = Interpreter(program)
+      let outputter = Output()
+      let interpreter = Interpreter(program, outputter)
       interpreter.globals["A"] = .number(27)
       let _ = try interpreter.run()
     } catch InterpreterError.error(_, let message) {
@@ -638,7 +649,8 @@ class InterpreterTests: XCTestCase {
 
   func testArrayAssignmentWithoutDIMdefaultsToSize10() throws {
     let program = Program("10 A(2) = 3")
-    let interpreter = Interpreter(program)
+    let outputter = Output()
+    let interpreter = Interpreter(program, outputter)
     let _ = try interpreter.run()
 
     var expected = Array<Value>(
@@ -654,7 +666,8 @@ class InterpreterTests: XCTestCase {
 
   func testArrayAccessWithoutDIMdefaultsToSize10() throws {
     let program = Program("10 PRINT A(2)")
-    let interpreter = Interpreter(program)
+    let outputter = Output()
+    let interpreter = Interpreter(program, outputter)
     let _ = try interpreter.run()
 
     XCTAssertEqual(
@@ -666,7 +679,8 @@ class InterpreterTests: XCTestCase {
   func testErrorMessageIncludesLineNumber() throws {
     do {
       let program = "20 PRINT A(-2)"
-      let interpreter = Interpreter(Program(program))
+      let outputter = Output()
+      let interpreter = Interpreter(Program(program), outputter)
       let _ = try interpreter.run()
       XCTFail("Should have thrown error")
     } catch InterpreterError.error(let lineNumber, _) {

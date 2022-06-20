@@ -100,6 +100,8 @@ class Interpreter {
   static let freeSpaceCount : Float = 100_000
 
   let program: Program
+  let output : Output
+
   let parser = Parser()
   var parse: Parse
 
@@ -165,8 +167,9 @@ class Interpreter {
     "VAL" : Value.function(Fs2n({Float($0) ?? 0})),
   ]
 
-  init(_ program: Program) {
+  init(_ program: Program, _ output: Output) {
     self.program = program
+    self.output = output
 
     location = Location(program.firstLineNumber())
     nextLocation = nil

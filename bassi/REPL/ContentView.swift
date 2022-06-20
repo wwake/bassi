@@ -8,20 +8,22 @@
 import SwiftUI
 
 struct ContentView: View {
-  @ObservedObject var repl = Repl()
+  @ObservedObject var output = Output()
   @State var command: String = ""
+
+  var repl = Repl()
 
   var body: some View {
     VStack {
       ScrollView {
-        Text(repl.output)
+        Text(output.output)
           .padding(.all)
           .frame(maxWidth: .infinity, alignment: .leading)
       }
       TextField("text", text: $command)
         .padding()
         .onSubmit({
-          repl.execute(command)
+          repl.execute(command, output)
           command = ""
         })
     }
