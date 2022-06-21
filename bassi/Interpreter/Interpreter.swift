@@ -420,7 +420,7 @@ class Interpreter {
     }
   }
 
-  fileprivate func doPrint(_ output: String, _ values : [Expression]) throws -> String {
+  fileprivate func doPrint(_ output: String, _ values : [Expression]) throws {
     var result = ""
 
     let printedOutput = try values
@@ -431,7 +431,6 @@ class Interpreter {
     result.append("\n")
     
     outputter.append(result)
-    return output + result
   }
 
   func doGosub(_ subroutineLocation: Location) throws {
