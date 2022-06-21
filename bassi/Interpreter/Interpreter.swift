@@ -421,16 +421,12 @@ class Interpreter {
   }
 
   fileprivate func doPrint(_ values : [Expression]) throws {
-    var result = ""
-
     let printedOutput = try values
       .map(format)
       .joined(separator: " ")
 
-    result.append(printedOutput)
-    result.append("\n")
-    
-    outputter.append(result)
+    outputter.append(printedOutput)
+    outputter.append("\n")
   }
 
   func doGosub(_ subroutineLocation: Location) throws {
