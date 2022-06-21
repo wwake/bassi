@@ -212,17 +212,14 @@ class Interpreter {
     }
   }
 
-  func step(_ statement: Statement) throws -> String {
-    let output = ""
+  func step(_ statement: Statement) throws {
     switch statement {
     case .error(let message):
       done = true
       outputter.append("? \(message)\n")
-      return output + "? \(message)\n"
 
     case .assign(let variable, let expr):
       try doAssign(variable, expr)
-      return output
 
     case .def(let functionName, let parameter, let definition, let theType):
       if globals[functionName] != nil {
@@ -230,7 +227,6 @@ class Interpreter {
       }
 
       globals[functionName] = .userFunction(parameter, definition, theType)
-      return output
 
     case .dim(let name, let dimensions, let type):
       if globals[name] != nil {
@@ -238,51 +234,42 @@ class Interpreter {
       }
 
       doDim(name, dimensions, type)
-      return output
 
     case .end:
       guard returnStack.isEmpty else {
         throw InterpreterError.error(location.lineNumber, "Ended program without returning from active subroutine")
       }
       done = true
-      return output
 
     case .`for`(let variable, let initial, let final, let step):
       try doFor(variable, initial, final, step)
-      return output
 
     case .gosub(let lineNumber):
       try doGosub(Location(lineNumber))
-      return output
 
     case .goto(let newLineNumber):
       doGoto(Location(newLineNumber))
-      return output
 
     case .`if`(let expression, let statements):
-      return try doIf(output, expression, statements)
+      try doIf("", expression, statements)
 
     case .ifGoto(let expr, let target):
       try doIfGoto(expr, Location(target))
-      return output
 
     case .next(let variable):
       try doNext(variable)
-      return output
 
     case .onGoto(let expr, let targets):
       try doOnGoto(expr, targets)
-      return output
 
     case .print(let values):
-      return try doPrint(output, values)
+      try doPrint("", values)
 
     case .`return`:
       try doReturn()
-      return output
 
     case .skip:
-      return output
+      break
     }
   }
 

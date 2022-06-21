@@ -167,8 +167,8 @@ class InterpreterTests: XCTestCase {
 
     let outputter = Output()
     let interpreter = Interpreter(Program(), outputter)
-    let output = try interpreter.step(parse.statements[0])
-    XCTAssertEqual(output, "7\n")
+    try interpreter.step(parse.statements[0])
+    XCTAssertEqual(outputter.output, "7\n")
   }
 
   func testLogicalOperationsOnIntegers() throws {
