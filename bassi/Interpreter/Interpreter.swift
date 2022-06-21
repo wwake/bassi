@@ -263,7 +263,7 @@ class Interpreter {
       try doOnGoto(expr, targets)
 
     case .print(let values):
-      try doPrint("", values)
+      try doPrint(values)
 
     case .`return`:
       try doReturn()
@@ -420,7 +420,7 @@ class Interpreter {
     }
   }
 
-  fileprivate func doPrint(_ output: String, _ values : [Expression]) throws {
+  fileprivate func doPrint(_ values : [Expression]) throws {
     var result = ""
 
     let printedOutput = try values
