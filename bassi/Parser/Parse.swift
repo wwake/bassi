@@ -26,7 +26,6 @@ public struct Parse : Equatable {
 }
 
 public indirect enum Statement : Equatable {
-  case oldError(ParseError)
   case error(LineNumber, ColumnNumber, String)
 
   case assign(Expression, Expression)
@@ -58,7 +57,7 @@ public indirect enum Statement : Equatable {
     if case .if(_, let inner) = list.last! {
       return at(inner, index - list.count)
     }
-    return .oldError(.error(Token(type: .unknown, line: 0, column: 0), "Statement.at: index too big - internal error"))
+    return .error(0, 0, "Statement.at: index too big - internal error")
   }
 }
 

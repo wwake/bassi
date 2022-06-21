@@ -213,10 +213,6 @@ class Interpreter {
 
   func step(_ statement: Statement) throws {
     switch statement {
-    case .oldError(let message):
-      done = true
-      outputter.append("? \(message)\n")
-
     case .error(let lineNumber, let columnNumber, let message):
       done = true
       outputter.append("? \(message)\n")

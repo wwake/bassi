@@ -50,9 +50,12 @@ public class Parser {
     do {
       return try line()
     } catch {
-      return Parse(
-        LineNumber(0),
-        [.oldError(error as! ParseError)])
+      if case .error(let errorToken, let message) = error as! ParseError {
+        return Parse(
+          errorToken.line,
+          [.error(errorToken.line, errorToken.column, message)])
+      }
+      return Parse(0, [.error(0, 0, "\(error)")])
     }
   }
 

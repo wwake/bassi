@@ -39,18 +39,14 @@ class ParserExpressionTests: XCTestCase {
     let parser = Parser()
     let output = parser.parse(line)
 
-    guard case .oldError(let parseError) = output.statements[0] else {
-      XCTFail("Error not found")
-      return
-    }
-    guard case .error(_, let actualMessage) = parseError else {
-      XCTFail("Can't happen")
+    if case .error(_, _, let actualMessage) = output.statements[0] {
+        XCTAssertEqual(
+          actualMessage,
+          expected)
       return
     }
 
-    XCTAssertEqual(
-      actualMessage,
-      expected)
+    XCTFail("no error found")
   }
 
   func testOrExpr() throws {
