@@ -25,6 +25,15 @@ class ReplTests: XCTestCase {
     XCTAssertFalse(repl.contains(20))
   }
 
+  func testMultiLineCommandExecutesEachOne() {
+    let repl = Repl()
+    let output = Output()
+    repl.execute("10 PRINT 10\n20 PRINT 20", output)
+
+    XCTAssertEqual(repl[10], "10 PRINT 10")
+    XCTAssertEqual(repl[20], "20 PRINT 20")
+  }
+
   func testListKnowsProgram() {
     let repl = Repl()
     let output = Output()

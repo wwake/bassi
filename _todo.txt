@@ -1,5 +1,4 @@
 * Run the Amazing maze
-  + Pasting multiple lines doesn't work
   + Error messages don't tell us where the problem is
   + ";" not supported in PRINT
   + Doesn't support TAB() function
@@ -18,6 +17,8 @@
   + No space between strings
 
   * Move token to the lexer itself, then share the lexer between Parser & a new class ExpressionParser
+
+* REPL should automatically scroll to bottom
 
 
 * Track line # of error messages
@@ -43,7 +44,7 @@
 BI-22-31: June 21, 2022
 * Make running write to an output stream
 * Attempt to run the Amazing maze
-
+* REPL supports pasting multiple lines; executes each one
 
 BI-22-30: June 20, 2022
 * FOR statement returning to middle of line

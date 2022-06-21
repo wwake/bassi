@@ -20,20 +20,26 @@ class Repl : ObservableObject {
 
   var program = Program()
   
-  func execute(_ command: String, _ output: Output) {
+  func execute(_ commands: String, _ output: Output) {
     self.output = output
-    append(command)
-    append("\n")
 
-    if command.count == 0 { return }
-    
-    if command.first!.isNumber {
-      doLineNumber(command)
-    } else if command.uppercased() == "LIST" {
-      doList()
-    }  else if command.uppercased() == "RUN" {
-      doRun(output)
-    }
+    commands
+      .split(separator: "\n")
+      .forEach {
+        let command = String($0)
+        append(command)
+        append("\n")
+
+        if command.count == 0 { return }
+
+        if command.first!.isNumber {
+          doLineNumber(command)
+        } else if command.uppercased() == "LIST" {
+          doList()
+        }  else if command.uppercased() == "RUN" {
+          doRun(output)
+        }
+      }
   }
 
   func doLineNumber(_ command: String) {
@@ -65,9 +71,5 @@ class Repl : ObservableObject {
 
   func append(_ line: String) {
     output.append(line)
-  }
-
-  func contains(_ lineNumber: Int) -> Bool {
-    program[lineNumber] != nil
   }
 }

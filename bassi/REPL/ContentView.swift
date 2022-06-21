@@ -20,6 +20,7 @@ struct ContentView: View {
           .padding(.all)
           .frame(maxWidth: .infinity, alignment: .leading)
       }
+      .
       TextField("text", text: $command)
         .padding()
         .onSubmit({
