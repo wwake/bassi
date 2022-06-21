@@ -1,11 +1,5 @@
 * Make running write to an output stream
 
-* Move token to the lexer itself, then share the lexer between Parser & a new class ExpressionParser
-
-* ON..GOSUB
-* DATA, READ, RESTORE
-* INPUT
-
 * Should .number take a Value instead of a Float?
 
 * PRINT with multiple expressions
@@ -18,7 +12,10 @@
   + semicolon at eol means don't print newline
   + numbers have a space before and after
   + No space between strings
-  
+
+  * Move token to the lexer itself, then share the lexer between Parser & a new class ExpressionParser
+
+
 * Track line # of error messages
 * Column number of syntax errors
 * Error sync by skipping forward to next line # (or end)
@@ -33,8 +30,14 @@
 
 * Handle interpreter.format() for arrays
 
+* ON..GOSUB
+* DATA, READ, RESTORE
+* INPUT
 
-Parameterized tests package?
+* Parameterized tests package?
+
+BI-22-31: June 21, 2022
+
 
 BI-22-30: June 20, 2022
 * FOR statement returning to middle of line

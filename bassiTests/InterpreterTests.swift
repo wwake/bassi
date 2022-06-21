@@ -15,7 +15,8 @@ class InterpreterTests: XCTestCase {
       let outputter = Output()
       let interpreter = Interpreter(Program(program), outputter)
       let output = try interpreter.run()
-      XCTAssertEqual(output, expecting)
+   //   XCTAssertEqual(output, expecting, "old way")
+      XCTAssertEqual(outputter.output, expecting, "new way")
     } catch {
       XCTFail("\(error)")
     }
@@ -91,7 +92,7 @@ class InterpreterTests: XCTestCase {
     let interpreter = Interpreter(Program(program), outputter)
     let actual = try interpreter.run()
     XCTAssertEqual(
-      actual,
+      outputter.output,
       "? error(\"Expected start of expression\")\n")
   }
 
@@ -472,7 +473,7 @@ class InterpreterTests: XCTestCase {
       let outputter = Output()
       let interpreter = Interpreter(Program("1 PRINT RND(0)"), outputter)
       let output = try interpreter.run()
-      let value = Float(output.dropLast())!
+      let value = Float(outputter.output.dropLast())!
       XCTAssertTrue(value >= 0 && value < 1)
     }
   }

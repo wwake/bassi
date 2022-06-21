@@ -8,7 +8,7 @@
 import Foundation
 
 class Output: ObservableObject {
-  @Published var output: String = "HELLO\n"
+  @Published var output: String = ""
 
   func append(_ line: String) {
     output.append(line)

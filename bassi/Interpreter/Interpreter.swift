@@ -100,7 +100,7 @@ class Interpreter {
   static let freeSpaceCount : Float = 100_000
 
   let program: Program
-  let output : Output
+  let outputter : Output
 
   let parser = Parser()
   var parse: Parse
@@ -169,7 +169,7 @@ class Interpreter {
 
   init(_ program: Program, _ output: Output) {
     self.program = program
-    self.output = output
+    self.outputter = output
 
     location = Location(program.firstLineNumber())
     nextLocation = nil
@@ -199,6 +199,7 @@ class Interpreter {
       if nextLocation!.lineNumber != location.lineNumber {
         guard let line = program[nextLocation!.lineNumber] else {
           done = true
+          outputter.append("? Attempted to execute non-existent line: \(nextLocation!.lineNumber)\n")
           return output + "? Attempted to execute non-existent line: \(nextLocation!.lineNumber)\n"
         }
 
@@ -213,13 +214,14 @@ class Interpreter {
         output)
     }
 
-    return output
+    return ""
   }
 
   func step(_ statement: Statement, _ output: String) throws -> String {
     switch statement {
     case .error(let message):
       done = true
+      outputter.append("? \(message)\n")
       return output + "? \(message)\n"
 
     case .assign(let variable, let expr):
@@ -436,7 +438,7 @@ class Interpreter {
   }
 
   fileprivate func doPrint(_ output: String, _ values : [Expression]) throws -> String {
-    var result = output
+    var result = ""
 
     let printedOutput = try values
       .map(format)
@@ -444,7 +446,9 @@ class Interpreter {
 
     result.append(printedOutput)
     result.append("\n")
-    return result
+    
+    outputter.append(result)
+    return output + result
   }
 
   func doGosub(_ subroutineLocation: Location) throws {

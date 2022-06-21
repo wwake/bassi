@@ -35,7 +35,6 @@ class ReplTests: XCTestCase {
     XCTAssertEqual(
       output.output,
 """
-HELLO
 10 PRINT 42
 LisT
 10 PRINT 42
@@ -55,7 +54,6 @@ LisT
     XCTAssertEqual(
       output.output,
 """
-HELLO
 10 PRINT 42
 20 PRINT 22
 5 PRINT 5
@@ -76,7 +74,6 @@ LIST
     repl.execute("run", output)
 
     let expected = """
-HELLO
 10 PRINT 42
 run
 42
