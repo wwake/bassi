@@ -447,15 +447,13 @@ class Interpreter {
     nextLocation = newLocation
   }
 
-  fileprivate func doIf(_ output: String, _ expr: Expression, _ statements: [Statement]) throws -> String {
+  fileprivate func doIf(_ output: String, _ expr: Expression, _ statements: [Statement]) throws {
 
     let condition = try evaluate(expr, globals)
 
     if condition == .number(0.0) {
       doGoto(Location(program.lineAfter(location.lineNumber)))
     }
-
-    return output
   }
 
   fileprivate func doIfGoto(_ expr: Expression, _ target: Location) throws {
