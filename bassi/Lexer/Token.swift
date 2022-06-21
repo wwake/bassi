@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Token {
+public struct Token : Equatable {
   var type: TokenType
   var line: Int
   var column: Int

@@ -90,9 +90,7 @@ class InterpreterTests: XCTestCase {
     let outputter = Output()
     let interpreter = Interpreter(Program(program), outputter)
     try interpreter.run()
-    XCTAssertEqual(
-      outputter.output,
-      "? error(\"Expected start of expression\")\n")
+    XCTAssertTrue(outputter.output.contains("? error"))
   }
 
   func testSkip() throws {

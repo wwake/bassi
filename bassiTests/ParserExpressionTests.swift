@@ -33,14 +33,24 @@ class ParserExpressionTests: XCTestCase {
 
   func checkError(
     _ program: String,
-    _ expected: ParseError)
+    _ expected: String)
   {
     let line = program
     let parser = Parser()
     let output = parser.parse(line)
+
+    guard case .error(let parseError) = output.statements[0] else {
+      XCTFail("Error not found")
+      return
+    }
+    guard case .error(_, let actualMessage) = parseError else {
+      XCTFail("Can't happen")
+      return
+    }
+
     XCTAssertEqual(
-      output,
-      Parse(output.lineNumber, [.error(expected)]))
+      actualMessage,
+      expected)
   }
 
   func testOrExpr() throws {
@@ -131,21 +141,21 @@ class ParserExpressionTests: XCTestCase {
     let expression = "(((21)"
     checkError(
       "10 PRINT \(expression)",
-      .error("Missing ')'")
+      "Missing ')'"
     )
   }
 
   func testPrintImproperExpression() {
     checkError(
       "10 PRINT +",
-      .error("Expected start of expression")
+      "Expected start of expression"
     )
   }
   func testErrorWhenFactorIsNotValid() {
     let expression = "(((*"
     checkError(
       "10 PRINT \(expression)",
-      .error("Expected start of expression")
+      "Expected start of expression"
     )
   }
 
@@ -166,9 +176,7 @@ class ParserExpressionTests: XCTestCase {
   }
 
   func testRelationalOperatorNeedsSameTypes() {
-    checkError("17 A=B$ < 3", .error("Type mismatch"))
-    checkError("17 A=33=B$", .error("Type mismatch"))
+    checkError("17 A=B$ < 3", "Type mismatch")
+    checkError("17 A=33=B$", "Type mismatch")
   }
-
-
 }

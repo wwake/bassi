@@ -8,7 +8,7 @@
 import Foundation
 
 public enum ParseError: Error, Equatable {
-  case error(String)
+  case error(Token, String)
 }
 
 public typealias LineNumber = Int
@@ -56,7 +56,7 @@ public indirect enum Statement : Equatable {
     if case .if(_, let inner) = list.last! {
       return at(inner, index - list.count)
     }
-    return .error(.error("Statement.at: index too big - internal error"))
+    return .error(.error(Token(type: .unknown, line: 0, column: 0), "Statement.at: index too big - internal error"))
   }
 }
 

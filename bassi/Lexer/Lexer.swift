@@ -127,7 +127,7 @@ class Lexer {
     return normalizedPieces.joined()
   }
 
-  func index(at: Int) ->String.Index {
+  func index(at: Int) -> String.Index {
     program.index(
       program.startIndex,
       offsetBy: at)

@@ -50,14 +50,24 @@ class ParserTests: XCTestCase {
 
   func checkError(
     _ program: String,
-    _ expected: ParseError)
+    _ expected: String)
   {
     let line = program
     let parser = Parser()
     let output = parser.parse(line)
+
+    guard case .error(let parseError) = output.statements[0] else {
+      XCTFail("Error not found")
+      return
+    }
+    guard case .error(_, let actualMessage) = parseError else {
+      XCTFail("Can't happen")
+      return
+    }
+
     XCTAssertEqual(
-      output,
-      Parse(output.lineNumber, [.error(expected)]))
+      actualMessage,
+      expected)
   }
 
   func test10END() throws {
@@ -74,10 +84,10 @@ class ParserTests: XCTestCase {
 
   func testLineNumberIsInRange0to99999() {
     checkError(
-      "0 END", ParseError.error("Line number must be between 1 and 99999"))
+      "0 END", "Line number must be between 1 and 99999")
 
     checkError(
-      "100000 END", ParseError.error("Line number must be between 1 and 99999"))
+      "100000 END", "Line number must be between 1 and 99999")
   }
 
   func test10REM() throws {
@@ -90,7 +100,7 @@ class ParserTests: XCTestCase {
   func testNoLineNumber() {
     checkError(
       "REM remark",
-      .error("Line number is required; found remark"))
+      "Line number is required; found remark")
   }
 
   func testPrintStatement() {
@@ -110,7 +120,7 @@ class ParserTests: XCTestCase {
   func testPrintPrintIsError() {
     checkError(
       "25 PRINT PRINT",
-      .error("Expected start of expression")
+      "Expected start of expression"
     )
   }
 
@@ -131,7 +141,7 @@ class ParserTests: XCTestCase {
   func testGotoWithMissingTarget() throws {
     checkError(
       "10 GOTO",
-      .error("Missing target of GOTO")
+      "Missing target of GOTO"
     )
   }
 
@@ -145,20 +155,20 @@ class ParserTests: XCTestCase {
   func testIfMustCheckNumericType() throws {
     checkError(
       "42 IF A$ THEN 43",
-      .error("Numeric type is required"))
+      "Numeric type is required")
   }
 
   func testIfMissingThenGetsError() throws {
     checkError(
       "42 IF 0 PRINT",
-      .error("Missing 'THEN'")
+      "Missing 'THEN'"
     )
   }
 
   func testIfThenMissingTargetGetsError() throws {
     checkError(
       "42 IF 0 THEN",
-      .error("Unknown statement")
+      "Unknown statement"
     )
   }
 
@@ -217,21 +227,21 @@ class ParserTests: XCTestCase {
   func testAssignMissingEqualSign() {
     checkError(
       "42 HUH REMARK",
-      .error("Assignment is missing '='")
+      "Assignment is missing '='"
     )
   }
 
   func testLETMissingAssignment() {
     checkError(
       "42 LET",
-      ParseError.error("LET is missing variable to assign to")
+      "LET is missing variable to assign to"
     )
   }
 
   func testAssignStringToNumberFails() {
     checkError(
       "17 A=B$",
-      .error("Type mismatch")
+      "Type mismatch"
     )
   }
 
@@ -253,20 +263,20 @@ class ParserTests: XCTestCase {
   }
 
   func testStringCantDoArithmetic() {
-    checkError("17 A=-B$", .error("Numeric type is required"))
+    checkError("17 A=-B$", "Numeric type is required")
 
-    checkError("17 A=B$^3", .error("Type mismatch"))
-    checkError("17 A=3^B$", .error("Type mismatch"))
+    checkError("17 A=B$^3", "Type mismatch")
+    checkError("17 A=3^B$", "Type mismatch")
 
-    checkError("17 A=B$*C$", .error("Type mismatch"))
-    checkError("17 A=3/B$", .error("Type mismatch"))
+    checkError("17 A=B$*C$", "Type mismatch")
+    checkError("17 A=3/B$", "Type mismatch")
 
-    checkError("17 A=B$+C$", .error("Type mismatch"))
-    checkError("17 A=3-B$", .error("Type mismatch"))
+    checkError("17 A=B$+C$", "Type mismatch")
+    checkError("17 A=3-B$", "Type mismatch")
 
-    checkError("17 A=NOT B$", .error("Numeric type is required"))
-    checkError("17 A=B$ AND 3", .error("Type mismatch"))
-    checkError("17 A=42 OR B$", .error("Type mismatch"))
+    checkError("17 A=NOT B$", "Numeric type is required")
+    checkError("17 A=B$ AND 3", "Type mismatch")
+    checkError("17 A=42 OR B$", "Type mismatch")
   }
 
   func testDefDefinesHelperFunctions() {
@@ -282,13 +292,13 @@ class ParserTests: XCTestCase {
   }
 
   func testDefErrorMessages() {
-    checkError("17 DEF F(X)=X", .error("DEF requires a name of the form FNx"))
-    checkError("17 DEF FN(x)=X", .error("DEF requires a name of the form FNx"))
-    checkError("17 DEF FNX9(x)=X", .error("DEF function name cannot be followed by extra letters"))
-    checkError("17 DEF FNI x)=X", .error("Missing '('"))
-    checkError("17 DEF FNZ()=X", .error("Variable is required"))
-    checkError("17 DEF FNA(x=X", .error("DEF requires ')' after parameter"))
-    checkError("17 DEF FNP(x) -> X", .error("DEF requires '=' after parameter definition"))
+    checkError("17 DEF F(X)=X", "DEF requires a name of the form FNx")
+    checkError("17 DEF FN(x)=X", "DEF requires a name of the form FNx")
+    checkError("17 DEF FNX9(x)=X", "DEF function name cannot be followed by extra letters")
+    checkError("17 DEF FNI x)=X", "Missing '('")
+    checkError("17 DEF FNZ()=X", "Variable is required")
+    checkError("17 DEF FNA(x=X", "DEF requires ')' after parameter")
+    checkError("17 DEF FNP(x) -> X", "DEF requires '=' after parameter definition")
   }
 
   func testPredefinedFunction() {
@@ -322,21 +332,21 @@ class ParserTests: XCTestCase {
   func testPredefinedFunctionEnforcesTypes() {
     checkError(
       "25 PRINT SQR(\"X\")",
-      .error("Type mismatch")
+      "Type mismatch"
     )
   }
 
   func testCantAssignPredefinedStringFunctionCallToNumericVariable() {
     checkError(
       "25 A=CHR$(17)",
-      .error("Type mismatch")
+      "Type mismatch"
     )
   }
 
   func testPredefinedFunctionEnforcesNumberOfArguments() {
     checkError(
       "25 PRINT LEFT$(\"X\")",
-      .error("Type mismatch")
+      "Type mismatch"
     )
   }
 
@@ -353,7 +363,7 @@ class ParserTests: XCTestCase {
   func testPredefinedFunctionDetectsTypeMismatchForMultipleArguments() {
     checkError(
       "10 PRINT LEFT$(\"S\", \"T\")",
-      .error("Type mismatch")
+      "Type mismatch"
     )
   }
 
@@ -390,14 +400,14 @@ class ParserTests: XCTestCase {
   func testDefCallMustTakeNumericArgument() {
     checkError(
       "10 PRINT FNI(\"str\")",
-      .error("Type mismatch"))
+      "Type mismatch")
   }
 
   func testUserDefinedFunctionsMustHaveNumericResult() {
     checkError("""
 10 DEF FNA(Y)="string"
 """,
-               .error("Numeric type is required"))
+      "Numeric type is required")
   }
 
   func testDIMNumber() {
@@ -424,7 +434,7 @@ class ParserTests: XCTestCase {
   func testRightParendErrorInDim() {
     checkError(
       "10 DIM Z(3",
-      ParseError.error("Missing ')'"))
+      "Missing ')'")
   }
   
   func testFetchFromArray() {
@@ -463,30 +473,30 @@ class ParserTests: XCTestCase {
   func testFORrequiresVariableEqualsAndTO() {
     checkError(
       "10 FOR 1 TO 10",
-      ParseError.error("Variable is required")
+      "Variable is required"
     )
     checkError(
       "10 FOR X (1) TO 10",
-      ParseError.error("'=' is required")
+      "'=' is required"
     )
     checkError(
       "10 FOR X = 1, 10",
-      ParseError.error("'TO' is required")
+      "'TO' is required"
     )
   }
 
   func testFORrequiresNumericExpressions() {
     checkError(
       "10 FOR X=\"string\" TO 10",
-      ParseError.error("Numeric type is required")
+      "Numeric type is required"
     )
     checkError(
       "10 FOR X=1 TO \"10\"",
-      ParseError.error("Numeric type is required")
+      "Numeric type is required"
     )
     checkError(
       "10 FOR X = 1 TO 10 STEP \"X\"",
-      ParseError.error("Numeric type is required")
+      "Numeric type is required"
     )
   }
 
@@ -500,7 +510,7 @@ class ParserTests: XCTestCase {
   func testNEXTrequiresVariable() {
     checkError(
       "10 NEXT",
-      ParseError.error("Variable is required")
+      "Variable is required"
     )
   }
 
@@ -513,11 +523,11 @@ class ParserTests: XCTestCase {
   func testGOSUBrequiresLineNumber() {
     checkError(
       "10 GOSUB",
-      ParseError.error("Missing target of GOSUB"))
+      "Missing target of GOSUB")
 
     checkError(
       "10 GOSUB X",
-      ParseError.error("Missing target of GOSUB"))
+      "Missing target of GOSUB")
   }
 
   func testRETURN() {
@@ -529,7 +539,7 @@ class ParserTests: XCTestCase {
   func testRETURNstandsAlone() {
     checkError(
       "10 RETURN X",
-      ParseError.error("Extra characters at end of line"))
+      "Extra characters at end of line")
   }
 
   func testON_GOTO() {
@@ -543,19 +553,19 @@ class ParserTests: XCTestCase {
   func testONmissingGOTOisError() {
     checkError(
       "10 ON 2 THEN 10,20,30",
-      ParseError.error("GOTO is missing"))
+      "GOTO is missing")
   }
 
   func testONmissingLineNumbersIsError() {
     checkError(
       "10 ON 2 GOTO X",
-      ParseError.error("ON..GOTO requires at least one line number after GOTO"))
+      "ON..GOTO requires at least one line number after GOTO")
   }
 
   func testONmissingLineNumberAfterCommaIsError() {
     checkError(
       "10 ON 2 GOTO 10,",
-      ParseError.error("ON..GOTO requires line number after comma"))
+      "ON..GOTO requires line number after comma")
   }
 
   func testSimpleStatementsJustCount() {

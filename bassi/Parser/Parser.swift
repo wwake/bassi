@@ -12,6 +12,8 @@ public class Parser {
 
   var lexer: Lexer = Lexer("")
 
+  var theToken: Token = Token(type: .unknown, line: 0, column: 0)
+
   var token: TokenType = .unknown
   var lineNumber = 0
   var columnNumber = 0
@@ -19,20 +21,20 @@ public class Parser {
   let relops: [TokenType] = [.equals, .lessThan, .lessThanOrEqualTo, .notEqual, .greaterThan, .greaterThanOrEqualTo]
 
   func nextToken() {
-    let theToken = lexer.next()
+    theToken = lexer.next()
     token = theToken.type
   }
 
   fileprivate func require(_ expected: TokenType, _ message: String) throws {
     if token != expected {
-      throw ParseError.error(message)
+      throw ParseError.error(theToken, message)
     }
     nextToken()
   }
 
   func requireVariable() throws -> String {
     guard case .variable(let variable) = token else {
-      throw ParseError.error("Variable is required")
+      throw ParseError.error(theToken, "Variable is required")
     }
     nextToken()
     return variable
@@ -59,7 +61,7 @@ public class Parser {
       nextToken()
 
       if lineNumber <= 0 || lineNumber > maxLineNumber {
-        throw ParseError.error("Line number must be between 1 and \(maxLineNumber)")
+        throw ParseError.error(theToken, "Line number must be between 1 and \(maxLineNumber)")
       }
 
       let statementParse = try statements()
@@ -70,7 +72,7 @@ public class Parser {
     }
     let errorToken = token
     nextToken()
-    throw ParseError.error("Line number is required; found \(errorToken)")
+    throw ParseError.error(theToken, "Line number is required; found \(errorToken)")
   }
 
   func statements() throws -> [Statement] {
@@ -140,7 +142,7 @@ public class Parser {
 
     default:
       nextToken()
-      throw ParseError.error("Unknown statement")
+      throw ParseError.error(theToken, "Unknown statement")
     }
 
     return result
@@ -164,12 +166,12 @@ public class Parser {
     try require(.fn, "DEF requires a name of the form FNx")
 
     guard case .variable(let name) = token else {
-      throw ParseError.error("DEF requires a name of the form FNx")
+      throw ParseError.error(theToken, "DEF requires a name of the form FNx")
     }
     nextToken()
 
     if name.count != 1 {
-      throw ParseError.error("DEF function name cannot be followed by extra letters")
+      throw ParseError.error(theToken, "DEF function name cannot be followed by extra letters")
     }
 
     try require(.leftParend, "Missing '('")
@@ -198,7 +200,7 @@ public class Parser {
       return .gosub(lineNumber)
     }
 
-    throw ParseError.error("Missing target of GOSUB")
+    throw ParseError.error(theToken, "Missing target of GOSUB")
   }
 
   func goto() throws -> Statement {
@@ -209,7 +211,7 @@ public class Parser {
       return .goto(lineNumber)
     }
     
-    throw ParseError.error("Missing target of GOTO")
+    throw ParseError.error(theToken, "Missing target of GOTO")
   }
 
   func ifThen() throws -> Statement {
@@ -235,7 +237,7 @@ public class Parser {
     if case .variable(let name) = token {
       return try assign(name)
     }
-    throw ParseError.error("LET is missing variable to assign to")
+    throw ParseError.error(theToken, "LET is missing variable to assign to")
   }
 
   func on() throws -> Statement {
@@ -248,7 +250,7 @@ public class Parser {
     var targets : [LineNumber] = []
 
     guard case .integer(let target) = token else {
-      throw ParseError.error("ON..GOTO requires at least one line number after GOTO")
+      throw ParseError.error(theToken, "ON..GOTO requires at least one line number after GOTO")
     }
     nextToken()
 
@@ -258,7 +260,7 @@ public class Parser {
       nextToken()
 
       guard case .integer(let target) = token else {
-        throw ParseError.error("ON..GOTO requires line number after comma")
+        throw ParseError.error(theToken, "ON..GOTO requires line number after comma")
       }
       nextToken()
       targets.append(target)
@@ -294,7 +296,7 @@ public class Parser {
 
   fileprivate func requireFloatType(_ expr: Expression) throws {
     if expr.type() != .number {
-      throw ParseError.error("Numeric type is required")
+      throw ParseError.error(theToken, "Numeric type is required")
     }
   }
 
@@ -302,7 +304,7 @@ public class Parser {
     _ left: Expression,
     _ right: Expression) throws {
       if left.type() != .number || right.type() != .number {
-        throw ParseError.error("Type mismatch")
+        throw ParseError.error(theToken, "Type mismatch")
       }
     }
 
@@ -310,7 +312,7 @@ public class Parser {
     _ left: Expression,
     _ right: Expression) throws {
       if left.type() != right.type() {
-        throw ParseError.error("Type mismatch")
+        throw ParseError.error(theToken, "Type mismatch")
       }
     }
 
@@ -445,7 +447,7 @@ public class Parser {
     } else if case .fn = token {
       return try userdefinedFunctionCall()
     } else {
-      throw ParseError.error("Expected start of expression")
+      throw ParseError.error(theToken, "Expected start of expression")
     }
   }
 
@@ -498,7 +500,7 @@ public class Parser {
     nextToken()
 
     guard case .function(let parameterTypes, let resultType) = type else {
-      throw ParseError.error("Internal error: Function has non-function type")
+      throw ParseError.error(theToken, "Internal error: Function has non-function type")
     }
 
     try require(.leftParend, "Missing '('")
@@ -527,13 +529,13 @@ public class Parser {
     _ arguments: [Expression]) throws {
 
       if parameterTypes.count < arguments.count {
-        throw ParseError.error("Function not called with correct number of arguments")
+        throw ParseError.error(theToken, "Function not called with correct number of arguments")
       }
 
       try zip(parameterTypes, arguments)
         .forEach { (parameterType, argument) in
           if !isCompatible(parameterType, argument.type()) {
-            throw ParseError.error("Type mismatch")
+            throw ParseError.error(theToken, "Type mismatch")
           }
         }
     }
@@ -560,7 +562,7 @@ public class Parser {
     nextToken()
 
     guard case .variable(let parameter) = token else {
-      throw ParseError.error("Call to FNx must have letter after FN")
+      throw ParseError.error(theToken, "Call to FNx must have letter after FN")
     }
     nextToken()
 
@@ -585,7 +587,7 @@ public class Parser {
     var dimensions : [Int] = []
 
     guard case .integer(let size) = token else {
-      throw ParseError.error("Integer dimension size is required")
+      throw ParseError.error(theToken, "Integer dimension size is required")
     }
     nextToken()
     dimensions.append(size + 1)
@@ -594,7 +596,7 @@ public class Parser {
       nextToken()
 
       guard case .integer(let size) = token else {
-        throw ParseError.error("Integer dimension size is required")
+        throw ParseError.error(theToken, "Integer dimension size is required")
       }
       nextToken()
       dimensions.append(size + 1)
