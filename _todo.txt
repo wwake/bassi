@@ -1,6 +1,10 @@
-* Make running write to an output stream
-
-* Should .number take a Value instead of a Float?
+* Run the Amazing maze
+  + Pasting multiple lines doesn't work
+  + Error messages don't tell us where the problem is
+  + ";" not supported in PRINT
+  + Doesn't support TAB() function
+  + DIM should allow multiple declarations
+  + DIM should allow expressions in dimensions
 
 * PRINT with multiple expressions
    25 PRINT "A" 4221    -- is legal - puts a space between them
@@ -37,6 +41,8 @@
 * Parameterized tests package?
 
 BI-22-31: June 21, 2022
+* Make running write to an output stream
+* Attempt to run the Amazing maze
 
 
 BI-22-30: June 20, 2022

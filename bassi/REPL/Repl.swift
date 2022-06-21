@@ -16,7 +16,6 @@ class Output: ObservableObject {
 }
 
 class Repl : ObservableObject {
-  var oldOutput: String = "HELLO\n"
   var output: Output!
 
   var program = Program()
@@ -66,7 +65,6 @@ class Repl : ObservableObject {
 
   func append(_ line: String) {
     output.append(line)
-    oldOutput.append(line)
   }
 
   func contains(_ lineNumber: Int) -> Bool {
