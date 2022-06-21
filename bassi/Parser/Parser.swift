@@ -52,7 +52,7 @@ public class Parser {
     } catch {
       return Parse(
         LineNumber(0),
-        [.error(error as! ParseError)])
+        [.oldError(error as! ParseError)])
     }
   }
 

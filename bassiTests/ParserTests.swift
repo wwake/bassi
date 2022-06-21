@@ -56,7 +56,7 @@ class ParserTests: XCTestCase {
     let parser = Parser()
     let output = parser.parse(line)
 
-    guard case .error(let parseError) = output.statements[0] else {
+    guard case .oldError(let parseError) = output.statements[0] else {
       XCTFail("Error not found")
       return
     }

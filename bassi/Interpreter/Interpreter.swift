@@ -213,9 +213,14 @@ class Interpreter {
 
   func step(_ statement: Statement) throws {
     switch statement {
-    case .error(let message):
+    case .oldError(let message):
       done = true
       outputter.append("? \(message)\n")
+
+    case .error(let lineNumber, let columnNumber, let message):
+      done = true
+      outputter.append("? \(message)\n")
+//      outputter.append("?\(lineNumber):\(columnNumber) \(message)")
 
     case .assign(let variable, let expr):
       try doAssign(variable, expr)
