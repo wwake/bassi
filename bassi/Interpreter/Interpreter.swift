@@ -196,7 +196,6 @@ class Interpreter {
 
       if nextLocation!.lineNumber != location.lineNumber {
         guard let line = program[nextLocation!.lineNumber] else {
-          done = true
           outputter.append("? Attempted to execute non-existent line: \(nextLocation!.lineNumber)\n")
           return
         }
