@@ -1,5 +1,4 @@
 * Run the Amazing maze
-  + Error messages don't tell us where the problem is
   + ";" not supported in PRINT
   + Doesn't support TAB() function
   + DIM should allow multiple declarations
@@ -45,6 +44,7 @@ BI-22-31: June 21, 2022
 * Make running write to an output stream
 * Attempt to run the Amazing maze
 * REPL supports pasting multiple lines; executes each one
+* Error messages now tell us where the problem is - line & column number
 
 BI-22-30: June 20, 2022
 * FOR statement returning to middle of line

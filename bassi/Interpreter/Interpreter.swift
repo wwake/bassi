@@ -215,8 +215,7 @@ class Interpreter {
     switch statement {
     case .error(let lineNumber, let columnNumber, let message):
       done = true
-      outputter.append("? \(message)\n")
-//      outputter.append("?\(lineNumber):\(columnNumber) \(message)")
+      outputter.append("?\(lineNumber):\(columnNumber) \(message)")
 
     case .assign(let variable, let expr):
       try doAssign(variable, expr)

@@ -90,7 +90,7 @@ class InterpreterTests: XCTestCase {
     let outputter = Output()
     let interpreter = Interpreter(Program(program), outputter)
     try interpreter.run()
-    XCTAssertTrue(outputter.output.starts(with:"?"), "was \(outputter.output)")
+    XCTAssertTrue(outputter.output.starts(with:"?10:7 Expected start of expression"), "was \(outputter.output)")
   }
 
   func testSkip() throws {
