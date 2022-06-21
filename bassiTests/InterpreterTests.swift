@@ -14,9 +14,8 @@ class InterpreterTests: XCTestCase {
     do {
       let outputter = Output()
       let interpreter = Interpreter(Program(program), outputter)
-      let output = try interpreter.run()
-   //   XCTAssertEqual(output, expecting, "old way")
-      XCTAssertEqual(outputter.output, expecting, "new way")
+      try interpreter.run()
+      XCTAssertEqual(outputter.output, expecting)
     } catch {
       XCTFail("\(error)")
     }
@@ -90,7 +89,7 @@ class InterpreterTests: XCTestCase {
     let program = "10 PRINT {}"
     let outputter = Output()
     let interpreter = Interpreter(Program(program), outputter)
-    let actual = try interpreter.run()
+    try interpreter.run()
     XCTAssertEqual(
       outputter.output,
       "? error(\"Expected start of expression\")\n")
@@ -168,7 +167,7 @@ class InterpreterTests: XCTestCase {
 
     let outputter = Output()
     let interpreter = Interpreter(Program(), outputter)
-    let output = try interpreter.step(parse.statements[0], "")
+    let output = try interpreter.step(parse.statements[0])
     XCTAssertEqual(output, "7\n")
   }
 
@@ -223,7 +222,7 @@ class InterpreterTests: XCTestCase {
 
     XCTAssertEqual(interpreter.nextLocation, nil)
 
-    let _ = try interpreter.step(parse.statements[0], "")
+    let _ = try interpreter.step(parse.statements[0])
 
     XCTAssertEqual(interpreter.nextLocation, Location(10,0))
   }
@@ -237,7 +236,7 @@ class InterpreterTests: XCTestCase {
     let outputter = Output()
     let interpreter = Interpreter(Program(), outputter)
 
-    let _ = try interpreter.step(parse.statements[0], "")
+    let _ = try interpreter.step(parse.statements[0])
 
     XCTAssertEqual(interpreter.nextLocation, Location(20,0))
   }
@@ -376,7 +375,7 @@ class InterpreterTests: XCTestCase {
 
     let outputter = Output()
     let interpreter = Interpreter(Program(), outputter)
-    let _ = try interpreter.step(parse.statements[0], "")
+    let _ = try interpreter.step(parse.statements[0])
     XCTAssertNotNil(interpreter.globals["FNI"])
   }
 
@@ -472,7 +471,7 @@ class InterpreterTests: XCTestCase {
     try (1...1000).forEach { _ in
       let outputter = Output()
       let interpreter = Interpreter(Program("1 PRINT RND(0)"), outputter)
-      let output = try interpreter.run()
+      try interpreter.run()
       let value = Float(outputter.output.dropLast())!
       XCTAssertTrue(value >= 0 && value < 1)
     }

@@ -187,7 +187,7 @@ class Interpreter {
   }
 
   func run() throws {
-    _ = try step(parse.statements[location.part], "")
+    _ = try step(parse.statements[location.part])
 
     while !done {
       if nextLocation == nil {
@@ -208,13 +208,12 @@ class Interpreter {
       nextLocation = nil
 
       _ = try step(
-        Statement.at(parse.statements, location.part),
-        "")
+        Statement.at(parse.statements, location.part))
     }
-
   }
 
-  func step(_ statement: Statement, _ output: String) throws -> String {
+  func step(_ statement: Statement) throws -> String {
+    let output = ""
     switch statement {
     case .error(let message):
       done = true
