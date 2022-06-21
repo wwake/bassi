@@ -250,8 +250,8 @@ class Interpreter {
     case .goto(let newLineNumber):
       doGoto(Location(newLineNumber))
 
-    case .`if`(let expression, let statements):
-      try doIf("", expression, statements)
+    case .`if`(let expression, _):
+      try doIf(expression)
 
     case .ifGoto(let expr, let target):
       try doIfGoto(expr, Location(target))
@@ -447,8 +447,7 @@ class Interpreter {
     nextLocation = newLocation
   }
 
-  fileprivate func doIf(_ output: String, _ expr: Expression, _ statements: [Statement]) throws {
-
+  fileprivate func doIf(_ expr: Expression) throws {
     let condition = try evaluate(expr, globals)
 
     if condition == .number(0.0) {
