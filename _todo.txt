@@ -3,13 +3,10 @@
 * Move token to the lexer itself, then share the lexer between Parser & a new class ExpressionParser
 
 * ON..GOSUB
+* DATA, READ, RESTORE
+* INPUT
 
 * Should .number take a Value instead of a Float?
-
-* Handle parser errors better in interpreter
-  + Make errors report line & column number
-
-* Handle interpreter.format() for arrays
 
 * PRINT with multiple expressions
    25 PRINT "A" 4221    -- is legal - puts a space between them
@@ -26,15 +23,23 @@
 * Column number of syntax errors
 * Error sync by skipping forward to next line # (or end)
 
-* DATA, READ, RESTORE
+* Multiple arrays dimensioned in one statement
+
 * STOP
 * What should ASC do if given an empty string?
+
+* Handle parser errors better in interpreter
+  + Make errors report line & column number
+
+* Handle interpreter.format() for arrays
+
 
 Parameterized tests package?
 
 BI-22-30: June 20, 2022
 * FOR statement returning to middle of line
 * Find NEXT statement anywhere in line
+* Make Interpreter take and hold an output stream. (Adjusted code and tests, but nobody actually writes to it yet.)
 
 BI-22-29: June 17, 2022
 * Adjust numbering to account for both IF and its first child
