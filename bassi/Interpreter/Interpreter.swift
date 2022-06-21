@@ -186,10 +186,8 @@ class Interpreter {
     }
   }
 
-  func run() throws -> String {
-    var output = ""
-
-    output = try step(parse.statements[location.part], output)
+  func run() throws {
+    _ = try step(parse.statements[location.part], "")
 
     while !done {
       if nextLocation == nil {
@@ -200,7 +198,7 @@ class Interpreter {
         guard let line = program[nextLocation!.lineNumber] else {
           done = true
           outputter.append("? Attempted to execute non-existent line: \(nextLocation!.lineNumber)\n")
-          return output + "? Attempted to execute non-existent line: \(nextLocation!.lineNumber)\n"
+          return
         }
 
         parse = parser.parse(line)
@@ -209,12 +207,11 @@ class Interpreter {
       location = nextLocation!
       nextLocation = nil
 
-      output = try step(
+      _ = try step(
         Statement.at(parse.statements, location.part),
-        output)
+        "")
     }
 
-    return ""
   }
 
   func step(_ statement: Statement, _ output: String) throws -> String {

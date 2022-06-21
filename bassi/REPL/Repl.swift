@@ -56,8 +56,7 @@ class Repl : ObservableObject {
   func doRun(_ output: Output) {
     do {
       let interpreter = Interpreter(program, output)
-      let result = try interpreter.run()
-      append(result)
+      try interpreter.run()
     } catch InterpreterError.error(let lineNumber, let message) {
       append("\(lineNumber): ?\(message)")
     } catch {
