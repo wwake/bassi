@@ -69,6 +69,7 @@ public enum TokenType  {
 
   case restore
   case `return`
+  case semicolon
   case step
   case stop
   case then

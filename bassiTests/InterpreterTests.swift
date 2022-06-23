@@ -161,7 +161,7 @@ class InterpreterTests: XCTestCase {
     let parse =
     Parse(
       40,
-      [.print([expression], true)])
+      [.print([.expr(expression)], true)])
 
     let outputter = Output()
     let interpreter = Interpreter(Program(), outputter)

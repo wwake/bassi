@@ -1,4 +1,4 @@
-* 10 PRINT: PRINT --fails
+* Make trailing ";" suppress newline on PRINT
 
 * Run the Amazing maze
   + ";" not supported in PRINT
@@ -45,6 +45,9 @@
 * INPUT
 
 * Parameterized tests package?
+
+BI-22-32: June 23, 2022
+* 10 PRINT: PRINT --fails (fixed)
 
 BI-22-31: June 21, 2022
 * Make running write to an output stream
@@ -272,7 +275,7 @@ line -> line-number statement "\n"
 line-number -> INTEGER(INT)
 
 statement -> "REM" .*
-statement -> "PRINT" expression?
+statement -> printStatement
 statement -> "GOTO" INTEGER(int)
 statement -> "IF" expression "THEN" INTEGER(int)
 statement -> "IF" expression "THEN" statement
@@ -280,6 +283,11 @@ statement -> [LET] VARIABLE ["(" expr {"," expr } ")"] = expression
 statement -> DIM variable "(" INTEGER(INT) {"," INTEGER(INT)} ")"
 statement -> FOR variable = expression TO expression [ STEP expression ]
 statement -> NEXT variable     // or [variable] - OSI; or [variable, {, variable }] -- C64
+
+printStatement -> "PRINT" (expression|","|";")*
+
+PRINT "X=" X, "Y=" Y; Z ;;;;
+X= 3       Y= 4 5
 
 FOR loop semantics:
    FOR X = e1 TO e2 STEP e3
@@ -385,6 +393,7 @@ NEXT:
     statement after next
 
 Loopstack: (X, limit, step, ?? body)
+
 
 
 expression -> orExpr

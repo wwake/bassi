@@ -279,10 +279,10 @@ public class Parser {
       return Statement.print([], true)
     }
 
-    var values: [Expression] = []
+    var values: [Printable] = []
 
     let value = try expression()
-    values.append(value)
+    values.append(.expr(value))
 
     return Statement.print(values, true)
   }
@@ -291,7 +291,6 @@ public class Parser {
     nextToken()
     return .`return`
   }
-
 
   func typeFor(_ name: String) -> `Type` {
     name.last! == "$" ? .string : .number

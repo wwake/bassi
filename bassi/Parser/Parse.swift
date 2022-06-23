@@ -39,7 +39,7 @@ public indirect enum Statement : Equatable {
   case ifGoto(Expression, LineNumber)
   case next(Name)
   case onGoto(Expression, [LineNumber])
-  case print([Expression], Bool)
+  case print([Printable], Bool)
   case `return`
   case skip
 
@@ -59,6 +59,12 @@ public indirect enum Statement : Equatable {
     }
     return .error(0, 0, "Statement.at: index too big - internal error")
   }
+}
+
+public enum Printable: Equatable {
+//  case thinSpace
+//  case tabSpace
+  case expr(Expression)
 }
 
 public indirect enum Expression: Equatable {

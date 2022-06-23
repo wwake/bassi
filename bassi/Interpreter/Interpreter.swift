@@ -419,9 +419,16 @@ class Interpreter {
     }
   }
 
-  fileprivate func doPrint(_ values : [Expression], _ shouldPrintNewline: Bool) throws {
+  func printable(_ item: Printable) throws -> String {
+    switch item {
+    case .expr(let expr):
+      return try format(expr)
+    }
+  }
+
+  fileprivate func doPrint(_ values : [Printable], _ shouldPrintNewline: Bool) throws {
     let printedOutput = try values
-      .map(format)
+      .map(printable)
       .joined(separator: " ")
 
     outputter.append(printedOutput)
