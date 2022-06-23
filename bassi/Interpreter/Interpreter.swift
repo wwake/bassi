@@ -228,15 +228,13 @@ class Interpreter {
       globals[functionName] = .userFunction(parameter, definition, theType)
 
     case .dim(let dimInfos):
-      let name = dimInfos.first!.name
-      let dimensions = dimInfos.first!.dimensions
-      let type = dimInfos.first!.type
-      
-      if globals[name] != nil {
-        throw InterpreterError.error(location.lineNumber, "Can't redeclare array " + name)
-      }
+      try dimInfos.forEach {
+        if globals[$0.name] != nil {
+          throw InterpreterError.error(location.lineNumber, "Can't redeclare array " + $0.name)
+        }
 
-      doDim(name, dimensions, type)
+        doDim($0.name, $0.dimensions, $0.type)
+      }
 
     case .end:
       guard returnStack.isEmpty else {

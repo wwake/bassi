@@ -597,6 +597,23 @@ class InterpreterTests: XCTestCase {
         [.number(0), .number(0), .number(0)]))
   }
 
+  func testDIMknowsTypeAndSizeForMultipleArrays() throws {
+    let program = Program("10 DIM A(2), B(1)")
+    let outputter = Output()
+    let interpreter = Interpreter(program, outputter)
+    let _ = try interpreter.run()
+    XCTAssertEqual(
+      interpreter.globals["A"]!,
+      .array(
+        [3],
+        [.number(0), .number(0), .number(0)]))
+    XCTAssertEqual(
+      interpreter.globals["B"]!,
+      .array(
+        [2],
+        [.number(0), .number(0)]))
+  }
+
   func testDIMknowsTypeAndSizeForMultiDArray() throws {
     let program = Program("10 DIM A(2,1,2)")
     let outputter = Output()

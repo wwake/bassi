@@ -1,4 +1,3 @@
-+ DIM should allow multiple declarations
 + DIM should allow expressions in dimensions
 
 * REPL should automatically scroll to bottom
@@ -34,7 +33,7 @@
 * Parameterized tests package?
 
 BI-22-32: June 23, 2022
-* PRINT
+* PRINT:
   + 10 PRINT: PRINT --fails (fixed)
   + Make trailing ";" suppress newline on PRINT
   + PRINT with multiple expressions
@@ -42,9 +41,11 @@ BI-22-32: June 23, 2022
   + PRINT with semicolon adds no space between items
   + PRINT with multiple expressions
       25 PRINT "A" 4221    -- is legal - puts a space between them
-* BIG MILESTONE: Run Amazing and get a maze   (with some tweaks)
+* BIG MILESTONE: Run Amazing (with some tweaks) and get a maze
 * "Not yet implemented" should be "unexpected character" - error message from lexer - func testUnexpectedCharacters() in LexerTests
 * Attempted: REPL should automatically scroll to bottom (not sure why it's not)
+* DIM:
+  + DIM should allow multiple declarations
 
 
 BI-22-31: June 21, 2022
