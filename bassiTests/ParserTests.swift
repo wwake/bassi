@@ -128,6 +128,13 @@ class ParserTests: XCTestCase {
     )
   }
 
+  func testMultipleEmptyPrintStatementsOnOneLine() {
+    checkStatements(
+      "10 PRINT: PRINT",
+      [.print([]), .print([])]
+    )
+  }
+
   func testGoto() throws {
     checkOneStatement(
       "10 GOTO 10",

@@ -1,3 +1,5 @@
+* 10 PRINT: PRINT --fails
+
 * Run the Amazing maze
   + ";" not supported in PRINT
   + Doesn't support TAB() function
@@ -10,15 +12,19 @@
   + tabs to column 1, 16, 31, ... up to 5 print zones, or next line
   + comma at eol means don't print newline
 * PRINT with ";"
-  + move to next multiple of 3 characters to start printing
   + semicolon at eol means don't print newline
+  + Original BASIC: move to next multiple of 3 characters to start printing
+  + 80s BASICs: don't move after printing value
   + numbers have a space before and after
   + No space between strings
 
   * Move token to the lexer itself, then share the lexer between Parser & a new class ExpressionParser
 
-* REPL should automatically scroll to bottom
+* "Not yet implemented" should be "unexpected character" - error message from lexer - func testUnexpectedCharacters() in LexerTests
 
+* REPL should automatically scroll to bottom
+  + https://developer.apple.com/documentation/swiftui/scrollviewreader
+  + https://developer.apple.com/documentation/swiftui/view/onchange(of:perform:)
 
 * Track line # of error messages
 * Column number of syntax errors

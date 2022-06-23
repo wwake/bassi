@@ -275,7 +275,7 @@ public class Parser {
   func printStatement() throws -> Statement {
     nextToken()
 
-    if token == .eol {
+    if token == .colon || token == .eol {
       return Statement.print([])
     }
 
