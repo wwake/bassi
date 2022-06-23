@@ -261,8 +261,8 @@ class Interpreter {
     case .onGoto(let expr, let targets):
       try doOnGoto(expr, targets)
 
-    case .print(let values, _):
-      try doPrint(values)
+    case .print(let values, let shouldPrintNewline):
+      try doPrint(values, shouldPrintNewline)
 
     case .`return`:
       try doReturn()
@@ -419,13 +419,16 @@ class Interpreter {
     }
   }
 
-  fileprivate func doPrint(_ values : [Expression]) throws {
+  fileprivate func doPrint(_ values : [Expression], _ shouldPrintNewline: Bool) throws {
     let printedOutput = try values
       .map(format)
       .joined(separator: " ")
 
     outputter.append(printedOutput)
-    outputter.append("\n")
+
+    if shouldPrintNewline {
+      outputter.append("\n")
+    }
   }
 
   func doGosub(_ subroutineLocation: Location) throws {
