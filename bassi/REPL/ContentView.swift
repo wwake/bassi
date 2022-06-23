@@ -17,6 +17,7 @@ struct ContentView: View {
     VStack {
       ScrollView {
         Text(output.output)
+          .font(.system(size:18, design:.monospaced))
           .padding(.all)
           .frame(maxWidth: .infinity, alignment: .leading)
       }

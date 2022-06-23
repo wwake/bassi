@@ -71,6 +71,10 @@ class InterpreterTests: XCTestCase {
       expecting: "")
   }
 
+  func testPRINTwithMultipleExpressions() {
+    checkProgramResults("25 PRINT \"X=\" X", expecting: "X= 0\n")
+  }
+
   func testEnd() throws {
     let program = Program("999 END")
     let outputter = Output()

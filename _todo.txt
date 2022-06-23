@@ -1,36 +1,25 @@
-* Make trailing ";" suppress newline on PRINT
-
-* Run the Amazing maze
-  + ";" not supported in PRINT
-  + Doesn't support TAB() function
-  + DIM should allow multiple declarations
-  + DIM should allow expressions in dimensions
-
-* PRINT with multiple expressions
-   25 PRINT "A" 4221    -- is legal - puts a space between them
-* PRINT with ",":
-  + tabs to column 1, 16, 31, ... up to 5 print zones, or next line
-  + comma at eol means don't print newline
-* PRINT with ";"
-  + semicolon at eol means don't print newline
-  + Original BASIC: move to next multiple of 3 characters to start printing
-  + 80s BASICs: don't move after printing value
-  + numbers have a space before and after
-  + No space between strings
-
-  * Move token to the lexer itself, then share the lexer between Parser & a new class ExpressionParser
-
 * "Not yet implemented" should be "unexpected character" - error message from lexer - func testUnexpectedCharacters() in LexerTests
 
 * REPL should automatically scroll to bottom
   + https://developer.apple.com/documentation/swiftui/scrollviewreader
   + https://developer.apple.com/documentation/swiftui/view/onchange(of:perform:)
 
-* Track line # of error messages
-* Column number of syntax errors
-* Error sync by skipping forward to next line # (or end)
+* Run the Amazing maze
+  + DIM should allow multiple declarations
+  + DIM should allow expressions in dimensions
+  + RND should be repeatable
+  + Doesn't support TAB() function
 
-* Multiple arrays dimensioned in one statement
+* PRINT with ",":
+  + tabs to column 1, 16, 31, ... up to 5 print zones, or next line
+  + comma at eol means don't print newline
+* PRINT with ";"
+  + numbers have a space before and after
+  + No space between strings
+
+  * Move token to the lexer itself, then share the lexer between Parser & a new class ExpressionParser
+
+* Error sync by skipping forward to next line # (or end)   ??
 
 * STOP
 * What should ASC do if given an empty string?
@@ -48,6 +37,14 @@
 
 BI-22-32: June 23, 2022
 * 10 PRINT: PRINT --fails (fixed)
+* Make trailing ";" suppress newline on PRINT
+* BIG MILESTONE: Run Amazing and get a maze   (with some tweaks)
+* PRINT with multiple expressions
+   25 PRINT "A" 4221    -- is legal - puts a space between them
+* PRINT with semicolon adds no space between items
+* PRINT with multiple expressions
+   25 PRINT "A" 4221    -- is legal - puts a space between them
+
 
 BI-22-31: June 21, 2022
 * Make running write to an output stream
