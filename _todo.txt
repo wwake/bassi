@@ -4,11 +4,10 @@
   + https://developer.apple.com/documentation/swiftui/scrollviewreader
   + https://developer.apple.com/documentation/swiftui/view/onchange(of:perform:)
 
-* Run the Amazing maze
-  + DIM should allow multiple declarations
-  + DIM should allow expressions in dimensions
-  + RND should be repeatable
-  + Doesn't support TAB() function
++ DIM should allow multiple declarations
++ DIM should allow expressions in dimensions
++ RND should be repeatable
++ Doesn't support TAB() function
 
 * PRINT with ",":
   + tabs to column 1, 16, 31, ... up to 5 print zones, or next line

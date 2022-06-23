@@ -191,7 +191,7 @@ class Lexer {
       return handleVariable()
 
     default:
-      return TokenType.error("not yet implemented")
+      return TokenType.error("unexpected character")
     }
   }
 
