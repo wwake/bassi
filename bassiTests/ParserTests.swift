@@ -444,6 +444,14 @@ class ParserTests: XCTestCase {
     )
   }
 
+  func testDimWithMultipleArrays() {
+    checkOneStatement(
+      "10 DIM Z(1,2), W$(3,4)",
+      .dim([DimInfo("Z", [2,3], .number),
+            DimInfo("W$", [4,5], .string)])
+    )
+  }
+
   func testRightParendErrorInDim() {
     checkError(
       "10 DIM Z(3",

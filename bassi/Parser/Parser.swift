@@ -589,6 +589,22 @@ public class Parser {
   func dim() throws -> Statement {
     nextToken()
 
+    var result: [DimInfo] = []
+
+    let dimInfo = try dim1()
+    result.append(dimInfo)
+
+    while token == .comma {
+      nextToken()
+      
+      let dimInfo = try dim1()
+      result.append(dimInfo)
+    }
+
+    return .dim(result)
+  }
+
+  func dim1() throws -> DimInfo {
     let arrayName = try requireVariable()
 
     try require(.leftParend, "Missing '('")
@@ -613,7 +629,7 @@ public class Parser {
 
     try require(.rightParend, "Missing ')'")
 
-    return .dim([DimInfo(arrayName, dimensions, typeFor(arrayName))])
+    return DimInfo(arrayName, dimensions, typeFor(arrayName))
   }
 
   func doFor() throws -> Statement {
