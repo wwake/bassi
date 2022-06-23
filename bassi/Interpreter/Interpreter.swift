@@ -233,7 +233,7 @@ class Interpreter {
           throw InterpreterError.error(location.lineNumber, "Can't redeclare array " + $0.name)
         }
 
-        doDim($0.name, $0.dimensions, $0.type)
+        try doDim($0.name, $0.dimensions, $0.type)
       }
 
     case .end:
@@ -345,10 +345,10 @@ class Interpreter {
     _ exprs: [Expression],
     _ type: `Type`) throws -> Value {
       if store[name] == nil {
-        doDim(
+        try doDim(
           name,
-          Array<Int>(
-            repeating: 11,
+          Array<Expression>(
+            repeating: .number(11),
             count: exprs.count),
           type)
       }
@@ -487,10 +487,10 @@ class Interpreter {
 
       case .arrayAccess(let name, let type, let exprs):
         if globals[name] == nil {
-          doDim(
+          try doDim(
             name,
-            Array<Int>(
-              repeating: 11,
+            Array<Expression>(
+              repeating: .number(11),
               count: exprs.count),
             type)
         }
@@ -514,13 +514,17 @@ class Interpreter {
 
   func doDim(
     _ name: Name,
-    _ dimensions: [Int],
-    _ type: `Type`) {
+    _ dimensions: [Expression],
+    _ type: `Type`) throws {
 
-      let count = dimensions.reduce(1, *)
+      let dimensionValues = try dimensions
+        .map { try evaluate($0, globals) }
+        .map { Int($0.asFloat()) }
+
+      let count = dimensionValues.reduce(1, *)
 
       let array : Value = .array(
-        dimensions,
+        dimensionValues,
         Array<Value>(
           repeating: type.defaultValue(),
           count: count))

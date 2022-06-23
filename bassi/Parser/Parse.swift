@@ -25,16 +25,58 @@ public struct Parse : Equatable {
   }
 }
 
+public indirect enum Expression: Equatable {
+  case missing
+  case number(Float)
+  case string(String)
+  case variable(Name, `Type`)
+  case predefined(Name, [Expression], `Type`)
+  case userdefined(Name, Expression)
+  case arrayAccess(Name, `Type`, [Expression])
+
+  case op1(TokenType, Expression)
+  case op2(TokenType, Expression, Expression)
+
+  func type() -> `Type` {
+    switch self {
+    case .missing:
+      return .missing
+    case .number(_):
+      return .number
+    case .string(_):
+      return .string
+    case .variable(_, let type):
+      return type
+    case .predefined(_,_, let type):
+      return type
+    case .userdefined(_,_):
+      return .number
+    case .arrayAccess(_, let type, _):
+      return type
+    case .op1(_, _):
+      return .number
+    case .op2(_, _, _):
+      return .number
+    }
+  }
+}
+
 public struct DimInfo : Equatable {
   var name: Name
-  var dimensions: [Int]
+  var dimensions: [Expression]
   var type: `Type`
 
-  init(_ name: Name, _ dimensions: [Int], _ type: `Type`) {
+  init(_ name: Name, _ dimensions: [Expression], _ type: `Type`) {
     self.name = name
     self.dimensions = dimensions
     self.type = type
   }
+}
+
+public enum Printable: Equatable {
+  case thinSpace
+  //  case tabSpace
+  case expr(Expression)
 }
 
 public indirect enum Statement : Equatable {
@@ -73,44 +115,3 @@ public indirect enum Statement : Equatable {
   }
 }
 
-public enum Printable: Equatable {
-  case thinSpace
-//  case tabSpace
-  case expr(Expression)
-}
-
-public indirect enum Expression: Equatable {
-  case missing
-  case number(Float)
-  case string(String)
-  case variable(Name, `Type`)
-  case predefined(Name, [Expression], `Type`)
-  case userdefined(Name, Expression)
-  case arrayAccess(Name, `Type`, [Expression])
-  
-  case op1(TokenType, Expression)
-  case op2(TokenType, Expression, Expression)
-
-  func type() -> `Type` {
-    switch self {
-    case .missing:
-      return .missing
-    case .number(_):
-      return .number
-    case .string(_):
-      return .string
-    case .variable(_, let type):
-      return type
-    case .predefined(_,_, let type):
-      return type
-    case .userdefined(_,_):
-      return .number
-    case .arrayAccess(_, let type, _):
-      return type
-    case .op1(_, _):
-      return .number
-    case .op2(_, _, _):
-      return .number
-    }
-  }
-}
