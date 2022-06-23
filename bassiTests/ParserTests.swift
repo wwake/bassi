@@ -44,7 +44,7 @@ class ParserTests: XCTestCase {
         result,
         Parse(
           10,
-          [.print([expected])])
+          [.print([expected], true)])
       )
     }
 
@@ -103,14 +103,14 @@ class ParserTests: XCTestCase {
   func testPrintStatement() {
     checkOneStatement(
       "25 PRINT",
-      .print([])
+      .print([], true)
     )
   }
 
   func testPrintStatementWithNumber() {
     checkOneStatement(
       "25 PRINT 42",
-      .print([.number(42.0)])
+      .print([.number(42.0)], true)
     )
   }
 
@@ -124,14 +124,14 @@ class ParserTests: XCTestCase {
   func testMultipleStatementsOnOneLine() {
     checkStatements(
       "10 PRINT 10: PRINT 20",
-      [.print([.number(10)]), .print([.number(20)])]
+      [.print([.number(10)], true), .print([.number(20)], true)]
     )
   }
 
   func testMultipleEmptyPrintStatementsOnOneLine() {
     checkStatements(
       "10 PRINT: PRINT",
-      [.print([]), .print([])]
+      [.print([], true), .print([], true)]
     )
   }
 
@@ -179,7 +179,7 @@ class ParserTests: XCTestCase {
   func testIfWithStatement() {
     checkOneStatement(
       "42 IF 1 THEN PRINT 42",
-      .`if`(.number(1), [.print([.number(42)])])
+      .`if`(.number(1), [.print([.number(42)], true)])
     )
   }
   
@@ -189,8 +189,8 @@ class ParserTests: XCTestCase {
       .`if`(
         .number(1),
         [
-          .print([.number(42)]),
-          .print([.number(43)])
+          .print([.number(42)], true),
+          .print([.number(43)], true)
         ])
     )
   }
@@ -201,12 +201,12 @@ class ParserTests: XCTestCase {
       .`if`(
         .number(1),
         [
-          .print([.number(42)]),
+          .print([.number(42)], true),
           .`if`(
             .number(0),
             [
-              .print([.number(43)]),
-              .print([.number(44)])])])
+              .print([.number(43)], true),
+              .print([.number(44)], true)])])
     )
   }
 
@@ -262,7 +262,7 @@ class ParserTests: XCTestCase {
     checkOneStatement(
       "25 PRINT \"body\"",
       .print(
-        [.string("body")])
+        [.string("body")], true)
     )
   }
 
@@ -309,7 +309,8 @@ class ParserTests: XCTestCase {
     checkOneStatement(
       "25 PRINT SQR(4)",
       .print(
-        [.predefined("SQR", [.number(4)], .number)]
+        [.predefined("SQR", [.number(4)], .number)],
+        true
       )
     )
   }
@@ -318,7 +319,8 @@ class ParserTests: XCTestCase {
     checkOneStatement(
       "25 PRINT CHR$(4)",
       .print(
-        [.predefined("CHR$", [.number(4)], .string)]
+        [.predefined("CHR$", [.number(4)], .string)],
+        true
       )
     )
   }
@@ -398,7 +400,7 @@ class ParserTests: XCTestCase {
         .userdefined(
           "FNI",
           .number(3) )
-      ]))
+      ], true))
   }
 
   func testDefCallMustTakeNumericArgument() {
@@ -446,7 +448,7 @@ class ParserTests: XCTestCase {
       "10 PRINT A(0)",
       .print([
         .arrayAccess("A", .number, [.number(0)])
-      ])
+      ], true)
     )
   }
 
@@ -456,7 +458,7 @@ class ParserTests: XCTestCase {
       .print([
         .arrayAccess("A", .number, [.number(1),
                                     .number(2)])
-      ])
+      ], true)
     )
   }
 

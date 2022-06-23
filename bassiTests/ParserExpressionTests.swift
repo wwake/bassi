@@ -20,7 +20,7 @@ class ParserExpressionTests: XCTestCase {
         result,
         Parse(
           10,
-          [.print([expected])])
+          [.print([expected], true)])
       )
     }
 

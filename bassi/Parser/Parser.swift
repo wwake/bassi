@@ -276,7 +276,7 @@ public class Parser {
     nextToken()
 
     if token == .colon || token == .eol {
-      return Statement.print([])
+      return Statement.print([], true)
     }
 
     var values: [Expression] = []
@@ -284,7 +284,7 @@ public class Parser {
     let value = try expression()
     values.append(value)
 
-    return Statement.print(values)
+    return Statement.print(values, true)
   }
 
   func returnStatement() throws -> Statement {

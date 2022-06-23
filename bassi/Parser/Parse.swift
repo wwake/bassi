@@ -39,7 +39,7 @@ public indirect enum Statement : Equatable {
   case ifGoto(Expression, LineNumber)
   case next(Name)
   case onGoto(Expression, [LineNumber])
-  case print([Expression])
+  case print([Expression], Bool)
   case `return`
   case skip
 

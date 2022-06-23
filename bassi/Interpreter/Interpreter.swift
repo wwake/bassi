@@ -261,7 +261,7 @@ class Interpreter {
     case .onGoto(let expr, let targets):
       try doOnGoto(expr, targets)
 
-    case .print(let values):
+    case .print(let values, _):
       try doPrint(values)
 
     case .`return`:
