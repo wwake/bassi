@@ -275,16 +275,23 @@ public class Parser {
   func printStatement() throws -> Statement {
     nextToken()
 
-    if token == .colon || token == .eol {
+    var values: [Printable] = []
+
+    while token != .colon && token != .eol {
+      if token == .semicolon {
+        nextToken()
+        values.append(.thinSpace)
+      } else {
+        let value = try expression()
+        values.append(.expr(value))
+      }
+    }
+
+    if values.count == 0 {
       return Statement.print([], true)
     }
 
-    var values: [Printable] = []
-
-    let value = try expression()
-    values.append(.expr(value))
-
-    return Statement.print(values, true)
+    return Statement.print(values, values.last! != .thinSpace)
   }
 
   func returnStatement() throws -> Statement {

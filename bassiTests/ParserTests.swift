@@ -138,8 +138,8 @@ class ParserTests: XCTestCase {
     )
   }
 
-  func xtestSemicolonAtEndOfPrintSuppressesNewline() {
-    checkStatements("10 PRINT;", [.print([], false)])
+  func testSemicolonAtEndOfPrintSuppressesNewline() {
+    checkStatements("10 PRINT;", [.print([.thinSpace], false)])
   }
 
   func testGoto() throws {

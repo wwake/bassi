@@ -421,6 +421,9 @@ class Interpreter {
 
   func printable(_ item: Printable) throws -> String {
     switch item {
+    case .thinSpace:
+      throw InterpreterError.cantHappen(0, "THIN SPACE NYI")
+
     case .expr(let expr):
       return try format(expr)
     }

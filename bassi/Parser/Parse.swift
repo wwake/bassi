@@ -62,7 +62,7 @@ public indirect enum Statement : Equatable {
 }
 
 public enum Printable: Equatable {
-//  case thinSpace
+  case thinSpace
 //  case tabSpace
   case expr(Expression)
 }
