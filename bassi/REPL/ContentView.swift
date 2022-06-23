@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ContentView: View {
+  @Namespace var bottom
+  
   @ObservedObject var output = Output()
   @State var command: String = ""
 
@@ -15,13 +17,21 @@ struct ContentView: View {
 
   var body: some View {
     VStack {
-      ScrollView {
-        Text(output.output)
-          .font(.system(size:18, design:.monospaced))
-          .padding(.all)
-          .frame(maxWidth: .infinity, alignment: .leading)
+      ScrollViewReader { proxy in
+        ScrollView {
+          Text(output.output)
+            .font(.system(size:18, design:.monospaced))
+            .padding(.all)
+            .frame(maxWidth: .infinity, alignment: .leading)
+          Text("")
+            .id(bottom)
+        }
+        .onChange(of: output) { _ in
+          print("output changed")
+          proxy.scrollTo(bottom)
+        }
       }
-      
+
       TextField("text", text: $command)
         .padding()
         .onSubmit({
