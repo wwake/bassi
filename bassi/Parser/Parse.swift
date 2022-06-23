@@ -25,12 +25,24 @@ public struct Parse : Equatable {
   }
 }
 
+public struct DimInfo : Equatable {
+  var name: Name
+  var dimensions: [Int]
+  var type: `Type`
+
+  init(_ name: Name, _ dimensions: [Int], _ type: `Type`) {
+    self.name = name
+    self.dimensions = dimensions
+    self.type = type
+  }
+}
+
 public indirect enum Statement : Equatable {
   case error(LineNumber, ColumnNumber, String)
 
   case assign(Expression, Expression)
   case def(Name, Name, Expression, `Type`)
-  case dim(Name, [Int], `Type`)
+  case dim([DimInfo])
   case end
   case `for`(Name, Expression, Expression, Expression)
   case gosub(LineNumber)

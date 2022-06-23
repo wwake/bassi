@@ -613,7 +613,7 @@ public class Parser {
 
     try require(.rightParend, "Missing ')'")
 
-    return .dim(arrayName, dimensions, typeFor(arrayName))
+    return .dim([DimInfo(arrayName, dimensions, typeFor(arrayName))])
   }
 
   func doFor() throws -> Statement {

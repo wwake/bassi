@@ -426,21 +426,21 @@ class ParserTests: XCTestCase {
   func testDIMNumber() {
     checkOneStatement(
       "10 DIM A(5)",
-      .dim("A", [6], .number)
+      .dim([DimInfo("A", [6], .number)])
     )
   }
 
   func testDIMString() {
     checkOneStatement(
       "10 DIM Z9$(5)",
-      .dim("Z9$", [6], .string)
+      .dim([DimInfo("Z9$", [6], .string)])
     )
   }
 
   func testMultiDimensionalDIM() {
     checkOneStatement(
       "10 DIM Z(3,4,5)",
-      .dim("Z", [4,5,6], .number)
+      .dim([DimInfo("Z", [4,5,6], .number)])
     )
   }
 

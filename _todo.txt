@@ -1,9 +1,10 @@
++ DIM should allow multiple declarations
++ DIM should allow expressions in dimensions
+
 * REPL should automatically scroll to bottom
   + https://developer.apple.com/documentation/swiftui/scrollviewreader
   + https://developer.apple.com/documentation/swiftui/view/onchange(of:perform:)
 
-+ DIM should allow multiple declarations
-+ DIM should allow expressions in dimensions
 + RND should be repeatable
 + Doesn't support TAB() function
 
@@ -43,6 +44,7 @@ BI-22-32: June 23, 2022
       25 PRINT "A" 4221    -- is legal - puts a space between them
 * BIG MILESTONE: Run Amazing and get a maze   (with some tweaks)
 * "Not yet implemented" should be "unexpected character" - error message from lexer - func testUnexpectedCharacters() in LexerTests
+* Attempted: REPL should automatically scroll to bottom (not sure why it's not)
 
 
 BI-22-31: June 21, 2022
@@ -276,7 +278,7 @@ statement -> "GOTO" INTEGER(int)
 statement -> "IF" expression "THEN" INTEGER(int)
 statement -> "IF" expression "THEN" statement
 statement -> [LET] VARIABLE ["(" expr {"," expr } ")"] = expression
-statement -> DIM variable "(" INTEGER(INT) {"," INTEGER(INT)} ")"
+statement -> DIM variable "(" expr {"," expr} ")"  { "," variable "(" expr {"," expr} ")"}
 statement -> FOR variable = expression TO expression [ STEP expression ]
 statement -> NEXT variable     // or [variable] - OSI; or [variable, {, variable }] -- C64
 
