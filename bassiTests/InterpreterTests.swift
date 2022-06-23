@@ -65,6 +65,12 @@ class InterpreterTests: XCTestCase {
       expecting: "42\n")
   }
 
+  func testPRINTwithSemicolonSuppressesNewline() {
+    checkProgramResults(
+      "25 PRINT;",
+      expecting: "")
+  }
+
   func testEnd() throws {
     let program = Program("999 END")
     let outputter = Output()
