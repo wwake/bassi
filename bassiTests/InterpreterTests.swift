@@ -75,10 +75,10 @@ class InterpreterTests: XCTestCase {
     checkProgramResults("25 PRINT \"X=\" X", expecting: "X= 0 \n")
   }
 
-  func xtestPRINTwithCommas() {
+  func testPRINTwithCommas() {
     checkProgramResults(
       "50 PRINT 1,27.125,\"str\"",
-      expecting: "1         27.125000 str")
+      expecting: " 1           27.125000  str\n")
   }
 
   func testEnd() throws {

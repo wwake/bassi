@@ -1,6 +1,5 @@
+  + tabs to column 1, 11, 21, ... 
 * PRINT with ",":
-  + tabs to column 1, 16, 31, ... up to 5 print zones, or next line
-  + comma at eol means don't print newline
 
 * Support the TAB() function
 
@@ -32,6 +31,8 @@ BI-22-33: June 24, 2022
 * RND is repeatable when seed is non-0
 * PRINT with ",":
   + Make output know next column to write
+  + Make numbers print with trailing spaces, and with leading spaces if they're non-negative
+  + comma at eol means don't print newline
 
 
 BI-22-32: June 23, 2022

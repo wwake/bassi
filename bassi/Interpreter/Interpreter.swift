@@ -443,7 +443,11 @@ class Interpreter {
       return ""
 
     case .tab:
-      return "???"
+      let currentColumn = outputter.column()
+      let columnsPerTab = 12
+      let tabNumber = (currentColumn + columnsPerTab) / columnsPerTab
+      let neededSpaces = tabNumber * columnsPerTab - currentColumn
+      return String(repeating: " ", count: neededSpaces)
       
     case .expr(let expr):
       return try format(expr)
