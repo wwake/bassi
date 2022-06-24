@@ -426,30 +426,36 @@ class ParserTests: XCTestCase {
   func testDIMNumber() {
     checkOneStatement(
       "10 DIM A(5)",
-      .dim([DimInfo("A", [.number(6)], .number)])
+      .dim([DimInfo("A", [.number(5)], .number)])
     )
   }
 
   func testDIMString() {
     checkOneStatement(
       "10 DIM Z9$(5)",
-      .dim([DimInfo("Z9$", [.number(6)], .string)])
+      .dim([DimInfo("Z9$", [.number(5)], .string)])
     )
   }
 
   func testMultiDimensionalDIM() {
     checkOneStatement(
       "10 DIM Z(3,4,5)",
-      .dim([DimInfo("Z", [.number(4),.number(5),.number(6)], .number)])
+      .dim([DimInfo("Z", [.number(3),.number(4),.number(5)], .number)])
     )
   }
 
   func testDimWithMultipleArrays() {
     checkOneStatement(
       "10 DIM Z(1,2), W$(3,4)",
-      .dim([DimInfo("Z", [.number(2),.number(3)], .number),
-            DimInfo("W$", [.number(4),.number(5)], .string)])
+      .dim([DimInfo("Z", [.number(1),.number(2)], .number),
+            DimInfo("W$", [.number(3),.number(4)], .string)])
     )
+  }
+
+  func testDimWithExpressions() {
+    checkOneStatement(
+      "10 DIM Z(2*3)",
+      .dim([DimInfo("Z", [.op2(.times, .number(2), .number(3))], .number)]))
   }
 
   func testRightParendErrorInDim() {

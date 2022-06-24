@@ -611,20 +611,14 @@ public class Parser {
 
     var dimensions : [Expression] = []
 
-    guard case .integer(let size) = token else {
-      throw ParseError.error(theToken, "Integer dimension size is required")
-    }
-    nextToken()
-    dimensions.append(.number(Float(size + 1)))
+    let expr = try expression()
+    dimensions.append(expr)
 
     while .comma == token {
       nextToken()
 
-      guard case .integer(let size) = token else {
-        throw ParseError.error(theToken, "Integer dimension size is required")
-      }
-      nextToken()
-      dimensions.append(.number(Float(size + 1)))
+      let expr = try expression()
+      dimensions.append(expr)
     }
 
     try require(.rightParend, "Missing ')'")

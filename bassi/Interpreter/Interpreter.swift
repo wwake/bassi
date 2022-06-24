@@ -98,6 +98,7 @@ struct Location : Equatable {
 
 class Interpreter {
   static let freeSpaceCount : Float = 100_000
+  let defaultArraySize : Float = 10
 
   let program: Program
   let outputter : Output
@@ -348,7 +349,7 @@ class Interpreter {
         try doDim(
           name,
           Array<Expression>(
-            repeating: .number(11),
+            repeating: .number(defaultArraySize),
             count: exprs.count),
           type)
       }
@@ -490,7 +491,7 @@ class Interpreter {
           try doDim(
             name,
             Array<Expression>(
-              repeating: .number(11),
+              repeating: .number(10),
               count: exprs.count),
             type)
         }
@@ -517,14 +518,14 @@ class Interpreter {
     _ dimensions: [Expression],
     _ type: `Type`) throws {
 
-      let dimensionValues = try dimensions
+      let dimensionSizes = try dimensions
         .map { try evaluate($0, globals) }
-        .map { Int($0.asFloat()) }
+        .map { Int($0.asFloat()) + 1 }
 
-      let count = dimensionValues.reduce(1, *)
+      let count = dimensionSizes.reduce(1, *)
 
       let array : Value = .array(
-        dimensionValues,
+        dimensionSizes,
         Array<Value>(
           repeating: type.defaultValue(),
           count: count))
