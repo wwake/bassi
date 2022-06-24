@@ -13,6 +13,14 @@ class Output: ObservableObject {
   func append(_ line: String) {
     output.append(line)
   }
+
+  func column() -> Int {
+    let lastIndex = output.lastIndex(of:"\n")
+    if lastIndex == nil {
+      return output.count
+    }
+    return output[lastIndex!...].count - 1
+  }
 }
 
 extension Output: Equatable {

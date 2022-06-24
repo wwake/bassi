@@ -75,7 +75,7 @@ public struct DimInfo : Equatable {
 
 public enum Printable: Equatable {
   case thinSpace
-  //  case tabSpace
+  case tab
   case expr(Expression)
 }
 

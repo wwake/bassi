@@ -30,6 +30,8 @@
 BI-22-33: June 24, 2022
 * DIM allows expressions in dimensions
 * RND is repeatable when seed is non-0
+* PRINT with ",":
+  + Make output know next column to write
 
 
 BI-22-32: June 23, 2022

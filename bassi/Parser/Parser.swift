@@ -281,6 +281,9 @@ public class Parser {
       if token == .semicolon {
         nextToken()
         values.append(.thinSpace)
+      } else if token == .comma {
+        nextToken()
+        values.append(.tab)
       } else {
         let value = try expression()
         values.append(.expr(value))
@@ -291,7 +294,9 @@ public class Parser {
       return Statement.print([], true)
     }
 
-    return Statement.print(values, values.last! != .thinSpace)
+    return Statement.print(
+      values,
+      values.last! != .thinSpace && values.last != .tab)
   }
 
   func returnStatement() throws -> Statement {

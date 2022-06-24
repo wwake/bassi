@@ -438,6 +438,9 @@ class Interpreter {
     case .thinSpace:
       return ""
 
+    case .tab:
+      return "???"
+      
     case .expr(let expr):
       return try format(expr)
     }

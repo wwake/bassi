@@ -142,6 +142,16 @@ class ParserTests: XCTestCase {
     checkStatements("10 PRINT;", [.print([.thinSpace], false)])
   }
 
+  func testCommaAtEndOfPRINTsuppressesNewline() {
+    checkStatements("10 PRINT,", [.print([.tab], false)])
+  }
+
+  func testCommaInPRINTyieldsTab() {
+    checkStatements(
+      "10 PRINT 1,2",
+      [.print([.expr(.number(1)), .tab, .expr(.number(2))], true)])
+  }
+
   func testGoto() throws {
     checkOneStatement(
       "10 GOTO 10",
