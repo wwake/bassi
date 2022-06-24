@@ -6,21 +6,6 @@
 //
 
 import Foundation
-import Combine
-
-class Output: ObservableObject {
-  @Published var output: String = ""
-
-  func append(_ line: String) {
-    output.append(line)
-  }
-}
-
-extension Output: Equatable {
-  static func == (lhs: Output, rhs: Output) -> Bool {
-    lhs.output == rhs.output
-  }
-}
 
 class Repl : ObservableObject {
   var output: Output!
