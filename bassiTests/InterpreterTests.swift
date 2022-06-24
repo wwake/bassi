@@ -109,7 +109,7 @@ class InterpreterTests: XCTestCase {
 10 REM Skip this line
 20 PRINT 20
 """,
-      expecting: "20\n"
+expecting: "20\n"
     )
   }
 
@@ -278,7 +278,7 @@ class InterpreterTests: XCTestCase {
 30 PRINT 30
 50 PRINT 50
 """,
-      expecting: "30\n50\n")
+                        expecting: "30\n50\n")
   }
 
   func testIfWithTrueResultDoesGoto() throws {
@@ -287,7 +287,7 @@ class InterpreterTests: XCTestCase {
 30 PRINT 30
 50 PRINT 50
 """,
-      expecting: "50\n")
+                        expecting: "50\n")
   }
 
   func testIfWithStatementRunsWhenTrue() throws {
@@ -398,7 +398,7 @@ class InterpreterTests: XCTestCase {
 10 DEF FNI(X)=X
 25 PRINT FNI(3)
 """,
-      expecting: "3\n")
+                        expecting: "3\n")
   }
 
   func testUsingStaticScope() {
@@ -408,7 +408,7 @@ class InterpreterTests: XCTestCase {
 30 Y=1
 40 PRINT FNA(3)
 """,
-     expecting: "8\n")
+                        expecting: "8\n")
   }
 
   func testCallOnUndefinedFunctionFails() {
@@ -475,7 +475,7 @@ class InterpreterTests: XCTestCase {
       expecting: "-0.001593\n")
   }
 
-  func testRandomNumbers() throws {
+  func testRandomNumbersAreInProperRange() throws {
     try (1...1000).forEach { _ in
       let outputter = Output()
       let interpreter = Interpreter(Program("1 PRINT RND(0)"), outputter)
@@ -483,6 +483,38 @@ class InterpreterTests: XCTestCase {
       let value = Float(outputter.output.dropLast())!
       XCTAssertTrue(value >= 0 && value < 1)
     }
+  }
+
+  func testDefaultSeed0StartsDifferentEachTime() throws {
+    var lastValue: Float = 0
+    try (1...100).forEach { _ in
+      let outputter = Output()
+      let interpreter = Interpreter(Program("1 PRINT RND(0)"), outputter)
+      try interpreter.run()
+      let value = Float(outputter.output.dropLast())!
+      XCTAssertNotEqual(lastValue, value)
+      lastValue = value
+    }
+  }
+
+  func testSeedsForceIdenticalSequences() throws {
+    let outputter = Output()
+    let program =
+"""
+10 FOR I=1 TO 10: PRINT RND(42);: NEXT I
+20 PRINT
+30 FOR I=1 TO 10: PRINT RND(17);: NEXT I
+40 PRINT
+50 FOR I=1 TO 10: PRINT RND(42);: NEXT I
+60 PRINT
+70 FOR I=1 TO 10: PRINT RND(17);: NEXT I
+80 PRINT
+"""
+    let interpreter = Interpreter(Program(program), outputter)
+    try interpreter.run()
+    let lines = outputter.output.split(separator:"\n")
+    XCTAssertEqual(lines[0], lines[2])
+    XCTAssertEqual(lines[1], lines[3])
   }
 
   func testStringSystemFunctions() {
@@ -661,7 +693,7 @@ class InterpreterTests: XCTestCase {
 30 PRINT A(1)
 40 PRINT A(2)
 """,
-      expecting: "17\n42\n")
+                        expecting: "17\n42\n")
   }
 
   func testArrayAssignmentToAlreadyNonArrayVariableFails() {
@@ -669,7 +701,7 @@ class InterpreterTests: XCTestCase {
 10 A=3
 20 A(1)=17
 """,
-      expecting: "Tried to subscript non-array A")
+                       expecting: "Tried to subscript non-array A")
   }
 
   func testArrayAssignmentWithoutDIMdefaultsToSize10() throws {
@@ -712,7 +744,7 @@ class InterpreterTests: XCTestCase {
       XCTAssertEqual(lineNumber, 20)
     }
   }
-  
+
   func testBoundsCheckArrayAccess() {
     checkExpectedError(
       "20 PRINT A(11)",
@@ -742,7 +774,7 @@ class InterpreterTests: XCTestCase {
 30 PRINT A(1,2)
 35 PRINT A(1,1)
 """,
-    expecting: "12\n11\n"
+                        expecting: "12\n11\n"
     )
   }
 
@@ -764,7 +796,7 @@ class InterpreterTests: XCTestCase {
 260 NEXT I
 400 END
 """,
-    expecting: """
+expecting: """
 1
 2
 3
@@ -797,7 +829,7 @@ class InterpreterTests: XCTestCase {
 20 A$(3)="hello"
 30 PRINT A$(3)
 """,
-      expecting: "hello\n")
+expecting: "hello\n")
   }
 
   func testFORwithPositiveStep() {
@@ -808,7 +840,7 @@ class InterpreterTests: XCTestCase {
 35 NEXT X
 40 PRINT X
 """,
-    expecting: "1\n2\n3\n3\n")
+expecting: "1\n2\n3\n3\n")
   }
 
   func testFORwithNegativeStep() {
@@ -831,7 +863,7 @@ expecting: "3\n2\n1\n1\n")
 35 NEXT X
 40 PRINT X
 """,
-      expecting: "3\n"
+expecting: "3\n"
     )
   }
 
@@ -867,7 +899,7 @@ expecting: "999\n2\n"
 30 NEXT Z
 40 NEXT A
 """,
-      expecting: "NEXT variable must match corresponding FOR")
+expecting: "NEXT variable must match corresponding FOR")
   }
 
   func testFORandNEXTonSameLine() {
@@ -876,7 +908,7 @@ expecting: "999\n2\n"
 10 FOR I=1 TO 2:PRINT I: NEXT I
 20 PRINT 20
 """,
-      expecting: "1\n2\n20\n")
+expecting: "1\n2\n20\n")
   }
 
   func testFORandNEXTonDifferentLineWithMultipleParts() {
@@ -898,7 +930,7 @@ expecting: "1\n2\n20\n")
 100 PRINT 42
 110 RETURN
 """,
-      expecting: "42\n52\n")
+expecting: "42\n52\n")
   }
 
   func testGOSUBinSubroutine() {
@@ -913,7 +945,7 @@ expecting: "1\n2\n20\n")
 110 GOSUB 50
 120 RETURN
 """,
-  expecting: "100\n50\n20\n")
+expecting: "100\n50\n20\n")
   }
 
   func testRETURNwithoutGOSUB() {
@@ -929,7 +961,7 @@ expecting: "1\n2\n20\n")
 100 PRINT 100
 110 RETURN
 """,
-      expecting: "100\n10\n20\n")
+expecting: "100\n10\n20\n")
   }
 
   func testON_GOTO() {
@@ -940,7 +972,7 @@ expecting: "1\n2\n20\n")
 20 PRINT 20
 30 PRINT 30
 """,
-      expecting: "30\n")
+expecting: "30\n")
   }
 
   func testON_GOTOwithNegativeValueThrowsError() {

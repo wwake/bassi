@@ -1,18 +1,13 @@
-+ DIM should allow expressions in dimensions
+* PRINT with ",":
+  + tabs to column 1, 16, 31, ... up to 5 print zones, or next line
+  + comma at eol means don't print newline
+
+* Support the TAB() function
 
 * REPL should automatically scroll to bottom
   + https://developer.apple.com/documentation/swiftui/scrollviewreader
   + https://developer.apple.com/documentation/swiftui/view/onchange(of:perform:)
 
-+ RND should be repeatable
-+ Doesn't support TAB() function
-
-* PRINT with ",":
-  + tabs to column 1, 16, 31, ... up to 5 print zones, or next line
-  + comma at eol means don't print newline
-* PRINT with ";"
-  + numbers have a space before and after
-  + No space between strings
 
   * Move token to the lexer itself, then share the lexer between Parser & a new class ExpressionParser
 
@@ -32,6 +27,11 @@
 
 * Parameterized tests package?
 
+BI-22-33: June 24, 2022
+* DIM allows expressions in dimensions
+* RND is repeatable when seed is non-0
+
+
 BI-22-32: June 23, 2022
 * PRINT:
   + 10 PRINT: PRINT --fails (fixed)
@@ -41,6 +41,10 @@ BI-22-32: June 23, 2022
   + PRINT with semicolon adds no space between items
   + PRINT with multiple expressions
       25 PRINT "A" 4221    -- is legal - puts a space between them
+* PRINT with ";"
+  + numbers have a space before and after
+  + No space between strings
+
 * BIG MILESTONE: Run Amazing (with some tweaks) and get a maze
 * "Not yet implemented" should be "unexpected character" - error message from lexer - func testUnexpectedCharacters() in LexerTests
 * Attempted: REPL should automatically scroll to bottom (not sure why it's not)

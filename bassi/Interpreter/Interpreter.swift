@@ -119,6 +119,17 @@ class Interpreter {
 
   var returnStack: [Location] = []
 
+  static var lastSeed : Float = 0
+
+  static func random(_ seed: Float) -> Float {
+    if seed != lastSeed {
+      lastSeed = seed
+      srand48(Int(lastSeed))
+    }
+
+    return Float(drand48())
+  }
+
   var globals: Store = [
     "ABS" : Value.function(Fn2n(abs)),
     "ASC" : Value.function(Fs2n( {
@@ -149,7 +160,7 @@ class Interpreter {
       String($0.suffix(Int($1)))
     })),
     "RND" :
-      Value.function(Fn2n({_ in Float.random(in: 0.0 ..< 1.0)})),
+      Value.function(Fn2n(random)),
     "SGN":
       Value.function(Fn2n({
         if $0 == 0 {
