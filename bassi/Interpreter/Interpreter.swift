@@ -193,6 +193,21 @@ class Interpreter {
 
     let line = program[location.lineNumber]!
     parse = parser.parse(line)
+
+    defer {
+      globals["TAB"] = Value.function(Fn2s(buildTab(outputter)))
+    }
+  }
+
+  func buildTab(_ outputter: Output) -> (Float) -> String {
+    return {
+      let currentColumn = outputter.column()
+      let desiredColumn = Int($0)
+      if desiredColumn >= currentColumn {
+        return String(repeating: " ", count: desiredColumn - currentColumn)
+      }
+      return "\n" + String(repeating: " ", count: desiredColumn)
+    }
   }
 
   func nextLocationFor(_ location: Location) -> Location {

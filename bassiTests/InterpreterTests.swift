@@ -81,6 +81,19 @@ class InterpreterTests: XCTestCase {
       expecting: " 1           27.125000  str\n")
   }
 
+  func testPRINTwithTab() {
+    checkProgramResults(
+      "20 PRINT \"X\" TAB(5) \"Y\";",
+      expecting: "X    Y")
+  }
+
+  func testPRINTwithTabToEarlierColumn() {
+    checkProgramResults(
+      "20 PRINT \"XYZ\" TAB(2) \"Y\";",
+      expecting: "XYZ\n  Y")
+
+  }
+
   func testEnd() throws {
     let program = Program("999 END")
     let outputter = Output()

@@ -1,6 +1,6 @@
-* Support the TAB() function
+Support the TAB() function
 * PRINT with ",":
-
+* Error message for unknown function - callPredefinedFunction() in Interpreter
 
 * REPL should automatically scroll to bottom
   + https://developer.apple.com/documentation/swiftui/scrollviewreader
