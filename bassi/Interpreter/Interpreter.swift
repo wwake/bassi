@@ -25,11 +25,15 @@ fileprivate func boolToFloat(
   }
 
 func basicFormat(_ number: (Float)) -> String {
+  var result = ""
   if number == Float(Int(number)) {
-    return String(format: "%.0f", number)
+    result = String(format: "%.0f", number)
   } else {
-    return String(format: "%f", number)
+    result = String(format: "%f", number)
   }
+
+  if number < 0 { return result + " " }
+  return " " + result + " " 
 }
 
 fileprivate func midDollar(_ string: String, _ start: Int, _ length: Int) -> String {
@@ -447,11 +451,15 @@ class Interpreter {
   }
 
   fileprivate func doPrint(_ values : [Printable], _ shouldPrintNewline: Bool) throws {
-    let printedOutput = try values
-      .map(printable)
-      .joined(separator: " ")
+    try values.forEach {
+      let printable = try printable($0)
+      outputter.append(printable)
+    }
+//    let printedOutput = try values
+//      .map(printable)
+//      .joined(separator: " ")
 
-    outputter.append(printedOutput)
+    //outputter.append(printedOutput)
 
     if shouldPrintNewline {
       outputter.append("\n")

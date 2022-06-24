@@ -37,7 +37,7 @@ class InterpreterTests: XCTestCase {
 
   fileprivate func checkPrintWithRelop(_ op: String, _ expected: Int) throws {
     let program = "40 PRINT 10 \(op) 10"
-    checkProgramResults(program, expecting: "\(expected)\n")
+    checkProgramResults(program, expecting: " \(expected) \n")
   }
 
   fileprivate func checkOppositeRelationalOps(
@@ -62,7 +62,7 @@ class InterpreterTests: XCTestCase {
   func test25PRINT42() {
     checkProgramResults(
       "25 PRINT 42",
-      expecting: "42\n")
+      expecting: " 42 \n")
   }
 
   func testPRINTwithSemicolonSuppressesNewline() {
@@ -72,7 +72,13 @@ class InterpreterTests: XCTestCase {
   }
 
   func testPRINTwithMultipleExpressions() {
-    checkProgramResults("25 PRINT \"X=\" X", expecting: "X= 0\n")
+    checkProgramResults("25 PRINT \"X=\" X", expecting: "X= 0 \n")
+  }
+
+  func xtestPRINTwithCommas() {
+    checkProgramResults(
+      "50 PRINT 1,27.125,\"str\"",
+      expecting: "1         27.125000 str")
   }
 
   func testEnd() throws {
@@ -109,7 +115,7 @@ class InterpreterTests: XCTestCase {
 10 REM Skip this line
 20 PRINT 20
 """,
-expecting: "20\n"
+expecting: " 20 \n"
     )
   }
 
@@ -120,7 +126,7 @@ expecting: "20\n"
   func testPrintWithNumericValue() throws {
     checkProgramResults(
       "35 PRINT 22.0",
-      expecting: "22\n")
+      expecting: " 22 \n")
   }
 
   func testPrintWithStringValue() throws {
@@ -132,7 +138,7 @@ expecting: "20\n"
   func testMultiplePRINTonOneLine() {
     checkProgramResults(
       "35 PRINT 135: PRINT 136",
-      expecting: "135\n136\n")
+      expecting: " 135 \n 136 \n")
   }
 
   func testRemainingPartsOfLineDontExecuteIfControlTransfered() {
@@ -140,13 +146,13 @@ expecting: "20\n"
 """
 10 GOTO 20: PRINT 10
 20 PRINT 20
-""", expecting: "20\n")
+""", expecting: " 20 \n")
   }
 
   func testPowers() {
     checkProgramResults(
       "25 PRINT 2^3^2",
-      expecting: "64\n")
+      expecting: " 64 \n")
   }
 
   func testLogicalOperationsOnIntegersTree() throws {
@@ -176,19 +182,19 @@ expecting: "20\n"
     let outputter = Output()
     let interpreter = Interpreter(Program(), outputter)
     try interpreter.step(parse.statements[0])
-    XCTAssertEqual(outputter.output, "7\n")
+    XCTAssertEqual(outputter.output, " 7 \n")
   }
 
   func testLogicalOperationsOnIntegers() throws {
     checkProgramResults(
       "25 PRINT NOT -8 OR 5 AND 4",
-      expecting: "7\n")
+      expecting: " 7 \n")
   }
 
   func testVariableDefaultsToZero() throws {
     checkProgramResults(
       "25 PRINT Y9",
-      expecting: "0\n")
+      expecting: " 0 \n")
   }
 
   func testPrintWithUnaryMinus() throws {
@@ -202,15 +208,15 @@ expecting: "20\n"
   }
 
   func testPrintWithAddition() throws {
-    checkProgramResults("40 PRINT 1+2+3", expecting: "6\n")
+    checkProgramResults("40 PRINT 1+2+3", expecting: " 6 \n")
   }
 
   func testPrintWithSubtraction() throws {
-    checkProgramResults("40 PRINT 1-2-3", expecting: "-4\n")
+    checkProgramResults("40 PRINT 1-2-3", expecting: "-4 \n")
   }
 
   func testPrintWithMultiplyDivide() throws {
-    checkProgramResults("40 PRINT 1*6/3", expecting: "2\n")
+    checkProgramResults("40 PRINT 1*6/3", expecting: " 2 \n")
   }
 
   func testPrintWithEqualityComparison() throws {
@@ -260,7 +266,7 @@ expecting: "20\n"
 25 PRINT 25
 40 END
 """,
-                        expecting: "25\n")
+                        expecting: " 25 \n")
   }
 
   func testRunMultiLineProgramAndFallOffTheEnd() throws {
@@ -269,7 +275,7 @@ expecting: "20\n"
 30 PRINT 30
 50 PRINT 50
 """,
-                        expecting: "50\n")
+                        expecting: " 50 \n")
   }
 
   func ifWithFalseResultFallsThrough() throws {
@@ -278,7 +284,7 @@ expecting: "20\n"
 30 PRINT 30
 50 PRINT 50
 """,
-                        expecting: "30\n50\n")
+                        expecting: " 30 \n 50 \n")
   }
 
   func testIfWithTrueResultDoesGoto() throws {
@@ -287,7 +293,7 @@ expecting: "20\n"
 30 PRINT 30
 50 PRINT 50
 """,
-                        expecting: "50\n")
+                        expecting: " 50 \n")
   }
 
   func testIfWithStatementRunsWhenTrue() throws {
@@ -295,7 +301,7 @@ expecting: "20\n"
 25 IF 1 THEN PRINT 25
 50 PRINT 50
 """,
-                        expecting: "25\n50\n")
+                        expecting: " 25 \n 50 \n")
   }
 
   func testIfWithMultipleStatements() throws {
@@ -303,7 +309,7 @@ expecting: "20\n"
 25 IF 1 THEN PRINT 25: PRINT 30
 50 PRINT 50
 """,
-                        expecting: "25\n30\n50\n")
+                        expecting: " 25 \n 30 \n 50 \n")
   }
 
   func testIfWithMultipleStatementsAndFailingCondition() throws {
@@ -311,7 +317,7 @@ expecting: "20\n"
 25 IF 0 THEN PRINT 25: PRINT 30
 50 PRINT 50
 """,
-                        expecting: "50\n")
+                        expecting: " 50 \n")
   }
 
   func testAssignment() throws {
@@ -319,13 +325,13 @@ expecting: "20\n"
 10 X = 42
 25 PRINT X
 """,
-                        expecting: "42\n")
+                        expecting: " 42 \n")
   }
 
   func testStringRelationalOperator() {
     checkProgramResults(
       "25 PRINT \"A\"<\"B\"",
-      expecting: "1\n")
+      expecting: " 1 \n")
   }
 
   func testStringVariableDefaultsToEmptyString() {
@@ -337,19 +343,19 @@ expecting: "20\n"
   func testCallSqr() {
     checkProgramResults(
       "25 PRINT SQR(4)",
-      expecting: "2\n")
+      expecting: " 2 \n")
   }
 
   func testCallSin() {
     checkProgramResults(
       "25 PRINT SIN(0)",
-      expecting: "0\n")
+      expecting: " 0 \n")
   }
 
   func testCallLen() {
     checkProgramResults(
       "25 PRINT LEN(\"ABC\")",
-      expecting: "3\n")
+      expecting: " 3 \n")
   }
 
   func testTypeDefaultValueForFunctionIs0() {
@@ -398,7 +404,7 @@ expecting: "20\n"
 10 DEF FNI(X)=X
 25 PRINT FNI(3)
 """,
-                        expecting: "3\n")
+                        expecting: " 3 \n")
   }
 
   func testUsingStaticScope() {
@@ -408,7 +414,7 @@ expecting: "20\n"
 30 Y=1
 40 PRINT FNA(3)
 """,
-                        expecting: "8\n")
+                        expecting: " 8 \n")
   }
 
   func testCallOnUndefinedFunctionFails() {
@@ -420,59 +426,59 @@ expecting: "20\n"
   func testPrintIntegerUsesNoDecimals() {
     checkProgramResults(
       "1 PRINT 42",
-      expecting: "42\n")
+      expecting: " 42 \n")
   }
 
   func testPrintFloatDoesUseDecimals() {
     checkProgramResults(
       "1 PRINT 0.875000",
-      expecting: "0.875000\n")
+      expecting: " 0.875000 \n")
   }
 
   func testNumericSystemFunctions() {
     checkProgramResults(
       "1 PRINT ABS(-1)",
-      expecting: "1\n")
+      expecting: " 1 \n")
 
     checkProgramResults(
       "1 PRINT ATN(1)",
-      expecting: "0.785398\n")
+      expecting: " 0.785398 \n")
 
     checkProgramResults(
       "1 PRINT COS(1)",
-      expecting: "0.540302\n")
+      expecting: " 0.540302 \n")
 
     checkProgramResults(
       "1 PRINT EXP(1)",
-      expecting: "2.718282\n")
+      expecting: " 2.718282 \n")
 
     checkProgramResults(
       "1 PRINT FRE(1)",
-      expecting: "100000\n")
+      expecting: " 100000 \n")
 
     checkProgramResults(
       "1 PRINT INT(41.99)",
-      expecting: "41\n")
+      expecting: " 41 \n")
 
     checkProgramResults(
       "1 PRINT LOG(2.71)",
-      expecting: "0.996949\n")
+      expecting: " 0.996949 \n")
 
     checkProgramResults(
       "1 PRINT SGN(-41.99)",
-      expecting: "-1\n")
+      expecting: "-1 \n")
 
     checkProgramResults(
       "1 PRINT SIN(1.56)",
-      expecting: "0.999942\n")
+      expecting: " 0.999942 \n")
 
     checkProgramResults(
       "1 PRINT SQR(64)",
-      expecting: "8\n")
+      expecting: " 8 \n")
 
     checkProgramResults(
       "1 PRINT TAN(3.14)",
-      expecting: "-0.001593\n")
+      expecting: "-0.001593 \n")
   }
 
   func testRandomNumbersAreInProperRange() throws {
@@ -480,7 +486,7 @@ expecting: "20\n"
       let outputter = Output()
       let interpreter = Interpreter(Program("1 PRINT RND(0)"), outputter)
       try interpreter.run()
-      let value = Float(outputter.output.dropLast())!
+      let value = Float(outputter.output.trimmingCharacters(in: .whitespacesAndNewlines))!
       XCTAssertTrue(value >= 0 && value < 1)
     }
   }
@@ -491,7 +497,7 @@ expecting: "20\n"
       let outputter = Output()
       let interpreter = Interpreter(Program("1 PRINT RND(0)"), outputter)
       try interpreter.run()
-      let value = Float(outputter.output.dropLast())!
+      let value = Float(outputter.output.trimmingCharacters(in: .whitespacesAndNewlines))!
       XCTAssertNotEqual(lastValue, value)
       lastValue = value
     }
@@ -520,7 +526,7 @@ expecting: "20\n"
   func testStringSystemFunctions() {
     checkProgramResults(
       "1 PRINT LEN(\"ABCDE\")",
-      expecting: "5\n")
+      expecting: " 5 \n")
 
     checkProgramResults(
       "1 PRINT CHR$(42)",
@@ -528,17 +534,17 @@ expecting: "20\n"
 
     checkProgramResults(
       "1 PRINT STR$(-21)",
-      expecting: "-21\n")
+      expecting: "-21 \n")
   }
 
   func testASCfunction() {
     checkProgramResults(
       "1 PRINT ASC(\"DAD\")",
-      expecting: "68\n")
+      expecting: " 68 \n")
 
     checkProgramResults(
       "1 PRINT ASC(\"\")",
-      expecting: "0\n")
+      expecting: " 0 \n")
   }
 
   func testLEFTfunction() {
@@ -604,11 +610,11 @@ expecting: "20\n"
   func testVALfunction() {
     checkProgramResults(
       "1 PRINT VAL(\"21.25\")",
-      expecting: "21.250000\n")
+      expecting: " 21.250000 \n")
 
     checkProgramResults(
       "1 PRINT VAL(\"junk\")",
-      expecting: "0\n")
+      expecting: " 0 \n")
   }
 
   func testArrayValuesEqualIfDimensionsAndContentsAreEqual() {
@@ -676,7 +682,7 @@ expecting: "20\n"
   func testArrayAccess() {
     checkProgramResults(
       "10 DIM A(3)\n20 PRINT A(0)",
-      expecting: "0\n")
+      expecting: " 0 \n")
   }
 
   func testCantAccessNonArrayWithSubscript() {
@@ -693,7 +699,7 @@ expecting: "20\n"
 30 PRINT A(1)
 40 PRINT A(2)
 """,
-                        expecting: "17\n42\n")
+                        expecting: " 17 \n 42 \n")
   }
 
   func testArrayAssignmentToAlreadyNonArrayVariableFails() {
@@ -774,7 +780,7 @@ expecting: "20\n"
 30 PRINT A(1,2)
 35 PRINT A(1,1)
 """,
-                        expecting: "12\n11\n"
+                        expecting: " 12 \n 11 \n"
     )
   }
 
@@ -796,24 +802,7 @@ expecting: "20\n"
 260 NEXT I
 400 END
 """,
-expecting: """
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-
-""")
+expecting: " 1 \n 2 \n 3 \n 4 \n 5 \n 6 \n 7 \n 8 \n 9 \n 10 \n 11 \n 12 \n 13 \n 14 \n 15 \n")
   }
 
   func testStringArrayElementsStartEmpty() {
@@ -840,7 +829,7 @@ expecting: "hello\n")
 35 NEXT X
 40 PRINT X
 """,
-expecting: "1\n2\n3\n3\n")
+expecting: " 1 \n 2 \n 3 \n 3 \n")
   }
 
   func testFORwithNegativeStep() {
@@ -851,7 +840,7 @@ expecting: "1\n2\n3\n3\n")
 35 NEXT X
 40 PRINT X
 """,
-expecting: "3\n2\n1\n1\n")
+expecting: " 3 \n 2 \n 1 \n 1 \n")
   }
 
   func testFORstartingOutOfRange_DoesntExecute_but_DoesAdjustVariable()
@@ -863,7 +852,7 @@ expecting: "3\n2\n1\n1\n")
 35 NEXT X
 40 PRINT X
 """,
-expecting: "3\n"
+expecting: " 3 \n"
     )
   }
 
@@ -876,7 +865,7 @@ expecting: "3\n"
 35 NEXT X
 40 PRINT X
 """,
-expecting: "999\n2\n"
+expecting: " 999 \n 2 \n"
     )
   }
 
@@ -908,7 +897,7 @@ expecting: "NEXT variable must match corresponding FOR")
 10 FOR I=1 TO 2:PRINT I: NEXT I
 20 PRINT 20
 """,
-expecting: "1\n2\n20\n")
+expecting: " 1 \n 2 \n 20 \n")
   }
 
   func testFORandNEXTonDifferentLineWithMultipleParts() {
@@ -918,7 +907,7 @@ expecting: "1\n2\n20\n")
 15 PRINT I: NEXT I
 20 PRINT 20
 """,
-expecting: "1\n2\n20\n")
+expecting: " 1 \n 2 \n 20 \n")
   }
 
   func testGOSUB() {
@@ -930,7 +919,7 @@ expecting: "1\n2\n20\n")
 100 PRINT 42
 110 RETURN
 """,
-expecting: "42\n52\n")
+expecting: " 42 \n 52 \n")
   }
 
   func testGOSUBinSubroutine() {
@@ -945,7 +934,7 @@ expecting: "42\n52\n")
 110 GOSUB 50
 120 RETURN
 """,
-expecting: "100\n50\n20\n")
+expecting: " 100 \n 50 \n 20 \n")
   }
 
   func testRETURNwithoutGOSUB() {
@@ -961,7 +950,7 @@ expecting: "100\n50\n20\n")
 100 PRINT 100
 110 RETURN
 """,
-expecting: "100\n10\n20\n")
+expecting: " 100 \n 10 \n 20 \n")
   }
 
   func testON_GOTO() {
@@ -972,7 +961,7 @@ expecting: "100\n10\n20\n")
 20 PRINT 20
 30 PRINT 30
 """,
-expecting: "30\n")
+expecting: " 30 \n")
   }
 
   func testON_GOTOwithNegativeValueThrowsError() {
@@ -994,7 +983,7 @@ expecting: "?ILLEGAL QUANTITY")
 16 END
 20 PRINT 20
 """,
-expecting: "15\n")
+expecting: " 15 \n")
   }
 
   func testON_GOTOwithTooLargeValueGoesToNextLine() {
@@ -1005,6 +994,6 @@ expecting: "15\n")
 16 END
 20 PRINT 20
 """,
-expecting: "15\n")
+expecting: " 15 \n")
   }
 }

@@ -85,7 +85,7 @@ LIST
     let expected = """
 10 PRINT 42
 run
-42
+ 42 
 
 """
 
