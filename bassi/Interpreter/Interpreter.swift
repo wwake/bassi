@@ -103,6 +103,7 @@ struct Location : Equatable {
 class Interpreter {
   static let freeSpaceCount : Float = 100_000
   let defaultArraySize : Float = 10
+  let columnsPerTab = 12
 
   let program: Program
   let outputter : Output
@@ -444,7 +445,6 @@ class Interpreter {
 
     case .tab:
       let currentColumn = outputter.column()
-      let columnsPerTab = 12
       let tabNumber = (currentColumn + columnsPerTab) / columnsPerTab
       let neededSpaces = tabNumber * columnsPerTab - currentColumn
       return String(repeating: " ", count: neededSpaces)
@@ -459,11 +459,6 @@ class Interpreter {
       let printable = try printable($0)
       outputter.append(printable)
     }
-//    let printedOutput = try values
-//      .map(printable)
-//      .joined(separator: " ")
-
-    //outputter.append(printedOutput)
 
     if shouldPrintNewline {
       outputter.append("\n")
