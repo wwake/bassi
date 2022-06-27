@@ -43,4 +43,15 @@ class ReplTests: XCTestCase {
 
     XCTAssertEqual(repl.output.output, expected)
   }
+
+  func testContinueAfterStop() {
+    let repl = makeRepl()
+    repl.execute("10 STOP\n20 PRINT 20")
+
+    repl.doRun()
+    XCTAssertTrue(repl.output.output.isEmpty)
+
+    repl.doContinue()
+    XCTAssertEqual(repl.output.output, " 20 \n")
+  }
 }

@@ -49,6 +49,10 @@ class Repl : ObservableObject {
     }
   }
 
+  func doContinue() {
+
+  }
+
   func append(_ line: String) {
     output.append(line)
   }

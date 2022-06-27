@@ -216,13 +216,7 @@ class Interpreter {
     }
   }
 
-  func run() throws {
-    location = Location(program.firstLineNumber())
-    nextLocation = nil
-
-    let line = program[location.lineNumber]!
-    parse = parser.parse(line)
-
+  fileprivate func runLoop() throws {
     _ = try step(parse.statements[location.part])
 
     while !done && !stopped {
@@ -245,6 +239,16 @@ class Interpreter {
       _ = try step(
         Statement.at(parse.statements, location.part))
     }
+  }
+
+  func run() throws {
+    location = Location(program.firstLineNumber())
+    nextLocation = nil
+
+    let line = program[location.lineNumber]!
+    parse = parser.parse(line)
+
+    try runLoop()
   }
 
   func step(_ statement: Statement) throws {

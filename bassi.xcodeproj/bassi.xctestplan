@@ -18,6 +18,9 @@
   },
   "testTargets" : [
     {
+      "skippedTests" : [
+        "ReplTests\/testContinueAfterStop()"
+      ],
       "target" : {
         "containerPath" : "container:bassi.xcodeproj",
         "identifier" : "9192F7422828B69000FAFFA1",
