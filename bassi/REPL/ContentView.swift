@@ -9,7 +9,8 @@ import SwiftUI
 
 struct ContentView: View {
   @Namespace var bottom
-  
+  @State private var selectedTab = 0
+
   @ObservedObject var program = Program()
   @ObservedObject var output = Output()
 
@@ -45,6 +46,7 @@ struct ContentView: View {
       HStack {
         Spacer()
         Button("RUN") {
+          selectedTab = 1
           Repl(program, output).doRun()
         }
         Spacer()
@@ -76,22 +78,25 @@ struct ContentView: View {
   }
 
   var body: some View {
-    TabView {
+    TabView(selection: $selectedTab) {
       codeView()
         .tabItem {
           Image(systemName:"curlybraces.square")
           Text("Code")
         }
+        .tag(0)
       runView()
         .tabItem {
           Image(systemName:"note.text")
           Text("Output")
         }
+        .tag(1)
       variableView()
         .tabItem {
           Image(systemName:"eye")
           Text("Variables")
         }
+        .tag(2)
     }
     .frame(width: 600, height: 800)
   }

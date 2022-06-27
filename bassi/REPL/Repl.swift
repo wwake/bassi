@@ -21,8 +21,6 @@ class Repl : ObservableObject {
       .split(separator: "\n")
       .forEach {
         let command = String($0)
-        append(command)
-        append("\n")
 
         if command.count == 0 { return }
 
