@@ -657,7 +657,12 @@ class ParserTests: XCTestCase {
     XCTAssertEqual(Statement.at(list, 4), innerIf)
     XCTAssertEqual(Statement.at(list, 5), .gosub(5))
     XCTAssertEqual(Statement.at(list, 6), .gosub(6))
-
   }
 
+  func testStop() throws {
+    checkOneStatement(
+      "10 stop",
+      .stop
+    )
+  }
 }

@@ -143,6 +143,10 @@ public class Parser {
     case .variable(let name):
       result = try assign(name)
 
+    case .stop:
+      nextToken()
+      result = .stop
+      
     default:
       nextToken()
       throw ParseError.error(theToken, "Unknown statement")
