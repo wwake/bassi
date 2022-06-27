@@ -189,11 +189,8 @@ class Interpreter {
     self.program = program
     self.outputter = output
 
-    location = Location(program.firstLineNumber())
-    nextLocation = nil
-
-    let line = program[location.lineNumber]!
-    parse = parser.parse(line)
+    self.location = Location(0,0)
+    self.parse = Parse(0, [])
 
     defer {
       globals["TAB"] = Value.function(Fn2s(buildTab(outputter)))
@@ -220,6 +217,12 @@ class Interpreter {
   }
 
   func run() throws {
+    location = Location(program.firstLineNumber())
+    nextLocation = nil
+
+    let line = program[location.lineNumber]!
+    parse = parser.parse(line)
+
     _ = try step(parse.statements[location.part])
 
     while !done && !stopped {

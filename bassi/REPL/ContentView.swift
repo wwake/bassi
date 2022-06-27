@@ -11,8 +11,9 @@ struct ContentView: View {
   @Namespace var bottom
   @State private var selectedTab = 0
 
-  @ObservedObject var program = Program()
-  @ObservedObject var output = Output()
+  @ObservedObject var program: Program
+  @ObservedObject var output: Output
+  var repl: Repl
 
   @State var command: String = ""
 
@@ -39,7 +40,7 @@ struct ContentView: View {
       TextField("Enter line, re-type it, or just type line number to delete it", text: $command)
         .padding()
         .onSubmit({
-          Repl(program, output).execute(command)
+          repl.execute(command)
           command = ""
         })
 
@@ -47,7 +48,7 @@ struct ContentView: View {
         Spacer()
         Button("RUN") {
           selectedTab = 1
-          Repl(program, output).doRun()
+          repl.doRun()
         }
         Spacer()
       }
@@ -103,7 +104,10 @@ struct ContentView: View {
 }
 
 struct ContentView_Previews: PreviewProvider {
+  static var program = Program()
+  static var output = Output()
+
   static var previews: some View {
-    ContentView()
+    ContentView(program: program, output: output, repl: Repl(program, output))
   }
 }

@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct bassiApp: App {
-    var body: some Scene {
-        WindowGroup {
-          ContentView()
-        }
+  static var program = Program()
+  static var output = Output()
+
+  var body: some Scene {
+    WindowGroup {
+      ContentView(program: bassiApp.program, output: bassiApp.output, repl: Repl(bassiApp.program, bassiApp.output))
     }
+  }
 }

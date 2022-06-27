@@ -10,10 +10,12 @@ import Foundation
 class Repl : ObservableObject {
   var output: Output
   var program: Program
+  var interpreter: Interpreter
 
   init(_ program : Program, _ output: Output) {
     self.program = program
     self.output = output
+    interpreter = Interpreter(program, output)
   }
 
   func execute(_ commands: String) {
@@ -39,7 +41,6 @@ class Repl : ObservableObject {
 
   func doRun() {
     do {
-      let interpreter = Interpreter(program, output)
       try interpreter.run()
     } catch InterpreterError.error(let lineNumber, let message) {
       append("\(lineNumber): ?\(message)")
