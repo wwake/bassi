@@ -115,7 +115,8 @@ class Interpreter {
   var nextLocation: Location?
 
   var done = false
-
+  var stopped = false
+  
   typealias Store = [Name : Value]
 
   typealias ForInfo = (Name, Value, Value, Location)
@@ -221,7 +222,7 @@ class Interpreter {
   func run() throws {
     _ = try step(parse.statements[location.part])
 
-    while !done {
+    while !done && !stopped {
       if nextLocation == nil {
         nextLocation = nextLocationFor(location)
       }
@@ -305,7 +306,8 @@ class Interpreter {
       break
 
     case .stop:
-      throw InterpreterError.cantHappen(0, "No STOP yet")
+      stopped = true
+      break
     }
   }
 

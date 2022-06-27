@@ -91,7 +91,6 @@ class InterpreterTests: XCTestCase {
     checkProgramResults(
       "20 PRINT \"XYZ\" TAB(2) \"Y\";",
       expecting: "XYZ\n  Y")
-
   }
 
   func testEnd() throws {
@@ -1009,4 +1008,15 @@ expecting: " 15 \n")
 """,
 expecting: " 15 \n")
   }
+
+  func testStop() throws {
+    checkProgramResults(
+"""
+10 STOP
+15 PRINT 15
+20 END
+""",
+expecting: "")
+  }
+
 }
