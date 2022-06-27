@@ -34,6 +34,7 @@
 		9192F73D2828B69000FAFFA1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9192F73C2828B69000FAFFA1 /* Preview Assets.xcassets */; };
 		9192F7522828B69000FAFFA1 /* bassiUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9192F7512828B69000FAFFA1 /* bassiUITests.swift */; };
 		9192F7542828B69000FAFFA1 /* bassiUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9192F7532828B69000FAFFA1 /* bassiUITestsLaunchTests.swift */; };
+		919517482869FBB1009BFC5B /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 919517472869FBB1009BFC5B /* OrderedCollections */; };
 		91BE90E8283E7CD9004F0CF9 /* ExpressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91BE90E7283E7CD9004F0CF9 /* ExpressionTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -96,6 +97,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				919517482869FBB1009BFC5B /* OrderedCollections in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -252,6 +254,9 @@
 			dependencies = (
 			);
 			name = bassi;
+			packageProductDependencies = (
+				919517472869FBB1009BFC5B /* OrderedCollections */,
+			);
 			productName = bassi;
 			productReference = 9192F7322828B68F00FAFFA1 /* bassi.app */;
 			productType = "com.apple.product-type.application";
@@ -324,6 +329,9 @@
 				Base,
 			);
 			mainGroup = 9192F7292828B68F00FAFFA1;
+			packageReferences = (
+				919517462869FBB1009BFC5B /* XCRemoteSwiftPackageReference "swift-collections" */,
+			);
 			productRefGroup = 9192F7332828B68F00FAFFA1 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -708,6 +716,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		919517462869FBB1009BFC5B /* XCRemoteSwiftPackageReference "swift-collections" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-collections.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		919517472869FBB1009BFC5B /* OrderedCollections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 919517462869FBB1009BFC5B /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = OrderedCollections;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 9192F72A2828B68F00FAFFA1 /* Project object */;
 }
