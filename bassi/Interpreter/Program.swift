@@ -6,12 +6,11 @@
 //
 
 import Foundation
-import OrderedCollections
 
 class Program : ObservableObject {
   let maxLineNumber = 99999
 
-  @Published var program : OrderedDictionary =
+  @Published var program : [Int : String] =
     [99999 : "99999 END"]
 
   init(_ lines: String) {
