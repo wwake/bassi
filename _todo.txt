@@ -1,6 +1,4 @@
-Support the TAB() function
-* PRINT with ",":
-* Error message for unknown function - callPredefinedFunction() in Interpreter
+* INPUT
 
 * REPL should automatically scroll to bottom
   + https://developer.apple.com/documentation/swiftui/scrollviewreader
@@ -21,7 +19,6 @@ Support the TAB() function
 
 * ON..GOSUB
 * DATA, READ, RESTORE
-* INPUT
 
 * Parameterized tests package?
 
@@ -33,6 +30,7 @@ BI-22-33: June 24, 2022
   + Make numbers print with trailing spaces, and with leading spaces if they're non-negative
   + comma at eol means don't print newline
   + tabs to column 0, 12, 24, ...
+* Support the TAB() function - if past desired column, insert a newline
 
 
 BI-22-32: June 23, 2022
