@@ -96,6 +96,7 @@ public indirect enum Statement : Equatable {
   case print([Printable], Bool)
   case `return`
   case skip
+  case stop
 
   static func count(_ statements: [Statement]) -> Int {
     if case .if(_, let inner) = statements.last! {

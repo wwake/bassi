@@ -303,6 +303,9 @@ class Interpreter {
 
     case .skip:
       break
+
+    case .stop:
+      throw InterpreterError.cantHappen(0, "No STOP yet")
     }
   }
 

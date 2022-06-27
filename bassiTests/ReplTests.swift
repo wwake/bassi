@@ -14,18 +14,11 @@ class ReplTests: XCTestCase {
     return Repl(program, output)
   }
 
-  func testCommandGetsEchoed() {
-    let repl = makeRepl()
-    repl.execute("10 PRINT")
-    XCTAssertTrue(repl.output.output.contains("10 PRINT\n"))
-  }
-
   func testAddingLineSavesIt() {
     let repl = makeRepl()
     repl.execute("10 PRINT 42")
 
-    XCTAssertTrue(repl.contains(10))
-    XCTAssertFalse(repl.contains(20))
+    XCTAssertEqual(repl[10], "10 PRINT 42")
   }
 
   func testMultiLineCommandExecutesEachOne() {
@@ -44,7 +37,6 @@ class ReplTests: XCTestCase {
     repl.doRun()
 
     let expected = """
-10 PRINT 42
  42 
 
 """

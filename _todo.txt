@@ -1,3 +1,7 @@
+* STOP
+* Continue
+* Variable display
+
 * INPUT
 
 * REPL should automatically scroll to bottom
@@ -21,6 +25,12 @@
 * DATA, READ, RESTORE
 
 * Parameterized tests package?
+
+BI-22-34: June 27, 2022
+* REPL
+  + Switch REPL to have tabs for code, output, and variables
+  + Add a button to RUN
+  + Delete commands for RUN and LIST
 
 BI-22-33: June 24, 2022
 * DIM allows expressions in dimensions
