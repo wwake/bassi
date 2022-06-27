@@ -7,10 +7,10 @@
 
 import Foundation
 
-class Program {
+class Program : ObservableObject {
   let maxLineNumber = 99999
 
-  var program : [LineNumber: String] =
+  @Published var program : [LineNumber: String] =
     [99999 : "99999 END"]
 
   init(_ lines: String) {

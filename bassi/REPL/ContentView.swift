@@ -10,10 +10,11 @@ import SwiftUI
 struct ContentView: View {
   @Namespace var bottom
   
+  @ObservedObject var program = Program()
   @ObservedObject var output = Output()
+
   @State var command: String = ""
 
-  var program = Program()
 
   fileprivate func codeView() -> some View {
     return VStack {
@@ -89,7 +90,6 @@ struct ContentView: View {
           Image(systemName:"eye")
           Text("Variables")
         }
-
     }
     .frame(width: 600, height: 800)
   }
