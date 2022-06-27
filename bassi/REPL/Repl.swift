@@ -50,7 +50,13 @@ class Repl : ObservableObject {
   }
 
   func doContinue() {
-
+    do {
+      try interpreter.doContinue()
+    } catch InterpreterError.error(let lineNumber, let message) {
+      append("\(lineNumber): ?\(message)")
+    } catch {
+      append("\(error)")
+    }
   }
 
   func append(_ line: String) {

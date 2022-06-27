@@ -217,6 +217,9 @@ class Interpreter {
   }
 
   fileprivate func runLoop() throws {
+    let line = program[location.lineNumber]!
+    parse = parser.parse(line)
+
     _ = try step(parse.statements[location.part])
 
     while !done && !stopped {
@@ -245,8 +248,13 @@ class Interpreter {
     location = Location(program.firstLineNumber())
     nextLocation = nil
 
-    let line = program[location.lineNumber]!
-    parse = parser.parse(line)
+    try runLoop()
+  }
+
+  func doContinue() throws {
+    stopped = false
+    location = nextLocationFor(location)
+    nextLocation = nil
 
     try runLoop()
   }
