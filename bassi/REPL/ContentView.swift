@@ -20,11 +20,12 @@ struct ContentView: View {
     return VStack {
       ScrollViewReader { proxy in
         ScrollView {
-          Text("program.program") 
-//          Text(output.output)
-//            .font(.system(size:18, design:.monospaced))
-//            .padding(.all)
-//            .frame(maxWidth: .infinity, alignment: .leading)
+          ForEach(program.program.sorted(by: <), id: \.key) { key, value in
+            Text(value)
+          }
+          .font(.system(size:18, design:.monospaced))
+          .frame(maxWidth: .infinity, alignment: .leading)
+
           Text("")
             .id(bottom)
         }

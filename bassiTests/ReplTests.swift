@@ -36,54 +36,15 @@ class ReplTests: XCTestCase {
     XCTAssertEqual(repl[20], "20 PRINT 20")
   }
 
-  func testListKnowsProgram() {
-    let repl = makeRepl()
-
-    repl.execute("10 PRINT 42")
-    repl.execute("LisT")
-
-    XCTAssertEqual(
-      repl.output.output,
-"""
-10 PRINT 42
-LisT
-10 PRINT 42
-
-""")
-  }
-
-  func testListSortsByLineNumber() {
-    let repl = makeRepl()
-
-    repl.execute("10 PRINT 42")
-    repl.execute("20 PRINT 22")
-    repl.execute("5 PRINT 5")
-    repl.execute("LIST")
-
-    XCTAssertEqual(
-      repl.output.output,
-"""
-10 PRINT 42
-20 PRINT 22
-5 PRINT 5
-LIST
-5 PRINT 5
-10 PRINT 42
-20 PRINT 22
-
-""")
-  }
-
   func testReplRun() {
     let repl = makeRepl()
 
     repl.execute("10 PRINT 42")
 
-    repl.execute("run")
+    repl.doRun()
 
     let expected = """
 10 PRINT 42
-run
  42 
 
 """

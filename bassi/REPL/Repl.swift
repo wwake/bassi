@@ -28,10 +28,6 @@ class Repl : ObservableObject {
 
         if command.first!.isNumber {
           doLineNumber(command)
-        } else if command.uppercased() == "LIST" {
-          doList()
-        }  else if command.uppercased() == "RUN" {
-          doRun()
         }
       }
   }
@@ -41,15 +37,6 @@ class Repl : ObservableObject {
       $0.isNumber
     }
     program[Int(lineNumber)!] = command
-  }
-
-  func doList() {
-    program
-      .list()
-      .forEach {
-        append($0)
-        append("\n")
-      }
   }
 
   func doRun() {
