@@ -8,13 +8,15 @@
 import Foundation
 
 class Repl : ObservableObject {
-  var output: Output!
+  var output: Output
 
   var program = Program()
-  
-  func execute(_ commands: String, _ output: Output) {
-    self.output = output
 
+  init(_ output: Output) {
+    self.output = output
+  }
+
+  func execute(_ commands: String) {
     commands
       .split(separator: "\n")
       .forEach {
@@ -29,7 +31,7 @@ class Repl : ObservableObject {
         } else if command.uppercased() == "LIST" {
           doList()
         }  else if command.uppercased() == "RUN" {
-          doRun(output)
+          doRun()
         }
       }
   }
@@ -50,7 +52,7 @@ class Repl : ObservableObject {
       }
   }
 
-  func doRun(_ output: Output) {
+  func doRun() {
     do {
       let interpreter = Interpreter(program, output)
       try interpreter.run()

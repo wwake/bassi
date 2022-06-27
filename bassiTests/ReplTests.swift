@@ -10,36 +10,36 @@ import XCTest
 class ReplTests: XCTestCase {
 
   func testCommandGetsEchoed() {
-    let repl = Repl()
     let output = Output()
-    repl.execute("10 PRINT", output)
+    let repl = Repl(output)
+    repl.execute("10 PRINT")
     XCTAssertTrue(output.output.contains("10 PRINT\n"))
   }
 
   func testAddingLineSavesIt() {
-    let repl = Repl()
     let output = Output()
-    repl.execute("10 PRINT 42", output)
+    let repl = Repl(output)
+    repl.execute("10 PRINT 42")
 
     XCTAssertTrue(repl.contains(10))
     XCTAssertFalse(repl.contains(20))
   }
 
   func testMultiLineCommandExecutesEachOne() {
-    let repl = Repl()
     let output = Output()
-    repl.execute("10 PRINT 10\n20 PRINT 20", output)
+    let repl = Repl(output)
+    repl.execute("10 PRINT 10\n20 PRINT 20")
 
     XCTAssertEqual(repl[10], "10 PRINT 10")
     XCTAssertEqual(repl[20], "20 PRINT 20")
   }
 
   func testListKnowsProgram() {
-    let repl = Repl()
     let output = Output()
+    let repl = Repl(output)
 
-    repl.execute("10 PRINT 42", output)
-    repl.execute("LisT", output)
+    repl.execute("10 PRINT 42")
+    repl.execute("LisT")
 
     XCTAssertEqual(
       output.output,
@@ -52,13 +52,13 @@ LisT
   }
 
   func testListSortsByLineNumber() {
-    let repl = Repl()
     let output = Output()
+    let repl = Repl(output)
 
-    repl.execute("10 PRINT 42", output)
-    repl.execute("20 PRINT 22", output)
-    repl.execute("5 PRINT 5", output)
-    repl.execute("LIST", output)
+    repl.execute("10 PRINT 42")
+    repl.execute("20 PRINT 22")
+    repl.execute("5 PRINT 5")
+    repl.execute("LIST")
 
     XCTAssertEqual(
       output.output,
@@ -75,12 +75,12 @@ LIST
   }
 
   func testReplRun() {
-    let repl = Repl()
     let output = Output()
+    let repl = Repl(output)
 
-    repl.execute("10 PRINT 42", output)
+    repl.execute("10 PRINT 42")
 
-    repl.execute("run", output)
+    repl.execute("run")
 
     let expected = """
 10 PRINT 42
