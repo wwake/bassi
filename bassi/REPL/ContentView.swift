@@ -13,6 +13,7 @@ struct ContentView: View {
   @ObservedObject var output = Output()
   @State var command: String = ""
 
+  var program = Program()
 
   fileprivate func codeView() -> some View {
     return VStack {
@@ -34,14 +35,14 @@ struct ContentView: View {
       TextField("Enter line, re-type it, or just type line number to delete it", text: $command)
         .padding()
         .onSubmit({
-          Repl(output).execute(command)
+          Repl(program, output).execute(command)
           command = ""
         })
 
       HStack {
         Spacer()
         Button("RUN") {
-          Repl(output).doRun()
+          Repl(program, output).doRun()
         }
         Spacer()
       }

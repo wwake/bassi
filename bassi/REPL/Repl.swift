@@ -9,10 +9,10 @@ import Foundation
 
 class Repl : ObservableObject {
   var output: Output
+  var program: Program
 
-  var program = Program()
-
-  init(_ output: Output) {
+  init(_ program : Program, _ output: Output) {
+    self.program = program
     self.output = output
   }
 
