@@ -1,5 +1,7 @@
+* Test REPL.stopped
 * Continue
 * Variable display
+* Dead code Program.list()
 
 * INPUT
 

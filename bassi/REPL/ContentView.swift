@@ -50,6 +50,11 @@ struct ContentView: View {
           selectedTab = 1
           repl.doRun()
         }
+        Button("CONTINUE") {
+          selectedTab = 1
+          repl.doContinue()
+        }
+        //.enabled()
         Spacer()
       }
 

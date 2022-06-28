@@ -12,6 +12,8 @@ class Repl : ObservableObject {
   var program: Program
   var interpreter: Interpreter
 
+  @Published var stopped = false
+
   init(_ program : Program, _ output: Output) {
     self.program = program
     self.output = output
@@ -42,6 +44,8 @@ class Repl : ObservableObject {
   func doRun() {
     do {
       try interpreter.run()
+      stopped = interpreter.stopped
+      print("doRun \(stopped)")
     } catch InterpreterError.error(let lineNumber, let message) {
       append("\(lineNumber): ?\(message)")
     } catch {
@@ -52,6 +56,8 @@ class Repl : ObservableObject {
   func doContinue() {
     do {
       try interpreter.doContinue()
+      stopped = interpreter.stopped
+      print("doContinue \(stopped)")
     } catch InterpreterError.error(let lineNumber, let message) {
       append("\(lineNumber): ?\(message)")
     } catch {

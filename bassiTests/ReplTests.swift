@@ -36,12 +36,7 @@ class ReplTests: XCTestCase {
 
     repl.doRun()
 
-    let expected = """
- 42 
-
-"""
-
-    XCTAssertEqual(repl.output.output, expected)
+    XCTAssertEqual(repl.output.output, " 42 \n")
   }
 
   func testContinueAfterStop() {
