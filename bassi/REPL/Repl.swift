@@ -12,12 +12,13 @@ class Repl : ObservableObject {
   var program: Program
   var interpreter: Interpreter
 
-  @Published var stopped = false
+  @Published var stopped: Bool
 
   init(_ program : Program, _ output: Output) {
     self.program = program
     self.output = output
     interpreter = Interpreter(program, output)
+    stopped = interpreter.stopped
   }
 
   func execute(_ commands: String) {
@@ -45,7 +46,6 @@ class Repl : ObservableObject {
     do {
       try interpreter.run()
       stopped = interpreter.stopped
-      print("doRun \(stopped)")
     } catch InterpreterError.error(let lineNumber, let message) {
       append("\(lineNumber): ?\(message)")
     } catch {
@@ -57,7 +57,6 @@ class Repl : ObservableObject {
     do {
       try interpreter.doContinue()
       stopped = interpreter.stopped
-      print("doContinue \(stopped)")
     } catch InterpreterError.error(let lineNumber, let message) {
       append("\(lineNumber): ?\(message)")
     } catch {
