@@ -81,18 +81,22 @@ struct ContentView: View {
       ScrollViewReader { proxy in
         ScrollView {
           LazyVGrid(columns: columns, alignment: .center) {
-          ForEach(
-            repl
-              .store
-              .filter { !$1.isFunction() }
-              .sorted(by: {$0.key < $1.key}),
-            id: \.key) { key, value in
-              Text(key)
-              Text(":")
-              Text(value.format())
-          }
-          .font(.system(size:18, design:.monospaced))
-          .frame(maxWidth: .infinity, alignment: .leading)
+            ForEach(
+              repl
+                .store
+                .filter { !$1.isFunction() }
+                .sorted(by: {$0.key < $1.key}),
+              id: \.key) { key, value in
+                Text(key)
+                Text(":")
+                HStack {
+                  Text(value.format())
+                  Image(systemName: "eye")
+                    .opacity(value.isArray() ? 1 : 0)
+                }
+              }
+              .font(.system(size:18, design:.monospaced))
+              .frame(maxWidth: .infinity, alignment: .leading)
           }
 
           Text("")

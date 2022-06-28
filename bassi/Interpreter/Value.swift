@@ -65,6 +65,14 @@ public enum Value : Equatable {
     }
   }
 
+  func isArray() -> Bool {
+    if case .array(_, _) = self {
+      return true
+    } else {
+      return false
+    }
+  }
+
   func apply(_ args: [Value]) -> Value {
     guard case .function(let fn) = self else {
       // can't happen
