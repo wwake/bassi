@@ -1,7 +1,5 @@
-* Test REPL.stopped
-* Continue
-* Variable display
 * Dead code Program.list()
+* Variable display
 
 * INPUT
 
@@ -26,6 +24,9 @@
 * DATA, READ, RESTORE
 
 * Parameterized tests package?
+
+BI-22-35: June 28, 2022
+* Continue - button shows when interpreter is stopped
 
 BI-22-34: June 27, 2022
 * REPL

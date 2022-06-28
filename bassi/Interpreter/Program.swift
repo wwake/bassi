@@ -40,13 +40,6 @@ class Program : ObservableObject {
     }
   }
 
-  func list() -> [String] {
-    program
-      .sorted(by: {$0.key < $1.key})
-      .map {(key, value) in value}
-      .dropLast()
-  }
-
   func firstLineNumber() -> Int {
     let lineNumber = program
       .min(by: {$0.key < $1.key})
