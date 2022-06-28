@@ -12,13 +12,22 @@ final class ValueTests: XCTestCase {
     XCTAssertEqual(Value.string("hello").format(), "hello")
   }
 
-  func test_formatArray() {
+  func test_formatNumericArray() {
     let array: Value = Value.array(
       [1,2],
       Array(repeating: .number(3), count: 6),
       .number)
 
-    XCTAssertEqual(array.format(), "Array(1,2)")
+    XCTAssertEqual(array.format(), "Array(1,2): number")
+  }
+
+  func test_formatStringArray() {
+    let array: Value = Value.array(
+      [1,2],
+      Array(repeating: .string("hi"), count: 6),
+      .string)
+
+    XCTAssertEqual(array.format(), "Array(1,2): string")
   }
 
   func test_formatOther() {
