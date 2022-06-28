@@ -22,18 +22,6 @@ fileprivate func boolToFloat(
         .array:
       return .number(0.0)
     }
-  }
-
-func basicFormat(_ number: (Float)) -> String {
-  var result = ""
-  if number == Float(Int(number)) {
-    result = String(format: "%.0f", number)
-  } else {
-    result = String(format: "%f", number)
-  }
-
-  if number < 0 { return result + " " }
-  return " " + result + " "
 }
 
 fileprivate func midDollar(_ string: String, _ start: Int, _ length: Int) -> String {
@@ -179,7 +167,7 @@ class Interpreter {
     "SIN" : Value.function(Fn2n(sin)),
     "SQR" : Value.function(Fn2n(sqrt)),
     "STR$": Value.function(Fn2s({
-      basicFormat($0)
+      Value.number($0).format()
     })),
     "TAN" : Value.function(Fn2n(tan)),
     "VAL" : Value.function(Fs2n({Float($0) ?? 0})),
@@ -453,24 +441,6 @@ class Interpreter {
   func format(_ input: Expression) throws -> String {
     let value = try evaluate(input, globals)
     return value.format()
-//    switch value {
-//    case .number(let number):
-//      return basicFormat(number)
-//
-//    case .string(let string):
-//      return string
-//
-//    case .undefined: return "<UNDEFINED>"
-//
-//    case .function:
-//      return "<FUNCTION>"
-//
-//    case .userFunction(_, _, _):
-//      return "<USER-FUNCTION>"
-//
-//    case .array:
-//      return "Array<Value>"
-//    }
   }
 
   func printable(_ item: Printable) throws -> String {
