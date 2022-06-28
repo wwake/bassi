@@ -65,6 +65,40 @@ public enum Value : Equatable {
 
     return fn(args)
   }
+
+  fileprivate func basicFormat(_ number: (Float)) -> String {
+    var result = ""
+    if number == Float(Int(number)) {
+      result = String(format: "%.0f", number)
+    } else {
+      result = String(format: "%f", number)
+    }
+
+    if number < 0 { return result + " " }
+    return " " + result + " "
+  }
+
+  func format() -> String {
+    switch self {
+    case .number(let number):
+      return basicFormat(number)
+
+    case .string(let string):
+      return string
+
+    case .undefined: return "<UNDEFINED>"
+
+    case .function:
+      return "<FUNCTION>"
+
+    case .userFunction(_, _, _):
+      return "<USER-FUNCTION>"
+
+    case .array:
+      return "Array<Value>"
+    }
+
+  }
 }
 
 public func Fn2n(

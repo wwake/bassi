@@ -33,7 +33,7 @@ func basicFormat(_ number: (Float)) -> String {
   }
 
   if number < 0 { return result + " " }
-  return " " + result + " " 
+  return " " + result + " "
 }
 
 fileprivate func midDollar(_ string: String, _ start: Int, _ length: Int) -> String {
@@ -452,25 +452,25 @@ class Interpreter {
 
   func format(_ input: Expression) throws -> String {
     let value = try evaluate(input, globals)
-
-    switch value {
-    case .number(let number):
-      return basicFormat(number)
-
-    case .string(let string):
-      return string
-
-    case .undefined: return "<UNDEFINED>"
-
-    case .function:
-      return "<FUNCTION>"
-
-    case .userFunction(_, _, _):
-      return "<USER-FUNCTION>"
-
-    case .array:
-      return "Array<Value>"
-    }
+    return value.format()
+//    switch value {
+//    case .number(let number):
+//      return basicFormat(number)
+//
+//    case .string(let string):
+//      return string
+//
+//    case .undefined: return "<UNDEFINED>"
+//
+//    case .function:
+//      return "<FUNCTION>"
+//
+//    case .userFunction(_, _, _):
+//      return "<USER-FUNCTION>"
+//
+//    case .array:
+//      return "Array<Value>"
+//    }
   }
 
   func printable(_ item: Printable) throws -> String {

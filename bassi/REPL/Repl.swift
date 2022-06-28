@@ -13,7 +13,7 @@ class Repl : ObservableObject {
   var interpreter: Interpreter
 
   @Published var stopped: Bool
-  @Published var store: [Name: Value] = [:]
+  @Published var store: [Name : Value] = [:]
   
   init(_ program : Program, _ output: Output) {
     self.program = program

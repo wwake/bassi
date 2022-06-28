@@ -74,8 +74,8 @@ struct ContentView: View {
     return VStack {
       ScrollViewReader { proxy in
         ScrollView {
-          ForEach(program.program.sorted(by: <), id: \.key) { key, value in
-            Text(value)
+          ForEach(repl.store.sorted(by: {$0.key < $1.key}), id: \.key) { key, value in
+            Text("test")
           }
           .font(.system(size:18, design:.monospaced))
           .frame(maxWidth: .infinity, alignment: .leading)
