@@ -69,16 +69,26 @@ struct ContentView: View {
       }
     }
   }
-  
+
+  var columns = [
+    GridItem(.fixed(80.0), alignment: .leading),
+    GridItem(.fixed(15.0), alignment: .center),
+    GridItem(.fixed(400.0), alignment: .leading),
+  ]
+
   fileprivate func variableView() -> some View {
     return VStack {
       ScrollViewReader { proxy in
         ScrollView {
+          LazyVGrid(columns: columns, alignment: .center) {
           ForEach(repl.store.sorted(by: {$0.key < $1.key}), id: \.key) { key, value in
-            Text("test")
+              Text(key)
+              Text(":")
+              Text(value.format())
           }
           .font(.system(size:18, design:.monospaced))
           .frame(maxWidth: .infinity, alignment: .leading)
+          }
 
           Text("")
             .id(bottom)
