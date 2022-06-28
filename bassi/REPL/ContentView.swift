@@ -81,7 +81,12 @@ struct ContentView: View {
       ScrollViewReader { proxy in
         ScrollView {
           LazyVGrid(columns: columns, alignment: .center) {
-          ForEach(repl.store.sorted(by: {$0.key < $1.key}), id: \.key) { key, value in
+          ForEach(
+            repl
+              .store
+              .filter { !$1.isFunction() }
+              .sorted(by: {$0.key < $1.key}),
+            id: \.key) { key, value in
               Text(key)
               Text(":")
               Text(value.format())

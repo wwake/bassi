@@ -57,6 +57,14 @@ public enum Value : Equatable {
     return value
   }
 
+  func isFunction() -> Bool {
+    if case .function(_) = self {
+      return true
+    } else {
+      return false
+    }
+  }
+
   func apply(_ args: [Value]) -> Value {
     guard case .function(let fn) = self else {
       // can't happen
@@ -86,7 +94,8 @@ public enum Value : Equatable {
     case .string(let string):
       return string
 
-    case .undefined: return "<UNDEFINED>"
+    case .undefined:
+      return "<UNDEFINED>"
 
     case .function:
       return "<FUNCTION>"
