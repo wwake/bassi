@@ -49,4 +49,12 @@ class ReplTests: XCTestCase {
     repl.doContinue()
     XCTAssertEqual(repl.output.output, " 20  30 \n")
   }
+
+  func testReplKnowsVariablesAfterRun() {
+    let repl = makeRepl()
+    repl.execute("10 X=12")
+    repl.doRun()
+
+    XCTAssertEqual(repl.store["X"], Value.number(12))
+  }
 }

@@ -13,7 +13,8 @@ class Repl : ObservableObject {
   var interpreter: Interpreter
 
   @Published var stopped: Bool
-
+  @Published var store: [Name: Value] = [:]
+  
   init(_ program : Program, _ output: Output) {
     self.program = program
     self.output = output
@@ -46,6 +47,7 @@ class Repl : ObservableObject {
     do {
       try interpreter.run()
       stopped = interpreter.stopped
+      store = interpreter.globals
     } catch InterpreterError.error(let lineNumber, let message) {
       append("\(lineNumber): ?\(message)")
     } catch {

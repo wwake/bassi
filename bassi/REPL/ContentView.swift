@@ -71,7 +71,24 @@ struct ContentView: View {
   }
   
   fileprivate func variableView() -> some View {
-    Text("All the variables")
+    return VStack {
+      ScrollViewReader { proxy in
+        ScrollView {
+          ForEach(program.program.sorted(by: <), id: \.key) { key, value in
+            Text(value)
+          }
+          .font(.system(size:18, design:.monospaced))
+          .frame(maxWidth: .infinity, alignment: .leading)
+
+          Text("")
+            .id(bottom)
+        }
+        .onChange(of: output) { _ in
+          print("output changed")
+          proxy.scrollTo(bottom)
+        }
+      }
+    }
   }
 
   fileprivate func buttonView() -> some View {
