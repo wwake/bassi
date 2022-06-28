@@ -13,7 +13,7 @@ struct ContentView: View {
   
   @ObservedObject var program: Program
   @ObservedObject var output: Output
-  var repl: Repl
+  @ObservedObject var repl: Repl
   
   @State var command: String = ""
   
@@ -80,7 +80,7 @@ struct ContentView: View {
         selectedTab = 1
         repl.doContinue()
       }
-      .disabled(true)
+      .disabled(!repl.stopped)
       Spacer()
     }
   }
