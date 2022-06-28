@@ -57,4 +57,22 @@ class ReplTests: XCTestCase {
 
     XCTAssertEqual(repl.store["X"], Value.number(12))
   }
+
+  func testReplKnowsVariablesAfterStop() {
+    let repl = makeRepl()
+    repl.execute("10 X$=\"hi\"\n20 STOP")
+    repl.doRun()
+
+    XCTAssertEqual(repl.store["X$"], Value.string("hi"))
+  }
+
+  func testReplKnowsVariablesAfterContinue() {
+    let repl = makeRepl()
+    repl.execute("10 X9=99\n20 STOP\n30 Y=1")
+    repl.doRun()
+    repl.doContinue()
+
+    XCTAssertEqual(repl.store["X9"], Value.number(99))
+    XCTAssertEqual(repl.store["Y"], Value.number(1))
+  }
 }

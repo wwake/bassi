@@ -59,6 +59,7 @@ class Repl : ObservableObject {
     do {
       try interpreter.doContinue()
       stopped = interpreter.stopped
+      store = interpreter.globals
     } catch InterpreterError.error(let lineNumber, let message) {
       append("\(lineNumber): ?\(message)")
     } catch {
