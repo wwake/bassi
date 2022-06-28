@@ -12,10 +12,10 @@ public enum Value : Equatable {
   case number(Float)
   case string(String)
 
-  case array([Int], [Value])
+  case array([Int], [Value], `Type`)
 
   case function(([Value]) -> Value)
-  case userFunction(String, Expression, Type)
+  case userFunction(String, Expression, `Type`)
 
   func asFloat() -> Float {
     guard case .number(let value) = self else {
@@ -36,9 +36,12 @@ public enum Value : Equatable {
     case (.undefined, .undefined):
       return true
 
-    case (.array(let dimensions1, let contents1),
-          .array(let dimensions2, let contents2)):
-      return dimensions1 == dimensions2 && contents1 == contents2
+    case (.array(let dimensions1, let contents1, let type1),
+          .array(let dimensions2, let contents2, let type2)):
+      return
+         dimensions1 == dimensions2
+      && contents1 == contents2
+      && type1 == type2
 
     case (.function, .function),
       (.userFunction, .userFunction):
@@ -59,7 +62,7 @@ public enum Value : Equatable {
   }
 
   func isFunction() -> Bool {
-    if case .function(_) = self {
+    if case .function = self {
       return true
     } else {
       return false
@@ -67,7 +70,7 @@ public enum Value : Equatable {
   }
 
   func isArray() -> Bool {
-    if case .array(_, _) = self {
+    if case .array = self {
       return true
     } else {
       return false
@@ -112,7 +115,7 @@ public enum Value : Equatable {
     case .userFunction(_, _, _):
       return "<USER-FUNCTION>"
 
-    case .array(let indexes, _):
+    case .array(let indexes, _, _):
       let temp = indexes.map {String($0)}.joined(separator: ",")
       return "Array(\(temp))"
     }

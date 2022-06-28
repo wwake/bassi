@@ -15,7 +15,8 @@ final class ValueTests: XCTestCase {
   func test_formatArray() {
     let array: Value = Value.array(
       [1,2],
-      Array(repeating: .number(3), count: 6))
+      Array(repeating: .number(3), count: 6),
+      .number)
 
     XCTAssertEqual(array.format(), "Array(1,2)")
   }

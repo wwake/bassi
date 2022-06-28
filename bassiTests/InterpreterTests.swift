@@ -631,8 +631,8 @@ expecting: " 20 \n"
 
   func testArrayValuesEqualIfDimensionsAndContentsAreEqual() {
     XCTAssertEqual(
-      Value.array([3], [.number(0), .number(0), .number(0)]),
-      Value.array([3], [.number(0), .number(0), .number(0)]))
+      Value.array([3], [.number(0), .number(0), .number(0)], .number),
+      Value.array([3], [.number(0), .number(0), .number(0)], .number))
   }
 
   func testDIMknowsTypeAndSize() throws {
@@ -644,7 +644,8 @@ expecting: " 20 \n"
       interpreter.globals["A"]!,
       .array(
         [3],
-        [.number(0), .number(0), .number(0)]))
+        [.number(0), .number(0), .number(0)],
+        .number))
   }
 
   func testDIMknowsTypeAndSizeForMultipleArrays() throws {
@@ -656,12 +657,14 @@ expecting: " 20 \n"
       interpreter.globals["A"]!,
       .array(
         [3],
-        [.number(0), .number(0), .number(0)]))
+        [.number(0), .number(0), .number(0)],
+        .number))
     XCTAssertEqual(
       interpreter.globals["B"]!,
       .array(
         [2],
-        [.number(0), .number(0)]))
+        [.number(0), .number(0)],
+        .number))
   }
 
   func testDIMknowsTypeAndSizeForMultiDArray() throws {
@@ -676,7 +679,8 @@ expecting: " 20 \n"
         [3,2,3],
         Array<Value>(
           repeating: .number(0.0),
-          count: 3*2*3)))
+          count: 3*2*3),
+        .number))
   }
 
   func testDIMmayNotRedeclareVariables() throws {
@@ -735,7 +739,7 @@ expecting: " 20 \n"
 
     XCTAssertEqual(
       interpreter.globals["A"]!,
-      .array([11], expected)
+      .array([11], expected, .number)
     )
   }
 
@@ -747,7 +751,7 @@ expecting: " 20 \n"
 
     XCTAssertEqual(
       interpreter.globals["A"]!,
-      .array([11], Array<Value>(repeating: .number(0), count: 11))
+      .array([11], Array<Value>(repeating: .number(0), count: 11), .number)
     )
   }
 

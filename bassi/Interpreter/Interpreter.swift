@@ -394,7 +394,7 @@ class Interpreter {
       }
 
       let value = globals[name]!
-      guard case .array(let dimensions, let values) = value else {
+      guard case .array(let dimensions, let values, _) = value else {
         throw InterpreterError.error(location.lineNumber, "Tried to subscript non-array " + name)
       }
 
@@ -522,7 +522,7 @@ class Interpreter {
             type)
         }
 
-        guard case .array(let dimensions, let values) = globals[name]! else {
+        guard case .array(let dimensions, let values, let type) = globals[name]! else {
           throw InterpreterError.error(location.lineNumber, "Tried to subscript non-array " + name)
         }
 
@@ -532,7 +532,7 @@ class Interpreter {
 
         var updatedValues = values
         updatedValues[index] = value
-        globals[name] = .array(dimensions, updatedValues)
+        globals[name] = .array(dimensions, updatedValues, type)
 
       default:
         throw InterpreterError.cantHappen(location.lineNumber, "?? Lvalue must be either variable or array access")
@@ -554,7 +554,8 @@ class Interpreter {
         dimensionSizes,
         Array<Value>(
           repeating: type.defaultValue(),
-          count: count))
+          count: count),
+        type)
 
       globals[name] = array
     }
