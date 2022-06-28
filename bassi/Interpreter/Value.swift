@@ -8,6 +8,23 @@
 import Foundation
 
 public enum Value : Equatable {
+  case undefined
+  case number(Float)
+  case string(String)
+
+  case array([Int], [Value])
+
+  case function(([Value]) -> Value)
+  case userFunction(String, Expression, Type)
+
+  func asFloat() -> Float {
+    guard case .number(let value) = self else {
+      print("asFloat() called on non-number")
+      return -1
+    }
+    return value
+  }
+
   public static func == (lhs: Value, rhs: Value) -> Bool {
     switch (lhs, rhs) {
     case (.number(let float1), .number(let float2)):
@@ -32,22 +49,6 @@ public enum Value : Equatable {
     }
   }
 
-  case undefined
-  case number(Float)
-  case string(String)
-
-  case array([Int], [Value])
-
-  case function(([Value]) -> Value)
-  case userFunction(String, Expression, Type)
-
-  func asFloat() -> Float {
-    guard case .number(let value) = self else {
-      print("asFloat() called on non-number")
-      return -1
-    }
-    return value
-  }
 
   func asString() -> String {
     guard case .string(let value) = self else {

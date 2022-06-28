@@ -34,6 +34,7 @@
 		9192F73D2828B69000FAFFA1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9192F73C2828B69000FAFFA1 /* Preview Assets.xcassets */; };
 		9192F7522828B69000FAFFA1 /* bassiUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9192F7512828B69000FAFFA1 /* bassiUITests.swift */; };
 		9192F7542828B69000FAFFA1 /* bassiUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9192F7532828B69000FAFFA1 /* bassiUITestsLaunchTests.swift */; };
+		9195174A286B5794009BFC5B /* ValueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91951749286B5794009BFC5B /* ValueTests.swift */; };
 		91BE90E8283E7CD9004F0CF9 /* ExpressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91BE90E7283E7CD9004F0CF9 /* ExpressionTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -88,6 +89,7 @@
 		9192F74D2828B69000FAFFA1 /* bassiUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = bassiUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9192F7512828B69000FAFFA1 /* bassiUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bassiUITests.swift; sourceTree = "<group>"; };
 		9192F7532828B69000FAFFA1 /* bassiUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bassiUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		91951749286B5794009BFC5B /* ValueTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueTests.swift; sourceTree = "<group>"; };
 		91BE90E7283E7CD9004F0CF9 /* ExpressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -214,15 +216,16 @@
 			isa = PBXGroup;
 			children = (
 				91308862282D5F6300E5C62E /* Expression+make.swift */,
+				918861C42862182800B7B19C /* Repl+Test.swift */,
+				91BE90E7283E7CD9004F0CF9 /* ExpressionTests.swift */,
+				9116576728295B970000D3AA /* InterpreterTests.swift */,
 				9116576928295C2B0000D3AA /* LexerTests.swift */,
+				918861E82866056E00B7B19C /* OutputTests.swift */,
 				9116576F282AADC20000D3AA /* ParserTests.swift */,
 				918861BC2858E0DB00B7B19C /* ParserExpressionTests.swift */,
-				9116576728295B970000D3AA /* InterpreterTests.swift */,
-				918861E82866056E00B7B19C /* OutputTests.swift */,
 				9130886B282EBADA00E5C62E /* ProgramTests.swift */,
-				918861C42862182800B7B19C /* Repl+Test.swift */,
 				9130886D282EC0C300E5C62E /* ReplTests.swift */,
-				91BE90E7283E7CD9004F0CF9 /* ExpressionTests.swift */,
+				91951749286B5794009BFC5B /* ValueTests.swift */,
 			);
 			path = bassiTests;
 			sourceTree = "<group>";
@@ -396,6 +399,7 @@
 				918861E92866056E00B7B19C /* OutputTests.swift in Sources */,
 				91308863282D5F6300E5C62E /* Expression+make.swift in Sources */,
 				9130886C282EBADA00E5C62E /* ProgramTests.swift in Sources */,
+				9195174A286B5794009BFC5B /* ValueTests.swift in Sources */,
 				9116576A28295C2B0000D3AA /* LexerTests.swift in Sources */,
 				9116576828295B970000D3AA /* InterpreterTests.swift in Sources */,
 				918861C52862182800B7B19C /* Repl+Test.swift in Sources */,
