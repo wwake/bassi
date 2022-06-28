@@ -8,8 +8,13 @@
 import SwiftUI
 
 struct ContentView: View {
+  enum Tab : Int, Hashable {
+    case code=1, variable, output
+  }
+
   @Namespace var bottom
-  @State private var selectedTab = 0
+
+  @State private var selectedTab = Tab.code
   
   @ObservedObject var program: Program
   @ObservedObject var output: Output
@@ -17,7 +22,7 @@ struct ContentView: View {
   
   @State var command: String = ""
   
-  
+
   fileprivate func codeView() -> some View {
     return VStack {
       ScrollViewReader { proxy in
@@ -73,11 +78,11 @@ struct ContentView: View {
     HStack {
       Spacer()
       Button("Run") {
-        selectedTab = 1
+        selectedTab = Tab.output
         repl.doRun()
       }
       Button("Continue") {
-        selectedTab = 1
+        selectedTab = Tab.output
         repl.doContinue()
       }
       .disabled(!repl.stopped)
@@ -93,20 +98,19 @@ struct ContentView: View {
             Image(systemName:"curlybraces.square")
             Text("Code")
           }
-          .tag(0)
-        runView()
-          .tabItem {
-            Image(systemName:"note.text")
-            Text("Output")
-          }
-          .tag(1)
+          .tag(Tab.code)
         variableView()
           .tabItem {
             Image(systemName:"eye")
             Text("Variables")
           }
-          .tag(2)
-
+          .tag(Tab.variable)
+        runView()
+          .tabItem {
+            Image(systemName:"note.text")
+            Text("Output")
+          }
+          .tag(Tab.output)
       }
       buttonView()
       Spacer()
