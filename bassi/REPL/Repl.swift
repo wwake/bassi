@@ -20,6 +20,7 @@ class Repl : ObservableObject {
     self.output = output
     interpreter = Interpreter(program, output)
     stopped = interpreter.stopped
+    store = interpreter.globals
   }
 
   func execute(_ commands: String) {
@@ -43,11 +44,15 @@ class Repl : ObservableObject {
     program[Int(lineNumber)!] = command
   }
 
+  fileprivate func updateShadowVariables() {
+    stopped = interpreter.stopped
+    store = interpreter.globals
+  }
+
   func doRun() {
     do {
       try interpreter.run()
-      stopped = interpreter.stopped
-      store = interpreter.globals
+      updateShadowVariables()
     } catch InterpreterError.error(let lineNumber, let message) {
       append("\(lineNumber): ?\(message)")
     } catch {
@@ -58,8 +63,7 @@ class Repl : ObservableObject {
   func doContinue() {
     do {
       try interpreter.doContinue()
-      stopped = interpreter.stopped
-      store = interpreter.globals
+      updateShadowVariables()
     } catch InterpreterError.error(let lineNumber, let message) {
       append("\(lineNumber): ?\(message)")
     } catch {
