@@ -563,23 +563,7 @@ class Interpreter {
     }
 
   fileprivate func indexFor(_ array: BasicArray, _ values: [Value]) throws -> Int {
-    let indexes = values
-      .map { Int($0.asFloat())}
-
-    try indexes
-      .enumerated()
-      .forEach { (i, index) in
-        if index < 0 || index >= array.dimensions[i] {
-          throw InterpreterError.error(location.lineNumber, "array access out of bounds")
-        }
-      }
-
-    return zip(indexes, array.dimensions)
-      .dropFirst()
-      .reduce(indexes[0], { (total, indexDim) in
-        let (index, dim) = indexDim
-        return total * dim + index
-      })
+    try array.indexFor(values, location)
   }
 
   func doFor(_ variable: Name, _ initial: Expression, _ final: Expression, _ step: Expression) throws {

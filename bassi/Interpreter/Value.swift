@@ -25,6 +25,27 @@ public class BasicArray {
     self.contents = contents
     self.type = type
   }
+
+  func indexFor(_ values: [Value], _ location: Location) throws -> Int {
+    let indexes = values
+      .map { Int($0.asFloat())}
+
+    try indexes
+      .enumerated()
+      .forEach { (i, index) in
+        if index < 0 || index >= dimensions[i] {
+          throw InterpreterError.error(location.lineNumber, "array access out of bounds")
+        }
+      }
+
+    return zip(indexes, dimensions)
+      .dropFirst()
+      .reduce(indexes[0], { (total, indexDim) in
+        let (index, dim) = indexDim
+        return total * dim + index
+      })
+  }
+
 }
 
 extension BasicArray: Equatable {
