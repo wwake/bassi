@@ -12,6 +12,14 @@ public class BasicArray {
   var contents: [Value]
   var type:`Type`
 
+  convenience init(_ dimensions: [Int], _ type: `Type`) {
+    let count = dimensions.reduce(1, *)
+
+    self.init(dimensions, Array<Value>(
+      repeating: type.defaultValue(),
+      count: count), type)
+  }
+
   init(_ dimensions: [Int], _ contents: [Value], _ type:`Type`) {
     self.dimensions = dimensions
     self.contents = contents
@@ -56,8 +64,8 @@ public enum Value : Equatable {
     case (.undefined, .undefined):
       return true
 
-    case (.array(let array1, let dimensions1, let contents1, let type1),
-          .array(let array2, let dimensions2, let contents2, let type2)):
+    case (.array(let array1, _, _, _),
+          .array(let array2, _, _, _)):
       return array1 == array2
 
     case (.function, .function),

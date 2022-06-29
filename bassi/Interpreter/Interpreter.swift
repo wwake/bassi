@@ -553,12 +553,13 @@ class Interpreter {
       let values = Array<Value>(
         repeating: type.defaultValue(),
         count: count)
-
-      let array : Value = .array(
-        BasicArray(dimensionSizes, values, type),
-        dimensionSizes,
-        values,
-        type)
+//
+//      let array : Value = .array(
+//        BasicArray(dimensionSizes, values, type),
+//        dimensionSizes,
+//        values,
+//        type)
+      let array = Value.array(BasicArray(dimensionSizes, type), dimensionSizes, values, type)
 
       globals[name] = array
     }
