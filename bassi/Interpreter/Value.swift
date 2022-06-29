@@ -140,9 +140,9 @@ public enum Value : Equatable {
     case .userFunction(_, _, _):
       return "<USER-FUNCTION>"
 
-    case .array(_, let indexes, _, let type):
-      let temp = indexes.map {String($0-1)}.joined(separator: ",")
-      return "Array(\(temp)): \(type)"
+    case .array(let array, _, _, _):
+      let temp = array.dimensions.map {String($0-1)}.joined(separator: ",")
+      return "Array(\(temp)): \(array.type)"
     }
   }
 }
