@@ -7,12 +7,24 @@
 
 import Foundation
 
+public class BasicArray {
+  var dimensions: [Int]
+  var contents: [Value]
+  var type:`Type`
+
+  init(_ dimensions: [Int], _ contents: [Value], _ type:`Type`) {
+    self.dimensions = dimensions
+    self.contents = contents
+    self.type = type
+  }
+}
+
 public enum Value : Equatable {
   case undefined
   case number(Float)
   case string(String)
 
-  case array([Int], [Value], `Type`)
+  case array(BasicArray, [Int], [Value], `Type`)
 
   case function(([Value]) -> Value)
   case userFunction(String, Expression, `Type`)
@@ -36,8 +48,8 @@ public enum Value : Equatable {
     case (.undefined, .undefined):
       return true
 
-    case (.array(let dimensions1, let contents1, let type1),
-          .array(let dimensions2, let contents2, let type2)):
+    case (.array(_, let dimensions1, let contents1, let type1),
+          .array(_, let dimensions2, let contents2, let type2)):
       return
          dimensions1 == dimensions2
       && contents1 == contents2
@@ -115,7 +127,7 @@ public enum Value : Equatable {
     case .userFunction(_, _, _):
       return "<USER-FUNCTION>"
 
-    case .array(let indexes, _, let type):
+    case .array(_, let indexes, _, let type):
       let temp = indexes.map {String($0-1)}.joined(separator: ",")
       return "Array(\(temp)): \(type)"
     }

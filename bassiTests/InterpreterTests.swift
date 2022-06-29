@@ -631,8 +631,12 @@ expecting: " 20 \n"
 
   func testArrayValuesEqualIfDimensionsAndContentsAreEqual() {
     XCTAssertEqual(
-      Value.array([3], [.number(0), .number(0), .number(0)], .number),
-      Value.array([3], [.number(0), .number(0), .number(0)], .number))
+      Value.array(
+        BasicArray([3], [.number(0), .number(0), .number(0)], .number),
+        [3], [.number(0), .number(0), .number(0)], .number),
+      Value.array(
+        BasicArray([3], [.number(0), .number(0), .number(0)], .number),
+        [3], [.number(0), .number(0), .number(0)], .number))
   }
 
   func testDIMknowsTypeAndSize() throws {
@@ -643,6 +647,9 @@ expecting: " 20 \n"
     XCTAssertEqual(
       interpreter.globals["A"]!,
       .array(
+        BasicArray([3],
+                   [.number(0), .number(0), .number(0)],
+                   .number),
         [3],
         [.number(0), .number(0), .number(0)],
         .number))
@@ -656,12 +663,18 @@ expecting: " 20 \n"
     XCTAssertEqual(
       interpreter.globals["A"]!,
       .array(
+        BasicArray([3],
+                     [.number(0), .number(0), .number(0)],
+                     .number),
         [3],
         [.number(0), .number(0), .number(0)],
         .number))
     XCTAssertEqual(
       interpreter.globals["B"]!,
       .array(
+        BasicArray([2],
+                   [.number(0), .number(0)],
+                   .number),
         [2],
         [.number(0), .number(0)],
         .number))
@@ -676,6 +689,9 @@ expecting: " 20 \n"
     XCTAssertEqual(
       interpreter.globals["A"]!,
       .array(
+        BasicArray([3,2,3],
+                   Array<Value>(repeating: .number(0.0), count: 3*2*3),
+                   .number),
         [3,2,3],
         Array<Value>(
           repeating: .number(0.0),
@@ -739,7 +755,7 @@ expecting: " 20 \n"
 
     XCTAssertEqual(
       interpreter.globals["A"]!,
-      .array([11], expected, .number)
+      .array(BasicArray([11], expected, .number), [11], expected, .number)
     )
   }
 
@@ -749,9 +765,11 @@ expecting: " 20 \n"
     let interpreter = Interpreter(program, outputter)
     let _ = try interpreter.run()
 
+    let values = Array<Value>(repeating: .number(0), count: 11)
+
     XCTAssertEqual(
       interpreter.globals["A"]!,
-      .array([11], Array<Value>(repeating: .number(0), count: 11), .number)
+      .array(BasicArray([11], values, .number), [11], values, .number)
     )
   }
 

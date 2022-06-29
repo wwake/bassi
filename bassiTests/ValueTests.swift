@@ -14,6 +14,9 @@ final class ValueTests: XCTestCase {
 
   func test_formatNumericArray() {
     let array: Value = Value.array(
+      BasicArray([2,3],
+                 Array(repeating: .number(3), count: 12),
+                 .number),
       [2,3],
       Array(repeating: .number(3), count: 12),
       .number)
@@ -23,6 +26,9 @@ final class ValueTests: XCTestCase {
 
   func test_formatStringArray() {
     let array: Value = Value.array(
+      BasicArray([3,2],
+                   Array(repeating: .string("hi"), count: 12),
+                   .string),
       [3,2],
       Array(repeating: .string("hi"), count: 12),
       .string)

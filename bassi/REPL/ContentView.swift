@@ -119,11 +119,15 @@ struct ContentView: View {
   }
 
   fileprivate func arrayContents(_ key: Name, _ value: Value) -> some View {
+    //   Contents of A
     // A$(0,0) = "hello"
     // A$(0,1) = "world"
     // A$(1,0) = "monday"
     // A$(1,1) = "tuesday"
-    Text("Hello \(key) \(value.format())")
+
+    VStack {
+      Text("Contents of \(key)")
+    }
   }
 
   fileprivate func buttonView() -> some View {
