@@ -539,8 +539,6 @@ class Interpreter {
 
         try basicArray.put(indexes, value, location)
 
-        globals[name] = .array(basicArray)
-
       default:
         throw InterpreterError.cantHappen(location.lineNumber, "?? Lvalue must be either variable or array access")
       }
