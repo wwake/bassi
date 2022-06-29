@@ -403,8 +403,7 @@ class Interpreter {
           try evaluate($0, store)
         }
 
-      let index = try array.indexFor(indexes, location)
-      return array.contents[index]
+      return try array.get(indexes, location)
     }
 
   fileprivate func callPredefinedFunction(

@@ -46,6 +46,11 @@ public class BasicArray {
       })
   }
 
+  func get(_ values: [Value], _ location: Location) throws -> Value {
+    let index = try indexFor(values, location)
+    return contents[index]
+  }
+
 }
 
 extension BasicArray: Equatable {
