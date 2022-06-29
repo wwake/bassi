@@ -393,8 +393,8 @@ class Interpreter {
           type)
       }
 
-      let value = globals[name]!
-      guard case .array(let array) = value else {
+      let fetched = globals[name]!
+      guard case .array(let array) = fetched else {
         throw InterpreterError.error(location.lineNumber, "Tried to subscript non-array " + name)
       }
 
@@ -535,7 +535,7 @@ class Interpreter {
             try evaluate($0, globals)
           }
 
-        let index = try indexFor(basicArray, indexes)
+        let index = try basicArray.indexFor(indexes, location)
 
         let value = try evaluate(rvalue, globals)
 
