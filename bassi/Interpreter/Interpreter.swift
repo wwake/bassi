@@ -535,11 +535,10 @@ class Interpreter {
             try evaluate($0, globals)
           }
 
-        let index = try basicArray.indexFor(indexes, location)
-
         let value = try evaluate(rvalue, globals)
 
-        basicArray.contents[index] = value
+        try basicArray.put(indexes, value, location)
+
         globals[name] = .array(basicArray)
 
       default:
