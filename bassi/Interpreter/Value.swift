@@ -40,7 +40,7 @@ public enum Value : Equatable {
   case number(Float)
   case string(String)
 
-  case array(BasicArray, [Int], [Value], `Type`)
+  case array(BasicArray)
 
   case function(([Value]) -> Value)
   case userFunction(String, Expression, `Type`)
@@ -64,8 +64,8 @@ public enum Value : Equatable {
     case (.undefined, .undefined):
       return true
 
-    case (.array(let array1, _, _, _),
-          .array(let array2, _, _, _)):
+    case (.array(let array1),
+          .array(let array2)):
       return array1 == array2
 
     case (.function, .function),
@@ -140,7 +140,7 @@ public enum Value : Equatable {
     case .userFunction(_, _, _):
       return "<USER-FUNCTION>"
 
-    case .array(let array, _, _, _):
+    case .array(let array):
       let temp = array.dimensions.map {String($0-1)}.joined(separator: ",")
       return "Array(\(temp)): \(array.type)"
     }

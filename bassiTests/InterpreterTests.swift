@@ -632,11 +632,10 @@ expecting: " 20 \n"
   func testArrayValuesEqualIfDimensionsAndContentsAreEqual() {
     XCTAssertEqual(
       Value.array(
-        BasicArray([3], [.number(0), .number(0), .number(0)], .number),
-        [3], [.number(0), .number(0), .number(0)], .number),
+        BasicArray([3], [.number(0), .number(0), .number(0)], .number)),
       Value.array(
-        BasicArray([3], [.number(0), .number(0), .number(0)], .number),
-        [3], [.number(0), .number(0), .number(0)], .number))
+        BasicArray([3], [.number(0), .number(0), .number(0)], .number))
+      )
   }
 
   func testDIMknowsTypeAndSize() throws {
@@ -649,10 +648,7 @@ expecting: " 20 \n"
       .array(
         BasicArray([3],
                    [.number(0), .number(0), .number(0)],
-                   .number),
-        [3],
-        [.number(0), .number(0), .number(0)],
-        .number))
+                   .number)))
   }
 
   func testDIMknowsTypeAndSizeForMultipleArrays() throws {
@@ -665,19 +661,13 @@ expecting: " 20 \n"
       .array(
         BasicArray([3],
                      [.number(0), .number(0), .number(0)],
-                     .number),
-        [3],
-        [.number(0), .number(0), .number(0)],
-        .number))
+                     .number)))
     XCTAssertEqual(
       interpreter.globals["B"]!,
       .array(
         BasicArray([2],
                    [.number(0), .number(0)],
-                   .number),
-        [2],
-        [.number(0), .number(0)],
-        .number))
+                   .number)))
   }
 
   func testDIMknowsTypeAndSizeForMultiDArray() throws {
@@ -691,12 +681,7 @@ expecting: " 20 \n"
       .array(
         BasicArray([3,2,3],
                    Array<Value>(repeating: .number(0.0), count: 3*2*3),
-                   .number),
-        [3,2,3],
-        Array<Value>(
-          repeating: .number(0.0),
-          count: 3*2*3),
-        .number))
+                   .number)))
   }
 
   func testDIMmayNotRedeclareVariables() throws {
@@ -755,7 +740,7 @@ expecting: " 20 \n"
 
     XCTAssertEqual(
       interpreter.globals["A"]!,
-      .array(BasicArray([11], expected, .number), [11], expected, .number)
+      .array(BasicArray([11], expected, .number))
     )
   }
 
@@ -769,7 +754,7 @@ expecting: " 20 \n"
 
     XCTAssertEqual(
       interpreter.globals["A"]!,
-      .array(BasicArray([11], values, .number), [11], values, .number)
+      .array(BasicArray([11], values, .number))
     )
   }
 

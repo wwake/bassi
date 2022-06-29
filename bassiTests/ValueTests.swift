@@ -16,10 +16,7 @@ final class ValueTests: XCTestCase {
     let array: Value = Value.array(
       BasicArray([2,3],
                  Array(repeating: .number(3), count: 12),
-                 .number),
-      [2,3],
-      Array(repeating: .number(3), count: 12),
-      .number)
+                 .number))
 
     XCTAssertEqual(array.format(), "Array(1,2): number")
   }
@@ -28,10 +25,7 @@ final class ValueTests: XCTestCase {
     let array: Value = Value.array(
       BasicArray([3,2],
                    Array(repeating: .string("hi"), count: 12),
-                   .string),
-      [3,2],
-      Array(repeating: .string("hi"), count: 12),
-      .string)
+                   .string))
 
     XCTAssertEqual(array.format(), "Array(2,1): string")
   }
