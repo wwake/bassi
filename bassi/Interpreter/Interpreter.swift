@@ -561,10 +561,6 @@ class Interpreter {
       globals[name] = array
     }
 
-  fileprivate func indexFor(_ array: BasicArray, _ values: [Value]) throws -> Int {
-    try array.indexFor(values, location)
-  }
-
   func doFor(_ variable: Name, _ initial: Expression, _ final: Expression, _ step: Expression) throws {
 
     let initialValue = try evaluate(initial, globals)
