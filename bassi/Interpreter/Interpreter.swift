@@ -398,7 +398,12 @@ class Interpreter {
         throw InterpreterError.error(location.lineNumber, "Tried to subscript non-array " + name)
       }
 
-      let index = try indexFor(exprs, store, array.dimensions)
+      let indexes = try exprs
+        .map {
+          try evaluate($0, store)
+        }
+
+      let index = try indexFor(array, indexes)
       return array.contents[index]
     }
 
@@ -526,7 +531,12 @@ class Interpreter {
           throw InterpreterError.error(location.lineNumber, "Tried to subscript non-array " + name)
         }
 
-        let index = try indexFor(exprs, globals, basicArray.dimensions)
+        let indexes = try exprs
+          .map {
+            try evaluate($0, globals)
+          }
+
+        let index = try indexFor(basicArray, indexes)
 
         let value = try evaluate(rvalue, globals)
 
@@ -552,23 +562,19 @@ class Interpreter {
       globals[name] = array
     }
 
-  fileprivate func indexFor(_ exprs: [Expression], _ store: Store, _ dimensions: [Int]) throws -> Int {
-
-    let indexes = try exprs
-      .map {
-        try evaluate($0, store)
-      }
+  fileprivate func indexFor(_ array: BasicArray, _ values: [Value]) throws -> Int {
+    let indexes = values
       .map { Int($0.asFloat())}
 
     try indexes
       .enumerated()
       .forEach { (i, index) in
-        if index < 0 || index >= dimensions[i] {
+        if index < 0 || index >= array.dimensions[i] {
           throw InterpreterError.error(location.lineNumber, "array access out of bounds")
         }
       }
 
-    return zip(indexes, dimensions)
+    return zip(indexes, array.dimensions)
       .dropFirst()
       .reduce(indexes[0], { (total, indexDim) in
         let (index, dim) = indexDim
