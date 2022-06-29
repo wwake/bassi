@@ -403,7 +403,7 @@ class Interpreter {
           try evaluate($0, store)
         }
 
-      let index = try indexFor(array, indexes)
+      let index = try array.indexFor(indexes, location)
       return array.contents[index]
     }
 
