@@ -14,7 +14,6 @@ public class BasicArray {
 
   convenience init(_ dimensions: [Int], _ type: `Type`) {
     let count = dimensions.reduce(1, *)
-
     self.init(dimensions, Array<Value>(
       repeating: type.defaultValue(),
       count: count), type)
@@ -25,6 +24,7 @@ public class BasicArray {
     self.contents = contents
     self.type = type
   }
+
 
   func indexFor(_ values: [Value], _ location: Location) throws -> Int {
     let indexes = values

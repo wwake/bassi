@@ -36,6 +36,7 @@
 		9192F7542828B69000FAFFA1 /* bassiUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9192F7532828B69000FAFFA1 /* bassiUITestsLaunchTests.swift */; };
 		9195174A286B5794009BFC5B /* ValueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91951749286B5794009BFC5B /* ValueTests.swift */; };
 		9195174C286CA4DC009BFC5B /* BasicArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9195174B286CA4DC009BFC5B /* BasicArray.swift */; };
+		9195174E286CA9FA009BFC5B /* BasicArrayTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9195174D286CA9FA009BFC5B /* BasicArrayTests.swift */; };
 		91BE90E8283E7CD9004F0CF9 /* ExpressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91BE90E7283E7CD9004F0CF9 /* ExpressionTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -92,6 +93,7 @@
 		9192F7532828B69000FAFFA1 /* bassiUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bassiUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		91951749286B5794009BFC5B /* ValueTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueTests.swift; sourceTree = "<group>"; };
 		9195174B286CA4DC009BFC5B /* BasicArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicArray.swift; sourceTree = "<group>"; };
+		9195174D286CA9FA009BFC5B /* BasicArrayTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicArrayTests.swift; sourceTree = "<group>"; };
 		91BE90E7283E7CD9004F0CF9 /* ExpressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -229,6 +231,7 @@
 				9130886B282EBADA00E5C62E /* ProgramTests.swift */,
 				9130886D282EC0C300E5C62E /* ReplTests.swift */,
 				91951749286B5794009BFC5B /* ValueTests.swift */,
+				9195174D286CA9FA009BFC5B /* BasicArrayTests.swift */,
 			);
 			path = bassiTests;
 			sourceTree = "<group>";
@@ -398,6 +401,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9195174E286CA9FA009BFC5B /* BasicArrayTests.swift in Sources */,
 				9130886E282EC0C300E5C62E /* ReplTests.swift in Sources */,
 				91165770282AADC20000D3AA /* ParserTests.swift in Sources */,
 				918861E92866056E00B7B19C /* OutputTests.swift in Sources */,
