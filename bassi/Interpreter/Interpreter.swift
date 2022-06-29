@@ -532,7 +532,7 @@ class Interpreter {
 
         var updatedValues = values
         updatedValues[index] = value
-        globals[name] = .array(basicArray, dimensions, updatedValues, type)
+        globals[name] = .array(BasicArray(dimensions, updatedValues, type), dimensions, updatedValues, type)
 
       default:
         throw InterpreterError.cantHappen(location.lineNumber, "?? Lvalue must be either variable or array access")

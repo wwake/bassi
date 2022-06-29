@@ -56,10 +56,9 @@ public enum Value : Equatable {
     case (.undefined, .undefined):
       return true
 
-    case (.array(_, let dimensions1, let contents1, let type1),
-          .array(_, let dimensions2, let contents2, let type2)):
-      return
-        BasicArray(dimensions1, contents1, type1) == BasicArray(dimensions2, contents2, type2)
+    case (.array(let array1, let dimensions1, let contents1, let type1),
+          .array(let array2, let dimensions2, let contents2, let type2)):
+      return array1 == array2
 
     case (.function, .function),
       (.userFunction, .userFunction):
