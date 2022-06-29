@@ -19,6 +19,14 @@ public class BasicArray {
   }
 }
 
+extension BasicArray: Equatable {
+  public static func == (lhs: BasicArray, rhs: BasicArray) -> Bool {
+    lhs.dimensions == rhs.dimensions
+    && lhs.contents == rhs.contents
+    && lhs.type == rhs.type
+  }
+}
+
 public enum Value : Equatable {
   case undefined
   case number(Float)
@@ -51,9 +59,7 @@ public enum Value : Equatable {
     case (.array(_, let dimensions1, let contents1, let type1),
           .array(_, let dimensions2, let contents2, let type2)):
       return
-         dimensions1 == dimensions2
-      && contents1 == contents2
-      && type1 == type2
+        BasicArray(dimensions1, contents1, type1) == BasicArray(dimensions2, contents2, type2)
 
     case (.function, .function),
       (.userFunction, .userFunction):
