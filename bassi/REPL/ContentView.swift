@@ -21,7 +21,6 @@ struct ContentView: View {
   @ObservedObject var repl: Repl
   
   @State var command: String = ""
-  
 
   fileprivate func codeView() -> some View {
     return VStack {
@@ -71,10 +70,12 @@ struct ContentView: View {
   }
 
   var columns = [
-    GridItem(.fixed(80.0), alignment: .leading),
+    GridItem(.fixed(40.0), alignment: .leading),
     GridItem(.fixed(15.0), alignment: .center),
-    GridItem(.fixed(400.0), alignment: .leading),
+    GridItem(.flexible(), alignment: .leading),
   ]
+
+  @State private var showArrayContents = false
 
   fileprivate func variableView() -> some View {
     return VStack {
@@ -93,6 +94,13 @@ struct ContentView: View {
                   Text(value.format())
                   Image(systemName: "eye")
                     .opacity(value.isArray() ? 1 : 0)
+                    .onTapGesture {
+                      print("Tapped \(key)")
+                      showArrayContents = true
+                    }
+                    .sheet(isPresented: $showArrayContents, content: {
+                      arrayContents(key, value)
+                    })
                 }
               }
               .font(.system(size:18, design:.monospaced))
@@ -108,6 +116,14 @@ struct ContentView: View {
         }
       }
     }
+  }
+
+  fileprivate func arrayContents(_ key: Name, _ value: Value) -> some View {
+    // A$(0,0) = "hello"
+    // A$(0,1) = "world"
+    // A$(1,0) = "monday"
+    // A$(1,1) = "tuesday"
+    Text("Hello \(key) \(value.format())")
   }
 
   fileprivate func buttonView() -> some View {

@@ -1,32 +1,27 @@
-* Variable display
-
+* Variable display for arrays
 * INPUT
+* DATA, READ, RESTORE
+* ON..GOSUB
 
 * REPL should automatically scroll to bottom
   + https://developer.apple.com/documentation/swiftui/scrollviewreader
   + https://developer.apple.com/documentation/swiftui/view/onchange(of:perform:)
 
-
-  * Move token to the lexer itself, then share the lexer between Parser & a new class ExpressionParser
+* Move token to the lexer itself, then share the lexer between Parser & a new class ExpressionParser
 
 * Error sync by skipping forward to next line # (or end)   ??
 
-* STOP
 * What should ASC do if given an empty string?
 
 * Handle parser errors better in interpreter
   + Make errors report line & column number
-
-* Handle interpreter.format() for arrays
-
-* ON..GOSUB
-* DATA, READ, RESTORE
 
 * Parameterized tests package?
 
 BI-22-35: June 28, 2022
 * Continue - button shows when interpreter is stopped
 * Refactor: remove dead code Program.list()
+* Variable display for non-arrays
 
 BI-22-34: June 27, 2022
 * REPL

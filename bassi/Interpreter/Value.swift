@@ -116,10 +116,9 @@ public enum Value : Equatable {
       return "<USER-FUNCTION>"
 
     case .array(let indexes, _, let type):
-      let temp = indexes.map {String($0)}.joined(separator: ",")
+      let temp = indexes.map {String($0-1)}.joined(separator: ",")
       return "Array(\(temp)): \(type)"
     }
-
   }
 }
 
