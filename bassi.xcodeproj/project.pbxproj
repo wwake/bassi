@@ -35,6 +35,7 @@
 		9192F7522828B69000FAFFA1 /* bassiUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9192F7512828B69000FAFFA1 /* bassiUITests.swift */; };
 		9192F7542828B69000FAFFA1 /* bassiUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9192F7532828B69000FAFFA1 /* bassiUITestsLaunchTests.swift */; };
 		9195174A286B5794009BFC5B /* ValueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91951749286B5794009BFC5B /* ValueTests.swift */; };
+		9195174C286CA4DC009BFC5B /* BasicArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9195174B286CA4DC009BFC5B /* BasicArray.swift */; };
 		91BE90E8283E7CD9004F0CF9 /* ExpressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91BE90E7283E7CD9004F0CF9 /* ExpressionTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -90,6 +91,7 @@
 		9192F7512828B69000FAFFA1 /* bassiUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bassiUITests.swift; sourceTree = "<group>"; };
 		9192F7532828B69000FAFFA1 /* bassiUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bassiUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		91951749286B5794009BFC5B /* ValueTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueTests.swift; sourceTree = "<group>"; };
+		9195174B286CA4DC009BFC5B /* BasicArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicArray.swift; sourceTree = "<group>"; };
 		91BE90E7283E7CD9004F0CF9 /* ExpressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -143,6 +145,7 @@
 				9116576528295A2B0000D3AA /* Interpreter.swift */,
 				91308867282EB64500E5C62E /* Program.swift */,
 				914A53EF2841315C00A47B35 /* Value.swift */,
+				9195174B286CA4DC009BFC5B /* BasicArray.swift */,
 			);
 			path = Interpreter;
 			sourceTree = "<group>";
@@ -378,6 +381,7 @@
 				9116576E28295D2A0000D3AA /* Token.swift in Sources */,
 				9130886A282EBA6C00E5C62E /* Repl.swift in Sources */,
 				91165772282AB0790000D3AA /* Parse.swift in Sources */,
+				9195174C286CA4DC009BFC5B /* BasicArray.swift in Sources */,
 				9116576628295A2B0000D3AA /* Interpreter.swift in Sources */,
 				918861E72866051E00B7B19C /* Output.swift in Sources */,
 				9192F7382828B68F00FAFFA1 /* ContentView.swift in Sources */,
