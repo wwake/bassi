@@ -1,4 +1,7 @@
 * Variable display for arrays
+* Variable display in scroll view
+* Remove location from array methods
+
 * INPUT
 * DATA, READ, RESTORE
 * ON..GOSUB
@@ -17,6 +20,9 @@
   + Make errors report line & column number
 
 * Parameterized tests package?
+
+BI-22-36: June 29, 2022
+* Introduce BasicArray; switch Value to use that
 
 BI-22-35: June 28, 2022
 * Continue - button shows when interpreter is stopped

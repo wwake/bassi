@@ -99,7 +99,7 @@ struct ContentView: View {
                       showArrayContents = true
                     }
                     .sheet(isPresented: $showArrayContents, content: {
-                      arrayContents(key, value)
+                      arrayContents(key, value.asArray())
                     })
                 }
               }
@@ -118,7 +118,7 @@ struct ContentView: View {
     }
   }
 
-  fileprivate func arrayContents(_ key: Name, _ value: Value) -> some View {
+  fileprivate func arrayContents(_ key: Name, _ array: BasicArray) -> some View {
     //   Contents of A
     // A$(0,0) = "hello"
     // A$(0,1) = "world"
@@ -127,6 +127,11 @@ struct ContentView: View {
 
     VStack {
       Text("Contents of \(key)")
+      LazyVGrid(columns: [GridItem(.flexible())]) {
+        ForEach(0..<array.contents.count) {
+          Text(array.get($0).format())
+        }
+      }
     }
   }
 

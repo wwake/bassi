@@ -58,6 +58,14 @@ public enum Value : Equatable {
     return value
   }
 
+  func asArray() -> BasicArray {
+    guard case .array(let array) = self else {
+      print("asArray() called on non-array")
+      return BasicArray([], .number)
+    }
+    return array
+  }
+
   func isFunction() -> Bool {
     if case .function = self {
       return true

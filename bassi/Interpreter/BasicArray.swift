@@ -25,9 +25,8 @@ public class BasicArray {
     self.type = type
   }
 
-
-  func indexFor(_ values: [Value], _ location: Location) throws -> Int {
-    let indexes = values
+  func indexFor(_ valueIndexes: [Value], _ location: Location) throws -> Int {
+    let indexes = valueIndexes
       .map { Int($0.asFloat())}
 
     try indexes
@@ -48,6 +47,10 @@ public class BasicArray {
 
   func get(_ indexes: [Value], _ location: Location) throws -> Value {
     let index = try indexFor(indexes, location)
+    return get(index)
+  }
+
+  func get(_ index: Int) -> Value {
     return contents[index]
   }
 
