@@ -394,12 +394,12 @@ class Interpreter {
       }
 
       let value = globals[name]!
-      guard case .array(_, let dimensions, let values, _) = value else {
+      guard case .array(let array, _, _, _) = value else {
         throw InterpreterError.error(location.lineNumber, "Tried to subscript non-array " + name)
       }
 
-      let index = try indexFor(exprs, store, dimensions)
-      return values[index]
+      let index = try indexFor(exprs, store, array.dimensions)
+      return array.contents[index]
     }
 
   fileprivate func callPredefinedFunction(
