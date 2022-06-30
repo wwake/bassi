@@ -52,9 +52,8 @@ public class BasicArray {
     dimensions
       .reversed()
       .forEach {
-        let dimension = $0 + 1
-        resultReversed.append((index / divisor) % dimension)
-        divisor = divisor * dimension
+        resultReversed.append((index / divisor) % $0)
+        divisor = divisor * $0
       }
 
     return resultReversed.reversed()
