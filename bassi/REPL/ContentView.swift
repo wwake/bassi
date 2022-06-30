@@ -125,7 +125,7 @@ struct ContentView: View {
         .font(.system(size:16, design:.default))
         .bold()
         Spacer()
-        Text("X")
+        Text("X ")
           .onTapGesture {
             showArrayContents = false
         }
