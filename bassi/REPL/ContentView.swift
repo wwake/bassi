@@ -119,17 +119,19 @@ struct ContentView: View {
   }
 
   fileprivate func arrayContents(_ key: Name, _ array: BasicArray) -> some View {
-    //   Contents of A
-    // A$(0,0) = "hello"
-    // A$(0,1) = "world"
-    // A$(1,0) = "monday"
-    // A$(1,1) = "tuesday"
-
     VStack {
-      Text("Contents of \(key)")
+      HStack {
+        Spacer()
+        Text("Contents of \(key)")
         .font(.system(size:16, design:.default))
         .bold()
-
+        Spacer()
+        Text("X")
+          .onTapGesture {
+            showArrayContents = false
+        }
+      }
+      
       ScrollView {
         LazyVGrid(columns: [GridItem(.flexible())]) {
           ForEach(0..<array.contents.count) {

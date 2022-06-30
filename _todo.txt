@@ -1,4 +1,3 @@
-* Variable display for arrays
 * Remove location from array methods
 
 * INPUT
@@ -22,7 +21,9 @@
 
 BI-22-37: June 30, 2022
 * Variable display for arrays
+  + Variable display for arrays - with indexes
   + Variable display in scroll view
+  + Dismiss array display
 
 BI-22-36: June 29, 2022
 * Introduce BasicArray; switch Value to use that
