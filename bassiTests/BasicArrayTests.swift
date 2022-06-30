@@ -19,5 +19,8 @@ final class BasicArrayTests: XCTestCase {
     checkIndexes(index: 23, expected: [1,2,3])
   }
  
-
+  func test_debugName() {
+    let array = BasicArray([1,2,3], .string)
+    XCTAssertEqual(array.debugName("A$", 8), "A$(0,2,0)")
+  }
 }

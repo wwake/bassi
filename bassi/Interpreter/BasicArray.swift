@@ -59,6 +59,14 @@ public class BasicArray {
 
     return resultReversed.reversed()
   }
+
+  func debugName(_ variable: String, _ index: Int) -> String {
+    let indexes = indexesFor(index)
+      .map {String($0)}
+      .joined(separator: ",")
+    
+    return "\(variable)(\(indexes))"
+  }
   
   func get(_ indexes: [Value], _ location: Location) throws -> Value {
     let index = try indexFor(indexes, location)

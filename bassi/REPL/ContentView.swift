@@ -129,6 +129,7 @@ struct ContentView: View {
       Text("Contents of \(key)")
       LazyVGrid(columns: [GridItem(.flexible())]) {
         ForEach(0..<array.contents.count) {
+          Text("=")
           Text(array.get($0).format())
         }
       }
