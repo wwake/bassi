@@ -127,13 +127,18 @@ struct ContentView: View {
 
     VStack {
       Text("Contents of \(key)")
-      LazyVGrid(columns: [GridItem(.flexible())]) {
-        ForEach(0..<array.contents.count) {
-          Text("=")
-          Text(array.get($0).format())
+        .font(.system(size:16, design:.default))
+        .bold()
+
+      ScrollView {
+        LazyVGrid(columns: [GridItem(.flexible())]) {
+          ForEach(0..<array.contents.count) {
+            Text("\(array.debugName(key, $0))=\(array.get($0).format())")
+          }
         }
       }
     }
+    .frame(width: 400, height: 600)
   }
 
   fileprivate func buttonView() -> some View {
