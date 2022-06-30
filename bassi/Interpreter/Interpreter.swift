@@ -403,7 +403,11 @@ class Interpreter {
           try evaluate($0, store)
         }
 
-      return try array.get(indexes, location)
+      do {
+        return try array.get(indexes)
+      } catch ArrayError.outOfBounds {
+        throw InterpreterError.error(location.lineNumber, "array access out of bounds")
+      }
     }
 
   fileprivate func callPredefinedFunction(
@@ -537,8 +541,11 @@ class Interpreter {
 
         let value = try evaluate(rvalue, globals)
 
-        try basicArray.put(indexes, value, location)
-
+        do {
+          try basicArray.put(indexes, value)
+        } catch ArrayError.outOfBounds {
+          throw InterpreterError.error(location.lineNumber, "array access out of bounds")
+        }
       default:
         throw InterpreterError.cantHappen(location.lineNumber, "?? Lvalue must be either variable or array access")
       }

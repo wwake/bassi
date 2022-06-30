@@ -7,6 +7,10 @@
 
 import Foundation
 
+public enum ArrayError: Error {
+  case outOfBounds
+}
+
 public class BasicArray {
   var dimensions: [Int]
   var contents: [Value]
@@ -25,7 +29,7 @@ public class BasicArray {
     self.type = type
   }
 
-  fileprivate func indexFor(_ valueIndexes: [Value], _ location: Location) throws -> Int {
+  fileprivate func indexFor(_ valueIndexes: [Value]) throws -> Int {
     let indexes = valueIndexes
       .map { Int($0.asFloat())}
 
@@ -33,7 +37,7 @@ public class BasicArray {
       .enumerated()
       .forEach { (i, index) in
         if index < 0 || index >= dimensions[i] {
-          throw InterpreterError.error(location.lineNumber, "array access out of bounds")
+          throw ArrayError.outOfBounds
         }
       }
 
@@ -73,8 +77,8 @@ public class BasicArray {
     }
   }
 
-  func get(_ indexes: [Value], _ location: Location) throws -> Value {
-    let index = try indexFor(indexes, location)
+  func get(_ indexes: [Value]) throws -> Value {
+    let index = try indexFor(indexes)
     return get(index)
   }
 
@@ -82,8 +86,8 @@ public class BasicArray {
     return contents[index]
   }
 
-  func put(_ indexes: [Value], _ rhs: Value, _ location: Location) throws {
-    let index = try indexFor(indexes, location)
+  func put(_ indexes: [Value], _ rhs: Value) throws {
+    let index = try indexFor(indexes)
     contents[index] = rhs
   }
 }
