@@ -1,5 +1,5 @@
-* Variable display for arrays
 * Variable display in scroll view
+* Variable display for arrays
 * Remove location from array methods
 
 * INPUT

@@ -25,7 +25,7 @@ public class BasicArray {
     self.type = type
   }
 
-  func indexFor(_ valueIndexes: [Value], _ location: Location) throws -> Int {
+  fileprivate func indexFor(_ valueIndexes: [Value], _ location: Location) throws -> Int {
     let indexes = valueIndexes
       .map { Int($0.asFloat())}
 
