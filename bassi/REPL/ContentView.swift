@@ -95,7 +95,6 @@ struct ContentView: View {
                   Image(systemName: "eye")
                     .opacity(value.isArray() ? 1 : 0)
                     .onTapGesture {
-                      print("Tapped \(key)")
                       showArrayContents = true
                     }
                     .sheet(isPresented: $showArrayContents, content: {
@@ -134,8 +133,8 @@ struct ContentView: View {
       
       ScrollView {
         LazyVGrid(columns: [GridItem(.flexible())]) {
-          ForEach(0..<array.contents.count) {
-            Text("\(array.debugName(key, $0))=\(array.get($0).format())")
+          ForEach(array.debugContents(key), id:\.self) {
+            Text($0)
           }
         }
       }

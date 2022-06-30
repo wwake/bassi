@@ -66,7 +66,13 @@ public class BasicArray {
     
     return "\(variable)(\(indexes))"
   }
-  
+
+  func debugContents(_ variable: String) -> [String] {
+    return (0..<contents.count).map { index in
+      "\(debugName(variable, index))=\(get(index).format())"
+    }
+  }
+
   func get(_ indexes: [Value], _ location: Location) throws -> Value {
     let index = try indexFor(indexes, location)
     return get(index)

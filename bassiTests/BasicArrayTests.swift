@@ -21,4 +21,11 @@ final class BasicArrayTests: XCTestCase {
     let array = BasicArray([1,2,3], .string)
     XCTAssertEqual(array.debugName("A$", 8), "A$(0,0,2)")
   }
+
+  func test_debugContents() {
+    let array = BasicArray([2], .number)
+    XCTAssertEqual(
+      array.debugContents("A"),
+      ["A(0)= 0 ", "A(1)= 0 "])
+  }
 }
