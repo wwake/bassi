@@ -1,4 +1,3 @@
-* Variable display in scroll view
 * Variable display for arrays
 * Remove location from array methods
 
@@ -20,6 +19,10 @@
   + Make errors report line & column number
 
 * Parameterized tests package?
+
+BI-22-37: June 30, 2022
+* Variable display for arrays
+  + Variable display in scroll view
 
 BI-22-36: June 29, 2022
 * Introduce BasicArray; switch Value to use that

@@ -45,6 +45,21 @@ public class BasicArray {
       })
   }
 
+  func indexesFor(_ index: Int) -> [Int] {
+    var resultReversed: [Int] = []
+    var divisor = 1
+
+    dimensions
+      .reversed()
+      .forEach {
+        let dimension = $0 + 1
+        resultReversed.append((index / divisor) % dimension)
+        divisor = divisor * dimension
+      }
+
+    return resultReversed.reversed()
+  }
+  
   func get(_ indexes: [Value], _ location: Location) throws -> Value {
     let index = try indexFor(indexes, location)
     return get(index)
