@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
   enum Tab : Int, Hashable {
-    case code=1, variable, output
+    case code=1, variable, run
   }
 
   @Namespace var bottom
@@ -157,11 +157,11 @@ struct ContentView: View {
     HStack {
       Spacer()
       Button("Run") {
-        selectedTab = Tab.output
+        selectedTab = Tab.run
         repl.doRun()
       }
       Button("Continue") {
-        selectedTab = Tab.output
+        selectedTab = Tab.run
         repl.doContinue()
       }
       .disabled(!repl.stopped)
@@ -187,9 +187,9 @@ struct ContentView: View {
         runView()
           .tabItem {
             Image(systemName:"note.text")
-            Text("Output")
+            Text("Run")
           }
-          .tag(Tab.output)
+          .tag(Tab.run)
       }
       buttonView()
       Spacer()
