@@ -462,7 +462,7 @@ expecting: " 20 \n"
   func testInputWithOneVariable() {
     checkProgramResultsWithInput(
       "10 INPUT X$\n20 PRINT X$",
-      input: "hello\n",
+      input: "hello",
       expecting: "hello\n")
   }
 

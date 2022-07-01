@@ -104,6 +104,7 @@ class Interpreter {
 
   var done = false
   var stopped = false
+  var awaitingInput = false
   
   typealias Store = [Name : Value]
 
@@ -210,7 +211,7 @@ class Interpreter {
 
     _ = try step(parse.statements[location.part])
 
-    while !done && !stopped {
+    while !done && !stopped && !awaitingInput {
       if nextLocation == nil {
         nextLocation = nextLocationFor(location)
       }
@@ -248,7 +249,7 @@ class Interpreter {
   }
 
   func resume() throws {
-    stopped = false
+    awaitingInput = false
     try runLoop()
   }
 
@@ -521,7 +522,7 @@ class Interpreter {
 
   fileprivate func doInput(_ exprs: [Expression]) throws {
     if interactor.input.isEmpty {
-      stopped = true
+      awaitingInput = true
       return
     }
 
