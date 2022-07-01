@@ -1,7 +1,6 @@
-  + Input should be copied to the output
   + Input textfield should show only if waiting for input
   + What happens if there too much input?
-  + Interpreter
+  + Handle input to array cells
 * INPUT
 * DATA, READ, RESTORE
 * ON..GOSUB
@@ -41,6 +40,7 @@ BI-22-38: July 1, 2022
   + Interactor - separate input text field
   + How does program block waiting for input? It stops, and view resumes it after input
   + If non-number in numeric input, you're asked to try again
+  + Input should be copied to the output
 
 BI-22-37: June 30, 2022
 * Variable display for arrays
