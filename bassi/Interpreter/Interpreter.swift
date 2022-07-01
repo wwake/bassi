@@ -532,11 +532,12 @@ class Interpreter {
 
     let fields = interactor.getLine().split(separator: ",")
 
-    let expr = exprs.first!
-    guard case .variable(let name, _) = expr else {
-      throw InterpreterError.cantHappen(0, "Only handle simple variables so far")
+    try exprs.enumerated().forEach { (index, expr) in
+      guard case .variable(let name, _) = expr else {
+        throw InterpreterError.cantHappen(0, "Only handle simple variables so far")
+      }
+      globals[name] = Value.string(String(fields[index]))
     }
-    globals[name] = Value.string(String(fields[0]))
   }
 
   fileprivate func doAssign(

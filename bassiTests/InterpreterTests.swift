@@ -459,11 +459,18 @@ expecting: " 20 \n"
     XCTAssertEqual(interactor.output, "hello\n")
   }
 
-  func testInputWithOneVariable() {
+  func testInputWithOneStringVariable() {
     checkProgramResultsWithInput(
       "10 INPUT X$\n20 PRINT X$",
       input: "hello",
       expecting: "hello\n")
+  }
+
+  func testInputWithTwoStringVariables() {
+    checkProgramResultsWithInput(
+      "10 INPUT X$, Y$\n20 PRINT X$ Y$",
+      input: "hello , world",
+      expecting: "hello  world\n")
   }
 
   func testPrintIntegerUsesNoDecimals() {
