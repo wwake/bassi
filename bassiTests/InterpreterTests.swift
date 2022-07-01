@@ -456,21 +456,21 @@ expecting: " 20 \n"
 
     interactor.input("hello")
     try interpreter.resume()
-    XCTAssertEqual(interactor.output, "hello\n")
+    XCTAssertEqual(interactor.output, "? hello\nhello\n")
   }
 
   func testInputWithOneStringVariable() {
     checkProgramResultsWithInput(
       "10 INPUT X$\n20 PRINT X$",
       input: "hello",
-      expecting: "hello\n")
+      expecting: "? hello\nhello\n")
   }
 
   func testInputWithTwoStringVariables() {
     checkProgramResultsWithInput(
       "10 INPUT X$, Y$\n20 PRINT X$ Y$",
       input: "hello , world",
-      expecting: "hello  world\n")
+      expecting: "? hello , world\nhello  world\n")
   }
 
   func testInputWithWrongNumberOfValuesThrows() throws {
@@ -494,7 +494,7 @@ expecting: " 20 \n"
     checkProgramResultsWithInput(
       "10 INPUT X, Y\n20 PRINT X Y",
       input: "3.0 , 4 ",
-      expecting: " 3  4 \n")
+      expecting: "? 3.0 , 4 \n 3  4 \n")
   }
 
   func testInputWithStringForNumericVariable() throws {

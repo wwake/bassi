@@ -530,7 +530,10 @@ class Interpreter {
       return
     }
 
-    let fields = interactor.getLine().split(separator: ",")
+    let line = interactor.getLine()
+    try doPrint([.expr(.string("? ")), .expr(.string(line))], true)
+
+    let fields = line.split(separator: ",")
     if fields.count < exprs.count {
       throw InterpreterError.error(location.lineNumber, "Not enough input values; try again")
     }
@@ -553,7 +556,7 @@ class Interpreter {
         globals[name] = Value.number(floatValue)
 
       default:
-        throw InterpreterError.cantHappen(0, "Only INPUT string or numeric types")
+        throw InterpreterError.cantHappen(location.lineNumber, "Only INPUT to string or numeric types")
       }
     }
   }
