@@ -205,13 +205,17 @@ class Interpreter {
     }
   }
 
+  fileprivate func shouldRun() -> Bool {
+    return !done && !stopped && !awaitingInput
+  }
+
   fileprivate func runLoop() throws {
     let line = program[location.lineNumber]!
     parse = parser.parse(line)
 
     _ = try step(parse.statements[location.part])
 
-    while !done && !stopped && !awaitingInput {
+    while shouldRun() {
       if nextLocation == nil {
         nextLocation = nextLocationFor(location)
       }
