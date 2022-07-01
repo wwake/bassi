@@ -536,10 +536,18 @@ class Interpreter {
     }
 
     try exprs.enumerated().forEach { (index, expr) in
-      guard case .variable(let name, _) = expr else {
+      guard case .variable(let name, let type) = expr else {
         throw InterpreterError.cantHappen(0, "Only handle simple variables so far")
       }
-      globals[name] = Value.string(String(fields[index]))
+
+      let field = String(fields[index])
+
+      switch type {
+      case .string: globals[name] = Value.string(field)
+      case .number: globals[name] = Value.number(Float(field.trimmingCharacters(in: .whitespaces))!)
+      default:
+        throw InterpreterError.cantHappen(0, "Only INPUT string or numeric types")
+      }
     }
   }
 

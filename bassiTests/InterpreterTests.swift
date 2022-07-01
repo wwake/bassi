@@ -490,6 +490,12 @@ expecting: " 20 \n"
     }
   }
 
+  func testInputWithNumericVariables() throws {
+    checkProgramResultsWithInput(
+      "10 INPUT X, Y\n20 PRINT X Y",
+      input: "3 , 4 ",
+      expecting: " 3  4 \n")
+  }
 
   func testPrintIntegerUsesNoDecimals() {
     checkProgramResults(

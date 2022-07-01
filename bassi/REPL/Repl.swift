@@ -54,9 +54,9 @@ class Repl : ObservableObject {
       try interpreter.run()
       updateShadowVariables()
     } catch InterpreterError.error(let lineNumber, let message) {
-      append("\(lineNumber): ?\(message)")
+      append("\(lineNumber): ?\(message)\n")
     } catch {
-      append("\(error)")
+      append("\(error)\n")
     }
   }
 
@@ -65,9 +65,9 @@ class Repl : ObservableObject {
       try interpreter.doContinue()
       updateShadowVariables()
     } catch InterpreterError.error(let lineNumber, let message) {
-      append("\(lineNumber): ?\(message)")
+      append("\(lineNumber): ?\(message)\n")
     } catch {
-      append("\(error)")
+      append("\(error)\n")
     }
   }
 
@@ -76,9 +76,9 @@ class Repl : ObservableObject {
       try interpreter.resume()
       updateShadowVariables()
     } catch InterpreterError.error(let lineNumber, let message) {
-      append("\(lineNumber): ?\(message)")
+      append("\(lineNumber): ?\(message)\n")
     } catch {
-      append("\(error)")
+      append("\(error)\n")
     }
   }
 
