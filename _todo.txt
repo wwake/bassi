@@ -1,8 +1,16 @@
-* Remove location from array methods
-
 * INPUT
 * DATA, READ, RESTORE
 * ON..GOSUB
+
+* Can't run interpreter twice
+
+* Handle parser errors better in interpreter
+  + Make errors report line & column number
+  + Make errors show failure point
+       10 Dim A(2,3
+       10DIMA(2,3
+                 ^
+       ? Expected right parenthesis
 
 * REPL should automatically scroll to bottom
   + https://developer.apple.com/documentation/swiftui/scrollviewreader
@@ -14,9 +22,6 @@
 
 * What should ASC do if given an empty string?
 
-* Handle parser errors better in interpreter
-  + Make errors report line & column number
-
 * Parameterized tests package?
 
 BI-22-37: June 30, 2022
@@ -24,6 +29,7 @@ BI-22-37: June 30, 2022
   + Variable display for arrays - with indexes
   + Variable display in scroll view
   + Dismiss array display
+* Refactor: Remove location from array methods (throws its own error which Interpreter will catch & handle)
 
 BI-22-36: June 29, 2022
 * Introduce BasicArray; switch Value to use that
@@ -302,6 +308,7 @@ statement -> printStatement
 statement -> "GOTO" INTEGER(int)
 statement -> "IF" expression "THEN" INTEGER(int)
 statement -> "IF" expression "THEN" statement
+statement -> "INPUT" VARIABLE ["(" expr {"," expr } ")"] { "," VARIABLE ["(" expr {"," expr } ")"]"}
 statement -> [LET] VARIABLE ["(" expr {"," expr } ")"] = expression
 statement -> DIM variable "(" expr {"," expr} ")"  { "," variable "(" expr {"," expr} ")"}
 statement -> FOR variable = expression TO expression [ STEP expression ]

@@ -91,6 +91,7 @@ public indirect enum Statement : Equatable {
   case goto(LineNumber)
   case `if`(Expression, [Statement])
   case ifGoto(Expression, LineNumber)
+  case input([Expression])
   case next(Name)
   case onGoto(Expression, [LineNumber])
   case print([Printable], Bool)

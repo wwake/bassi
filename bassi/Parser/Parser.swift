@@ -121,6 +121,9 @@ public class Parser {
     case .`if`:
       result = try ifThen()
 
+    case .input:
+      result = try input()
+
     case .`let`:
       result = try letAssign()
 
@@ -236,6 +239,32 @@ public class Parser {
 
     let statements = try statements()
     return .`if`(expr, statements)
+  }
+
+  func input() throws -> Statement {
+    nextToken()
+
+    var variables: [Expression] = []
+
+    if case .variable(let name) = token {
+      let variable = try variable(name)
+      variables.append(variable)
+    } else {
+      throw ParseError.error(theToken, "INPUT requires at least one variable")
+    }
+
+    while token == .comma {
+      nextToken()
+
+      if case .variable(let name) = token {
+        let variable = try variable(name)
+        variables.append(variable)
+      } else {
+        throw ParseError.error(theToken, "INPUT requires at least one variable")
+      }
+    }
+
+    return .input(variables)
   }
 
   func letAssign() throws -> Statement {

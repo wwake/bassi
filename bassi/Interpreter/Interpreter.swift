@@ -293,6 +293,9 @@ class Interpreter {
     case .ifGoto(let expr, let target):
       try doIfGoto(expr, Location(target))
 
+    case .input(_):
+      throw InterpreterError.cantHappen(0, "INPUT not implemented")
+      
     case .next(let variable):
       try doNext(variable)
 
