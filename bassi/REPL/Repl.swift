@@ -71,6 +71,17 @@ class Repl : ObservableObject {
     }
   }
 
+  func resume() {
+    do {
+      try interpreter.resume()
+      updateShadowVariables()
+    } catch InterpreterError.error(let lineNumber, let message) {
+      append("\(lineNumber): ?\(message)")
+    } catch {
+      append("\(error)")
+    }
+  }
+
   func append(_ line: String) {
     output.append(line)
   }

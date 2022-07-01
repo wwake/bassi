@@ -23,8 +23,12 @@ class Interactor: ObservableObject {
     return output[lastIndex!...].count - 1
   }
 
+  func input(_ input: String) {
+    self.input = input
+  }
+  
   func getLine() -> String {
-    return String(input.split(separator: "\n")[0])
+    return input
   }
 }
 

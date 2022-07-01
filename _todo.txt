@@ -1,7 +1,17 @@
+  + Interactor - where does it get input?
+  + How does program block waiting for input?
+  + What happens if there isn't enough input? Too much?
+  + What happens if non-number in numeric input?
   + Interpreter
 * INPUT
 * DATA, READ, RESTORE
 * ON..GOSUB
+
+Program running
+Hits input statement
+Stops running, waiting for input
+User types, hits return
+Interactor should restart the program at the INPUT line
 
 * Can't run interpreter twice
 

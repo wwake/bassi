@@ -14,7 +14,7 @@ struct bassiApp: App {
 
   var body: some Scene {
     WindowGroup {
-      ContentView(program: bassiApp.program, output: bassiApp.output, repl: Repl(bassiApp.program, bassiApp.output))
+      ContentView(program: bassiApp.program, interactor: bassiApp.output, repl: Repl(bassiApp.program, bassiApp.output))
     }
   }
 }

@@ -17,10 +17,11 @@ struct ContentView: View {
   @State private var selectedTab = Tab.code
   
   @ObservedObject var program: Program
-  @ObservedObject var output: Interactor
+  @ObservedObject var interactor: Interactor
   @ObservedObject var repl: Repl
   
   @State var command: String = ""
+  @State var input: String = ""
 
   fileprivate func codeView() -> some View {
     return VStack {
@@ -35,7 +36,7 @@ struct ContentView: View {
           Text("")
             .id(bottom)
         }
-        .onChange(of: output) { _ in
+        .onChange(of: interactor) { _ in
           print("output changed")
           proxy.scrollTo(bottom)
         }
@@ -53,19 +54,29 @@ struct ContentView: View {
   }
   
   fileprivate func runView() -> some View {
-    return ScrollViewReader { proxy in
-      ScrollView {
-        Text(output.output)
-          .font(.system(size:18, design:.monospaced))
-          .padding(.all)
-          .frame(maxWidth: .infinity, alignment: .leading)
-        Text("")
-          .id(bottom)
+    VStack {
+      ScrollViewReader { proxy in
+        ScrollView {
+          Text(interactor.output)
+            .font(.system(size:18, design:.monospaced))
+            .padding(.all)
+            .frame(maxWidth: .infinity, alignment: .leading)
+          Text("")
+            .id(bottom)
+        }
+        .onChange(of: interactor) { _ in
+          print("output changed")
+          proxy.scrollTo(bottom)
+        }
       }
-      .onChange(of: output) { _ in
-        print("output changed")
-        proxy.scrollTo(bottom)
-      }
+
+      TextField("Enter input", text: $input)
+        .padding()
+        .onSubmit({
+          interactor.input(input)
+          repl.resume()
+          input = ""
+        })
     }
   }
 
@@ -109,7 +120,7 @@ struct ContentView: View {
           Text("")
             .id(bottom)
         }
-        .onChange(of: output) { _ in
+        .onChange(of: interactor) { _ in
           print("output changed")
           proxy.scrollTo(bottom)
         }
@@ -192,6 +203,6 @@ struct ContentView_Previews: PreviewProvider {
   static var output = Interactor()
   
   static var previews: some View {
-    ContentView(program: program, output: output, repl: Repl(program, output))
+    ContentView(program: program, interactor: output, repl: Repl(program, output))
   }
 }

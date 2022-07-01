@@ -247,6 +247,11 @@ class Interpreter {
     try runLoop()
   }
 
+  func resume() throws {
+    stopped = false
+    try runLoop()
+  }
+
   func step(_ statement: Statement) throws {
     switch statement {
     case .error(let lineNumber, let columnNumber, let message):
@@ -515,6 +520,11 @@ class Interpreter {
   }
 
   fileprivate func doInput(_ exprs: [Expression]) throws {
+    if interactor.input.isEmpty {
+      stopped = true
+      return
+    }
+
     let fields = interactor.getLine().split(separator: ",")
 
     let expr = exprs.first!

@@ -449,6 +449,16 @@ expecting: " 20 \n"
       expecting: "Attempted call on undefined function FNX")
   }
 
+  func testResume() throws {
+    let interactor = Interactor()
+    let interpreter = Interpreter(Program("10 INPUT S$\n20 PRINT S$"), interactor)
+    try interpreter.run()
+
+    interactor.input("hello")
+    try interpreter.resume()
+    XCTAssertEqual(interactor.output, "hello\n")
+  }
+
   func testInputWithOneVariable() {
     checkProgramResultsWithInput(
       "10 INPUT X$\n20 PRINT X$",
@@ -656,7 +666,7 @@ expecting: " 20 \n"
         BasicArray([3], [.number(0), .number(0), .number(0)], .number)),
       Value.array(
         BasicArray([3], [.number(0), .number(0), .number(0)], .number))
-      )
+    )
   }
 
   func testDIMknowsTypeAndSize() throws {
@@ -681,8 +691,8 @@ expecting: " 20 \n"
       interpreter.globals["A"]!,
       .array(
         BasicArray([3],
-                     [.number(0), .number(0), .number(0)],
-                     .number)))
+                   [.number(0), .number(0), .number(0)],
+                   .number)))
     XCTAssertEqual(
       interpreter.globals["B"]!,
       .array(
