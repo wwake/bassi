@@ -531,6 +531,9 @@ class Interpreter {
     }
 
     let fields = interactor.getLine().split(separator: ",")
+    if fields.count < exprs.count {
+      throw InterpreterError.error(location.lineNumber, "Not enough input values; try again")
+    }
 
     try exprs.enumerated().forEach { (index, expr) in
       guard case .variable(let name, _) = expr else {

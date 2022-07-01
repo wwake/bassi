@@ -473,6 +473,24 @@ expecting: " 20 \n"
       expecting: "hello  world\n")
   }
 
+  func testInputWithWrongNumberOfValuesThrows() throws {
+    let interactor = Interactor()
+    let interpreter = Interpreter(Program("10 INPUT S$, T$\n20 PRINT S$, T$"), interactor)
+    try interpreter.run()
+
+    XCTAssertTrue(interpreter.awaitingInput)
+
+    interactor.input("hello")
+
+    do {
+      try interpreter.resume()
+    } catch InterpreterError.error(let lineNumber, let message) {
+      XCTAssertEqual(lineNumber, 10)
+      XCTAssertEqual(message, "Not enough input values; try again")
+    }
+  }
+
+
   func testPrintIntegerUsesNoDecimals() {
     checkProgramResults(
       "1 PRINT 42",
