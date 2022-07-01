@@ -8,14 +8,14 @@
 import Foundation
 
 class Repl : ObservableObject {
-  var output: Output
+  var output: Interactor
   var program: Program
   var interpreter: Interpreter
 
   @Published var stopped: Bool
   @Published var store: [Name : Value] = [:]
   
-  init(_ program : Program, _ output: Output) {
+  init(_ program : Program, _ output: Interactor) {
     self.program = program
     self.output = output
     interpreter = Interpreter(program, output)

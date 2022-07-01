@@ -1,3 +1,4 @@
+  + Interpreter
 * INPUT
 * DATA, READ, RESTORE
 * ON..GOSUB
@@ -23,6 +24,11 @@
 * What should ASC do if given an empty string?
 
 * Parameterized tests package?
+
+BI-22-38: July 1, 2022
+* INPUT
+  + Lexer already worked
+  + Parser
 
 BI-22-37: June 30, 2022
 * Variable display for arrays

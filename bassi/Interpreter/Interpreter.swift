@@ -94,7 +94,7 @@ class Interpreter {
   let columnsPerTab = 12
 
   let program: Program
-  let outputter : Output
+  let interactor : Interactor
 
   let parser = Parser()
   var parse: Parse
@@ -173,19 +173,19 @@ class Interpreter {
     "VAL" : Value.function(Fs2n({Float($0) ?? 0})),
   ]
 
-  init(_ program: Program, _ output: Output) {
+  init(_ program: Program, _ output: Interactor) {
     self.program = program
-    self.outputter = output
+    self.interactor = output
 
     self.location = Location(0,0)
     self.parse = Parse(0, [])
 
     defer {
-      globals["TAB"] = Value.function(Fn2s(buildTab(outputter)))
+      globals["TAB"] = Value.function(Fn2s(buildTab(interactor)))
     }
   }
 
-  func buildTab(_ outputter: Output) -> (Float) -> String {
+  func buildTab(_ outputter: Interactor) -> (Float) -> String {
     return {
       let currentColumn = outputter.column()
       let desiredColumn = Int($0)
@@ -217,7 +217,7 @@ class Interpreter {
 
       if nextLocation!.lineNumber != location.lineNumber {
         guard let line = program[nextLocation!.lineNumber] else {
-          outputter.append("? Attempted to execute non-existent line: \(nextLocation!.lineNumber)\n")
+          interactor.append("? Attempted to execute non-existent line: \(nextLocation!.lineNumber)\n")
           return
         }
 
@@ -251,7 +251,7 @@ class Interpreter {
     switch statement {
     case .error(let lineNumber, let columnNumber, let message):
       done = true
-      outputter.append("?\(lineNumber):\(columnNumber) \(message)")
+      interactor.append("?\(lineNumber):\(columnNumber) \(message)")
 
     case .assign(let variable, let expr):
       try doAssign(variable, expr)
@@ -293,9 +293,9 @@ class Interpreter {
     case .ifGoto(let expr, let target):
       try doIfGoto(expr, Location(target))
 
-    case .input(_):
-      throw InterpreterError.cantHappen(0, "INPUT not implemented")
-      
+    case .input(let exprs):
+      try doInput(exprs)
+
     case .next(let variable):
       try doNext(variable)
 
@@ -460,7 +460,7 @@ class Interpreter {
       return ""
 
     case .tab:
-      let currentColumn = outputter.column()
+      let currentColumn = interactor.column()
       let tabNumber = (currentColumn + columnsPerTab) / columnsPerTab
       let neededSpaces = tabNumber * columnsPerTab - currentColumn
       return String(repeating: " ", count: neededSpaces)
@@ -473,11 +473,11 @@ class Interpreter {
   fileprivate func doPrint(_ values : [Printable], _ shouldPrintNewline: Bool) throws {
     try values.forEach {
       let printable = try printable($0)
-      outputter.append(printable)
+      interactor.append(printable)
     }
 
     if shouldPrintNewline {
-      outputter.append("\n")
+      interactor.append("\n")
     }
   }
 
@@ -512,6 +512,16 @@ class Interpreter {
     if condition != .number(0.0) {
       nextLocation = target
     }
+  }
+
+  fileprivate func doInput(_ exprs: [Expression]) throws {
+    let fields = interactor.getLine().split(separator: ",")
+
+    let expr = exprs.first!
+    guard case .variable(let name, _) = expr else {
+      throw InterpreterError.cantHappen(0, "Only handle simple variables so far")
+    }
+    globals[name] = Value.string(String(fields[0]))
   }
 
   fileprivate func doAssign(

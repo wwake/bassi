@@ -10,7 +10,7 @@ import XCTest
 class ReplTests: XCTestCase {
   func makeRepl() -> Repl {
     let program = Program()
-    let output = Output()
+    let output = Interactor()
     return Repl(program, output)
   }
 

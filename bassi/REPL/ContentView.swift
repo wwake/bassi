@@ -17,7 +17,7 @@ struct ContentView: View {
   @State private var selectedTab = Tab.code
   
   @ObservedObject var program: Program
-  @ObservedObject var output: Output
+  @ObservedObject var output: Interactor
   @ObservedObject var repl: Repl
   
   @State var command: String = ""
@@ -189,7 +189,7 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
   static var program = Program()
-  static var output = Output()
+  static var output = Interactor()
   
   static var previews: some View {
     ContentView(program: program, output: output, repl: Repl(program, output))

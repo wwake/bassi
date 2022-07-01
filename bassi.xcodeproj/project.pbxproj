@@ -26,7 +26,7 @@
 		918861BD2858E0DB00B7B19C /* ParserExpressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918861BC2858E0DB00B7B19C /* ParserExpressionTests.swift */; };
 		918861C328616FC700B7B19C /* amazing.bas in Resources */ = {isa = PBXBuildFile; fileRef = 918861C228616FC700B7B19C /* amazing.bas */; };
 		918861C52862182800B7B19C /* Repl+Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918861C42862182800B7B19C /* Repl+Test.swift */; };
-		918861E72866051E00B7B19C /* Output.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918861E62866051E00B7B19C /* Output.swift */; };
+		918861E72866051E00B7B19C /* Interactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918861E62866051E00B7B19C /* Interactor.swift */; };
 		918861E92866056E00B7B19C /* OutputTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918861E82866056E00B7B19C /* OutputTests.swift */; };
 		9192F7362828B68F00FAFFA1 /* bassiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9192F7352828B68F00FAFFA1 /* bassiApp.swift */; };
 		9192F7382828B68F00FAFFA1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9192F7372828B68F00FAFFA1 /* ContentView.swift */; };
@@ -79,7 +79,7 @@
 		918861BC2858E0DB00B7B19C /* ParserExpressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParserExpressionTests.swift; sourceTree = "<group>"; };
 		918861C228616FC700B7B19C /* amazing.bas */ = {isa = PBXFileReference; lastKnownFileType = text; path = amazing.bas; sourceTree = "<group>"; };
 		918861C42862182800B7B19C /* Repl+Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Repl+Test.swift"; sourceTree = "<group>"; };
-		918861E62866051E00B7B19C /* Output.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Output.swift; sourceTree = "<group>"; };
+		918861E62866051E00B7B19C /* Interactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Interactor.swift; sourceTree = "<group>"; };
 		918861E82866056E00B7B19C /* OutputTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutputTests.swift; sourceTree = "<group>"; };
 		9192F7322828B68F00FAFFA1 /* bassi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = bassi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9192F7352828B68F00FAFFA1 /* bassiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bassiApp.swift; sourceTree = "<group>"; };
@@ -157,7 +157,7 @@
 			children = (
 				9192F7372828B68F00FAFFA1 /* ContentView.swift */,
 				91308869282EBA6C00E5C62E /* Repl.swift */,
-				918861E62866051E00B7B19C /* Output.swift */,
+				918861E62866051E00B7B19C /* Interactor.swift */,
 			);
 			path = REPL;
 			sourceTree = "<group>";
@@ -386,7 +386,7 @@
 				91165772282AB0790000D3AA /* Parse.swift in Sources */,
 				9195174C286CA4DC009BFC5B /* BasicArray.swift in Sources */,
 				9116576628295A2B0000D3AA /* Interpreter.swift in Sources */,
-				918861E72866051E00B7B19C /* Output.swift in Sources */,
+				918861E72866051E00B7B19C /* Interactor.swift in Sources */,
 				9192F7382828B68F00FAFFA1 /* ContentView.swift in Sources */,
 				914A53F22845249D00A47B35 /* Type.swift in Sources */,
 				91308868282EB64500E5C62E /* Program.swift in Sources */,

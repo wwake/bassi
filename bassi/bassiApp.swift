@@ -10,7 +10,7 @@ import SwiftUI
 @main
 struct bassiApp: App {
   static var program = Program()
-  static var output = Output()
+  static var output = Interactor()
 
   var body: some Scene {
     WindowGroup {

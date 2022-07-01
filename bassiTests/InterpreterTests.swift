@@ -12,10 +12,24 @@ class InterpreterTests: XCTestCase {
 
   fileprivate func checkProgramResults(_ program: String, expecting: String) {
     do {
-      let outputter = Output()
-      let interpreter = Interpreter(Program(program), outputter)
+      let interactor = Interactor()
+      let interpreter = Interpreter(Program(program), interactor)
       try interpreter.run()
-      XCTAssertEqual(outputter.output, expecting)
+      XCTAssertEqual(interactor.output, expecting)
+    } catch {
+      XCTFail("\(error)")
+    }
+  }
+
+  fileprivate func checkProgramResultsWithInput(_ program: String, input: String, expecting: String) {
+    do {
+      let interactor = Interactor()
+      interactor.input = input
+
+      let interpreter = Interpreter(Program(program), interactor)
+      try interpreter.run()
+
+      XCTAssertEqual(interactor.output, expecting)
     } catch {
       XCTFail("\(error)")
     }
@@ -23,9 +37,9 @@ class InterpreterTests: XCTestCase {
 
   fileprivate func checkExpectedError(_ program: String, expecting: String) {
     do {
-      let outputter = Output()
+      let interactor = Interactor()
 
-      let interpreter = Interpreter(Program(program), outputter)
+      let interpreter = Interpreter(Program(program), interactor)
       let _ = try interpreter.run()
       XCTFail("Should have thrown error")
     } catch InterpreterError.error(_, let message){
@@ -95,7 +109,7 @@ class InterpreterTests: XCTestCase {
 
   func testEnd() throws {
     let program = Program("999 END")
-    let outputter = Output()
+    let outputter = Interactor()
     let interpreter = Interpreter(program, outputter)
     let _ = try interpreter.run()
     XCTAssertTrue(interpreter.done)
@@ -115,7 +129,7 @@ class InterpreterTests: XCTestCase {
 
   func testSyntaxErrorStopsInterpreter() throws {
     let program = "10 PRINT {}"
-    let outputter = Output()
+    let outputter = Interactor()
     let interpreter = Interpreter(Program(program), outputter)
     try interpreter.run()
     XCTAssertTrue(outputter.output.starts(with:"?10:7 Expected start of expression"), "was \(outputter.output)")
@@ -191,7 +205,7 @@ expecting: " 20 \n"
       40,
       [.print([.expr(expression)], true)])
 
-    let outputter = Output()
+    let outputter = Interactor()
     let interpreter = Interpreter(Program(), outputter)
     try interpreter.step(parse.statements[0])
     XCTAssertEqual(outputter.output, " 7 \n")
@@ -213,7 +227,7 @@ expecting: " 20 \n"
     let expr = Expression.op1(
       .minus,
       .number(21.0))
-    let outputter = Output()
+    let outputter = Interactor()
     let interpreter = Interpreter(Program(), outputter)
     let output = try interpreter.evaluate(expr, [:])
     XCTAssertEqual(output, .number(-21))
@@ -243,7 +257,7 @@ expecting: " 20 \n"
       10,
       [.goto(10)])
 
-    let outputter = Output()
+    let outputter = Interactor()
     let interpreter = Interpreter(Program("10 GOTO 10"), outputter)
 
     XCTAssertEqual(interpreter.nextLocation, nil)
@@ -259,7 +273,7 @@ expecting: " 20 \n"
       10,
       [.goto(20)])
 
-    let outputter = Output()
+    let outputter = Interactor()
     let interpreter = Interpreter(Program(), outputter)
 
     let _ = try interpreter.step(parse.statements[0])
@@ -399,7 +413,7 @@ expecting: " 20 \n"
         .string
       )])
 
-    let outputter = Output()
+    let outputter = Interactor()
     let interpreter = Interpreter(Program(), outputter)
     let _ = try interpreter.step(parse.statements[0])
     XCTAssertNotNil(interpreter.globals["FNI"])
@@ -434,7 +448,14 @@ expecting: " 20 \n"
       "10 PRINT FNX(0)",
       expecting: "Attempted call on undefined function FNX")
   }
-  
+
+  func testInputWithOneVariable() {
+    checkProgramResultsWithInput(
+      "10 INPUT X$\n20 PRINT X$",
+      input: "hello\n",
+      expecting: "hello\n")
+  }
+
   func testPrintIntegerUsesNoDecimals() {
     checkProgramResults(
       "1 PRINT 42",
@@ -495,7 +516,7 @@ expecting: " 20 \n"
 
   func testRandomNumbersAreInProperRange() throws {
     try (1...1000).forEach { _ in
-      let outputter = Output()
+      let outputter = Interactor()
       let interpreter = Interpreter(Program("1 PRINT RND(0)"), outputter)
       try interpreter.run()
       let value = Float(outputter.output.trimmingCharacters(in: .whitespacesAndNewlines))!
@@ -506,7 +527,7 @@ expecting: " 20 \n"
   func testDefaultSeed0StartsDifferentEachTime() throws {
     var lastValue: Float = 0
     try (1...100).forEach { _ in
-      let outputter = Output()
+      let outputter = Interactor()
       let interpreter = Interpreter(Program("1 PRINT RND(0)"), outputter)
       try interpreter.run()
       let value = Float(outputter.output.trimmingCharacters(in: .whitespacesAndNewlines))!
@@ -516,7 +537,7 @@ expecting: " 20 \n"
   }
 
   func testSeedsForceIdenticalSequences() throws {
-    let outputter = Output()
+    let outputter = Interactor()
     let program =
 """
 10 FOR I=1 TO 10: PRINT RND(42);: NEXT I
@@ -640,7 +661,7 @@ expecting: " 20 \n"
 
   func testDIMknowsTypeAndSize() throws {
     let program = Program("10 DIM A(2)")
-    let outputter = Output()
+    let outputter = Interactor()
     let interpreter = Interpreter(program, outputter)
     let _ = try interpreter.run()
     XCTAssertEqual(
@@ -653,7 +674,7 @@ expecting: " 20 \n"
 
   func testDIMknowsTypeAndSizeForMultipleArrays() throws {
     let program = Program("10 DIM A(2), B(1)")
-    let outputter = Output()
+    let outputter = Interactor()
     let interpreter = Interpreter(program, outputter)
     let _ = try interpreter.run()
     XCTAssertEqual(
@@ -672,7 +693,7 @@ expecting: " 20 \n"
 
   func testDIMknowsTypeAndSizeForMultiDArray() throws {
     let program = Program("10 DIM A(2,1,2)")
-    let outputter = Output()
+    let outputter = Interactor()
     let interpreter = Interpreter(program, outputter)
     let _ = try interpreter.run()
 
@@ -687,7 +708,7 @@ expecting: " 20 \n"
   func testDIMmayNotRedeclareVariables() throws {
     do {
       let program = Program("10 DIM A(2)")
-      let outputter = Output()
+      let outputter = Interactor()
       let interpreter = Interpreter(program, outputter)
       interpreter.globals["A"] = .number(27)
       let _ = try interpreter.run()
@@ -729,7 +750,7 @@ expecting: " 20 \n"
 
   func testArrayAssignmentWithoutDIMdefaultsToSize10() throws {
     let program = Program("10 A(2) = 3")
-    let outputter = Output()
+    let outputter = Interactor()
     let interpreter = Interpreter(program, outputter)
     let _ = try interpreter.run()
 
@@ -746,7 +767,7 @@ expecting: " 20 \n"
 
   func testArrayAccessWithoutDIMdefaultsToSize10() throws {
     let program = Program("10 PRINT A(2)")
-    let outputter = Output()
+    let outputter = Interactor()
     let interpreter = Interpreter(program, outputter)
     let _ = try interpreter.run()
 
@@ -761,7 +782,7 @@ expecting: " 20 \n"
   func testErrorMessageIncludesLineNumber() throws {
     do {
       let program = "20 PRINT A(-2)"
-      let outputter = Output()
+      let outputter = Interactor()
       let interpreter = Interpreter(Program(program), outputter)
       let _ = try interpreter.run()
       XCTFail("Should have thrown error")

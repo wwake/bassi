@@ -1,5 +1,5 @@
 //
-//  Output.swift
+//  Interactor.swift
 //  bassi
 //
 //  Created by Bill Wake on 6/24/22.
@@ -7,9 +7,10 @@
 
 import Foundation
 
-class Output: ObservableObject {
+class Interactor: ObservableObject {
   @Published var output: String = ""
-
+  @Published var input: String = ""
+  
   func append(_ line: String) {
     output.append(line)
   }
@@ -21,10 +22,14 @@ class Output: ObservableObject {
     }
     return output[lastIndex!...].count - 1
   }
+
+  func getLine() -> String {
+    return String(input.split(separator: "\n")[0])
+  }
 }
 
-extension Output: Equatable {
-  static func == (lhs: Output, rhs: Output) -> Bool {
+extension Interactor: Equatable {
+  static func == (lhs: Interactor, rhs: Interactor) -> Bool {
     lhs.output == rhs.output
   }
 }
