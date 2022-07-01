@@ -493,8 +493,22 @@ expecting: " 20 \n"
   func testInputWithNumericVariables() throws {
     checkProgramResultsWithInput(
       "10 INPUT X, Y\n20 PRINT X Y",
-      input: "3 , 4 ",
+      input: "3.0 , 4 ",
       expecting: " 3  4 \n")
+  }
+
+  func testInputWithStringForNumericVariable() throws {
+    let interactor = Interactor()
+    interactor.input("hello, 4.75")
+
+    let interpreter = Interpreter(Program("10 INPUT X,Y\n20 PRINT X,Y"), interactor)
+
+    do {
+      try interpreter.run()
+    } catch InterpreterError.error(let lineNumber, let message) {
+      XCTAssertEqual(lineNumber, 10)
+      XCTAssertEqual(message, "Non-numeric input for numeric variable; try again")
+    }
   }
 
   func testPrintIntegerUsesNoDecimals() {

@@ -543,8 +543,15 @@ class Interpreter {
       let field = String(fields[index])
 
       switch type {
-      case .string: globals[name] = Value.string(field)
-      case .number: globals[name] = Value.number(Float(field.trimmingCharacters(in: .whitespaces))!)
+      case .string:
+        globals[name] = Value.string(field)
+
+      case .number:
+        guard let floatValue = Float(field.trimmingCharacters(in: .whitespaces)) else {
+          throw InterpreterError.error(location.lineNumber, "Non-numeric input for numeric variable; try again")
+        }
+        globals[name] = Value.number(floatValue)
+
       default:
         throw InterpreterError.cantHappen(0, "Only INPUT string or numeric types")
       }
