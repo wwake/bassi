@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		911657632828C5F40000D3AA /* _todo.txt in Resources */ = {isa = PBXBuildFile; fileRef = 911657622828C5F40000D3AA /* _todo.txt */; };
 		9116576628295A2B0000D3AA /* Interpreter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9116576528295A2B0000D3AA /* Interpreter.swift */; };
-		9116576828295B970000D3AA /* InterpreterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9116576728295B970000D3AA /* InterpreterTests.swift */; };
+		9116576828295B970000D3AA /* _InterpreterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9116576728295B970000D3AA /* _InterpreterTests.swift */; };
 		9116576A28295C2B0000D3AA /* LexerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9116576928295C2B0000D3AA /* LexerTests.swift */; };
 		9116576C28295CF20000D3AA /* Lexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9116576B28295CF20000D3AA /* Lexer.swift */; };
 		9116576E28295D2A0000D3AA /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9116576D28295D2A0000D3AA /* Token.swift */; };
@@ -63,7 +63,7 @@
 		911657622828C5F40000D3AA /* _todo.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = _todo.txt; sourceTree = "<group>"; };
 		911657642828C9BD0000D3AA /* Bint.key */ = {isa = PBXFileReference; lastKnownFileType = file; path = Bint.key; sourceTree = "<group>"; };
 		9116576528295A2B0000D3AA /* Interpreter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Interpreter.swift; sourceTree = "<group>"; };
-		9116576728295B970000D3AA /* InterpreterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterpreterTests.swift; sourceTree = "<group>"; };
+		9116576728295B970000D3AA /* _InterpreterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _InterpreterTests.swift; sourceTree = "<group>"; };
 		9116576928295C2B0000D3AA /* LexerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LexerTests.swift; sourceTree = "<group>"; };
 		9116576B28295CF20000D3AA /* Lexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lexer.swift; sourceTree = "<group>"; };
 		9116576D28295D2A0000D3AA /* Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
@@ -169,9 +169,9 @@
 		9145B1D32873405C009DB706 /* Interpreter */ = {
 			isa = PBXGroup;
 			children = (
-				9116576728295B970000D3AA /* InterpreterTests.swift */,
-				9145B1D4287340A8009DB706 /* RemarkTests.swift */,
+				9116576728295B970000D3AA /* _InterpreterTests.swift */,
 				9145B1D62873414D009DB706 /* PrintTests.swift */,
+				9145B1D4287340A8009DB706 /* RemarkTests.swift */,
 			);
 			path = Interpreter;
 			sourceTree = "<group>";
@@ -423,7 +423,7 @@
 				9130886C282EBADA00E5C62E /* ProgramTests.swift in Sources */,
 				9195174A286B5794009BFC5B /* ValueTests.swift in Sources */,
 				9116576A28295C2B0000D3AA /* LexerTests.swift in Sources */,
-				9116576828295B970000D3AA /* InterpreterTests.swift in Sources */,
+				9116576828295B970000D3AA /* _InterpreterTests.swift in Sources */,
 				9145B1D5287340A8009DB706 /* RemarkTests.swift in Sources */,
 				918861C52862182800B7B19C /* Repl+Test.swift in Sources */,
 				918861BD2858E0DB00B7B19C /* ParserExpressionTests.swift in Sources */,
