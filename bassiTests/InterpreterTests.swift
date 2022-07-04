@@ -473,6 +473,20 @@ expecting: " 20 \n"
       expecting: "? hello , world\nhello  world\n")
   }
 
+  func testInputToNumericArrayCell() {
+    checkProgramResultsWithInput(
+      "10 INPUT B(3)\n20 PRINT B(3) B(4)",
+      input: "42",
+      expecting: "? 42\n 42  0 \n")
+  }
+
+  func testInputToStringArrayCell() {
+    checkProgramResultsWithInput(
+      "10 INPUT B$(3)\n20 PRINT B$(3)",
+      input: "Hiya",
+      expecting: "? Hiya\nHiya\n")
+  }
+
   func testInputWithWrongNumberOfValuesThrows() throws {
     let interactor = Interactor()
     let interpreter = Interpreter(Program("10 INPUT S$, T$\n20 PRINT S$, T$"), interactor)

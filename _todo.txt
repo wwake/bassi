@@ -1,6 +1,6 @@
+  + Handle input to array cells
   + Input textfield should show only if waiting for input
   + What happens if there too much input?
-  + Handle input to array cells
 * INPUT
 * DATA, READ, RESTORE
 * ON..GOSUB

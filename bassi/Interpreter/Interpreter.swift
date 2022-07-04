@@ -539,26 +539,62 @@ class Interpreter {
     }
 
     try exprs.enumerated().forEach { (index, expr) in
-      guard case .variable(let name, let type) = expr else {
-        throw InterpreterError.cantHappen(0, "Only handle simple variables so far")
-      }
+      switch expr {
+      case .variable(let name, let type):
+        try inputForVariable(fields, index, name, type)
 
+      case .arrayAccess(let name, let type, let subscripts):
+        try inputForArrayAccess(fields, index, name, type, subscripts)
+
+      default:
+        throw InterpreterError.cantHappen(location.lineNumber, "Only variables and array access are possible")
+      }
+    }
+  }
+
+  fileprivate func inputForVariable(
+    _ fields: [String.SubSequence],
+    _ index: Int,
+    _ name: Name,
+    _ type: Type) throws {
+    let field = String(fields[index])
+
+    switch type {
+    case .string:
+      globals[name] = Value.string(field)
+
+    case .number:
+      guard let floatValue = Float(field.trimmingCharacters(in: .whitespaces)) else {
+        throw InterpreterError.error(location.lineNumber, "Non-numeric input for numeric variable; try again")
+      }
+      globals[name] = Value.number(floatValue)
+
+    default:
+      throw InterpreterError.cantHappen(location.lineNumber, "Only INPUT to string or numeric types")
+    }
+  }
+
+  fileprivate func inputForArrayAccess(
+    _ fields: [String.SubSequence],
+    _ index: Int,
+    _ name: Name,
+    _ type: `Type`,
+    _ subscripts: [Expression]) throws {
       let field = String(fields[index])
 
       switch type {
       case .string:
-        globals[name] = Value.string(field)
+        try doAssign(.arrayAccess(name, type, subscripts), .string(field))
 
       case .number:
         guard let floatValue = Float(field.trimmingCharacters(in: .whitespaces)) else {
           throw InterpreterError.error(location.lineNumber, "Non-numeric input for numeric variable; try again")
         }
-        globals[name] = Value.number(floatValue)
+        try doAssign(.arrayAccess(name, type, subscripts), .number(floatValue))
 
       default:
         throw InterpreterError.cantHappen(location.lineNumber, "Only INPUT to string or numeric types")
       }
-    }
   }
 
   fileprivate func doAssign(
