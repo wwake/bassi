@@ -1,15 +1,8 @@
-  + Handle input to array cells
-  + Input textfield should show only if waiting for input
-  + What happens if there too much input?
+  + If there's too much INPUT, print "? Extra input ignored"
 * INPUT
 * DATA, READ, RESTORE
 * ON..GOSUB
 
-Program running
-Hits input statement
-Stops running, waiting for input
-User types, hits return
-Interactor should restart the program at the INPUT line
 
 * Can't run interpreter twice
 
@@ -33,6 +26,10 @@ Interactor should restart the program at the INPUT line
 
 * Parameterized tests package?
 
+BI-22-39: July 4, 2022
+* INPUT
+  + Handle input to array cells
+
 BI-22-38: July 1, 2022
 * INPUT
   + Lexer already worked
@@ -41,6 +38,13 @@ BI-22-38: July 1, 2022
   + How does program block waiting for input? It stops, and view resumes it after input
   + If non-number in numeric input, you're asked to try again
   + Input should be copied to the output
+
+Approach:
+Program running
+Hits input statement
+Stops running, waiting for input
+User types, hits return
+Interactor restarts the program at the INPUT line
 
 BI-22-37: June 30, 2022
 * Variable display for arrays

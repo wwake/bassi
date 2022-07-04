@@ -536,6 +536,8 @@ class Interpreter {
     let fields = line.split(separator: ",")
     if fields.count < exprs.count {
       throw InterpreterError.error(location.lineNumber, "Not enough input values; try again")
+    } else if fields.count > exprs.count {
+      try doPrint([.expr(.string("? Extra input ignored"))], true)
     }
 
     try exprs.enumerated().forEach { (index, lvalue) in

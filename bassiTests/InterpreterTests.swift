@@ -487,23 +487,6 @@ expecting: " 20 \n"
       expecting: "? Hiya\nHiya\n")
   }
 
-  func testInputWithWrongNumberOfValuesThrows() throws {
-    let interactor = Interactor()
-    let interpreter = Interpreter(Program("10 INPUT S$, T$\n20 PRINT S$, T$"), interactor)
-    try interpreter.run()
-
-    XCTAssertTrue(interpreter.awaitingInput)
-
-    interactor.input("hello")
-
-    do {
-      try interpreter.resume()
-    } catch InterpreterError.error(let lineNumber, let message) {
-      XCTAssertEqual(lineNumber, 10)
-      XCTAssertEqual(message, "Not enough input values; try again")
-    }
-  }
-
   func testInputWithNumericVariables() throws {
     checkProgramResultsWithInput(
       "10 INPUT X, Y\n20 PRINT X Y",
@@ -523,6 +506,30 @@ expecting: " 20 \n"
       XCTAssertEqual(lineNumber, 10)
       XCTAssertEqual(message, "Non-numeric input for numeric variable; try again")
     }
+  }
+
+  func testInputWithTooFewValuesThrows() throws {
+    let interactor = Interactor()
+    let interpreter = Interpreter(Program("10 INPUT S$, T$\n20 PRINT S$, T$"), interactor)
+    try interpreter.run()
+
+    XCTAssertTrue(interpreter.awaitingInput)
+
+    interactor.input("hello")
+
+    do {
+      try interpreter.resume()
+    } catch InterpreterError.error(let lineNumber, let message) {
+      XCTAssertEqual(lineNumber, 10)
+      XCTAssertEqual(message, "Not enough input values; try again")
+    }
+  }
+
+  func testInputWithTooManyValuesPrintsMessageAndIgnoresThem() throws {
+    checkProgramResultsWithInput(
+      "10 INPUT X, Y\n20 PRINT X Y",
+      input: "3.0, 4, extra words, 99",
+      expecting: "? 3.0, 4, extra words, 99\n? Extra input ignored\n 3  4 \n")
   }
 
   func testPrintIntegerUsesNoDecimals() {
