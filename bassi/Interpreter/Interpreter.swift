@@ -539,26 +539,32 @@ class Interpreter {
     }
 
     try exprs.enumerated().forEach { (index, lvalue) in
-      let field = String(fields[index])
-
-      let rvalue: Expression
-      switch lvalue.type() {
-      case .string:
-        rvalue = .string(field)
-
-      case .number:
-        guard let floatValue = Float(field.trimmingCharacters(in: .whitespaces)) else {
-          throw InterpreterError.error(location.lineNumber, "Non-numeric input for numeric variable; try again")
-        }
-
-        rvalue = .number(floatValue)
-
-      default:
-        throw InterpreterError.cantHappen(location.lineNumber, "Only INPUT to string or numeric types")
-      }
+      let rvalue = try convertInputToExpression(
+        String(fields[index]), lvalue.type())
 
       try doAssign(lvalue, rvalue)
     }
+  }
+
+  fileprivate func convertInputToExpression(_ input: String, _ type: `Type`) throws -> Expression {
+
+    let rvalue: Expression
+    switch type {
+    case .string:
+      rvalue = .string(input)
+
+    case .number:
+      guard let floatValue = Float(input.trimmingCharacters(in: .whitespaces)) else {
+        throw InterpreterError.error(location.lineNumber, "Non-numeric input for numeric variable; try again")
+      }
+
+      rvalue = .number(floatValue)
+
+    default:
+      throw InterpreterError.cantHappen(location.lineNumber, "Only INPUT to string or numeric types")
+    }
+
+    return rvalue
   }
 
   fileprivate func doAssign(
