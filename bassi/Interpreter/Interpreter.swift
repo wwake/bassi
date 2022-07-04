@@ -538,55 +538,13 @@ class Interpreter {
       throw InterpreterError.error(location.lineNumber, "Not enough input values; try again")
     }
 
-    try exprs.enumerated().forEach { (index, expr) in
-      switch expr {
-      case .variable(let name, let type):
-        try inputForVariable(fields, index, name, type)
-
-      case .arrayAccess(let name, let type, let subscripts):
-        try inputForArrayAccess(fields, index, name, type, subscripts)
-
-      default:
-        throw InterpreterError.cantHappen(location.lineNumber, "Only variables and array access are possible")
-      }
-    }
-  }
-
-  fileprivate func inputForVariable(
-    _ fields: [String.SubSequence],
-    _ index: Int,
-    _ name: Name,
-    _ type: Type) throws {
-    let field = String(fields[index])
-
-    switch type {
-    case .string:
-      globals[name] = Value.string(field)
-
-    case .number:
-      guard let floatValue = Float(field.trimmingCharacters(in: .whitespaces)) else {
-        throw InterpreterError.error(location.lineNumber, "Non-numeric input for numeric variable; try again")
-      }
-      globals[name] = Value.number(floatValue)
-
-    default:
-      throw InterpreterError.cantHappen(location.lineNumber, "Only INPUT to string or numeric types")
-    }
-  }
-
-  fileprivate func inputForArrayAccess(
-    _ fields: [String.SubSequence],
-    _ index: Int,
-    _ name: Name,
-    _ type: `Type`,
-    _ subscripts: [Expression]) throws {
+    try exprs.enumerated().forEach { (index, lvalue) in
       let field = String(fields[index])
 
       let rvalue: Expression
-
-      switch type {
+      switch lvalue.type() {
       case .string:
-          rvalue = .string(field)
+        rvalue = .string(field)
 
       case .number:
         guard let floatValue = Float(field.trimmingCharacters(in: .whitespaces)) else {
@@ -599,7 +557,8 @@ class Interpreter {
         throw InterpreterError.cantHappen(location.lineNumber, "Only INPUT to string or numeric types")
       }
 
-      try doAssign(.arrayAccess(name, type, subscripts), rvalue)
+      try doAssign(lvalue, rvalue)
+    }
   }
 
   fileprivate func doAssign(
@@ -637,6 +596,7 @@ class Interpreter {
         } catch ArrayError.outOfBounds {
           throw InterpreterError.error(location.lineNumber, "array access out of bounds")
         }
+
       default:
         throw InterpreterError.cantHappen(location.lineNumber, "?? Can only assign to variable or array access")
       }
