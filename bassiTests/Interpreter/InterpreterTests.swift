@@ -10,7 +10,7 @@ import XCTest
 
 class InterpreterTests: XCTestCase {
 
-  fileprivate func checkProgramResults(_ program: String, expecting: String) {
+   func checkProgramResults(_ program: String, expecting: String) {
     do {
       let interactor = Interactor()
       let interpreter = Interpreter(Program(program), interactor)
@@ -21,7 +21,7 @@ class InterpreterTests: XCTestCase {
     }
   }
 
-  fileprivate func checkProgramResultsWithInput(_ program: String, input: String, expecting: String) {
+  func checkProgramResultsWithInput(_ program: String, input: String, expecting: String) {
     do {
       let interactor = Interactor()
       interactor.input = input
@@ -35,7 +35,7 @@ class InterpreterTests: XCTestCase {
     }
   }
 
-  fileprivate func checkExpectedError(_ program: String, expecting: String) {
+  func checkExpectedError(_ program: String, expecting: String) {
     do {
       let interactor = Interactor()
 
@@ -49,63 +49,17 @@ class InterpreterTests: XCTestCase {
     }
   }
 
-  fileprivate func checkPrintWithRelop(_ op: String, _ expected: Int) throws {
+  func checkPrintWithRelop(_ op: String, _ expected: Int) throws {
     let program = "40 PRINT 10 \(op) 10"
     checkProgramResults(program, expecting: " \(expected) \n")
   }
 
-  fileprivate func checkOppositeRelationalOps(
+  func checkOppositeRelationalOps(
     _ op1ExpectedTrue: String,
     _ op2ExpectedFalse: String) throws {
       try checkPrintWithRelop(op1ExpectedTrue, 1)
       try checkPrintWithRelop(op2ExpectedFalse, 0)
     }
-
-  func test10REM() throws {
-    checkProgramResults(
-      "10 REM Comment",
-      expecting: "")
-  }
-
-  func test20PRINT() {
-    checkProgramResults(
-      "20 PRINT",
-      expecting: "\n")
-  }
-
-  func test25PRINT42() {
-    checkProgramResults(
-      "25 PRINT 42",
-      expecting: " 42 \n")
-  }
-
-  func testPRINTwithSemicolonSuppressesNewline() {
-    checkProgramResults(
-      "25 PRINT;",
-      expecting: "")
-  }
-
-  func testPRINTwithMultipleExpressions() {
-    checkProgramResults("25 PRINT \"X=\" X", expecting: "X= 0 \n")
-  }
-
-  func testPRINTwithCommas() {
-    checkProgramResults(
-      "50 PRINT 1,27.125,\"str\"",
-      expecting: " 1           27.125000  str\n")
-  }
-
-  func testPRINTwithTab() {
-    checkProgramResults(
-      "20 PRINT \"X\" TAB(5) \"Y\";",
-      expecting: "X    Y")
-  }
-
-  func testPRINTwithTabToEarlierColumn() {
-    checkProgramResults(
-      "20 PRINT \"XYZ\" TAB(2) \"Y\";",
-      expecting: "XYZ\n  Y")
-  }
 
   func testEnd() throws {
     let program = Program("999 END")
@@ -133,38 +87,6 @@ class InterpreterTests: XCTestCase {
     let interpreter = Interpreter(Program(program), outputter)
     try interpreter.run()
     XCTAssertTrue(outputter.output.starts(with:"?10:7 Expected start of expression"), "was \(outputter.output)")
-  }
-
-  func testSkip() throws {
-    checkProgramResults(
-"""
-10 REM Skip this line
-20 PRINT 20
-""",
-expecting: " 20 \n"
-    )
-  }
-
-  func testSimplePrint() throws {
-    checkProgramResults("10 PRINT", expecting: "\n")
-  }
-
-  func testPrintWithNumericValue() throws {
-    checkProgramResults(
-      "35 PRINT 22.0",
-      expecting: " 22 \n")
-  }
-
-  func testPrintWithStringValue() throws {
-    checkProgramResults(
-      "35 PRINT \"hello\"",
-      expecting: "hello\n")
-  }
-
-  func testMultiplePRINTonOneLine() {
-    checkProgramResults(
-      "35 PRINT 135: PRINT 136",
-      expecting: " 135 \n 136 \n")
   }
 
   func testRemainingPartsOfLineDontExecuteIfControlTransfered() {
@@ -223,7 +145,7 @@ expecting: " 20 \n"
       expecting: " 0 \n")
   }
 
-  func testPrintWithUnaryMinus() throws {
+  func testEvaluateExpressionWithUnaryMinus() throws {
     let expr = Expression.op1(
       .minus,
       .number(21.0))
@@ -233,19 +155,19 @@ expecting: " 20 \n"
     XCTAssertEqual(output, .number(-21))
   }
 
-  func testPrintWithAddition() throws {
+  func testAddition() throws {
     checkProgramResults("40 PRINT 1+2+3", expecting: " 6 \n")
   }
 
-  func testPrintWithSubtraction() throws {
+  func testSubtraction() throws {
     checkProgramResults("40 PRINT 1-2-3", expecting: "-4 \n")
   }
 
-  func testPrintWithMultiplyDivide() throws {
+  func testMultiplyDivide() throws {
     checkProgramResults("40 PRINT 1*6/3", expecting: " 2 \n")
   }
 
-  func testPrintWithEqualityComparison() throws {
+  func testEqualityComparison() throws {
     try checkOppositeRelationalOps("=", "<>")
     try checkOppositeRelationalOps(">=", "<")
     try checkOppositeRelationalOps("<=", ">")
@@ -530,18 +452,6 @@ expecting: " 20 \n"
       "10 INPUT X, Y\n20 PRINT X Y",
       input: "3.0, 4, extra words, 99",
       expecting: "? 3.0, 4, extra words, 99\n? Extra input ignored\n 3  4 \n")
-  }
-
-  func testPrintIntegerUsesNoDecimals() {
-    checkProgramResults(
-      "1 PRINT 42",
-      expecting: " 42 \n")
-  }
-
-  func testPrintFloatDoesUseDecimals() {
-    checkProgramResults(
-      "1 PRINT 0.875000",
-      expecting: " 0.875000 \n")
   }
 
   func testNumericSystemFunctions() {
@@ -1122,5 +1032,4 @@ expecting: " 15 \n")
 """,
 expecting: "")
   }
-
 }

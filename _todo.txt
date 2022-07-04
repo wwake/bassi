@@ -3,6 +3,7 @@
 * ON..GOSUB
 
 * Can't run interpreter twice
+  + Reset global dictionary - should it be layered?
 
 * Handle parser errors better in interpreter
   + Make errors report line & column number
