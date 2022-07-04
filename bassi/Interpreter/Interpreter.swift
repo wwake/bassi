@@ -582,19 +582,24 @@ class Interpreter {
     _ subscripts: [Expression]) throws {
       let field = String(fields[index])
 
+      let rvalue: Expression
+
       switch type {
       case .string:
-        try doAssign(.arrayAccess(name, type, subscripts), .string(field))
+          rvalue = .string(field)
 
       case .number:
         guard let floatValue = Float(field.trimmingCharacters(in: .whitespaces)) else {
           throw InterpreterError.error(location.lineNumber, "Non-numeric input for numeric variable; try again")
         }
-        try doAssign(.arrayAccess(name, type, subscripts), .number(floatValue))
+
+        rvalue = .number(floatValue)
 
       default:
         throw InterpreterError.cantHappen(location.lineNumber, "Only INPUT to string or numeric types")
       }
+
+      try doAssign(.arrayAccess(name, type, subscripts), rvalue)
   }
 
   fileprivate func doAssign(
@@ -633,7 +638,7 @@ class Interpreter {
           throw InterpreterError.error(location.lineNumber, "array access out of bounds")
         }
       default:
-        throw InterpreterError.cantHappen(location.lineNumber, "?? Lvalue must be either variable or array access")
+        throw InterpreterError.cantHappen(location.lineNumber, "?? Can only assign to variable or array access")
       }
     }
 
