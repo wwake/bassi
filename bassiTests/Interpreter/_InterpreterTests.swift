@@ -9,7 +9,6 @@ import XCTest
 @testable import bassi
 
 class InterpreterTests: XCTestCase {
-
    func checkProgramResults(_ program: String, expecting: String) {
     do {
       let interactor = Interactor()
@@ -95,82 +94,6 @@ class InterpreterTests: XCTestCase {
 10 GOTO 20: PRINT 10
 20 PRINT 20
 """, expecting: " 20 \n")
-  }
-
-  func testPowers() {
-    checkProgramResults(
-      "25 PRINT 2^3^2",
-      expecting: " 64 \n")
-  }
-
-  func testLogicalOperationsOnIntegersTree() throws {
-    // NOT -8 OR 5 AND 4
-    // 11111..1000  -8
-    // 0000....111  7 = NOT -8
-    // 0.......101  5
-    // 0.......100  4
-    // ===>    111  = 7
-
-    let expression = Expression.op2(
-      .or,
-      .op1(.not,
-           .op1(.minus, .number(8))),
-      .op2(
-        .and,
-        .number(5),
-        .number(4)
-      )
-    )
-
-    let parse =
-    Parse(
-      40,
-      [.print([.expr(expression)], true)])
-
-    let outputter = Interactor()
-    let interpreter = Interpreter(Program(), outputter)
-    try interpreter.step(parse.statements[0])
-    XCTAssertEqual(outputter.output, " 7 \n")
-  }
-
-  func testLogicalOperationsOnIntegers() throws {
-    checkProgramResults(
-      "25 PRINT NOT -8 OR 5 AND 4",
-      expecting: " 7 \n")
-  }
-
-  func testVariableDefaultsToZero() throws {
-    checkProgramResults(
-      "25 PRINT Y9",
-      expecting: " 0 \n")
-  }
-
-  func testEvaluateExpressionWithUnaryMinus() throws {
-    let expr = Expression.op1(
-      .minus,
-      .number(21.0))
-    let outputter = Interactor()
-    let interpreter = Interpreter(Program(), outputter)
-    let output = try interpreter.evaluate(expr, [:])
-    XCTAssertEqual(output, .number(-21))
-  }
-
-  func testAddition() throws {
-    checkProgramResults("40 PRINT 1+2+3", expecting: " 6 \n")
-  }
-
-  func testSubtraction() throws {
-    checkProgramResults("40 PRINT 1-2-3", expecting: "-4 \n")
-  }
-
-  func testMultiplyDivide() throws {
-    checkProgramResults("40 PRINT 1*6/3", expecting: " 2 \n")
-  }
-
-  func testEqualityComparison() throws {
-    try checkOppositeRelationalOps("=", "<>")
-    try checkOppositeRelationalOps(">=", "<")
-    try checkOppositeRelationalOps("<=", ">")
   }
 
   func test10Goto10() throws {
@@ -371,17 +294,6 @@ class InterpreterTests: XCTestCase {
       expecting: "Attempted call on undefined function FNX")
   }
 
-  func testResume() throws {
-    let interactor = Interactor()
-    let interpreter = Interpreter(Program("10 INPUT S$\n20 PRINT S$"), interactor)
-    try interpreter.run()
-
-    interactor.input("hello")
-    try interpreter.resume()
-    XCTAssertEqual(interactor.output, "? hello\nhello\n")
-  }
-
-
   func testNumericSystemFunctions() {
     checkProgramResults(
       "1 PRINT ABS(-1)",
@@ -575,60 +487,5 @@ class InterpreterTests: XCTestCase {
     } catch InterpreterError.error(let lineNumber, _) {
       XCTAssertEqual(lineNumber, 20)
     }
-  }
-
-
-  func testON_GOTO() {
-    checkProgramResults(
-"""
-10 ON 2 GOTO 20, 30, 20
-15 PRINT 15
-20 PRINT 20
-30 PRINT 30
-""",
-expecting: " 30 \n")
-  }
-
-  func testON_GOTOwithNegativeValueThrowsError() {
-    checkExpectedError(
-"""
-10 ON -1 GOTO 20, 20
-15 PRINT 15
-16 END
-20 PRINT 20
-""",
-expecting: "?ILLEGAL QUANTITY")
-  }
-
-  func testON_GOTOwith0GoesToNextLine() {
-    checkProgramResults(
-"""
-10 ON 0 GOTO 20, 20
-15 PRINT 15
-16 END
-20 PRINT 20
-""",
-expecting: " 15 \n")
-  }
-
-  func testON_GOTOwithTooLargeValueGoesToNextLine() {
-    checkProgramResults(
-"""
-10 ON 3 GOTO 20, 20
-15 PRINT 15
-16 END
-20 PRINT 20
-""",
-expecting: " 15 \n")
-  }
-
-  func testStop() throws {
-    checkProgramResults(
-"""
-10 STOP
-15 PRINT 15
-20 END
-""",
-expecting: "")
   }
 }

@@ -24,7 +24,5 @@ class RemarkTests: InterpreterTests {
 expecting: " 20 \n"
     )
   }
-
-
 }
 

@@ -58,6 +58,17 @@ class InputTests: InterpreterTests {
     }
   }
 
+  func testResumeFromInput() throws {
+    let interactor = Interactor()
+    let interpreter = Interpreter(Program("10 INPUT S$\n20 PRINT S$"), interactor)
+    try interpreter.run()
+
+    interactor.input("hello")
+    try interpreter.resume()
+    XCTAssertEqual(interactor.output, "? hello\nhello\n")
+  }
+
+
   func testInputWithTooFewValuesThrows() throws {
     let interactor = Interactor()
     let interpreter = Interpreter(Program("10 INPUT S$, T$\n20 PRINT S$, T$"), interactor)
