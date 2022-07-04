@@ -162,6 +162,14 @@
 			path = REPL;
 			sourceTree = "<group>";
 		};
+		9145B1D32873405C009DB706 /* Interpreter */ = {
+			isa = PBXGroup;
+			children = (
+				9116576728295B970000D3AA /* InterpreterTests.swift */,
+			);
+			path = Interpreter;
+			sourceTree = "<group>";
+		};
 		918861C128616F9B00B7B19C /* resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -223,7 +231,7 @@
 				91308862282D5F6300E5C62E /* Expression+make.swift */,
 				918861C42862182800B7B19C /* Repl+Test.swift */,
 				91BE90E7283E7CD9004F0CF9 /* ExpressionTests.swift */,
-				9116576728295B970000D3AA /* InterpreterTests.swift */,
+				9145B1D32873405C009DB706 /* Interpreter */,
 				9116576928295C2B0000D3AA /* LexerTests.swift */,
 				918861E82866056E00B7B19C /* OutputTests.swift */,
 				9116576F282AADC20000D3AA /* ParserTests.swift */,

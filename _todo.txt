@@ -1,8 +1,6 @@
-  + If there's too much INPUT, print "? Extra input ignored"
-* INPUT
+* Split out interpreter tests by statement
 * DATA, READ, RESTORE
 * ON..GOSUB
-
 
 * Can't run interpreter twice
 
@@ -29,6 +27,7 @@
 BI-22-39: July 4, 2022
 * INPUT
   + Handle input to array cells
+  + If there's too much INPUT, print "? Extra input ignored"
 
 BI-22-38: July 1, 2022
 * INPUT
