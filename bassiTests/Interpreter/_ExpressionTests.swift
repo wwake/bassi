@@ -85,4 +85,24 @@ class _ExpressionTests: InterpreterTests {
     try checkOppositeRelationalOps(">=", "<")
     try checkOppositeRelationalOps("<=", ">")
   }
+
+  func testAssignment() throws {
+    checkProgramResults("""
+10 X = 42
+25 PRINT X
+""",
+                        expecting: " 42 \n")
+  }
+
+  func testStringRelationalOperator() {
+    checkProgramResults(
+      "25 PRINT \"A\"<\"B\"",
+      expecting: " 1 \n")
+  }
+
+  func testStringVariableDefaultsToEmptyString() {
+    checkProgramResults(
+      "25 PRINT A$",
+      expecting: "\n")
+  }
 }
