@@ -105,6 +105,9 @@ class Interpreter {
   var done = false
   var stopped = false
   var awaitingInput = false
+
+  var data : [String] = []
+  var dataIndex = 0
   
   typealias Store = [Name : Value]
 
@@ -209,6 +212,44 @@ class Interpreter {
     return !done && !stopped && !awaitingInput
   }
 
+  func run() throws {
+    try gatherData()
+
+    parse = Parse(0, [])
+
+    location = Location(program.firstLineNumber())
+    nextLocation = nil
+
+    try runLoop()
+  }
+
+  func doContinue() throws {
+    stopped = false
+    location = nextLocationFor(location)
+    nextLocation = nil
+
+    try runLoop()
+  }
+
+  func resume() throws {
+    awaitingInput = false
+    try runLoop()
+  }
+
+  func gatherData() throws {
+    program.program.sorted(by: <).forEach { (lineNumber, line) in
+      parse = parser.parse(line)
+      (0..<Statement.count(parse.statements)).forEach { part in
+        let statement = Statement.at(parse.statements, part)
+        if case .data(let strings) = statement {
+          strings.forEach {
+            data.append($0)
+          }
+        }
+      }
+    }
+  }
+
   fileprivate func runLoop() throws {
     let line = program[location.lineNumber]!
     parse = parser.parse(line)
@@ -237,25 +278,6 @@ class Interpreter {
     }
   }
 
-  func run() throws {
-    location = Location(program.firstLineNumber())
-    nextLocation = nil
-
-    try runLoop()
-  }
-
-  func doContinue() throws {
-    stopped = false
-    location = nextLocationFor(location)
-    nextLocation = nil
-
-    try runLoop()
-  }
-
-  func resume() throws {
-    awaitingInput = false
-    try runLoop()
-  }
 
   func step(_ statement: Statement) throws {
     switch statement {
@@ -267,7 +289,7 @@ class Interpreter {
       try doAssign(variable, expr)
 
     case .data(_):
-      throw InterpreterError.cantHappen(location.lineNumber, "Don't handle DATA yet")
+      break
       
     case .def(let functionName, let parameter, let definition, let theType):
       if globals[functionName] != nil {
@@ -318,9 +340,9 @@ class Interpreter {
     case .print(let values, let shouldPrintNewline):
       try doPrint(values, shouldPrintNewline)
 
-    case .read:
-      throw InterpreterError.cantHappen(0, "TBD")
-      
+    case .read(let exprs):
+      try doRead(exprs)
+
     case .`return`:
       try doReturn()
 
@@ -737,5 +759,13 @@ class Interpreter {
     }
 
     doGoto(Location(targets[value - 1]))
+  }
+
+  func doRead(_ exprs: [Expression]) throws {
+    try exprs.forEach { lvalue in
+      let rvalue = data[dataIndex]
+      dataIndex += 1
+      try doAssign(lvalue, .string(rvalue))
+    }
   }
 }

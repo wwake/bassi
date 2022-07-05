@@ -1,7 +1,5 @@
-+ Simple DATA statement with numbers
 + READ a number
 + Simple DATA statements with quoted strings
-+ DATA statements can allow comma-separated strings without quotes
 + READ - string, array value
 + RESTORE
 * DATA, READ, RESTORE
@@ -10,6 +8,9 @@
 
 * Can't run interpreter twice
   + Reset global dictionary - should it be layered?
+
+* Change parser?
+  + Abstract over the pattern "x {, x}"
 
 * Handle parser errors better in interpreter
   + Make errors report line & column number
@@ -30,6 +31,11 @@
 * What should ASC do if given an empty string?
 
 * Parameterized tests package?
+
+BI-22-40: July 5, 2022
+* DATA
+  + Simple DATA statement with numbers
+  + DATA statements can allow comma-separated strings without quotes
 
 BI-22-39: July 4, 2022
 * INPUT

@@ -35,6 +35,7 @@
 		9145B1EB287347C2009DB706 /* _PredefinedFunctionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9145B1EA287347C2009DB706 /* _PredefinedFunctionTests.swift */; };
 		9145B1ED28734895009DB706 /* DefTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9145B1EC28734895009DB706 /* DefTests.swift */; };
 		9145B1EF287348FE009DB706 /* _SyntaxErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9145B1EE287348FE009DB706 /* _SyntaxErrorTests.swift */; };
+		9145B1F128748F90009DB706 /* DataReadTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9145B1F028748F90009DB706 /* DataReadTests.swift */; };
 		914A53F02841315C00A47B35 /* Value.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914A53EF2841315C00A47B35 /* Value.swift */; };
 		914A53F22845249D00A47B35 /* Type.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914A53F12845249D00A47B35 /* Type.swift */; };
 		918861BD2858E0DB00B7B19C /* ParserExpressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918861BC2858E0DB00B7B19C /* ParserExpressionTests.swift */; };
@@ -102,6 +103,7 @@
 		9145B1EA287347C2009DB706 /* _PredefinedFunctionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _PredefinedFunctionTests.swift; sourceTree = "<group>"; };
 		9145B1EC28734895009DB706 /* DefTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefTests.swift; sourceTree = "<group>"; };
 		9145B1EE287348FE009DB706 /* _SyntaxErrorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _SyntaxErrorTests.swift; sourceTree = "<group>"; };
+		9145B1F028748F90009DB706 /* DataReadTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataReadTests.swift; sourceTree = "<group>"; };
 		914A53EF2841315C00A47B35 /* Value.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Value.swift; sourceTree = "<group>"; };
 		914A53F12845249D00A47B35 /* Type.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Type.swift; sourceTree = "<group>"; };
 		918861BC2858E0DB00B7B19C /* ParserExpressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParserExpressionTests.swift; sourceTree = "<group>"; };
@@ -208,6 +210,7 @@
 				9145B1E028734563009DB706 /* OnGotoTests.swift */,
 				9145B1D62873414D009DB706 /* PrintTests.swift */,
 				9145B1D4287340A8009DB706 /* RemarkTests.swift */,
+				9145B1F028748F90009DB706 /* DataReadTests.swift */,
 			);
 			path = Interpreter;
 			sourceTree = "<group>";
@@ -456,6 +459,7 @@
 				9195174E286CA9FA009BFC5B /* BasicArrayTests.swift in Sources */,
 				9145B1E3287345A8009DB706 /* EndStopTests.swift in Sources */,
 				9130886E282EC0C300E5C62E /* ReplTests.swift in Sources */,
+				9145B1F128748F90009DB706 /* DataReadTests.swift in Sources */,
 				91165770282AADC20000D3AA /* ParserTests.swift in Sources */,
 				918861E92866056E00B7B19C /* OutputTests.swift in Sources */,
 				9145B1E928734774009DB706 /* IfTests.swift in Sources */,
