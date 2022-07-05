@@ -108,6 +108,9 @@ public class Parser {
     case .for:
       result = try doFor()
 
+    case .data:
+      result = try data()
+
     case .end:
       nextToken()
       result = Statement.end
@@ -168,6 +171,30 @@ public class Parser {
     try requireMatchingTypes(variable, expr)
 
     return .assign(variable, expr)
+  }
+
+  func data() throws -> Statement {
+    nextToken()
+
+    var strings : [String] = []
+
+    guard case let .unquotedString(contents) = token else {
+      throw ParseError.error(theToken, "Expected a data value")
+    }
+    strings.append(contents)
+    nextToken()
+
+    while token == .comma {
+      nextToken()
+
+      guard case let .unquotedString(contents) = token else {
+        throw ParseError.error(theToken, "Expected a data value")
+      }
+      strings.append(contents)
+      nextToken()
+    }
+
+    return .data(strings)
   }
 
   func define() throws -> Statement {

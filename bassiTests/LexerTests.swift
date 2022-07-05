@@ -160,7 +160,53 @@ class LexerTests: XCTestCase {
   func testNonStringsAreUppercased() {
     checkToken("prINt", .print)
   }
-  
+
+  func checkUnquotedString(_ item: String, _ expected: TokenType) {
+    let lexer = Lexer("10 DATA \(item)")
+
+    var token = lexer.next()
+    token = lexer.next()
+
+    token = lexer.next()
+    XCTAssertEqual(token.type, expected)
+
+    token = lexer.next()
+  }
+
+  func testUnquotedString() {
+    checkUnquotedString(
+      "X",
+      .unquotedString("X"))
+  }
+
+  func testUnquotedStringGetTrimmedAndUppercased() {
+    checkUnquotedString(
+      " dog  ",
+      .unquotedString("DOG"))
+  }
+
+  func testUnquotedStringCanMatchNumbers() {
+    checkUnquotedString(
+      " 42  ",
+      .unquotedString("42"))
+  }
+
+  func testUnquotedStringStopsAfterColon() {
+    let lexer = Lexer("10 DATA DOG: 20 PRINT X")
+
+    var token = lexer.next()
+    token = lexer.next()
+
+    token = lexer.next()
+    XCTAssertEqual(token.type, .unquotedString("DOG"))
+
+    token = lexer.next()
+    XCTAssertEqual(token.type, .colon)
+
+    token = lexer.next()
+    XCTAssertEqual(token.type, .integer(20))
+  }
+
   func testSingleCharacterOperators() throws {
     checkToken("+", .plus)
     checkToken("-", .minus)

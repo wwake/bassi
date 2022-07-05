@@ -266,6 +266,9 @@ class Interpreter {
     case .assign(let variable, let expr):
       try doAssign(variable, expr)
 
+    case .data(_):
+      throw InterpreterError.cantHappen(location.lineNumber, "Don't handle DATA yet")
+      
     case .def(let functionName, let parameter, let definition, let theType):
       if globals[functionName] != nil {
         throw InterpreterError.error(location.lineNumber, "Can't redefine function " + functionName)

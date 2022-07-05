@@ -1,5 +1,11 @@
-* Split out interpreter tests by statement
++ Simple DATA statement with numbers
++ READ a number
++ Simple DATA statements with quoted strings
++ DATA statements can allow comma-separated strings without quotes
++ READ - string, array value
++ RESTORE
 * DATA, READ, RESTORE
+
 * ON..GOSUB
 
 * Can't run interpreter twice
@@ -29,6 +35,9 @@ BI-22-39: July 4, 2022
 * INPUT
   + Handle input to array cells
   + If there's too much INPUT, print "? Extra input ignored"
+
+* Refactor
+  + Split out interpreter tests by statement
 
 BI-22-38: July 1, 2022
 * INPUT
@@ -335,8 +344,13 @@ statement -> [LET] VARIABLE ["(" expr {"," expr } ")"] = expression
 statement -> DIM variable "(" expr {"," expr} ")"  { "," variable "(" expr {"," expr} ")"}
 statement -> FOR variable = expression TO expression [ STEP expression ]
 statement -> NEXT variable     // or [variable] - OSI; or [variable, {, variable }] -- C64
+statement -> DATA dataString { "," dataString }
+
+dataString -> UNQUOTED_STRING | STRING
 
 printStatement -> "PRINT" (expression|","|";")*
+
+Unquoted string: [^,:\n]+
 
 PRINT "X=" X, "Y=" Y; Z ;;;;
 X= 3       Y= 4 5

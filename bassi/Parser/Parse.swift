@@ -83,6 +83,7 @@ public indirect enum Statement : Equatable {
   case error(LineNumber, ColumnNumber, String)
 
   case assign(Expression, Expression)
+  case data([String])
   case def(Name, Name, Expression, `Type`)
   case dim([DimInfo])
   case end

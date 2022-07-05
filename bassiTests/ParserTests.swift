@@ -152,6 +152,36 @@ class ParserTests: XCTestCase {
       [.print([.expr(.number(1)), .tab, .expr(.number(2))], true)])
   }
 
+  func testDataWithSingleNumber() throws {
+    checkOneStatement("10 DATA 99", .data(["99"]))
+  }
+
+  func testDataWithNoQuotes() throws {
+    checkOneStatement(
+      "10 DATA 3, Dog , Night",
+      .data(["3", "DOG", "NIGHT"])
+    )
+  }
+
+  func testDataWithoutValuesIsError() {
+    checkError(
+      "25 DATA",
+      "Expected a data value"
+    )
+  }
+
+  func testDataWithoutDataAfterCommaIsError() {
+    checkError(
+      "25 DATA x,,y",
+      "Expected a data value")
+  }
+
+  func testDataWithoutDataAtEndIsError() {
+    checkError(
+      "25 DATA x,y,",
+      "Expected a data value")
+  }
+
   func testGoto() throws {
     checkOneStatement(
       "10 GOTO 10",

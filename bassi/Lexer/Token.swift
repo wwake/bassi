@@ -23,6 +23,7 @@ public enum TokenType  {
   case number(Float)
   case variable(String)
   case string(String)
+  case unquotedString(String)
   
   case plus
   case minus

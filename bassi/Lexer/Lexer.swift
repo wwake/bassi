@@ -99,6 +99,8 @@ class Lexer {
   var lineNumber : Int?
   var column : Int
 
+  var findUnquotedString = false
+
   init(_ program: String) {
     self.program = Lexer.normalize(program)
     lineNumber = nil
@@ -173,6 +175,17 @@ class Lexer {
   func nextTokenType() -> TokenType {
     if index >= program.count {
       return .atEnd
+    }
+
+    if findUnquotedString {
+      var result: String = ""
+      while !Set([",", ":", "\n"]).contains(program[index]) {
+        result.append(program[index])
+        index += 1
+      }
+      if result.count > 0 {
+        return .unquotedString(result)
+      }
     }
 
     let possibleToken = findPrefixToken()
@@ -269,6 +282,10 @@ class Lexer {
 
       if keyword == .remark {
         ignoreUntil("\n")
+      } else if keyword == .data {
+        findUnquotedString = true
+      } else if keyword == .colon || keyword == .eol {
+        findUnquotedString = false
       }
 
       return keyword
