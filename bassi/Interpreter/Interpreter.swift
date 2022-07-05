@@ -237,15 +237,17 @@ class Interpreter {
   }
 
   func gatherData() throws {
-    program.program.sorted(by: <).forEach { (lineNumber, line) in
-      parse = parser.parse(line)
-      (0..<Statement.count(parse.statements)).forEach { part in
-        let statement = Statement.at(parse.statements, part)
-        if case .data(let strings) = statement {
-          strings.forEach {
-            data.append($0)
+    program.program
+      .sorted(by: <)
+      .map { (lineNumber, line) in parser.parse(line) }
+      .forEach { parse in
+        (0..<Statement.count(parse.statements)).forEach { part in
+          let statement = Statement.at(parse.statements, part)
+          if case .data(let strings) = statement {
+            strings.forEach {
+              data.append($0)
+            }
           }
-        }
       }
     }
   }
