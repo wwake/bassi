@@ -318,6 +318,9 @@ class Interpreter {
     case .print(let values, let shouldPrintNewline):
       try doPrint(values, shouldPrintNewline)
 
+    case .read:
+      throw InterpreterError.cantHappen(0, "TBD")
+      
     case .`return`:
       try doReturn()
 

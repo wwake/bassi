@@ -283,7 +283,7 @@ class ParserTests: XCTestCase {
   func testInputStatementWithNoVariables() {
     checkError(
       "20 INPUT",
-      "INPUT requires at least one variable")
+      "At least one variable is required")
   }
 
   func testAssignmentStatementWithNumber() {
@@ -339,6 +339,16 @@ class ParserTests: XCTestCase {
       "25 PRINT \"body\"",
       .print(
         [.expr(.string("body"))], true)
+    )
+  }
+
+  func testReadMultipleVariables() {
+    checkOneStatement(
+      "25 READ X,Y(3),A$",
+      .read([.variable("X", .number),
+             .arrayAccess("Y", .number, [.number(3)]),
+             .variable("A$", .string)
+      ])
     )
   }
 
