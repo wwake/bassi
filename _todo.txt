@@ -1,16 +1,18 @@
-+ READ a number
-+ Simple DATA statements with quoted strings
-+ READ - string, array value
-+ RESTORE
-* DATA, READ, RESTORE
++ READ numbers - error if type mismatch
++ DATA statements with quoted strings
++ READ - array value
+* RESTORE
 
 * ON..GOSUB
 
 * Can't run interpreter twice
   + Reset global dictionary - should it be layered?
+  + Extract predefined to separate file?
 
 * Change parser?
   + Abstract over the pattern "x {, x}"
+
+* Expression: could we fold float & number to be Value?
 
 * Handle parser errors better in interpreter
   + Make errors report line & column number
@@ -32,10 +34,14 @@
 
 * Parameterized tests package?
 
+BI-22-41: July 6, 2022
+* DATA and READ
+
 BI-22-40: July 5, 2022
-* DATA
-  + Simple DATA statement with numbers
-  + DATA statements can allow comma-separated strings without quotes
+* DATA and READ
+  + DATA statements with comma-separated strings without quotes
+  + READ strings
+  + READ numbers (happy case - no type mismatch)
 
 BI-22-39: July 4, 2022
 * INPUT
@@ -93,7 +99,6 @@ BI-22-33: June 24, 2022
   + comma at eol means don't print newline
   + tabs to column 0, 12, 24, ...
 * Support the TAB() function - if past desired column, insert a newline
-
 
 BI-22-32: June 23, 2022
 * PRINT:

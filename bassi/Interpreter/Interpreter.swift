@@ -280,7 +280,6 @@ class Interpreter {
     }
   }
 
-
   func step(_ statement: Statement) throws {
     switch statement {
     case .error(let lineNumber, let columnNumber, let message):
@@ -765,9 +764,20 @@ class Interpreter {
 
   func doRead(_ exprs: [Expression]) throws {
     try exprs.forEach { lvalue in
-      let rvalue = data[dataIndex]
+      let rawValue = data[dataIndex]
       dataIndex += 1
-      try doAssign(lvalue, .string(rvalue))
+
+      let rvalue: Expression
+      if lvalue.type() == .number {
+        guard let floatValue = Float(rawValue) else {
+          throw InterpreterError.error(location.lineNumber, "? Attempted to read string as number")
+        }
+        rvalue = .number(floatValue)
+      } else {
+        rvalue = .string(rawValue)
+      }
+
+      try doAssign(lvalue, rvalue)
     }
   }
 }

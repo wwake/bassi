@@ -27,5 +27,15 @@ class DataReadTests: InterpreterTests {
       expecting: "DOG         CAT\n")
   }
 
+  func testReadNumbers() {
+    checkProgramResults(
+      "10 READ X,Y: DATA 10,20\n20 PRINT X;Y",
+      expecting: " 10  20 \n")
+  }
 
+  func testReadNumberFailsWhenDataIsNonNumeric() {
+    checkExpectedError(
+      "10 READ X: DATA BUNNY",
+      expecting: "? Attempted to read string as number")
+  }
 }
