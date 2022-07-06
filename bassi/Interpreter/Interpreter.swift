@@ -342,8 +342,9 @@ class Interpreter {
       try doRead(exprs)
 
     case .restore:
-      throw InterpreterError.cantHappen(0, "Restore TBD")
-      
+      dataIndex = 0
+      break
+
     case .`return`:
       try doReturn()
 
