@@ -95,7 +95,7 @@ class Interpreter {
     try runLoop()
   }
 
-  func doContinue() throws {
+  func continueAfterStop() throws {
     stopped = false
     location = nextLocationFor(location)
     nextLocation = nil
@@ -103,7 +103,7 @@ class Interpreter {
     try runLoop()
   }
 
-  func resume() throws {
+  func continueAfterInput() throws {
     awaitingInput = false
     try runLoop()
   }

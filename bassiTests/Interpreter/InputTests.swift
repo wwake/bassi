@@ -64,7 +64,7 @@ class InputTests: InterpreterTests {
     try interpreter.run()
 
     interactor.input("hello")
-    try interpreter.resume()
+    try interpreter.continueAfterInput()
     XCTAssertEqual(interactor.output, "? hello\nhello\n")
   }
 
@@ -79,7 +79,7 @@ class InputTests: InterpreterTests {
     interactor.input("hello")
 
     do {
-      try interpreter.resume()
+      try interpreter.continueAfterInput()
     } catch InterpreterError.error(let lineNumber, let message) {
       XCTAssertEqual(lineNumber, 10)
       XCTAssertEqual(message, "Not enough input values; try again")
