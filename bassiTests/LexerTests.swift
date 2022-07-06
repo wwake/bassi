@@ -176,19 +176,19 @@ class LexerTests: XCTestCase {
   func testUnquotedString() {
     checkUnquotedString(
       "X",
-      .unquotedString("X"))
+      .string("X"))
   }
 
   func testUnquotedStringGetTrimmedAndUppercased() {
     checkUnquotedString(
       " dog  ",
-      .unquotedString("DOG"))
+      .string("DOG"))
   }
 
   func testUnquotedStringCanMatchNumbers() {
     checkUnquotedString(
       " 42  ",
-      .unquotedString("42"))
+      .string("42"))
   }
 
   func testUnquotedStringStopsAfterColon() {
@@ -198,7 +198,7 @@ class LexerTests: XCTestCase {
     token = lexer.next()
 
     token = lexer.next()
-    XCTAssertEqual(token.type, .unquotedString("DOG"))
+    XCTAssertEqual(token.type, .string("DOG"))
 
     token = lexer.next()
     XCTAssertEqual(token.type, .colon)

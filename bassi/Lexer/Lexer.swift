@@ -184,7 +184,7 @@ class Lexer {
         index += 1
       }
       if result.count > 0 {
-        return .unquotedString(result)
+        return .string(result)
       }
     }
 

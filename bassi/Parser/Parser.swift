@@ -185,7 +185,7 @@ public class Parser {
 
     var strings : [String] = []
 
-    guard case let .unquotedString(contents) = token else {
+    guard case let .string(contents) = token else {
       throw ParseError.error(theToken, "Expected a data value")
     }
     strings.append(contents)
@@ -194,7 +194,7 @@ public class Parser {
     while token == .comma {
       nextToken()
 
-      guard case let .unquotedString(contents) = token else {
+      guard case let .string(contents) = token else {
         throw ParseError.error(theToken, "Expected a data value")
       }
       strings.append(contents)
