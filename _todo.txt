@@ -1,6 +1,7 @@
 * Can't run interpreter twice
-  + Reset global dictionary - should it be layered?
+  + Reset global dictionary, data, and flags
 
++ INPUT "string";V,W  form
 * ON..GOSUB
 
 * Change parser?

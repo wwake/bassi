@@ -39,6 +39,7 @@
 		9145B1F32875D6C6009DB706 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9145B1F22875D6C6009DB706 /* Location.swift */; };
 		9145B1F52875D715009DB706 /* Type+defaultValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9145B1F42875D715009DB706 /* Type+defaultValue.swift */; };
 		9145B1F72875D792009DB706 /* PredefinedValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9145B1F62875D792009DB706 /* PredefinedValues.swift */; };
+		9145B1F92875E133009DB706 /* InteractorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9145B1F82875E132009DB706 /* InteractorTests.swift */; };
 		914A53F02841315C00A47B35 /* Value.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914A53EF2841315C00A47B35 /* Value.swift */; };
 		914A53F22845249D00A47B35 /* Type.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914A53F12845249D00A47B35 /* Type.swift */; };
 		918861BD2858E0DB00B7B19C /* ParserExpressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918861BC2858E0DB00B7B19C /* ParserExpressionTests.swift */; };
@@ -110,6 +111,7 @@
 		9145B1F22875D6C6009DB706 /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		9145B1F42875D715009DB706 /* Type+defaultValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Type+defaultValue.swift"; sourceTree = "<group>"; };
 		9145B1F62875D792009DB706 /* PredefinedValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredefinedValues.swift; sourceTree = "<group>"; };
+		9145B1F82875E132009DB706 /* InteractorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractorTests.swift; sourceTree = "<group>"; };
 		914A53EF2841315C00A47B35 /* Value.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Value.swift; sourceTree = "<group>"; };
 		914A53F12845249D00A47B35 /* Type.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Type.swift; sourceTree = "<group>"; };
 		918861BC2858E0DB00B7B19C /* ParserExpressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParserExpressionTests.swift; sourceTree = "<group>"; };
@@ -294,6 +296,7 @@
 				9130886D282EC0C300E5C62E /* ReplTests.swift */,
 				91951749286B5794009BFC5B /* ValueTests.swift */,
 				9195174D286CA9FA009BFC5B /* BasicArrayTests.swift */,
+				9145B1F82875E132009DB706 /* InteractorTests.swift */,
 			);
 			path = bassiTests;
 			sourceTree = "<group>";
@@ -480,6 +483,7 @@
 				9145B1DB287343FD009DB706 /* DimArrayTests.swift in Sources */,
 				9130886C282EBADA00E5C62E /* ProgramTests.swift in Sources */,
 				9145B1ED28734895009DB706 /* DefTests.swift in Sources */,
+				9145B1F92875E133009DB706 /* InteractorTests.swift in Sources */,
 				9145B1E72873470E009DB706 /* _ControlFlowTests.swift in Sources */,
 				9145B1DD2873449D009DB706 /* ForNextTests.swift in Sources */,
 				9195174A286B5794009BFC5B /* ValueTests.swift in Sources */,

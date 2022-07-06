@@ -28,7 +28,9 @@ class Interactor: ObservableObject {
   }
   
   func getLine() -> String {
-    return input
+    let result = input
+    input = ""
+    return result
   }
 }
 
