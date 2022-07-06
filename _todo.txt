@@ -1,3 +1,4 @@
++ READ beyond end of DATA terminates program
 * RESTORE
 
 * ON..GOSUB

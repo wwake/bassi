@@ -45,6 +45,18 @@ class DataReadTests: InterpreterTests {
       expecting: " 10 \n")
   }
 
+  func testReadWithoutAnyDataTerminatesProgram() {
+    checkProgramResults(
+      "10 READ X",
+      expecting: "")
+  }
+
+  func testReadBeyondEndOfDataTerminatesProgram() {
+    checkProgramResults(
+      "10 DATA 10, 20: READ X: READ Y,Z",
+      expecting: "")
+  }
+
   func testReadNumberFailsWhenDataIsNonNumeric() {
     checkExpectedError(
       "10 READ X: DATA BUNNY",

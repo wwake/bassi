@@ -309,10 +309,7 @@ class Interpreter {
       }
 
     case .end:
-      guard returnStack.isEmpty else {
-        throw InterpreterError.error(location.lineNumber, "Ended program without returning from active subroutine")
-      }
-      done = true
+      try doEnd()
 
     case .`for`(let variable, let initial, let final, let step):
       try doFor(variable, initial, final, step)
@@ -653,6 +650,13 @@ class Interpreter {
       globals[name] = array
     }
 
+  func doEnd() throws {
+    guard returnStack.isEmpty else {
+      throw InterpreterError.error(location.lineNumber, "Ended program without returning from active subroutine")
+    }
+    done = true
+  }
+
   func doFor(_ variable: Name, _ initial: Expression, _ final: Expression, _ step: Expression) throws {
 
     let initialValue = try evaluate(initial, globals)
@@ -763,6 +767,11 @@ class Interpreter {
   }
 
   func doRead(_ exprs: [Expression]) throws {
+    guard dataIndex + exprs.count <= data.count else {
+      try doEnd()
+      return
+    }
+
     try exprs.forEach { lvalue in
       let rawValue = data[dataIndex]
       dataIndex += 1
