@@ -441,7 +441,7 @@ class Interpreter {
     }
 
     let line = interactor.getLine()
-    try doPrint([.expr(.string("? ")), .expr(.string(line))], true)
+    try doPrint([.expr(.string("\(prompt)? ")), .expr(.string(line))], true)
 
     let fields = line.split(separator: ",")
     if fields.count < exprs.count {

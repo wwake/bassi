@@ -68,7 +68,6 @@ class InputTests: InterpreterTests {
     XCTAssertEqual(interactor.output, "? hello\nhello\n")
   }
 
-
   func testInputWithTooFewValuesThrows() throws {
     let interactor = Interactor()
     let interpreter = Interpreter(Program("10 INPUT S$, T$\n20 PRINT S$, T$"), interactor)
@@ -91,5 +90,12 @@ class InputTests: InterpreterTests {
       "10 INPUT X, Y\n20 PRINT X Y",
       input: "3.0, 4, extra words, 99",
       expecting: "? 3.0, 4, extra words, 99\n? Extra input ignored\n 3  4 \n")
+  }
+
+  func testInputWithPrompt() throws {
+    checkProgramResultsWithInput(
+      "10 INPUT \"prompt\"; X\n20 PRINT X",
+      input: "42",
+      expecting: "prompt? 42\n 42 \n")
   }
 }
