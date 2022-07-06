@@ -258,20 +258,20 @@ class ParserTests: XCTestCase {
   }
 
   func testInputStatementWithOneVariable() {
-    checkOneStatement("25 INPUT X", .input([.variable("X", .number)]))
+    checkOneStatement("25 INPUT X", .input("", [.variable("X", .number)]))
   }
 
   func testInputStatementWithMultipleVariables() {
     checkOneStatement(
       "25 INPUT S$, X, Y",
-      .input([.variable("S$", .string), .variable("X", .number), .variable("Y", .number)])
+      .input("", [.variable("S$", .string), .variable("X", .number), .variable("Y", .number)])
     )
   }
 
   func testInputWithArrayReferences() {
     checkOneStatement(
       "10 INPUT B(3), T$(X+Y, Z)",
-      .input([
+      .input("", [
         .arrayAccess("B", .number, [.number(3)]),
         .arrayAccess("T$", .string, [
           .op2(.plus, .variable("X", .number), .variable("Y", .number)),
@@ -280,6 +280,19 @@ class ParserTests: XCTestCase {
       ]))
   }
 
+  func testInputWithPrompt() {
+    checkOneStatement(
+      "25 INPUT \"prompt\";S$",
+      .input("prompt", [.variable("S$", .string)])
+    )
+  }
+
+  func testInputWithPromptRequiresSemicolon() {
+    checkError(
+      "25 INPUT \"prompt\" X",
+      "? Semicolon required after prompt")
+  }
+  
   func testInputStatementWithNoVariables() {
     checkError(
       "20 INPUT",

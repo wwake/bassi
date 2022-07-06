@@ -95,6 +95,20 @@ public class Parser {
     return statements
   }
 
+  fileprivate func doInput() throws -> Statement {
+    nextToken()
+
+    var prompt: String = ""
+    if case .string(let contents) = token {
+      prompt = contents
+      nextToken()
+      try require(.semicolon, "? Semicolon required after prompt")
+    }
+
+    let variables = try commaListOfVariables()
+    return .input(prompt, variables)
+  }
+
   func statement() throws -> Statement {
     var result: Statement
 
@@ -125,9 +139,7 @@ public class Parser {
       result = try ifThen()
 
     case .input:
-      nextToken()
-      let variables = try commaListOfVariables()
-      result = .input(variables)
+      result = try doInput()
 
     case .`let`:
       result = try letAssign()

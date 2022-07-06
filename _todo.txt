@@ -1,6 +1,3 @@
-* Can't run interpreter twice
-  + Reset global dictionary, data, and flags
-
 + INPUT "string";V,W  form
 * ON..GOSUB
 
@@ -23,7 +20,6 @@
 
 * Error sync by skipping forward to next line # (or end)   ??
 
-* What should ASC do if given an empty string?
 
 * Parameterized tests package?
 
@@ -39,6 +35,10 @@ BI-22-41: July 6, 2022
   + Extract file Type+defaultValue.swift
   + Extract class for predefined functions
   + Improve gatherData() to use more pipeline operations
+* Can run interpreter twice
+  + Reset global dictionary, data, and flags
+* Interactor consumes input as it uses it
+* ASC("") returns 0 (no error thrown)
 
 BI-22-40: July 5, 2022
 * DATA and READ

@@ -76,7 +76,7 @@ class Predefined {
   static let predefinedFunctions = [
     "ABS" : Value.function(Fn2n(abs)),
     "ASC" : Value.function(Fs2n( {
-      if $0.count == 0 { return 0}
+      if $0.count == 0 { return 0 }
       return Float($0.utf8.first!)
     })),
     "ATN" : Value.function(Fn2n(atan)),

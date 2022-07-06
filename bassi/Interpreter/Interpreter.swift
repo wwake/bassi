@@ -206,8 +206,8 @@ class Interpreter {
     case .ifGoto(let expr, let target):
       try doIfGoto(expr, Location(target))
 
-    case .input(let exprs):
-      try doInput(exprs)
+    case .input(let prompt, let exprs):
+      try doInput(prompt, exprs)
 
     case .next(let variable):
       try doNext(variable)
@@ -434,7 +434,7 @@ class Interpreter {
     }
   }
 
-  fileprivate func doInput(_ exprs: [Expression]) throws {
+  fileprivate func doInput(_ prompt: String, _ exprs: [Expression]) throws {
     if interactor.input.isEmpty {
       awaitingInput = true
       return
