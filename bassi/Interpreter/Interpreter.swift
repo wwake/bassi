@@ -22,7 +22,7 @@ fileprivate func boolToFloat(
         .array:
       return .number(0.0)
     }
-}
+  }
 
 enum InterpreterError: Error, Equatable {
   case error(LineNumber, String)
@@ -113,15 +113,16 @@ class Interpreter {
       .sorted(by: <)
       .map { (lineNumber, line) in parser.parse(line) }
       .forEach { parse in
-        (0..<Statement.count(parse.statements)).forEach { part in
-          let statement = Statement.at(parse.statements, part)
-          if case .data(let strings) = statement {
-            strings.forEach {
-              data.append($0)
+        (0..<Statement.count(parse.statements))
+          .map { Statement.at(parse.statements, $0) }
+          .forEach { statement in
+            if case .data(let strings) = statement {
+              strings.forEach {
+                data.append($0)
+              }
             }
           }
       }
-    }
   }
 
   fileprivate func runLoop() throws {
@@ -542,9 +543,9 @@ class Interpreter {
     let typedVariable: Expression = .variable(variable, .number)
     try doAssign(
       typedVariable,
-        .op2(.minus,
-          .number(initialValue.asFloat()),
-          .number(stepSize.asFloat())))
+      .op2(.minus,
+           .number(initialValue.asFloat()),
+           .number(stepSize.asFloat())))
 
     let bodyLocation = nextLocationFor(location)
 
