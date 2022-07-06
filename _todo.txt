@@ -1,5 +1,3 @@
-+ Extract file Type+defaultValue.swift
-+ Extract file / class? for predefined functions
 * Refactor Interpreter
 
 * ON..GOSUB
@@ -40,6 +38,8 @@ BI-22-41: July 6, 2022
 * RESTORE
 * Refactor Interpreter
   + Extract file Location.swift
+  + Extract file Type+defaultValue.swift
+  + Extract class for predefined functions
 
 BI-22-40: July 5, 2022
 * DATA and READ
