@@ -75,4 +75,14 @@ class ReplTests: XCTestCase {
     XCTAssertEqual(repl.store["X9"], Value.number(99))
     XCTAssertEqual(repl.store["Y"], Value.number(1))
   }
+
+  func testRunningTwiceWorks() {
+    let repl = makeRepl()
+    repl.execute("10 X=X+1\n20 X=X+2\n")
+    repl.doRun()
+    XCTAssertEqual(repl.store["X"], Value.number(3))
+
+    repl.doRun()
+    XCTAssertEqual(repl.store["X"], Value.number(3))
+  }
 }

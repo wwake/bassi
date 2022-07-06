@@ -85,7 +85,14 @@ class Interpreter {
   }
 
   func run() throws {
+    done = false
+    stopped = false
+    awaitingInput = false
+
+    data = []
     try gatherData()
+
+    globals = Predefined.functionsUsing(interactor)
 
     parse = Parse(0, [])
 

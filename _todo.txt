@@ -1,10 +1,7 @@
-* Refactor Interpreter
-
-* ON..GOSUB
-
 * Can't run interpreter twice
   + Reset global dictionary - should it be layered?
-  + Extract predefined to separate file?
+
+* ON..GOSUB
 
 * Change parser?
   + Abstract over the pattern "x {, x}"
@@ -40,6 +37,7 @@ BI-22-41: July 6, 2022
   + Extract file Location.swift
   + Extract file Type+defaultValue.swift
   + Extract class for predefined functions
+  + Improve gatherData() to use more pipeline operations
 
 BI-22-40: July 5, 2022
 * DATA and READ
