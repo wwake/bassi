@@ -74,20 +74,6 @@ enum InterpreterError: Error, Equatable {
   case cantHappen(LineNumber, String)
 }
 
-struct Location : Equatable {
-  var lineNumber: LineNumber
-  var part: Int
-
-  init(_ lineNumber: LineNumber, _ part: Int = 0) {
-    self.lineNumber = lineNumber
-    self.part = part
-  }
-
-  func next() -> Location {
-    return Location(self.lineNumber, self.part + 1)
-  }
-}
-
 class Interpreter {
   static let freeSpaceCount : Float = 100_000
   let defaultArraySize : Float = 10

@@ -1,4 +1,6 @@
-* RESTORE
++ Extract file Type+defaultValue.swift
++ Extract file / class? for predefined functions
+* Refactor Interpreter
 
 * ON..GOSUB
 
@@ -8,8 +10,6 @@
 
 * Change parser?
   + Abstract over the pattern "x {, x}"
-
-* Expression: could we fold float & number to be Value?
 
 * Handle parser errors better in interpreter
   + Make errors report line & column number
@@ -37,6 +37,9 @@ BI-22-41: July 6, 2022
   + DATA statements with quoted strings
   + READ - confirm we can read into array cell
   + READ beyond end of DATA terminates program
+* RESTORE
+* Refactor Interpreter
+  + Extract file Location.swift
 
 BI-22-40: July 5, 2022
 * DATA and READ
