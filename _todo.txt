@@ -1,5 +1,3 @@
-+ DATA statements with quoted strings
-+ READ - array value
 * RESTORE
 
 * ON..GOSUB
@@ -36,6 +34,8 @@
 BI-22-41: July 6, 2022
 * DATA and READ
   + READ numbers - error if type mismatch
+  + DATA statements with quoted strings
+  + READ - confirm we can read into array cell
 
 BI-22-40: July 5, 2022
 * DATA and READ

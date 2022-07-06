@@ -33,6 +33,18 @@ class DataReadTests: InterpreterTests {
       expecting: " 10  20 \n")
   }
 
+  func testCanReadNumberAsString() {
+    checkProgramResults(
+      "10 READ X$: DATA 10\n20 PRINT X$",
+      expecting: "10\n")
+  }
+
+  func testCanReadIntoArrayCell() {
+    checkProgramResults(
+      "10 READ X(3): DATA 10\n20 PRINT X(3)",
+      expecting: " 10 \n")
+  }
+
   func testReadNumberFailsWhenDataIsNonNumeric() {
     checkExpectedError(
       "10 READ X: DATA BUNNY",
