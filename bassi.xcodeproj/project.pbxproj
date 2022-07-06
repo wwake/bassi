@@ -27,7 +27,7 @@
 		9145B1DB287343FD009DB706 /* DimArrayTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9145B1DA287343FD009DB706 /* DimArrayTests.swift */; };
 		9145B1DD2873449D009DB706 /* ForNextTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9145B1DC2873449D009DB706 /* ForNextTests.swift */; };
 		9145B1DF287344FC009DB706 /* GosubReturnTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9145B1DE287344FC009DB706 /* GosubReturnTests.swift */; };
-		9145B1E128734563009DB706 /* OnGotoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9145B1E028734563009DB706 /* OnGotoTests.swift */; };
+		9145B1E128734563009DB706 /* OnTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9145B1E028734563009DB706 /* OnTests.swift */; };
 		9145B1E3287345A8009DB706 /* EndStopTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9145B1E2287345A8009DB706 /* EndStopTests.swift */; };
 		9145B1E52873465B009DB706 /* _ExpressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9145B1E42873465B009DB706 /* _ExpressionTests.swift */; };
 		9145B1E72873470E009DB706 /* _ControlFlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9145B1E62873470E009DB706 /* _ControlFlowTests.swift */; };
@@ -99,7 +99,7 @@
 		9145B1DA287343FD009DB706 /* DimArrayTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DimArrayTests.swift; sourceTree = "<group>"; };
 		9145B1DC2873449D009DB706 /* ForNextTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForNextTests.swift; sourceTree = "<group>"; };
 		9145B1DE287344FC009DB706 /* GosubReturnTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GosubReturnTests.swift; sourceTree = "<group>"; };
-		9145B1E028734563009DB706 /* OnGotoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnGotoTests.swift; sourceTree = "<group>"; };
+		9145B1E028734563009DB706 /* OnTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnTests.swift; sourceTree = "<group>"; };
 		9145B1E2287345A8009DB706 /* EndStopTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndStopTests.swift; sourceTree = "<group>"; };
 		9145B1E42873465B009DB706 /* _ExpressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _ExpressionTests.swift; sourceTree = "<group>"; };
 		9145B1E62873470E009DB706 /* _ControlFlowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _ControlFlowTests.swift; sourceTree = "<group>"; };
@@ -218,7 +218,7 @@
 				9145B1E828734774009DB706 /* IfTests.swift */,
 				9145B1DE287344FC009DB706 /* GosubReturnTests.swift */,
 				9145B1D8287343A0009DB706 /* InputTests.swift */,
-				9145B1E028734563009DB706 /* OnGotoTests.swift */,
+				9145B1E028734563009DB706 /* OnTests.swift */,
 				9145B1D62873414D009DB706 /* PrintTests.swift */,
 				9145B1D4287340A8009DB706 /* RemarkTests.swift */,
 				9145B1F028748F90009DB706 /* DataReadTests.swift */,
@@ -478,7 +478,7 @@
 				91165770282AADC20000D3AA /* ParserTests.swift in Sources */,
 				918861E92866056E00B7B19C /* OutputTests.swift in Sources */,
 				9145B1E928734774009DB706 /* IfTests.swift in Sources */,
-				9145B1E128734563009DB706 /* OnGotoTests.swift in Sources */,
+				9145B1E128734563009DB706 /* OnTests.swift in Sources */,
 				91308863282D5F6300E5C62E /* Expression+make.swift in Sources */,
 				9145B1DB287343FD009DB706 /* DimArrayTests.swift in Sources */,
 				9130886C282EBADA00E5C62E /* ProgramTests.swift in Sources */,

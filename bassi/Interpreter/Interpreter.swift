@@ -213,10 +213,10 @@ class Interpreter {
       try doNext(variable)
 
     case .onGosub(let expr, let targets):
-      try doOnGoto(expr, targets)
+      try doOnTransfer(expr, targets, doGosub)
 
     case .onGoto(let expr, let targets):
-      try doOnGoto(expr, targets)
+      try doOnTransfer(expr, targets, doGoto)
 
     case .print(let values, let shouldPrintNewline):
       try doPrint(values, shouldPrintNewline)
@@ -638,23 +638,23 @@ class Interpreter {
     }
   }
 
-  func doOnGosub(_ expr: Expression, _ targets: [LineNumber]) throws {
-    throw InterpreterError.cantHappen(0, "OnGosub TBD")
-  }
-
-  func doOnGoto(_ expr: Expression, _ targets: [LineNumber]) throws {
+  fileprivate func doOnTransfer(
+      _ expr: Expression,
+      _ targets: [LineNumber],
+      _ transferMethod: (Location) throws -> ()
+  ) throws {
     let floatValue = try evaluate(expr, globals).asFloat()
     let value = Int(floatValue)
 
     guard value >= 0 else {
       throw InterpreterError.error(location.lineNumber, "?ILLEGAL QUANTITY")
     }
-    
+
     if value == 0 || value > targets.count {
       return
     }
 
-    doGoto(Location(targets[value - 1]))
+    try transferMethod(Location(targets[value - 1]))
   }
 
   func doRead(_ exprs: [Expression]) throws {
