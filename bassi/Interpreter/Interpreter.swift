@@ -48,27 +48,6 @@ func midFunction(_ arguments: [Value]) -> Value {
   ))
 }
 
-extension `Type` {
-  func defaultValue() -> Value {
-    switch self {
-    case .missing:
-      return .undefined
-
-    case .number:
-      return Value.number(0.0)
-
-    case .string:
-      return Value.string("")
-
-    case .function(_, _):
-      return Value.string("?? Undefined function")
-
-    case .opt(_):
-      return Value.string("?? Opt type default")
-    }
-  }
-}
-
 enum InterpreterError: Error, Equatable {
   case error(LineNumber, String)
   case cantHappen(LineNumber, String)
