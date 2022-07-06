@@ -728,6 +728,10 @@ class ParserTests: XCTestCase {
     XCTAssertEqual(Statement.at(list, 6), .gosub(6))
   }
 
+  func testRestore() throws {
+    checkOneStatement("10 RESTORE", .restore)
+  }
+
   func testStop() throws {
     checkOneStatement(
       "10 stop",

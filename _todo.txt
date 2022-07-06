@@ -1,4 +1,3 @@
-+ READ beyond end of DATA terminates program
 * RESTORE
 
 * ON..GOSUB
@@ -37,6 +36,7 @@ BI-22-41: July 6, 2022
   + READ numbers - error if type mismatch
   + DATA statements with quoted strings
   + READ - confirm we can read into array cell
+  + READ beyond end of DATA terminates program
 
 BI-22-40: July 5, 2022
 * DATA and READ

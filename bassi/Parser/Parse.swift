@@ -97,6 +97,7 @@ public indirect enum Statement : Equatable {
   case onGoto(Expression, [LineNumber])
   case print([Printable], Bool)
   case read([Expression])
+  case restore
   case `return`
   case skip
   case stop

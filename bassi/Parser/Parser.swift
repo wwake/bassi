@@ -148,7 +148,11 @@ public class Parser {
 
     case .remark:
       nextToken()
-      result = Statement.skip
+      result = .skip
+
+    case .restore:
+      nextToken()
+      result = .restore
 
     case .`return`:
       result = try returnStatement()

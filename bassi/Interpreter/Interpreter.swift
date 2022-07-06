@@ -341,6 +341,9 @@ class Interpreter {
     case .read(let exprs):
       try doRead(exprs)
 
+    case .restore:
+      throw InterpreterError.cantHappen(0, "Restore TBD")
+      
     case .`return`:
       try doReturn()
 

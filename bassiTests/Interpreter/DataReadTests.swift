@@ -62,4 +62,10 @@ class DataReadTests: InterpreterTests {
       "10 READ X: DATA BUNNY",
       expecting: "? Attempted to read string as number")
   }
+
+  func xtestRestore() {
+    checkProgramResults(
+      "10 DATA 10: READ X: RESTORE: READ Y: PRINT Y",
+      expecting: " 10 \n")
+  }
 }
