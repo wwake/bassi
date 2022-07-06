@@ -661,6 +661,14 @@ class ParserTests: XCTestCase {
       "Extra characters at end of line")
   }
 
+  func testON_GOSUB() {
+    checkOneStatement(
+      "10 ON 2 GOSUB 100,200,300",
+      .onGosub(
+        .number(2),
+        [100, 200, 300]))
+  }
+
   func testON_GOTO() {
     checkOneStatement(
       "10 ON 2 GOTO 10,20,30",
@@ -672,19 +680,19 @@ class ParserTests: XCTestCase {
   func testONmissingGOTOisError() {
     checkError(
       "10 ON 2 THEN 10,20,30",
-      "GOTO is missing")
+      "ON statement requires GOTO or GOSUB")
   }
 
   func testONmissingLineNumbersIsError() {
     checkError(
       "10 ON 2 GOTO X",
-      "ON..GOTO requires at least one line number after GOTO")
+      "ON requires at least one line number")
   }
 
   func testONmissingLineNumberAfterCommaIsError() {
     checkError(
       "10 ON 2 GOTO 10,",
-      "ON..GOTO requires line number after comma")
+      "ON requires line number after comma")
   }
 
   func testSimpleStatementsJustCount() {

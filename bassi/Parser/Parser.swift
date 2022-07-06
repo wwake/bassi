@@ -329,12 +329,16 @@ public class Parser {
 
     let expr = try expression()
 
-    try require(.goto, "GOTO is missing")
-    
+    let savedToken = token
+    if token != .goto && token != .gosub {
+      throw ParseError.error(theToken, "ON statement requires GOTO or GOSUB")
+    }
+    nextToken()
+
     var targets : [LineNumber] = []
 
     guard case .integer(let target) = token else {
-      throw ParseError.error(theToken, "ON..GOTO requires at least one line number after GOTO")
+      throw ParseError.error(theToken, "ON requires at least one line number")
     }
     nextToken()
 
@@ -344,13 +348,17 @@ public class Parser {
       nextToken()
 
       guard case .integer(let target) = token else {
-        throw ParseError.error(theToken, "ON..GOTO requires line number after comma")
+        throw ParseError.error(theToken, "ON requires line number after comma")
       }
       nextToken()
       targets.append(target)
     }
 
-    return .onGoto(expr, targets)
+    if savedToken == .goto {
+      return .onGoto(expr, targets)
+    } else {
+      return .onGosub(expr, targets)
+    }
   }
 
   func printStatement() throws -> Statement {

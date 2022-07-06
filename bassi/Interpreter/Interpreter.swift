@@ -212,6 +212,9 @@ class Interpreter {
     case .next(let variable):
       try doNext(variable)
 
+    case .onGosub(let expr, let targets):
+      try doOnGoto(expr, targets)
+
     case .onGoto(let expr, let targets):
       try doOnGoto(expr, targets)
 
@@ -633,6 +636,10 @@ class Interpreter {
     } else {
       forLoopStack.removeLast()
     }
+  }
+
+  func doOnGosub(_ expr: Expression, _ targets: [LineNumber]) throws {
+    throw InterpreterError.cantHappen(0, "OnGosub TBD")
   }
 
   func doOnGoto(_ expr: Expression, _ targets: [LineNumber]) throws {
