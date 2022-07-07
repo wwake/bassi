@@ -13,8 +13,8 @@ public class Parser {
   var lexer: Lexer = Lexer("")
 
   var theToken: Token = Token(type: .unknown, line: 0, column: 0)
-
   var token: TokenType = .unknown
+
   var lineNumber = 0
   var columnNumber = 0
 
@@ -113,21 +113,21 @@ public class Parser {
     var result: Statement
 
     switch token {
+    case .data:
+      result = try data()
+
     case .def:
       result = try define()
 
     case .dim:
       result = try dim()
 
-    case .for:
-      result = try doFor()
-
-    case .data:
-      result = try data()
-
     case .end:
       nextToken()
       result = Statement.end
+
+    case .for:
+      result = try doFor()
 
     case .gosub:
       result = try gosub()
@@ -169,13 +169,13 @@ public class Parser {
     case .`return`:
       result = try returnStatement()
 
-    case .variable(let name):
-      result = try assign(name)
-
     case .stop:
       nextToken()
       result = .stop
-      
+
+    case .variable(let name):
+      result = try assign(name)
+
     default:
       nextToken()
       throw ParseError.error(theToken, "Unknown statement")
@@ -661,7 +661,7 @@ public class Parser {
     }
 
 
-  fileprivate func userdefinedFunctionCall()  throws -> Expression {
+  fileprivate func userdefinedFunctionCall() throws -> Expression {
     nextToken()
 
     guard case .variable(let parameter) = token else {

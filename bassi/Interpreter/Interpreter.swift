@@ -52,13 +52,13 @@ class Interpreter {
   
   typealias Store = [Name : Value]
 
+  var globals: Store = [:]
+
   typealias ForInfo = (Name, Value, Value, Location)
 
   var forLoopStack: [ForInfo] = []
 
   var returnStack: [Location] = []
-
-  var globals: Store = [:]
 
   init(_ program: Program, _ output: Interactor) {
     self.program = program
@@ -136,7 +136,7 @@ class Interpreter {
     let line = program[location.lineNumber]!
     parse = parser.parse(line)
 
-    _ = try step(parse.statements[location.part])
+    try step(parse.statements[location.part])
 
     while shouldRun() {
       if nextLocation == nil {
@@ -155,8 +155,7 @@ class Interpreter {
       location = nextLocation!
       nextLocation = nil
 
-      _ = try step(
-        Statement.at(parse.statements, location.part))
+      try step(Statement.at(parse.statements, location.part))
     }
   }
 

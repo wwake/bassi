@@ -1,4 +1,4 @@
-* ON..GOSUB
+* Walkthrough
 
 * Change parser?
   + Abstract over the pattern "x {, x}"
@@ -38,6 +38,7 @@ BI-22-41: July 6, 2022
 * Interactor consumes input as it uses it
 * ASC("") returns 0 (no error thrown)
 * INPUT "string";V,W  -- allows prompt
+* ON..GOSUB
 
 BI-22-40: July 5, 2022
 * DATA and READ
@@ -343,7 +344,7 @@ BI-22-01: May 9, 2022
 GRAMMAR:
 program -> line*
 
-line -> line-number statement "\n"
+line -> line-number statement { ":" statement } "\n"
 
 line-number -> INTEGER(INT)
 
