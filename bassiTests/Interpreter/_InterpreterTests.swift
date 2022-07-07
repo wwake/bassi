@@ -23,10 +23,12 @@ class InterpreterTests: XCTestCase {
   func checkProgramResultsWithInput(_ program: String, input: String, expecting: String) {
     do {
       let interactor = Interactor()
-      interactor.input = input
 
       let interpreter = Interpreter(Program(program), interactor)
       try interpreter.run()
+
+      interactor.input = input
+      try interpreter.continueAfterInput()
 
       XCTAssertEqual(interactor.output, expecting)
     } catch {

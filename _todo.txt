@@ -1,6 +1,7 @@
-* Input prompt isn't showing up
 * Variable view is odd when showing array contents
   + "asArray() called on non-array"
+
+* Integrate newline into Printable
 
 * Change parser?
   + Abstract over the pattern "x {, x}"
@@ -25,6 +26,8 @@ BI-22-42: July 7, 2022
 * REPL automatically scrolls to bottom
   + https://developer.apple.com/documentation/swiftui/scrollviewreader
   + https://developer.apple.com/documentation/swiftui/view/onchange(of:perform:)
+* Prompt shows on INPUT before stopping to read user's input
+
 
 BI-22-41: July 6, 2022
 * DATA and READ

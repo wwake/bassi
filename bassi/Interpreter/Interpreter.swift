@@ -437,13 +437,15 @@ class Interpreter {
   }
 
   fileprivate func doInput(_ prompt: String, _ exprs: [Expression]) throws {
+
     if interactor.input.isEmpty {
+      try doPrint([.expr(.string("\(prompt)? "))], false)
       awaitingInput = true
       return
     }
 
     let line = interactor.getLine()
-    try doPrint([.expr(.string("\(prompt)? ")), .expr(.string(line))], true)
+    try doPrint([.expr(.string(line))], true)
 
     let fields = line.split(separator: ",")
     if fields.count < exprs.count {

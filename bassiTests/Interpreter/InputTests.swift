@@ -98,4 +98,18 @@ class InputTests: InterpreterTests {
       input: "42",
       expecting: "prompt? 42\n 42 \n")
   }
+
+  func testInputPromptShowsBeforeAttemptingInput() throws {
+    let interactor = Interactor()
+    let interpreter = Interpreter(Program("10 INPUT \">>\"; S$\n20 PRINT S$"), interactor)
+    try interpreter.run()
+
+    XCTAssertEqual(interactor.output, ">>? ")
+
+    interactor.input("hello")
+    try interpreter.continueAfterInput()
+    XCTAssertEqual(interactor.output, ">>? hello\nhello\n")
+  }
+
+
 }
