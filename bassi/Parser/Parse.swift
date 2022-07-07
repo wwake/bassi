@@ -76,6 +76,7 @@ public struct DimInfo : Equatable {
 public enum Printable: Equatable {
   case thinSpace
   case tab
+  case newline
   case expr(Expression)
 }
 
@@ -96,7 +97,7 @@ public indirect enum Statement : Equatable {
   case next(Name)
   case onGosub(Expression, [LineNumber])
   case onGoto(Expression, [LineNumber])
-  case print([Printable], Bool)
+  case print([Printable])
   case read([Expression])
   case restore
   case `return`

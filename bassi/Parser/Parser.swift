@@ -380,12 +380,14 @@ public class Parser {
     }
 
     if values.count == 0 {
-      return Statement.print([], true)
+      return Statement.print([.newline])
     }
 
-    return Statement.print(
-      values,
-      values.last! != .thinSpace && values.last != .tab)
+    if values.last! != .thinSpace && values.last != .tab {
+      values.append(.newline)
+    }
+
+    return Statement.print(values)
   }
 
   func returnStatement() throws -> Statement {

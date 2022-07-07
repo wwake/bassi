@@ -217,8 +217,8 @@ class Interpreter {
     case .onGoto(let expr, let targets):
       try doOnTransfer(expr, targets, doGoto)
 
-    case .print(let values, let shouldPrintNewline):
-      try doPrint(values, shouldPrintNewline)
+    case .print(let values):
+      try doPrint(values)
 
     case .read(let exprs):
       try doRead(exprs)
@@ -386,20 +386,19 @@ class Interpreter {
       let tabNumber = (currentColumn + columnsPerTab) / columnsPerTab
       let neededSpaces = tabNumber * columnsPerTab - currentColumn
       return String(repeating: " ", count: neededSpaces)
+
+    case .newline:
+      return "\n"
       
     case .expr(let expr):
       return try format(expr)
     }
   }
 
-  fileprivate func doPrint(_ values : [Printable], _ shouldPrintNewline: Bool) throws {
+  fileprivate func doPrint(_ values : [Printable]) throws {
     try values.forEach {
       let printable = try printable($0)
       interactor.append(printable)
-    }
-
-    if shouldPrintNewline {
-      interactor.append("\n")
     }
   }
 
@@ -439,19 +438,19 @@ class Interpreter {
   fileprivate func doInput(_ prompt: String, _ exprs: [Expression]) throws {
 
     if interactor.input.isEmpty {
-      try doPrint([.expr(.string("\(prompt)? "))], false)
+      try doPrint([.expr(.string("\(prompt)? "))])
       awaitingInput = true
       return
     }
 
     let line = interactor.getLine()
-    try doPrint([.expr(.string(line))], true)
+    try doPrint([.expr(.string(line)), .newline])
 
     let fields = line.split(separator: ",")
     if fields.count < exprs.count {
       throw InterpreterError.error(location.lineNumber, "Not enough input values; try again")
     } else if fields.count > exprs.count {
-      try doPrint([.expr(.string("? Extra input ignored"))], true)
+      try doPrint([.expr(.string("? Extra input ignored")), .newline])
     }
 
     try exprs.enumerated().forEach { (index, lvalue) in

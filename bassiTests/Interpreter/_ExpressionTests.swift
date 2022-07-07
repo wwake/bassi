@@ -38,7 +38,7 @@ class _ExpressionTests: InterpreterTests {
     let parse =
     Parse(
       40,
-      [.print([.expr(expression)], true)])
+      [.print([.expr(expression), .newline])])
 
     let outputter = Interactor()
     let interpreter = Interpreter(Program(), outputter)

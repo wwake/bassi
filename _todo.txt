@@ -1,7 +1,6 @@
-* Variable view is odd when showing array contents
-  + "asArray() called on non-array"
-
 * Integrate newline into Printable
+
+* Move additional data from TokenType to Token
 
 * Change parser?
   + Abstract over the pattern "x {, x}"
@@ -27,6 +26,7 @@ BI-22-42: July 7, 2022
   + https://developer.apple.com/documentation/swiftui/scrollviewreader
   + https://developer.apple.com/documentation/swiftui/view/onchange(of:perform:)
 * Prompt shows on INPUT before stopping to read user's input
+* Variable view shows array contents of selected array (had a display update issue)
 
 
 BI-22-41: July 6, 2022

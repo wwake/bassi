@@ -44,7 +44,7 @@ class ParserTests: XCTestCase {
         result,
         Parse(
           10,
-          [.print([.expr(expected)], true)])
+          [.print([.expr(expected), .newline])])
       )
     }
 
@@ -106,14 +106,14 @@ class ParserTests: XCTestCase {
   func testPrintStatement() {
     checkOneStatement(
       "25 PRINT",
-      .print([], true)
+      .print([.newline])
     )
   }
 
   func testPrintStatementWithNumber() {
     checkOneStatement(
       "25 PRINT 42",
-      .print([.expr(.number(42.0))], true)
+      .print([.expr(.number(42.0)), .newline])
     )
   }
 
@@ -127,29 +127,28 @@ class ParserTests: XCTestCase {
   func testMultipleStatementsOnOneLine() {
     checkStatements(
       "10 PRINT 10: PRINT 20",
-      [.print([number(10)], true), .print([number(20)], true)]
+      [.print([number(10), .newline]), .print([number(20), .newline])]
     )
   }
 
   func testMultipleEmptyPrintStatementsOnOneLine() {
     checkStatements(
       "10 PRINT: PRINT",
-      [.print([], true), .print([], true)]
-    )
+      [.print([.newline]), .print([.newline])])
   }
 
   func testSemicolonAtEndOfPrintSuppressesNewline() {
-    checkStatements("10 PRINT;", [.print([.thinSpace], false)])
+    checkStatements("10 PRINT;", [.print([.thinSpace])])
   }
 
   func testCommaAtEndOfPRINTsuppressesNewline() {
-    checkStatements("10 PRINT,", [.print([.tab], false)])
+    checkStatements("10 PRINT,", [.print([.tab])])
   }
 
   func testCommaInPRINTyieldsTab() {
     checkStatements(
       "10 PRINT 1,2",
-      [.print([.expr(.number(1)), .tab, .expr(.number(2))], true)])
+      [.print([.expr(.number(1)), .tab, .expr(.number(2)), .newline])])
   }
 
   func testDataWithSingleNumber() throws {
@@ -226,7 +225,7 @@ class ParserTests: XCTestCase {
   func testIfWithStatement() {
     checkOneStatement(
       "42 IF 1 THEN PRINT 42",
-      .`if`(.number(1), [.print([number(42)], true)])
+      .`if`(.number(1), [.print([number(42), .newline])])
     )
   }
   
@@ -236,8 +235,8 @@ class ParserTests: XCTestCase {
       .`if`(
         .number(1),
         [
-          .print([number(42)], true),
-          .print([number(43)], true)
+          .print([number(42), .newline]),
+          .print([number(43), .newline])
         ])
     )
   }
@@ -248,12 +247,12 @@ class ParserTests: XCTestCase {
       .`if`(
         .number(1),
         [
-          .print([number(42)], true),
+          .print([number(42), .newline]),
           .`if`(
             .number(0),
             [
-              .print([number(43)], true),
-              .print([number(44)], true)])])
+              .print([number(43), .newline]),
+              .print([number(44), .newline])])])
     )
   }
 
@@ -351,7 +350,7 @@ class ParserTests: XCTestCase {
     checkOneStatement(
       "25 PRINT \"body\"",
       .print(
-        [.expr(.string("body"))], true)
+        [.expr(.string("body")), .newline])
     )
   }
 
@@ -408,8 +407,7 @@ class ParserTests: XCTestCase {
     checkOneStatement(
       "25 PRINT SQR(4)",
       .print(
-        [.expr(.predefined("SQR", [.number(4)], .number))],
-        true
+        [.expr(.predefined("SQR", [.number(4)], .number)), .newline]
       )
     )
   }
@@ -418,8 +416,7 @@ class ParserTests: XCTestCase {
     checkOneStatement(
       "25 PRINT CHR$(4)",
       .print(
-        [.expr(.predefined("CHR$", [.number(4)], .string))],
-        true
+        [.expr(.predefined("CHR$", [.number(4)], .string)), .newline]
       )
     )
   }
@@ -498,8 +495,9 @@ class ParserTests: XCTestCase {
       .print([
         .expr(.userdefined(
           "FNI",
-          .number(3) ))
-      ], true))
+          .number(3) )),
+        .newline
+      ]))
   }
 
   func testDefCallMustTakeNumericArgument() {
@@ -560,8 +558,9 @@ class ParserTests: XCTestCase {
     checkOneStatement(
       "10 PRINT A(0)",
       .print([
-        .expr(.arrayAccess("A", .number, [.number(0)]))
-      ], true)
+        .expr(.arrayAccess("A", .number, [.number(0)])),
+        .newline
+      ])
     )
   }
 
@@ -570,8 +569,9 @@ class ParserTests: XCTestCase {
       "10 PRINT A(1,2)",
       .print([
         .expr(.arrayAccess("A", .number, [.number(1),
-                                    .number(2)]))
-      ], true)
+                                    .number(2)])),
+        .newline
+      ])
     )
   }
 
