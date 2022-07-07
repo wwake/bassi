@@ -21,6 +21,9 @@
 
 * Parameterized tests package?
 
+BI-22-42: July 7, 2022
+* Walkthrough of code
+
 BI-22-41: July 6, 2022
 * DATA and READ
   + READ numbers - error if type mismatch
