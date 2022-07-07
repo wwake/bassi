@@ -86,7 +86,13 @@ struct ContentView: View {
     GridItem(.flexible(), alignment: .leading),
   ]
 
-  @State private var showArrayContents = false
+  struct ArrayInfo : Identifiable {
+    var id = UUID()
+    var name : String
+    var value: Value
+  }
+
+  @State private var arrayToShow : ArrayInfo?
 
   fileprivate func variableView() -> some View {
     return VStack {
@@ -106,11 +112,11 @@ struct ContentView: View {
                   Image(systemName: "eye")
                     .opacity(value.isArray() ? 1 : 0)
                     .onTapGesture {
-                      showArrayContents = true
+                      arrayToShow = ArrayInfo(name: key, value: value)
                     }
-                    .sheet(isPresented: $showArrayContents, content: {
-                      arrayContents(key, value.asArray())
-                    })
+                    .sheet(item: $arrayToShow) { arrayView in
+                      arrayContents(arrayView.name, arrayView.value.asArray())
+                    }
                 }
               }
               .font(.system(size:18, design:.monospaced))
@@ -127,23 +133,23 @@ struct ContentView: View {
     }
   }
 
-  fileprivate func arrayContents(_ key: Name, _ array: BasicArray) -> some View {
+  fileprivate func arrayContents(_ name: Name, _ array: BasicArray) -> some View {
     VStack {
       HStack {
         Spacer()
-        Text("Contents of \(key)")
+        Text("Contents of \(name)")
         .font(.system(size:16, design:.default))
         .bold()
         Spacer()
         Text("X ")
           .onTapGesture {
-            showArrayContents = false
+            arrayToShow = nil
         }
       }
       
       ScrollView {
         LazyVGrid(columns: [GridItem(.flexible())]) {
-          ForEach(array.debugContents(key), id:\.self) {
+          ForEach(array.debugContents(name), id:\.self) {
             Text($0)
           }
         }

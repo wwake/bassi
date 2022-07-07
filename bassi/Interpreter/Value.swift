@@ -49,7 +49,6 @@ public enum Value : Equatable {
     }
   }
 
-
   func asString() -> String {
     guard case .string(let value) = self else {
       print("asString() called on non-string")
