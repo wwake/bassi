@@ -12,7 +12,9 @@ struct ContentView: View {
     case code=1, variable, run
   }
 
-  @Namespace var bottom
+  @Namespace var bottomCode
+  @Namespace var bottomVariables
+  @Namespace var bottomRun
 
   @State private var selectedTab = Tab.code
   
@@ -34,11 +36,10 @@ struct ContentView: View {
           .frame(maxWidth: .infinity, alignment: .leading)
           
           Text("")
-            .id(bottom)
+            .id(bottomCode)
         }
-        .onChange(of: interactor) { _ in
-          print("output changed")
-          proxy.scrollTo(bottom)
+        .onChange(of: program.program) { _ in
+          proxy.scrollTo(bottomCode)
         }
       }
       
@@ -52,7 +53,7 @@ struct ContentView: View {
       Spacer()
     }
   }
-  
+
   fileprivate func runView() -> some View {
     VStack {
       ScrollViewReader { proxy in
@@ -62,11 +63,10 @@ struct ContentView: View {
             .padding(.all)
             .frame(maxWidth: .infinity, alignment: .leading)
           Text("")
-            .id(bottom)
+            .id(bottomRun)
         }
-        .onChange(of: interactor) { _ in
-          print("output changed")
-          proxy.scrollTo(bottom)
+        .onChange(of: interactor.output) { _ in
+          proxy.scrollTo(bottomRun)
         }
       }
 
@@ -118,11 +118,10 @@ struct ContentView: View {
           }
 
           Text("")
-            .id(bottom)
+            .id(bottomVariables)
         }
-        .onChange(of: interactor) { _ in
-          print("output changed")
-          proxy.scrollTo(bottom)
+        .onChange(of: repl.store) { _ in
+          proxy.scrollTo(bottomVariables)
         }
       }
     }

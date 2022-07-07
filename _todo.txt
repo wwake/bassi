@@ -1,4 +1,6 @@
-* Walkthrough
+* Input prompt isn't showing up
+* Variable view is odd when showing array contents
+  + "asArray() called on non-array"
 
 * Change parser?
   + Abstract over the pattern "x {, x}"
@@ -11,9 +13,6 @@
                  ^
        ? Expected right parenthesis
 
-* REPL should automatically scroll to bottom
-  + https://developer.apple.com/documentation/swiftui/scrollviewreader
-  + https://developer.apple.com/documentation/swiftui/view/onchange(of:perform:)
 
 * Move token to the lexer itself, then share the lexer between Parser & a new class ExpressionParser
 
@@ -23,6 +22,9 @@
 
 BI-22-42: July 7, 2022
 * Walkthrough of code
+* REPL automatically scrolls to bottom
+  + https://developer.apple.com/documentation/swiftui/scrollviewreader
+  + https://developer.apple.com/documentation/swiftui/view/onchange(of:perform:)
 
 BI-22-41: July 6, 2022
 * DATA and READ
