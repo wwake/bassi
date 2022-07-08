@@ -25,6 +25,8 @@ public enum TokenType  {
   case variable       // string: variable name
   case string         // string: contents
 
+  case predefined(String, `Type`)  // string: function name
+
   case plus
   case minus
   case times
@@ -75,8 +77,6 @@ public enum TokenType  {
   case stop
   case then
   case to
-
-  case predefined(String, `Type`)
 }
 
 extension TokenType : Equatable {

@@ -189,9 +189,9 @@ class Lexer {
       }
     }
 
-    let possibleToken = findPrefixToken()
+    let (possibleToken, possibleString) = findPrefixToken()
     if possibleToken != nil {
-      return (possibleToken!, nil)
+      return (possibleToken!, possibleString)
     }
 
     switch program[index] {
@@ -269,13 +269,14 @@ class Lexer {
     return program[index] >= "0" && program[index] <= "9"
   }
 
-  fileprivate func findPrefixToken() -> TokenType? {
+  fileprivate func findPrefixToken() -> (TokenType?, String?) {
     let start = program.index(program.startIndex, offsetBy: index)
     let input = program[start...]
 
     let answer = prefixTokens.first { (word, token) in
       input.starts(with: word)
     }
+    var string: String? = nil
 
     if answer != nil {
       skipWord(answer!.0)
@@ -283,16 +284,18 @@ class Lexer {
 
       if keyword == .remark {
         ignoreUntil("\n")
+      } else if case .predefined = keyword {
+        string = answer!.0
       } else if keyword == .data {
         findUnquotedString = true
       } else if keyword == .colon || keyword == .eol {
         findUnquotedString = false
       }
 
-      return keyword
+      return (keyword, string)
     }
 
-    return nil
+    return (nil, nil)
   }
 
   fileprivate func handleVariable() -> (TokenType, String) {
