@@ -553,9 +553,9 @@ public class Parser {
       return .string(text)
     } else if case .variable = tokenType {
       return try variable(token.string!)
-    } else if case .predefined(let type) = token.type {
-      return try predefinedFunctionCall(token.string, type)
-    } else if case .fn = tokenType {
+    } else if case .predefined = token.type {
+      return try predefinedFunctionCall(token.string, token.returnType)
+    } else if case .fn = token.type {
       return try userdefinedFunctionCall()
     } else {
       throw ParseError.error(token, "Expected start of expression")
