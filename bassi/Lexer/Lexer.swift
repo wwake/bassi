@@ -192,19 +192,20 @@ class Lexer {
 
   func next() -> Token {
     column = index
-    let (tokenType, string, returnType) = nextTokenType()
+    let (tokenType, string, float, returnType) = nextTokenType()
 
     return Token(
       line: lineNumber == nil ? 0 : lineNumber!,
       column: column,
       type: tokenType,
       string: string,
+      float: float,
       resultType: returnType)
   }
 
-  func nextTokenType() -> (TokenType, String?, `Type`?) {
+  func nextTokenType() -> (TokenType, String?, Float?, `Type`?) {
     if index >= program.count {
-      return (.atEnd, nil, nil)
+      return (.atEnd, nil, nil, nil)
     }
 
     if findUnquotedString {
@@ -214,34 +215,34 @@ class Lexer {
         index += 1
       }
       if result.count > 0 {
-        return (.string, result, nil)
+        return (.string, result, nil, nil)
       }
     }
 
     let (possibleToken, possibleString, possibleType) = findPrefixToken()
     if possibleToken != nil {
-      return (possibleToken!, possibleString, possibleType)
+      return (possibleToken!, possibleString, nil, possibleType)
     }
 
     switch program[index] {
     case "0"..."9":
-        let (token, string) = number()
-        return (token, string, nil)
+        let (token, string, float) = number()
+        return (token, string, float, nil)
 
     case "\"":
       let (token, string) = string()
-      return (token, string, nil)
+      return (token, string, nil, nil)
 
     case "A"..."Z":
       let (token, string) = handleVariable()
-      return (token, string, nil)
+      return (token, string, nil, nil)
 
     default:
-      return (TokenType.error, "unexpected character", nil)
+      return (TokenType.error, "unexpected character", nil, nil)
     }
   }
 
-  fileprivate func number() -> (TokenType, String?) {
+  fileprivate func number() -> (TokenType, String?, Float?) {
     var isFloat = false
 
     var value = repeatAny("0", "9")
@@ -259,7 +260,7 @@ class Lexer {
       isFloat = true
 
       if program[index] < "0" || program[index] > "9" {
-        return (.error, "Exponent value is missing")
+        return (.error, "Exponent value is missing", nil)
       }
       let exponent = repeatAny("0", "9")
 
@@ -268,13 +269,13 @@ class Lexer {
     }
 
     if isFloat {
-      return (TokenType.number(Float(value)!), nil)
+      return (TokenType.number(Float(value)!), nil, Float(value)!)
     } else {
       let intValue = Float(value)!
       if lineNumber == nil {
         lineNumber = LineNumber(intValue)
       }
-      return (TokenType.integer(intValue), nil)
+      return (TokenType.integer(intValue), nil, intValue)
     }
   }
 
