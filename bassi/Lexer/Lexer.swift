@@ -243,12 +243,18 @@ class Lexer {
       return handleVariable()
 
     default:
-      return Token(
-        line: currentLineNumber(),
-        column: column,
-        type: .error,
-        string: "unexpected character")
+      return makeToken(.error, string: "unexpected character")
     }
+  }
+
+  fileprivate func makeToken(_ type: TokenType, string: String? = nil, float: Float? = nil, resultType: `Type`? = nil) -> Token {
+    return Token(
+      line: currentLineNumber(),
+      column: column,
+      type: type,
+      string: string,
+      float: float,
+      resultType: resultType)
   }
 
   fileprivate func number() -> Token {
