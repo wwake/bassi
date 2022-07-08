@@ -25,7 +25,7 @@ public enum TokenType  {
   case variable       // string: variable name
   case string         // string: contents
 
-  case predefined(String, `Type`)  // string: function name
+  case predefined(`Type`)  // string: function name
 
   case plus
   case minus
