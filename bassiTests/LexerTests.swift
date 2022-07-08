@@ -11,15 +11,15 @@ import XCTest
 
 class LexerTests: XCTestCase {
 
-  func checkToken(_ program: String, _ expectedType: TokenType, _ expectedString : String? = nil, _ expectedReturnType: `Type`? = nil) {
+  func checkToken(_ program: String, _ expectedType: TokenType, _ expectedString : String? = nil, _ expectedResutType: `Type`? = nil) {
     let lexer = Lexer(program)
     let token = lexer.next()
     XCTAssertEqual(token.type, expectedType)
     if expectedString != nil {
       XCTAssertEqual(token.string, expectedString!)
     }
-    if expectedReturnType != nil {
-      XCTAssertEqual(token.returnType, expectedReturnType!)
+    if expectedResutType != nil {
+      XCTAssertEqual(token.resultType, expectedResutType!)
     }
   }
 

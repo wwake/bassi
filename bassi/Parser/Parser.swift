@@ -552,7 +552,7 @@ public class Parser {
     } else if case .variable = token.type {
       return try variable(token.string!)
     } else if case .predefined = token.type {
-      return try predefinedFunctionCall(token.string, token.returnType)
+      return try predefinedFunctionCall(token.string, token.resultType)
     } else if case .fn = token.type {
       return try userdefinedFunctionCall()
     } else {

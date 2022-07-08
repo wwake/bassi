@@ -12,7 +12,7 @@ public struct Token : Equatable {
   var line: Int
   var column: Int
   var string: String!
-  var returnType: `Type`!
+  var resultType: `Type`!
 }
 
 public enum TokenType  {

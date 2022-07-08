@@ -199,7 +199,7 @@ class Lexer {
       line: lineNumber == nil ? 0 : lineNumber!,
       column: column,
       string: string,
-      returnType: returnType)
+      resultType: returnType)
   }
 
   func nextTokenType() -> (TokenType, String?, `Type`?) {
