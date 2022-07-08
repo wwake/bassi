@@ -62,7 +62,7 @@ public class Parser {
     if case .integer(let lineNumber) = token.type {
       nextToken()
 
-      if lineNumber <= 0 || lineNumber > maxLineNumber {
+      if lineNumber <= 0 || LineNumber(lineNumber) > maxLineNumber {
         throw ParseError.error(token, "Line number must be between 1 and \(maxLineNumber)")
       }
 
@@ -70,7 +70,7 @@ public class Parser {
 
       try require(.eol, "Extra characters at end of line")
 
-      return Parse(lineNumber, statementParse)
+      return Parse(LineNumber(lineNumber), statementParse)
     }
     let errorToken = token.type
     nextToken()
@@ -258,7 +258,7 @@ public class Parser {
 
     if case .integer(let lineNumber) = token.type {
       nextToken()
-      return .gosub(lineNumber)
+      return .gosub(LineNumber(lineNumber))
     }
 
     throw ParseError.error(token, "Missing target of GOSUB")
@@ -269,7 +269,7 @@ public class Parser {
 
     if case .integer(let lineNumber) = token.type {
       nextToken()
-      return .goto(lineNumber)
+      return .goto(LineNumber(lineNumber))
     }
     
     throw ParseError.error(token, "Missing target of GOTO")
@@ -285,7 +285,7 @@ public class Parser {
 
     if case .integer(let target) = token.type {
       nextToken()
-      return .ifGoto(expr, target)
+      return .ifGoto(expr, LineNumber(target))
     }
 
     let statements = try statements()
@@ -345,7 +345,7 @@ public class Parser {
     }
     nextToken()
 
-    targets.append(target)
+    targets.append(LineNumber(target))
 
     while token.type == .comma {
       nextToken()
@@ -354,7 +354,7 @@ public class Parser {
         throw ParseError.error(token, "ON requires line number after comma")
       }
       nextToken()
-      targets.append(target)
+      targets.append(LineNumber(target))
     }
 
     if savedToken == .goto {

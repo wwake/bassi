@@ -270,9 +270,9 @@ class Lexer {
     if isFloat {
       return (TokenType.number(Float(value)!), nil)
     } else {
-      let intValue = Int(value)!
+      let intValue = Float(value)!
       if lineNumber == nil {
-        lineNumber = intValue
+        lineNumber = LineNumber(intValue)
       }
       return (TokenType.integer(intValue), nil)
     }
