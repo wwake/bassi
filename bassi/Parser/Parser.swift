@@ -33,9 +33,10 @@ public class Parser {
   }
 
   func requireVariable() throws -> String {
-    guard case .variable(let variable) = tokenType else {
+    guard case .variable = token.type else {
       throw ParseError.error(token, "Variable is required")
     }
+    let variable = token.string!
     nextToken()
     return variable
   }
@@ -173,8 +174,9 @@ public class Parser {
       nextToken()
       result = .stop
 
-    case .variable(let name):
-      result = try assign(name)
+    case .variable:
+      let name = token.string
+      result = try assign(name!)
 
     default:
       nextToken()
@@ -225,9 +227,10 @@ public class Parser {
 
     try require(.fn, "DEF requires a name of the form FNx")
 
-    guard case .variable(let name) = tokenType else {
+    guard case .variable = token.type else {
       throw ParseError.error(token, "DEF requires a name of the form FNx")
     }
+    let name = token.string!
     nextToken()
 
     if name.count != 1 {
@@ -294,7 +297,8 @@ public class Parser {
   func commaListOfVariables() throws -> [Expression] {
     var variables: [Expression] = []
 
-    if case .variable(let name) = tokenType {
+    if case .variable = token.type {
+      let name = token.string!
       let variable = try variable(name)
       variables.append(variable)
     } else {
@@ -304,7 +308,8 @@ public class Parser {
     while tokenType == .comma {
       nextToken()
 
-      if case .variable(let name) = tokenType {
+      if case .variable = tokenType {
+        let name = token.string!
         let variable = try variable(name)
         variables.append(variable)
       } else {
@@ -318,8 +323,8 @@ public class Parser {
   func letAssign() throws -> Statement {
     nextToken()
 
-    if case .variable(let name) = tokenType {
-      return try assign(name)
+    if case .variable = token.type {
+      return try assign(token.string!)
     }
     throw ParseError.error(token, "LET is missing variable to assign to")
   }
@@ -546,8 +551,8 @@ public class Parser {
       let text = token.string!
       nextToken()
       return .string(text)
-    } else if case .variable(let name) = tokenType {
-      return try variable(name)
+    } else if case .variable = tokenType {
+      return try variable(token.string!)
     } else if case .predefined(let name, let type) = tokenType {
       return try predefinedFunctionCall(name, type)
     } else if case .fn = tokenType {
@@ -667,9 +672,10 @@ public class Parser {
   fileprivate func userdefinedFunctionCall() throws -> Expression {
     nextToken()
 
-    guard case .variable(let parameter) = tokenType else {
+    guard case .variable = token.type else {
       throw ParseError.error(token, "Call to FNx must have letter after FN")
     }
+    let parameter = token.string!
     nextToken()
 
     try require(.leftParend, "Missing '('")
