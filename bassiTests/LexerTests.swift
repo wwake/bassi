@@ -11,7 +11,7 @@ import XCTest
 
 class LexerTests: XCTestCase {
 
-  func checkToken(_ program: String, _ expectedType: TokenType, _ expectedString : String? = nil, _ expectedResutType: `Type`? = nil) {
+  func checkToken(_ program: String, _ expectedType: TokenType, _ expectedString : String? = nil, expectedFloat: Float? = nil, _ expectedResutType: `Type`? = nil) {
     let lexer = Lexer(program)
     let token = lexer.next()
     XCTAssertEqual(token.type, expectedType)
@@ -100,32 +100,34 @@ class LexerTests: XCTestCase {
   }
 
   func testInteger() throws {
-    checkToken("10  REM Comment", .integer(10))
+    checkToken("10  REM Comment", .integer, expectedFloat: 10)
   }
 
   func testLineNumberLeadingSpaces() {
-    checkToken("  11 REM ", .integer(11))
+    checkToken("  11 REM ", .integer, expectedFloat: 11)
   }
 
   func testLineNumberInternalSpaces() {
-    checkToken(" 1 2 REM ", .integer(12))
+    checkToken(" 1 2 REM ", .integer, expectedFloat: 12)
   }
 
   func testFirstTokenAlwaysExpectsInteger() {
-    checkToken("1END", .integer(1))
+    checkToken("1END", .integer, expectedFloat: 1)
   }
 
   func testNumbersPastLineNumberMayStillBeIntegers() {
     let lexer = Lexer("10 PRINT 20")
 
     var token = lexer.next()
-    XCTAssertEqual(token.type, .integer(10))
+    XCTAssertEqual(token.type, .integer)
+    XCTAssertEqual(token.float, 10)
 
     token = lexer.next()
     XCTAssertEqual(token.type, .print)
 
     token = lexer.next()
-    XCTAssertEqual(token.type, .integer(20))
+    XCTAssertEqual(token.type, .integer)
+    XCTAssertEqual(token.float, 20)
   }
 
   func testRemark() throws {
@@ -143,13 +145,15 @@ class LexerTests: XCTestCase {
   func testPRINTaNumber() {
     let lexer = Lexer("25 PRINT 42")
     var token = lexer.next()
-    XCTAssertEqual(token.type, .integer(25))
+    XCTAssertEqual(token.type, .integer)
+    XCTAssertEqual(token.float, 25)
 
     token = lexer.next()
     XCTAssertEqual(token.type, .print)
 
     token = lexer.next()
-    XCTAssertEqual(token.type, .integer(42))
+    XCTAssertEqual(token.type, .integer)
+    XCTAssertEqual(token.float, 42)
 
     token = lexer.next()
     XCTAssertEqual(token.type, .eol)
@@ -206,7 +210,8 @@ class LexerTests: XCTestCase {
     XCTAssertEqual(token.type, .colon)
 
     token = lexer.next()
-    XCTAssertEqual(token.type, .integer(20))
+    XCTAssertEqual(token.type, .integer)
+    XCTAssertEqual(token.float, 20)
   }
 
   func testSingleCharacterOperators() throws {
@@ -229,33 +234,35 @@ class LexerTests: XCTestCase {
     checkToken(">=", .greaterThanOrEqualTo)
   }
 
-
-  func checkNumber(_ input: String, _ expected: TokenType) {
+  func checkNumber(_ input: String, _ expectedType: TokenType, _ expectedFloat: Float) {
     let lexer = Lexer("10 PRINT \(input)")
 
     var token = lexer.next()
-    XCTAssertEqual(token.type, .integer(10))
+    XCTAssertEqual(token.type, .integer)
+    XCTAssertEqual(token.float, 10)
 
     token = lexer.next()
     XCTAssertEqual(token.type, .print)
 
     token = lexer.next()
-    XCTAssertEqual(token.type, expected)
+    XCTAssertEqual(token.type, expectedType)
+    XCTAssertEqual(token.float, expectedFloat, accuracy: 0.00001)
   }
 
   func testNumberLexing() {
-    checkNumber("14", .integer(14))
-    checkNumber("14.5", .number(14.5))
-    checkNumber("14.5E1", .number(145))
-    checkNumber("17.5e1", .number(175))
-    checkNumber("14.", .number(14))
+    checkNumber("14", .integer, 14)
+    checkNumber("14.5", .number, 14.5)
+    checkNumber("14.5E1", .number, 145)
+    checkNumber("17.5e1", .number, 175)
+    checkNumber("14.", .number, 14)
   }
 
   func testNumberErrors() {
     let lexer = Lexer("10 PRINT 14.3E")
 
     var token = lexer.next()
-    XCTAssertEqual(token.type, .integer(10))
+    XCTAssertEqual(token.type, .integer)
+    XCTAssertEqual(token.float, 10)
 
     token = lexer.next()
     XCTAssertEqual(token.type, .print)
@@ -268,20 +275,23 @@ class LexerTests: XCTestCase {
     let lexer = Lexer("20 THEN 9")
 
     let token1 = lexer.next()
-    XCTAssertEqual(token1.type, .integer(20))
+    XCTAssertEqual(token1.type, .integer)
+    XCTAssertEqual(token1.float, 20)
 
     let token2 = lexer.next()
     XCTAssertEqual(token2.type, .then)
 
     let token3 = lexer.next()
-    XCTAssertEqual(token3.type, .integer(9))
+    XCTAssertEqual(token3.type, .integer)
+    XCTAssertEqual(token3.float, 9)
   }
 
   func testThenFollowedByPrintDigitGetsInteger() {
     let lexer = Lexer("20THENPRINT9")
 
     let token1 = lexer.next()
-    XCTAssertEqual(token1.type, .integer(20))
+    XCTAssertEqual(token1.type, .integer)
+    XCTAssertEqual(token1.float, 20)
 
     let token2 = lexer.next()
     XCTAssertEqual(token2.type, .then)
@@ -290,7 +300,8 @@ class LexerTests: XCTestCase {
     XCTAssertEqual(token3.type, .print)
 
     let token4 = lexer.next()
-    XCTAssertEqual(token4.type, .integer(9))
+    XCTAssertEqual(token4.type, .integer)
+    XCTAssertEqual(token4.float, 9)
   }
 
   func testVariableWithSingleLetter() {

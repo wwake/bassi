@@ -24,8 +24,8 @@ public enum TokenType  {
   case eol
   case error          // string: error message
 
-  case integer(Float)
-  case number(Float)
+  case integer        // float: integer value as float
+  case number         // float: number
   case variable       // string: variable name
   case string         // string: contents
 
