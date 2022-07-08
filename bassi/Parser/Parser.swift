@@ -13,7 +13,6 @@ public class Parser {
   var lexer: Lexer = Lexer("")
 
   var token: Token = Token(type: .unknown, line: 0, column: 0)
-  var tokenType: TokenType = .unknown
 
   var lineNumber = 0
   var columnNumber = 0
@@ -22,11 +21,10 @@ public class Parser {
 
   func nextToken() {
     token = lexer.next()
-    tokenType = token.type
   }
 
   fileprivate func require(_ expected: TokenType, _ message: String) throws {
-    if tokenType != expected {
+    if token.type != expected {
       throw ParseError.error(token, message)
     }
     nextToken()
@@ -61,7 +59,7 @@ public class Parser {
   }
 
   func line() throws -> Parse  {
-    if case .integer(let lineNumber) = tokenType {
+    if case .integer(let lineNumber) = token.type {
       nextToken()
 
       if lineNumber <= 0 || lineNumber > maxLineNumber {
@@ -74,7 +72,7 @@ public class Parser {
 
       return Parse(lineNumber, statementParse)
     }
-    let errorToken = tokenType
+    let errorToken = token.type
     nextToken()
     throw ParseError.error(token, "Line number is required; found \(errorToken)")
   }
@@ -82,13 +80,13 @@ public class Parser {
   func statements() throws -> [Statement] {
     let stmt = try statement()
 
-    if tokenType != .colon {
+    if token.type != .colon {
       return [stmt]
     }
 
     var statements: [Statement] = [stmt]
 
-    while tokenType == .colon {
+    while token.type == .colon {
       nextToken()
       statements.append(try statement())
     }
@@ -203,16 +201,16 @@ public class Parser {
 
     var strings : [String] = []
 
-    guard case .string = tokenType else {
+    guard case .string = token.type else {
       throw ParseError.error(token, "Expected a data value")
     }
     strings.append(token.string)
     nextToken()
 
-    while tokenType == .comma {
+    while token.type == .comma {
       nextToken()
 
-      guard case .string = tokenType else {
+      guard case .string = token.type else {
         throw ParseError.error(token, "Expected a data value")
       }
       strings.append(token.string)
@@ -258,7 +256,7 @@ public class Parser {
   func gosub() throws -> Statement {
     nextToken()
 
-    if case .integer(let lineNumber) = tokenType {
+    if case .integer(let lineNumber) = token.type {
       nextToken()
       return .gosub(lineNumber)
     }
@@ -269,7 +267,7 @@ public class Parser {
   func goto() throws -> Statement {
     nextToken()
 
-    if case .integer(let lineNumber) = tokenType {
+    if case .integer(let lineNumber) = token.type {
       nextToken()
       return .goto(lineNumber)
     }
@@ -285,7 +283,7 @@ public class Parser {
     
     try require(.then, "Missing 'THEN'")
 
-    if case .integer(let target) = tokenType {
+    if case .integer(let target) = token.type {
       nextToken()
       return .ifGoto(expr, target)
     }
@@ -305,10 +303,10 @@ public class Parser {
       throw ParseError.error(token, "At least one variable is required")
     }
 
-    while tokenType == .comma {
+    while token.type == .comma {
       nextToken()
 
-      if case .variable = tokenType {
+      if case .variable = token.type {
         let name = token.string!
         let variable = try variable(name)
         variables.append(variable)
@@ -334,25 +332,25 @@ public class Parser {
 
     let expr = try expression()
 
-    let savedToken = tokenType
-    if tokenType != .goto && tokenType != .gosub {
+    let savedToken = token.type
+    if token.type != .goto && token.type != .gosub {
       throw ParseError.error(token, "ON statement requires GOTO or GOSUB")
     }
     nextToken()
 
     var targets : [LineNumber] = []
 
-    guard case .integer(let target) = tokenType else {
+    guard case .integer(let target) = token.type else {
       throw ParseError.error(token, "ON requires at least one line number")
     }
     nextToken()
 
     targets.append(target)
 
-    while tokenType == .comma {
+    while token.type == .comma {
       nextToken()
 
-      guard case .integer(let target) = tokenType else {
+      guard case .integer(let target) = token.type else {
         throw ParseError.error(token, "ON requires line number after comma")
       }
       nextToken()
@@ -371,11 +369,11 @@ public class Parser {
 
     var values: [Printable] = []
 
-    while tokenType != .colon && tokenType != .eol {
-      if tokenType == .semicolon {
+    while token.type != .colon && token.type != .eol {
+      if token.type == .semicolon {
         nextToken()
         values.append(.thinSpace)
-      } else if tokenType == .comma {
+      } else if token.type == .comma {
         nextToken()
         values.append(.tab)
       } else {
@@ -433,8 +431,8 @@ public class Parser {
   func orExpr() throws -> Expression {
     var left = try andExpr()
 
-    while tokenType == .or {
-      let op = tokenType
+    while token.type == .or {
+      let op = token.type
       nextToken()
 
       let right = try andExpr()
@@ -448,8 +446,8 @@ public class Parser {
   func andExpr() throws -> Expression {
     var left = try negation()
 
-    while tokenType == .and {
-      let op = tokenType
+    while token.type == .and {
+      let op = token.type
       nextToken()
 
       let right = try negation()
@@ -461,7 +459,7 @@ public class Parser {
   }
 
   func negation() throws -> Expression {
-    if .not == tokenType {
+    if .not == token.type {
       nextToken()
       let value = try negation()
       try requireFloatType(value)
@@ -474,8 +472,8 @@ public class Parser {
   fileprivate func relational() throws -> Expression  {
     var left = try subexpression()
 
-    if relops.contains(tokenType) {
-      let op = tokenType
+    if relops.contains(token.type) {
+      let op = token.type
       nextToken()
 
       let right = try subexpression()
@@ -490,8 +488,8 @@ public class Parser {
   func subexpression() throws -> Expression {
     var left = try term()
 
-    while tokenType == .plus || tokenType == .minus {
-      let op = tokenType
+    while token.type == .plus || token.type == .minus {
+      let op = token.type
       nextToken()
 
       let right = try term()
@@ -506,8 +504,8 @@ public class Parser {
   func term() throws -> Expression {
     var left = try power()
 
-    while tokenType == .times || tokenType == .divide {
-      let op = tokenType
+    while token.type == .times || token.type == .divide {
+      let op = token.type
       nextToken()
 
       let right = try power()
@@ -519,7 +517,7 @@ public class Parser {
   }
 
   func power() throws -> Expression {
-    if .minus ==  tokenType {
+    if .minus ==  token.type {
       nextToken()
       let value = try power()
       try requireFloatType(value)
@@ -528,8 +526,8 @@ public class Parser {
     
     var left = try factor()
 
-    while tokenType == .exponent {
-      let op = tokenType
+    while token.type == .exponent {
+      let op = token.type
       nextToken()
 
       let right = try factor()
@@ -541,17 +539,17 @@ public class Parser {
   }
 
   func factor() throws -> Expression {
-    if tokenType == .leftParend {
+    if token.type == .leftParend {
       return try parenthesizedExpression()
-    } else if case .number(let floatValue) = tokenType {
+    } else if case .number(let floatValue) = token.type {
       return numericFactor(floatValue)
-    } else if case .integer(let intValue) = tokenType {
+    } else if case .integer(let intValue) = token.type {
       return numericFactor(Float(intValue))
-    } else if case .string = tokenType {
+    } else if case .string = token.type {
       let text = token.string!
       nextToken()
       return .string(text)
-    } else if case .variable = tokenType {
+    } else if case .variable = token.type {
       return try variable(token.string!)
     } else if case .predefined = token.type {
       return try predefinedFunctionCall(token.string, token.returnType)
@@ -584,7 +582,7 @@ public class Parser {
     let type : `Type` =
     name.last! == "$" ? .string : .number
 
-    if tokenType != .leftParend {
+    if token.type != .leftParend {
       return .variable(name, type)
     }
 
@@ -595,7 +593,7 @@ public class Parser {
     let expr = try expression()
     exprs.append(expr)
 
-    while tokenType == .comma {
+    while token.type == .comma {
       nextToken()
 
       let expr = try expression()
@@ -619,7 +617,7 @@ public class Parser {
     var exprs: [Expression] = []
     exprs.append(try expression())
 
-    while tokenType == .comma {
+    while token.type == .comma {
       nextToken()
       exprs.append(try expression())
     }
@@ -697,7 +695,7 @@ public class Parser {
     let dimInfo = try dim1()
     result.append(dimInfo)
 
-    while tokenType == .comma {
+    while token.type == .comma {
       nextToken()
       
       let dimInfo = try dim1()
@@ -717,7 +715,7 @@ public class Parser {
     let expr = try expression()
     dimensions.append(expr)
 
-    while .comma == tokenType {
+    while .comma == token.type {
       nextToken()
 
       let expr = try expression()
@@ -745,7 +743,7 @@ public class Parser {
     try requireFloatType(final)
 
     var step = Expression.number(1)
-    if tokenType == .step {
+    if token.type == .step {
       nextToken()
       step = try expression()
       try requireFloatType(step)
