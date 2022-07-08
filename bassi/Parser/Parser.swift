@@ -59,10 +59,11 @@ public class Parser {
   }
 
   func line() throws -> Parse  {
-    if case .integer(let lineNumber) = token.type {
+    if case .integer = token.type {
+      let lineNumber = LineNumber(token.float)
       nextToken()
 
-      if lineNumber <= 0 || LineNumber(lineNumber) > maxLineNumber {
+      if lineNumber <= 0 || lineNumber > maxLineNumber {
         throw ParseError.error(token, "Line number must be between 1 and \(maxLineNumber)")
       }
 
@@ -256,9 +257,10 @@ public class Parser {
   func gosub() throws -> Statement {
     nextToken()
 
-    if case .integer(let lineNumber) = token.type {
+    if case .integer = token.type {
+      let lineNumber = LineNumber(token.float)
       nextToken()
-      return .gosub(LineNumber(lineNumber))
+      return .gosub(lineNumber)
     }
 
     throw ParseError.error(token, "Missing target of GOSUB")
@@ -267,9 +269,10 @@ public class Parser {
   func goto() throws -> Statement {
     nextToken()
 
-    if case .integer(let lineNumber) = token.type {
+    if case .integer = token.type {
+      let lineNumber = LineNumber(token.float)
       nextToken()
-      return .goto(LineNumber(lineNumber))
+      return .goto(lineNumber)
     }
     
     throw ParseError.error(token, "Missing target of GOTO")
@@ -283,9 +286,10 @@ public class Parser {
     
     try require(.then, "Missing 'THEN'")
 
-    if case .integer(let target) = token.type {
+    if case .integer = token.type {
+      let target = LineNumber(token.float)
       nextToken()
-      return .ifGoto(expr, LineNumber(target))
+      return .ifGoto(expr, target)
     }
 
     let statements = try statements()
@@ -340,21 +344,23 @@ public class Parser {
 
     var targets : [LineNumber] = []
 
-    guard case .integer(let target) = token.type else {
+    guard case .integer = token.type else {
       throw ParseError.error(token, "ON requires at least one line number")
     }
+    let target = LineNumber(token.float)
     nextToken()
 
-    targets.append(LineNumber(target))
+    targets.append(target)
 
     while token.type == .comma {
       nextToken()
 
-      guard case .integer(let target) = token.type else {
+      guard case .integer = token.type else {
         throw ParseError.error(token, "ON requires line number after comma")
       }
+      let target = LineNumber(token.float)
       nextToken()
-      targets.append(LineNumber(target))
+      targets.append(target)
     }
 
     if savedToken == .goto {
@@ -541,10 +547,10 @@ public class Parser {
   func factor() throws -> Expression {
     if token.type == .leftParend {
       return try parenthesizedExpression()
-    } else if case .number(let floatValue) = token.type {
-      return numericFactor(floatValue)
-    } else if case .integer(let intValue) = token.type {
-      return numericFactor(Float(intValue))
+    } else if case .number = token.type {
+      return numericFactor(token.float)
+    } else if case .integer = token.type {
+      return numericFactor(token.float)
     } else if case .string = token.type {
       let text = token.string!
       nextToken()
