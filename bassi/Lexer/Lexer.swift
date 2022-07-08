@@ -196,7 +196,7 @@ class Lexer {
 
     switch program[index] {
     case "0"..."9":
-        return (number(), nil)
+        return number()
 
     case "\"":
       return string()
@@ -209,7 +209,7 @@ class Lexer {
     }
   }
 
-  fileprivate func number() -> TokenType {
+  fileprivate func number() -> (TokenType, String?) {
     var isFloat = false
 
     var value = repeatAny("0", "9")
@@ -226,9 +226,9 @@ class Lexer {
       index += 1
       isFloat = true
 
-      let message = "Exponent value is missing"
       if program[index] < "0" || program[index] > "9" {
-        return .error(message)
+        let message = "Exponent value is missing"
+        return (.error(message), "Exponent value is missing")
       }
       let exponent = repeatAny("0", "9")
 
@@ -237,13 +237,13 @@ class Lexer {
     }
 
     if isFloat {
-      return TokenType.number(Float(value)!)
+      return (TokenType.number(Float(value)!), nil)
     } else {
       let intValue = Int(value)!
       if lineNumber == nil {
         lineNumber = intValue
       }
-      return TokenType.integer(intValue)
+      return (TokenType.integer(intValue), nil)
     }
   }
 
