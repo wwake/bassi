@@ -553,8 +553,8 @@ public class Parser {
       return .string(text)
     } else if case .variable = tokenType {
       return try variable(token.string!)
-    } else if case .predefined(let name, let type) = tokenType {
-      return try predefinedFunctionCall(name, type)
+    } else if case .predefined(_, let type) = token.type {
+      return try predefinedFunctionCall(token.string, type)
     } else if case .fn = tokenType {
       return try userdefinedFunctionCall()
     } else {
