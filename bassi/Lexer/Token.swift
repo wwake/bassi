@@ -11,6 +11,7 @@ public struct Token : Equatable {
   var type: TokenType
   var line: Int
   var column: Int
+  var string: String!
 }
 
 public enum TokenType  {
@@ -23,7 +24,6 @@ public enum TokenType  {
   case number(Float)
   case variable(String)
   case string(String)
-  case unquotedString(String)
   
   case plus
   case minus
