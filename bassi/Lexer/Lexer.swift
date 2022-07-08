@@ -190,22 +190,19 @@ class Lexer {
     }
   }
 
-  func next() -> Token {
-    column = index
-    let (tokenType, string, float, returnType) = nextTokenType()
-
-    return Token(
-      line: lineNumber == nil ? 0 : lineNumber!,
-      column: column,
-      type: tokenType,
-      string: string,
-      float: float,
-      resultType: returnType)
+  func currentLineNumber() -> LineNumber {
+    lineNumber == nil ? 0 : lineNumber!
   }
 
-  func nextTokenType() -> (TokenType, String?, Float?, `Type`?) {
+  func next() -> Token {
+    column = index
+
     if index >= program.count {
-      return (.atEnd, nil, nil, nil)
+      return Token(
+        line: currentLineNumber(),
+        column: column,
+        type: .atEnd
+      )
     }
 
     if findUnquotedString {
@@ -215,34 +212,46 @@ class Lexer {
         index += 1
       }
       if result.count > 0 {
-        return (.string, result, nil, nil)
+        return Token(
+          line: currentLineNumber(),
+          column: column,
+          type: .string,
+          string: result
+        )
       }
     }
 
     let (possibleToken, possibleString, possibleType) = findPrefixToken()
     if possibleToken != nil {
-      return (possibleToken!, possibleString, nil, possibleType)
+      return Token(
+        line: currentLineNumber(),
+        column: column,
+        type: possibleToken!,
+        string: possibleString,
+        resultType: possibleType
+      )
     }
 
     switch program[index] {
     case "0"..."9":
-        let (token, string, float) = number()
-        return (token, string, float, nil)
+        return number()
 
     case "\"":
-      let (token, string) = string()
-      return (token, string, nil, nil)
+      return string()
 
     case "A"..."Z":
-      let (token, string) = handleVariable()
-      return (token, string, nil, nil)
+      return handleVariable()
 
     default:
-      return (TokenType.error, "unexpected character", nil, nil)
+      return Token(
+        line: currentLineNumber(),
+        column: column,
+        type: .error,
+        string: "unexpected character")
     }
   }
 
-  fileprivate func number() -> (TokenType, String?, Float?) {
+  fileprivate func number() -> Token {
     var isFloat = false
 
     var value = repeatAny("0", "9")
@@ -260,7 +269,11 @@ class Lexer {
       isFloat = true
 
       if program[index] < "0" || program[index] > "9" {
-        return (.error, "Exponent value is missing", nil)
+        return Token(
+          line: currentLineNumber(),
+          column: column,
+          type: .error,
+          string: "Exponent value is missing")
       }
       let exponent = repeatAny("0", "9")
 
@@ -269,17 +282,26 @@ class Lexer {
     }
 
     if isFloat {
-      return (TokenType.number, nil, Float(value)!)
+      return Token(
+        line: currentLineNumber(),
+        column: column,
+        type: .number,
+        float: Float(value)!)
+
     } else {
       let intValue = Float(value)!
       if lineNumber == nil {
         lineNumber = LineNumber(intValue)
       }
-      return (TokenType.integer, nil, intValue)
+      return Token(
+        line: currentLineNumber(),
+        column: column,
+        type: .integer,
+        float: intValue)
     }
   }
 
-  func string() -> (TokenType, String?) {
+  func string() -> Token {
     var body = ""
     index += 1
 
@@ -289,12 +311,20 @@ class Lexer {
     }
 
     if program[index] == "\n" {
-      return (.error, "unterminated string")
+      return Token(
+        line: currentLineNumber(),
+        column: column,
+        type: .error,
+        string: "unterminated string")
     }
 
     index += 1
 
-    return (.string, body)
+    return Token(
+      line: currentLineNumber(),
+      column: column,
+      type: .string,
+      string: body)
   }
 
   fileprivate func isDigit() -> Bool {
@@ -333,7 +363,7 @@ class Lexer {
     return (nil, nil, nil)
   }
 
-  fileprivate func handleVariable() -> (TokenType, String) {
+  fileprivate func handleVariable() -> Token {
     var name: String = String(program[index])
     index += 1
 
@@ -347,6 +377,11 @@ class Lexer {
       index += 1
     }
 
-    return (TokenType.variable, name)
+    return Token(
+      line: currentLineNumber(),
+      column: column,
+      type: .variable,
+      string: name)
+
   }
 }

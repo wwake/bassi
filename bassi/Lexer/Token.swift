@@ -22,6 +22,7 @@ public enum TokenType  {
   case unknown
   case atEnd
   case eol
+  
   case error          // string: error message
 
   case integer        // float: integer value as float

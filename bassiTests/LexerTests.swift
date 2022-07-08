@@ -342,4 +342,34 @@ class LexerTests: XCTestCase {
   func testFunctionNameWithDollarSign() {
     checkToken("LEFT$(", TokenType.predefined, "LEFT$", `Type`.typeSNtoS)
   }
+
+  func testLineNumberAssignedOnlyAtStartOfLine() {
+    let lexer = Lexer("20X=30:PRINT")
+
+    let token1 = lexer.next()
+    XCTAssertEqual(token1.line, 20)
+    XCTAssertEqual(token1.type, .integer)
+    XCTAssertEqual(token1.float, 20)
+
+    let token2 = lexer.next()
+    XCTAssertEqual(token2.line, 20)
+    XCTAssertEqual(token2.type, .variable)
+
+    let token3 = lexer.next()
+    XCTAssertEqual(token3.line, 20)
+    XCTAssertEqual(token3.type, .equals)
+
+    let token4 = lexer.next()
+    XCTAssertEqual(token4.line, 20)
+    XCTAssertEqual(token4.type, .integer)
+    XCTAssertEqual(token4.float, 30)
+
+    let token5 = lexer.next()
+    XCTAssertEqual(token5.line, 20)
+    XCTAssertEqual(token5.type, .colon)
+
+    let token6 = lexer.next()
+    XCTAssertEqual(token6.line, 20)
+    XCTAssertEqual(token6.type, .print)
+  }
 }
