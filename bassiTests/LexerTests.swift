@@ -11,12 +11,15 @@ import XCTest
 
 class LexerTests: XCTestCase {
 
-  func checkToken(_ program: String, _ expectedType: TokenType, _ expectedString : String? = nil) {
+  func checkToken(_ program: String, _ expectedType: TokenType, _ expectedString : String? = nil, _ expectedReturnType: `Type`? = nil) {
     let lexer = Lexer(program)
     let token = lexer.next()
     XCTAssertEqual(token.type, expectedType)
     if expectedString != nil {
       XCTAssertEqual(token.string, expectedString!)
+    }
+    if expectedReturnType != nil {
+      XCTAssertEqual(token.returnType, expectedReturnType!)
     }
   }
 
@@ -322,10 +325,10 @@ class LexerTests: XCTestCase {
   }
 
   func testFunctionCallWithSqr() {
-    checkToken("SQR(4)", TokenType.predefined(`Type`.typeNtoN), "SQR")
+    checkToken("SQR(4)", TokenType.predefined, "SQR", `Type`.typeNtoN)
   }
 
   func testFunctionNameWithDollarSign() {
-    checkToken("LEFT$(", TokenType.predefined(`Type`.typeSNtoS), "LEFT$")
+    checkToken("LEFT$(", TokenType.predefined, "LEFT$", `Type`.typeSNtoS)
   }
 }
