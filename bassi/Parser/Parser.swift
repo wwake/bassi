@@ -12,7 +12,7 @@ public class Parser {
 
   var lexer: Lexer = Lexer("")
 
-  var token: Token = Token(type: .unknown, line: 0, column: 0)
+  var token: Token = Token(line: 0, column: 0, type: .unknown)
 
   var lineNumber = 0
   var columnNumber = 0

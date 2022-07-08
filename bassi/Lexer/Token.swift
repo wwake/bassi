@@ -8,10 +8,13 @@
 import Foundation
 
 public struct Token : Equatable {
-  var type: TokenType
   var line: Int
   var column: Int
+
+  var type: TokenType
+
   var string: String!
+  var float: Float!
   var resultType: `Type`!
 }
 

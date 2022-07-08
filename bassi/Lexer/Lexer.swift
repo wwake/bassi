@@ -195,9 +195,9 @@ class Lexer {
     let (tokenType, string, returnType) = nextTokenType()
 
     return Token(
-      type: tokenType,
       line: lineNumber == nil ? 0 : lineNumber!,
       column: column,
+      type: tokenType,
       string: string,
       resultType: returnType)
   }
