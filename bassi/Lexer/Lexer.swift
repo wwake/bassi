@@ -202,7 +202,7 @@ class Lexer {
       return string()
 
     case "A"..."Z":
-      return (handleVariable(), nil)
+      return handleVariable()
 
     default:
       return (TokenType.error("unexpected character"), nil)
@@ -295,7 +295,7 @@ class Lexer {
     return nil
   }
 
-  fileprivate func handleVariable() -> TokenType {
+  fileprivate func handleVariable() -> (TokenType, String) {
     var name: String = String(program[index])
     index += 1
 
@@ -309,6 +309,6 @@ class Lexer {
       index += 1
     }
 
-    return TokenType.variable(name)
+    return (TokenType.variable(name), name)
   }
 }
