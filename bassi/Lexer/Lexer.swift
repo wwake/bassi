@@ -164,17 +164,18 @@ class Lexer {
 
   func next() -> Token {
     column = index
-    let type = nextTokenType()
+    let (type, string) = nextTokenType()
 
     return Token(
       type: type,
       line: lineNumber == nil ? 0 : lineNumber!,
-      column: column)
+      column: column,
+      string: string)
   }
 
-  func nextTokenType() -> TokenType {
+  func nextTokenType() -> (TokenType, String?) {
     if index >= program.count {
-      return .atEnd
+      return (.atEnd, nil)
     }
 
     if findUnquotedString {
@@ -184,27 +185,27 @@ class Lexer {
         index += 1
       }
       if result.count > 0 {
-        return .string(result)
+        return (.string(result), result)
       }
     }
 
     let possibleToken = findPrefixToken()
     if possibleToken != nil {
-      return possibleToken!
+      return (possibleToken!, nil)
     }
 
     switch program[index] {
     case "0"..."9":
-        return number()
+        return (number(), nil)
 
     case "\"":
       return string()
 
     case "A"..."Z":
-      return handleVariable()
+      return (handleVariable(), nil)
 
     default:
-      return TokenType.error("unexpected character")
+      return (TokenType.error("unexpected character"), nil)
     }
   }
 
@@ -246,7 +247,7 @@ class Lexer {
     }
   }
 
-  func string() -> TokenType {
+  func string() -> (TokenType, String?) {
     var body = ""
     index += 1
 
@@ -256,12 +257,12 @@ class Lexer {
     }
 
     if program[index] == "\n" {
-      return .error("unterminated string")
+      return (.error("unterminated string"), "unterminated string")
     }
 
     index += 1
 
-    return .string(body)
+    return (.string(body), body)
   }
 
   fileprivate func isDigit() -> Bool {

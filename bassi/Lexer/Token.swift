@@ -18,13 +18,13 @@ public enum TokenType  {
   case unknown
   case atEnd
   case eol
-  case error(String)
+  case error(String)  // string: error message
 
   case integer(Int)
   case number(Float)
   case variable(String)
-  case string(String)
-  
+  case string(String)  // string: contents
+
   case plus
   case minus
   case times

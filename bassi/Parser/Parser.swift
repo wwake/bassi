@@ -12,8 +12,8 @@ public class Parser {
 
   var lexer: Lexer = Lexer("")
 
-  var theToken: Token = Token(type: .unknown, line: 0, column: 0)
-  var token: TokenType = .unknown
+  var token: Token = Token(type: .unknown, line: 0, column: 0)
+  var tokenType: TokenType = .unknown
 
   var lineNumber = 0
   var columnNumber = 0
@@ -21,20 +21,20 @@ public class Parser {
   let relops: [TokenType] = [.equals, .lessThan, .lessThanOrEqualTo, .notEqual, .greaterThan, .greaterThanOrEqualTo]
 
   func nextToken() {
-    theToken = lexer.next()
-    token = theToken.type
+    token = lexer.next()
+    tokenType = token.type
   }
 
   fileprivate func require(_ expected: TokenType, _ message: String) throws {
-    if token != expected {
-      throw ParseError.error(theToken, message)
+    if tokenType != expected {
+      throw ParseError.error(token, message)
     }
     nextToken()
   }
 
   func requireVariable() throws -> String {
-    guard case .variable(let variable) = token else {
-      throw ParseError.error(theToken, "Variable is required")
+    guard case .variable(let variable) = tokenType else {
+      throw ParseError.error(token, "Variable is required")
     }
     nextToken()
     return variable
@@ -60,11 +60,11 @@ public class Parser {
   }
 
   func line() throws -> Parse  {
-    if case .integer(let lineNumber) = token {
+    if case .integer(let lineNumber) = tokenType {
       nextToken()
 
       if lineNumber <= 0 || lineNumber > maxLineNumber {
-        throw ParseError.error(theToken, "Line number must be between 1 and \(maxLineNumber)")
+        throw ParseError.error(token, "Line number must be between 1 and \(maxLineNumber)")
       }
 
       let statementParse = try statements()
@@ -73,21 +73,21 @@ public class Parser {
 
       return Parse(lineNumber, statementParse)
     }
-    let errorToken = token
+    let errorToken = tokenType
     nextToken()
-    throw ParseError.error(theToken, "Line number is required; found \(errorToken)")
+    throw ParseError.error(token, "Line number is required; found \(errorToken)")
   }
 
   func statements() throws -> [Statement] {
     let stmt = try statement()
 
-    if token != .colon {
+    if tokenType != .colon {
       return [stmt]
     }
 
     var statements: [Statement] = [stmt]
 
-    while token == .colon {
+    while tokenType == .colon {
       nextToken()
       statements.append(try statement())
     }
@@ -99,8 +99,8 @@ public class Parser {
     nextToken()
 
     var prompt: String = ""
-    if case .string(let contents) = token {
-      prompt = contents
+    if case .string = token.type {
+      prompt = token.string
       nextToken()
       try require(.semicolon, "? Semicolon required after prompt")
     }
@@ -112,7 +112,7 @@ public class Parser {
   func statement() throws -> Statement {
     var result: Statement
 
-    switch token {
+    switch token.type {
     case .data:
       result = try data()
 
@@ -178,7 +178,7 @@ public class Parser {
 
     default:
       nextToken()
-      throw ParseError.error(theToken, "Unknown statement")
+      throw ParseError.error(token, "Unknown statement")
     }
 
     return result
@@ -201,19 +201,19 @@ public class Parser {
 
     var strings : [String] = []
 
-    guard case let .string(contents) = token else {
-      throw ParseError.error(theToken, "Expected a data value")
+    guard case .string = tokenType else {
+      throw ParseError.error(token, "Expected a data value")
     }
-    strings.append(contents)
+    strings.append(token.string)
     nextToken()
 
-    while token == .comma {
+    while tokenType == .comma {
       nextToken()
 
-      guard case let .string(contents) = token else {
-        throw ParseError.error(theToken, "Expected a data value")
+      guard case .string = tokenType else {
+        throw ParseError.error(token, "Expected a data value")
       }
-      strings.append(contents)
+      strings.append(token.string)
       nextToken()
     }
 
@@ -225,13 +225,13 @@ public class Parser {
 
     try require(.fn, "DEF requires a name of the form FNx")
 
-    guard case .variable(let name) = token else {
-      throw ParseError.error(theToken, "DEF requires a name of the form FNx")
+    guard case .variable(let name) = tokenType else {
+      throw ParseError.error(token, "DEF requires a name of the form FNx")
     }
     nextToken()
 
     if name.count != 1 {
-      throw ParseError.error(theToken, "DEF function name cannot be followed by extra letters")
+      throw ParseError.error(token, "DEF function name cannot be followed by extra letters")
     }
 
     try require(.leftParend, "Missing '('")
@@ -255,23 +255,23 @@ public class Parser {
   func gosub() throws -> Statement {
     nextToken()
 
-    if case .integer(let lineNumber) = token {
+    if case .integer(let lineNumber) = tokenType {
       nextToken()
       return .gosub(lineNumber)
     }
 
-    throw ParseError.error(theToken, "Missing target of GOSUB")
+    throw ParseError.error(token, "Missing target of GOSUB")
   }
 
   func goto() throws -> Statement {
     nextToken()
 
-    if case .integer(let lineNumber) = token {
+    if case .integer(let lineNumber) = tokenType {
       nextToken()
       return .goto(lineNumber)
     }
     
-    throw ParseError.error(theToken, "Missing target of GOTO")
+    throw ParseError.error(token, "Missing target of GOTO")
   }
 
   func ifThen() throws -> Statement {
@@ -282,7 +282,7 @@ public class Parser {
     
     try require(.then, "Missing 'THEN'")
 
-    if case .integer(let target) = token {
+    if case .integer(let target) = tokenType {
       nextToken()
       return .ifGoto(expr, target)
     }
@@ -294,21 +294,21 @@ public class Parser {
   func commaListOfVariables() throws -> [Expression] {
     var variables: [Expression] = []
 
-    if case .variable(let name) = token {
+    if case .variable(let name) = tokenType {
       let variable = try variable(name)
       variables.append(variable)
     } else {
-      throw ParseError.error(theToken, "At least one variable is required")
+      throw ParseError.error(token, "At least one variable is required")
     }
 
-    while token == .comma {
+    while tokenType == .comma {
       nextToken()
 
-      if case .variable(let name) = token {
+      if case .variable(let name) = tokenType {
         let variable = try variable(name)
         variables.append(variable)
       } else {
-        throw ParseError.error(theToken, "At least one variable is required")
+        throw ParseError.error(token, "At least one variable is required")
       }
     }
 
@@ -318,10 +318,10 @@ public class Parser {
   func letAssign() throws -> Statement {
     nextToken()
 
-    if case .variable(let name) = token {
+    if case .variable(let name) = tokenType {
       return try assign(name)
     }
-    throw ParseError.error(theToken, "LET is missing variable to assign to")
+    throw ParseError.error(token, "LET is missing variable to assign to")
   }
 
   func on() throws -> Statement {
@@ -329,26 +329,26 @@ public class Parser {
 
     let expr = try expression()
 
-    let savedToken = token
-    if token != .goto && token != .gosub {
-      throw ParseError.error(theToken, "ON statement requires GOTO or GOSUB")
+    let savedToken = tokenType
+    if tokenType != .goto && tokenType != .gosub {
+      throw ParseError.error(token, "ON statement requires GOTO or GOSUB")
     }
     nextToken()
 
     var targets : [LineNumber] = []
 
-    guard case .integer(let target) = token else {
-      throw ParseError.error(theToken, "ON requires at least one line number")
+    guard case .integer(let target) = tokenType else {
+      throw ParseError.error(token, "ON requires at least one line number")
     }
     nextToken()
 
     targets.append(target)
 
-    while token == .comma {
+    while tokenType == .comma {
       nextToken()
 
-      guard case .integer(let target) = token else {
-        throw ParseError.error(theToken, "ON requires line number after comma")
+      guard case .integer(let target) = tokenType else {
+        throw ParseError.error(token, "ON requires line number after comma")
       }
       nextToken()
       targets.append(target)
@@ -366,11 +366,11 @@ public class Parser {
 
     var values: [Printable] = []
 
-    while token != .colon && token != .eol {
-      if token == .semicolon {
+    while tokenType != .colon && tokenType != .eol {
+      if tokenType == .semicolon {
         nextToken()
         values.append(.thinSpace)
-      } else if token == .comma {
+      } else if tokenType == .comma {
         nextToken()
         values.append(.tab)
       } else {
@@ -401,7 +401,7 @@ public class Parser {
 
   fileprivate func requireFloatType(_ expr: Expression) throws {
     if expr.type() != .number {
-      throw ParseError.error(theToken, "Numeric type is required")
+      throw ParseError.error(token, "Numeric type is required")
     }
   }
 
@@ -409,7 +409,7 @@ public class Parser {
     _ left: Expression,
     _ right: Expression) throws {
       if left.type() != .number || right.type() != .number {
-        throw ParseError.error(theToken, "Type mismatch")
+        throw ParseError.error(token, "Type mismatch")
       }
     }
 
@@ -417,7 +417,7 @@ public class Parser {
     _ left: Expression,
     _ right: Expression) throws {
       if left.type() != right.type() {
-        throw ParseError.error(theToken, "Type mismatch")
+        throw ParseError.error(token, "Type mismatch")
       }
     }
 
@@ -428,8 +428,8 @@ public class Parser {
   func orExpr() throws -> Expression {
     var left = try andExpr()
 
-    while token == .or {
-      let op = token
+    while tokenType == .or {
+      let op = tokenType
       nextToken()
 
       let right = try andExpr()
@@ -443,8 +443,8 @@ public class Parser {
   func andExpr() throws -> Expression {
     var left = try negation()
 
-    while token == .and {
-      let op = token
+    while tokenType == .and {
+      let op = tokenType
       nextToken()
 
       let right = try negation()
@@ -456,7 +456,7 @@ public class Parser {
   }
 
   func negation() throws -> Expression {
-    if .not == token {
+    if .not == tokenType {
       nextToken()
       let value = try negation()
       try requireFloatType(value)
@@ -469,8 +469,8 @@ public class Parser {
   fileprivate func relational() throws -> Expression  {
     var left = try subexpression()
 
-    if relops.contains(token) {
-      let op = token
+    if relops.contains(tokenType) {
+      let op = tokenType
       nextToken()
 
       let right = try subexpression()
@@ -485,8 +485,8 @@ public class Parser {
   func subexpression() throws -> Expression {
     var left = try term()
 
-    while token == .plus || token == .minus {
-      let op = token
+    while tokenType == .plus || tokenType == .minus {
+      let op = tokenType
       nextToken()
 
       let right = try term()
@@ -501,8 +501,8 @@ public class Parser {
   func term() throws -> Expression {
     var left = try power()
 
-    while token == .times || token == .divide {
-      let op = token
+    while tokenType == .times || tokenType == .divide {
+      let op = tokenType
       nextToken()
 
       let right = try power()
@@ -514,7 +514,7 @@ public class Parser {
   }
 
   func power() throws -> Expression {
-    if .minus ==  token {
+    if .minus ==  tokenType {
       nextToken()
       let value = try power()
       try requireFloatType(value)
@@ -523,8 +523,8 @@ public class Parser {
     
     var left = try factor()
 
-    while token == .exponent {
-      let op = token
+    while tokenType == .exponent {
+      let op = tokenType
       nextToken()
 
       let right = try factor()
@@ -536,23 +536,24 @@ public class Parser {
   }
 
   func factor() throws -> Expression {
-    if token == .leftParend {
+    if tokenType == .leftParend {
       return try parenthesizedExpression()
-    } else if case .number(let floatValue) = token {
+    } else if case .number(let floatValue) = tokenType {
       return numericFactor(floatValue)
-    } else if case .integer(let intValue) = token {
+    } else if case .integer(let intValue) = tokenType {
       return numericFactor(Float(intValue))
-    } else if case .string(let text) = token {
+    } else if case .string = tokenType {
+      let text = token.string!
       nextToken()
       return .string(text)
-    } else if case .variable(let name) = token {
+    } else if case .variable(let name) = tokenType {
       return try variable(name)
-    } else if case .predefined(let name, let type) = token {
+    } else if case .predefined(let name, let type) = tokenType {
       return try predefinedFunctionCall(name, type)
-    } else if case .fn = token {
+    } else if case .fn = tokenType {
       return try userdefinedFunctionCall()
     } else {
-      throw ParseError.error(theToken, "Expected start of expression")
+      throw ParseError.error(token, "Expected start of expression")
     }
   }
 
@@ -578,7 +579,7 @@ public class Parser {
     let type : `Type` =
     name.last! == "$" ? .string : .number
 
-    if token != .leftParend {
+    if tokenType != .leftParend {
       return .variable(name, type)
     }
 
@@ -589,7 +590,7 @@ public class Parser {
     let expr = try expression()
     exprs.append(expr)
 
-    while token == .comma {
+    while tokenType == .comma {
       nextToken()
 
       let expr = try expression()
@@ -605,7 +606,7 @@ public class Parser {
     nextToken()
 
     guard case .function(let parameterTypes, let resultType) = type else {
-      throw ParseError.error(theToken, "Internal error: Function has non-function type")
+      throw ParseError.error(token, "Internal error: Function has non-function type")
     }
 
     try require(.leftParend, "Missing '('")
@@ -613,7 +614,7 @@ public class Parser {
     var exprs: [Expression] = []
     exprs.append(try expression())
 
-    while token == .comma {
+    while tokenType == .comma {
       nextToken()
       exprs.append(try expression())
     }
@@ -634,13 +635,13 @@ public class Parser {
     _ arguments: [Expression]) throws {
 
       if parameterTypes.count < arguments.count {
-        throw ParseError.error(theToken, "Function not called with correct number of arguments")
+        throw ParseError.error(token, "Function not called with correct number of arguments")
       }
 
       try zip(parameterTypes, arguments)
         .forEach { (parameterType, argument) in
           if !isCompatible(parameterType, argument.type()) {
-            throw ParseError.error(theToken, "Type mismatch")
+            throw ParseError.error(token, "Type mismatch")
           }
         }
     }
@@ -666,8 +667,8 @@ public class Parser {
   fileprivate func userdefinedFunctionCall() throws -> Expression {
     nextToken()
 
-    guard case .variable(let parameter) = token else {
-      throw ParseError.error(theToken, "Call to FNx must have letter after FN")
+    guard case .variable(let parameter) = tokenType else {
+      throw ParseError.error(token, "Call to FNx must have letter after FN")
     }
     nextToken()
 
@@ -690,7 +691,7 @@ public class Parser {
     let dimInfo = try dim1()
     result.append(dimInfo)
 
-    while token == .comma {
+    while tokenType == .comma {
       nextToken()
       
       let dimInfo = try dim1()
@@ -710,7 +711,7 @@ public class Parser {
     let expr = try expression()
     dimensions.append(expr)
 
-    while .comma == token {
+    while .comma == tokenType {
       nextToken()
 
       let expr = try expression()
@@ -738,7 +739,7 @@ public class Parser {
     try requireFloatType(final)
 
     var step = Expression.number(1)
-    if token == .step {
+    if tokenType == .step {
       nextToken()
       step = try expression()
       try requireFloatType(step)
