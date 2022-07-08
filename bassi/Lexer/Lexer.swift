@@ -93,6 +93,34 @@ class Lexer {
     ("VAL", .predefined(`Type`.typeStoN)),
   ]
 
+  let predefinedFunctionTypes: [String: `Type`] =
+  [
+    "ABS" : `Type`.typeNtoN,
+    "ASC" : `Type`.typeStoN,
+    "ATN" : `Type`.typeNtoN,
+    "CHR$" : `Type`.typeNtoS,
+    "COS" : `Type`.typeNtoN,
+    "EXP" : `Type`.typeNtoN,
+    "FRE" : `Type`.typeNtoN,
+    "INT" : `Type`.typeNtoN,
+    "LEFT$" : `Type`.typeSNtoS,
+    "LEN" : `Type`.typeStoN,
+    "LOG" : `Type`.typeNtoN,
+    "MID$" : `Type`.typeSNoptNtoS,
+    "POS" : `Type`.typeNtoN,
+    "RIGHT$" : `Type`.typeSNtoS,
+    "RND" : `Type`.typeNtoN,
+    "SGN" : `Type`.typeNtoN,
+    "SIN" : `Type`.typeNtoN,
+    "SPC" : `Type`.typeNtoS,
+    "SQR" : `Type`.typeNtoN,
+    "STR$" : `Type`.typeNtoS,
+    "TAB" : `Type`.typeNtoS,
+    "TAN" : `Type`.typeNtoN,
+    "USR" : `Type`.typeNtoN,
+    "VAL" : `Type`.typeStoN,
+  ]
+
   let program: String
   var index = 0
 
@@ -189,7 +217,7 @@ class Lexer {
       }
     }
 
-    let (possibleToken, possibleString) = findPrefixToken()
+    let (possibleToken, possibleString, possibleType) = findPrefixToken()
     if possibleToken != nil {
       return (possibleToken!, possibleString)
     }
@@ -268,14 +296,16 @@ class Lexer {
     return program[index] >= "0" && program[index] <= "9"
   }
 
-  fileprivate func findPrefixToken() -> (TokenType?, String?) {
+  fileprivate func findPrefixToken() -> (TokenType?, String?, `Type`?) {
     let start = program.index(program.startIndex, offsetBy: index)
     let input = program[start...]
 
     let answer = prefixTokens.first { (word, token) in
       input.starts(with: word)
     }
+
     var string: String? = nil
+    var type: `Type`? = nil
 
     if answer != nil {
       skipWord(answer!.0)
@@ -285,16 +315,17 @@ class Lexer {
         ignoreUntil("\n")
       } else if case .predefined = keyword {
         string = answer!.0
+        type = predefinedFunctionTypes[string!]!
       } else if keyword == .data {
         findUnquotedString = true
       } else if keyword == .colon || keyword == .eol {
         findUnquotedString = false
       }
 
-      return (keyword, string)
+      return (keyword, string, type)
     }
 
-    return (nil, nil)
+    return (nil, nil, nil)
   }
 
   fileprivate func handleVariable() -> (TokenType, String) {
