@@ -130,7 +130,7 @@ class LexerTests: XCTestCase {
   }
 
   func testUnexpectedCharacters() {
-    checkToken("😬", .error("unexpected character"))
+    checkToken("😬", .error, "unexpected character")
   }
 
   func testPRINT() throws {
@@ -164,7 +164,7 @@ class LexerTests: XCTestCase {
   }
 
   func testUnterminatedStringIsAnError() {
-    checkString("\"body", .error("unterminated string"), "unterminated string")
+    checkString("\"body", .error, "unterminated string")
   }
 
   func testStringsMayContainBlanks() {
@@ -258,7 +258,7 @@ class LexerTests: XCTestCase {
     XCTAssertEqual(token.type, .print)
 
     token = lexer.next()
-    XCTAssertEqual(token.type, .error("Exponent value is missing"))
+    XCTAssertEqual(token.type, .error, "Exponent value is missing")
   }
 
   func testThenFollowedByDigitGetsInteger() {

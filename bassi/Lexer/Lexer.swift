@@ -205,7 +205,7 @@ class Lexer {
       return handleVariable()
 
     default:
-      return (TokenType.error("unexpected character"), nil)
+      return (TokenType.error, "unexpected character")
     }
   }
 
@@ -227,8 +227,7 @@ class Lexer {
       isFloat = true
 
       if program[index] < "0" || program[index] > "9" {
-        let message = "Exponent value is missing"
-        return (.error(message), "Exponent value is missing")
+        return (.error, "Exponent value is missing")
       }
       let exponent = repeatAny("0", "9")
 
@@ -257,7 +256,7 @@ class Lexer {
     }
 
     if program[index] == "\n" {
-      return (.error("unterminated string"), "unterminated string")
+      return (.error, "unterminated string")
     }
 
     index += 1

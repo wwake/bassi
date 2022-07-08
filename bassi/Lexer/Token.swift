@@ -18,7 +18,7 @@ public enum TokenType  {
   case unknown
   case atEnd
   case eol
-  case error(String)  // string: error message
+  case error          // string: error message
 
   case integer(Int)
   case number(Float)
