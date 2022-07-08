@@ -192,18 +192,19 @@ class Lexer {
 
   func next() -> Token {
     column = index
-    let (type, string) = nextTokenType()
+    let (tokenType, string, returnType) = nextTokenType()
 
     return Token(
-      type: type,
+      type: tokenType,
       line: lineNumber == nil ? 0 : lineNumber!,
       column: column,
-      string: string)
+      string: string,
+      returnType: returnType)
   }
 
-  func nextTokenType() -> (TokenType, String?) {
+  func nextTokenType() -> (TokenType, String?, `Type`?) {
     if index >= program.count {
-      return (.atEnd, nil)
+      return (.atEnd, nil, nil)
     }
 
     if findUnquotedString {
@@ -213,27 +214,30 @@ class Lexer {
         index += 1
       }
       if result.count > 0 {
-        return (.string, result)
+        return (.string, result, nil)
       }
     }
 
     let (possibleToken, possibleString, possibleType) = findPrefixToken()
     if possibleToken != nil {
-      return (possibleToken!, possibleString)
+      return (possibleToken!, possibleString, possibleType)
     }
 
     switch program[index] {
     case "0"..."9":
-        return number()
+        let (token, string) = number()
+        return (token, string, nil)
 
     case "\"":
-      return string()
+      let (token, string) = string()
+      return (token, string, nil)
 
     case "A"..."Z":
-      return handleVariable()
+      let (token, string) = handleVariable()
+      return (token, string, nil)
 
     default:
-      return (TokenType.error, "unexpected character")
+      return (TokenType.error, "unexpected character", nil)
     }
   }
 
