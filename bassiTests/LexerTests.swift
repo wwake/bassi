@@ -17,14 +17,28 @@ class LexerTests: XCTestCase {
     XCTAssertEqual(token.type, expected)
   }
 
-  func checkString(_ item: String, _ expected: TokenType) {
+  func checkString(_ item: String, _ expectedType: TokenType, _ expectedString: String) {
     let lexer = Lexer("10 PRINT \(item)")
 
     var token = lexer.next()
     token = lexer.next()
 
     token = lexer.next()
-    XCTAssertEqual(token.type, expected)
+    XCTAssertEqual(token.type, expectedType)
+    XCTAssertEqual(token.string, expectedString)
+
+    token = lexer.next()
+  }
+
+  func checkUnquotedString(_ item: String, _ expectedType: TokenType, _ expectedString: String) {
+    let lexer = Lexer("10 DATA \(item)")
+
+    var token = lexer.next()
+    token = lexer.next()
+
+    token = lexer.next()
+    XCTAssertEqual(token.type, expectedType)
+    XCTAssertEqual(token.string, expectedString)
 
     token = lexer.next()
   }
@@ -139,56 +153,37 @@ class LexerTests: XCTestCase {
   }
 
   func testStringKnowsItsContents() {
-    checkString("\"body\"", .string("body"))
+    checkString("\"body\"", .string, "body")
   }
 
   func testEmptyStringKnowsItsContents() {
-    checkString("\"\"", .string(""))
+    checkString("\"\"", .string, "")
   }
 
   func testUnterminatedStringIsAnError() {
-    checkString("\"body",
-               .error("unterminated string"))
+    checkString("\"body", .error("unterminated string"), "unterminated string")
   }
 
   func testStringsMayContainBlanks() {
     checkString(
       "\"HEllO world\"",
-      .string("HEllO world"))
+      .string, "HEllO world")
   }
 
   func testNonStringsAreUppercased() {
     checkToken("prINt", .print)
   }
 
-  func checkUnquotedString(_ item: String, _ expected: TokenType) {
-    let lexer = Lexer("10 DATA \(item)")
-
-    var token = lexer.next()
-    token = lexer.next()
-
-    token = lexer.next()
-    XCTAssertEqual(token.type, expected)
-
-    token = lexer.next()
-  }
-
   func testUnquotedString() {
-    checkUnquotedString(
-      "X",
-      .string("X"))
+    checkUnquotedString("X", .string, "X")
   }
 
   func testUnquotedStringGetTrimmedAndUppercased() {
-    checkUnquotedString(
-      " dog  ",
-      .string("DOG"))
+    checkUnquotedString(" dog  ", .string, "DOG")
   }
 
   func testUnquotedStringCanMatchNumbers() {
-    checkUnquotedString(
-      " 42  ",
-      .string("42"))
+    checkUnquotedString(" 42  ", .string, "42")
   }
 
   func testUnquotedStringStopsAfterColon() {
@@ -198,7 +193,8 @@ class LexerTests: XCTestCase {
     token = lexer.next()
 
     token = lexer.next()
-    XCTAssertEqual(token.type, .string("DOG"))
+    XCTAssertEqual(token.type, .string)
+    XCTAssertEqual(token.string, "DOG")
 
     token = lexer.next()
     XCTAssertEqual(token.type, .colon)

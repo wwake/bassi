@@ -185,7 +185,7 @@ class Lexer {
         index += 1
       }
       if result.count > 0 {
-        return (.string(result), result)
+        return (.string, result)
       }
     }
 
@@ -262,7 +262,7 @@ class Lexer {
 
     index += 1
 
-    return (.string(body), body)
+    return (.string, body)
   }
 
   fileprivate func isDigit() -> Bool {
