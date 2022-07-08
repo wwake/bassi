@@ -190,19 +190,11 @@ class Lexer {
     }
   }
 
-  func currentLineNumber() -> LineNumber {
-    lineNumber == nil ? 0 : lineNumber!
-  }
-
   func next() -> Token {
     column = index
 
     if index >= program.count {
-      return Token(
-        line: currentLineNumber(),
-        column: column,
-        type: .atEnd
-      )
+      return makeToken(.atEnd)
     }
 
     if findUnquotedString {
@@ -212,24 +204,13 @@ class Lexer {
         index += 1
       }
       if result.count > 0 {
-        return Token(
-          line: currentLineNumber(),
-          column: column,
-          type: .string,
-          string: result
-        )
+        return makeToken(.string, string: result)
       }
     }
 
-    let (possibleToken, possibleString, possibleType) = findPrefixToken()
+    let possibleToken = findPrefixToken()
     if possibleToken != nil {
-      return Token(
-        line: currentLineNumber(),
-        column: column,
-        type: possibleToken!,
-        string: possibleString,
-        resultType: possibleType
-      )
+      return possibleToken!
     }
 
     switch program[index] {
@@ -249,7 +230,7 @@ class Lexer {
 
   fileprivate func makeToken(_ type: TokenType, string: String? = nil, float: Float? = nil, resultType: `Type`? = nil) -> Token {
     return Token(
-      line: currentLineNumber(),
+      line: lineNumber == nil ? 0 : lineNumber!,
       column: column,
       type: type,
       string: string,
@@ -275,11 +256,7 @@ class Lexer {
       isFloat = true
 
       if program[index] < "0" || program[index] > "9" {
-        return Token(
-          line: currentLineNumber(),
-          column: column,
-          type: .error,
-          string: "Exponent value is missing")
+        return makeToken(.error, string: "Exponent value is missing")
       }
       let exponent = repeatAny("0", "9")
 
@@ -288,22 +265,13 @@ class Lexer {
     }
 
     if isFloat {
-      return Token(
-        line: currentLineNumber(),
-        column: column,
-        type: .number,
-        float: Float(value)!)
-
+      return makeToken(.number, float: Float(value)!)
     } else {
       let intValue = Float(value)!
       if lineNumber == nil {
         lineNumber = LineNumber(intValue)
       }
-      return Token(
-        line: currentLineNumber(),
-        column: column,
-        type: .integer,
-        float: intValue)
+      return makeToken(.integer, float: intValue)
     }
   }
 
@@ -317,27 +285,19 @@ class Lexer {
     }
 
     if program[index] == "\n" {
-      return Token(
-        line: currentLineNumber(),
-        column: column,
-        type: .error,
-        string: "unterminated string")
+      return makeToken(.error, string: "unterminated string")
     }
 
     index += 1
 
-    return Token(
-      line: currentLineNumber(),
-      column: column,
-      type: .string,
-      string: body)
+    return makeToken(.string, string: body)
   }
 
   fileprivate func isDigit() -> Bool {
     return program[index] >= "0" && program[index] <= "9"
   }
 
-  fileprivate func findPrefixToken() -> (TokenType?, String?, `Type`?) {
+  fileprivate func findPrefixToken() -> Token? {
     let start = program.index(program.startIndex, offsetBy: index)
     let input = program[start...]
 
@@ -363,10 +323,10 @@ class Lexer {
         findUnquotedString = false
       }
 
-      return (keyword, string, type)
+      return makeToken(keyword, string: string, resultType: type)
     }
 
-    return (nil, nil, nil)
+    return nil
   }
 
   fileprivate func handleVariable() -> Token {
@@ -383,11 +343,6 @@ class Lexer {
       index += 1
     }
 
-    return Token(
-      line: currentLineNumber(),
-      column: column,
-      type: .variable,
-      string: name)
-
+    return makeToken(.variable, string: name)
   }
 }
