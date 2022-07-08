@@ -292,7 +292,8 @@ class LexerTests: XCTestCase {
 
     let token1 = lexer.next()
 
-    XCTAssertEqual(token1.type, .variable("A"))
+    XCTAssertEqual(token1.type, .variable)
+    XCTAssertEqual(token1.string, "A")
   }
 
   func testVariableWithLetterPlusDigit() {
@@ -300,7 +301,8 @@ class LexerTests: XCTestCase {
 
     let token1 = lexer.next()
 
-    XCTAssertEqual(token1.type, .variable("Z9"))
+    XCTAssertEqual(token1.type, .variable)
+    XCTAssertEqual(token1.string, "Z9")
   }
 
   func testVariableWithLetterPlusDigitPlusDollar() {
@@ -308,7 +310,8 @@ class LexerTests: XCTestCase {
 
     let token1 = lexer.next()
 
-    XCTAssertEqual(token1.type, .variable("M0$"))
+    XCTAssertEqual(token1.type, .variable)
+    XCTAssertEqual(token1.string, "M0$")
   }
 
   func testReservedWordFn() {

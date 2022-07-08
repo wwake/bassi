@@ -309,6 +309,6 @@ class Lexer {
       index += 1
     }
 
-    return (TokenType.variable(name), name)
+    return (TokenType.variable, name)
   }
 }
