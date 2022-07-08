@@ -1,4 +1,3 @@
-* Move additional data from TokenType to Token
 
 * Change parser?
   + Abstract over the pattern "x {, x}"
@@ -17,6 +16,11 @@
 * Error sync by skipping forward to next line # (or end)   ??
 
 * Parameterized tests package?
+
+BI-22-43: July 8, 2022
+* Lexer cleanup
+  + Move additional data from TokenType to Token (slightly less type-safe but makes TokenType easier to deal with)
+  + Refactor: Make lexer routines return Token directly with makeToken() helper
 
 BI-22-42: July 7, 2022
 * Walkthrough of code
