@@ -135,8 +135,17 @@ public class SyntaxAnalyzer {
   func statement() throws -> Statement {
     var result: Statement
 
+    // 10 END  --> .integer(10), .end, .eol, .atEnd
+    // token = .end, index = 2
+
+
     let oneWordStatement = anyOf(.end) |> simpleStatement
-    //let parseResult = oneWordStatement.parse(
+    let parseResult = oneWordStatement.parse(tokens[(index-1)...])
+    if case .success(let statement, let remaining) = parseResult {
+      index = remaining.startIndex
+      nextToken()
+      return statement
+    }
 
     switch token.type {
     case .data:
