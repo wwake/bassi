@@ -8,6 +8,28 @@
 import Foundation
 import pcombo
 
+public class WrapNew<P : Parser>
+{
+  let parser: P
+
+  public init(_ parser: P) {
+    self.parser = parser
+  }
+
+  public func parse(_ input: ArraySlice<P.Input>) -> (P.Target?, Int) {
+    let result = parser.parse(input)
+
+    switch result {
+    case .failure(_, _):
+      return (nil, input.startIndex)
+
+    case .success(let value, let remaining):
+      return (value, remaining.startIndex)
+    }
+  }
+
+}
+
 public class SyntaxAnalyzer {
   let maxLineNumber = 99999
 
@@ -131,21 +153,17 @@ public class SyntaxAnalyzer {
     Statement.end
   }
 
-
   func statement() throws -> Statement {
-    var result: Statement
-
-    // 10 END  --> .integer(10), .end, .eol, .atEnd
-    // token = .end, index = 1
-
-
     let oneWordStatement = anyOf(.end) |> simpleStatement
-    let parseResult = oneWordStatement.parse(tokens[index...])
-    if case .success(let statement, let remaining) = parseResult {
-      index = remaining.startIndex
+
+    let (theStatement, newIndex) = WrapNew(oneWordStatement).parse(tokens[index...])
+    if theStatement != nil {
+      index = newIndex
       token = tokens[index]
-      return statement
+      return theStatement!
     }
+
+    var result: Statement
 
     switch token.type {
     case .data:
