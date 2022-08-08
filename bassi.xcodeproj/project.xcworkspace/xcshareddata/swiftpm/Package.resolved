@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "pcombo",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/wwake/pcombo.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "544d73c063486c3a1eb01f8fff5c83bd8782af03"
+      }
+    }
+  ],
+  "version" : 2
+}
