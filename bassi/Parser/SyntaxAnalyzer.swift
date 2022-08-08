@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class Parser {
+public class SyntaxAnalyzer {
   let maxLineNumber = 99999
 
   var lexer: Lexer = Lexer("")
@@ -108,6 +108,7 @@ public class Parser {
     let variables = try commaListOfVariables()
     return .input(prompt, variables)
   }
+
 
   func statement() throws -> Statement {
     var result: Statement

@@ -37,7 +37,7 @@ class Interpreter {
   let program: Program
   let interactor : Interactor
 
-  let parser = Parser()
+  let parser = SyntaxAnalyzer()
   var parse: Parse
 
   var location: Location
