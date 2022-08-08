@@ -14,7 +14,7 @@ public class SyntaxAnalyzer {
   var lexer: Lexer = Lexer("")
 
   var tokens: [Token] = []
-  var index = 0
+  var index = -1
   var token: Token = Token(line: 0, column: 0, type: .unknown)
 
   var lineNumber = 0
@@ -23,8 +23,8 @@ public class SyntaxAnalyzer {
   let relops: [TokenType] = [.equals, .lessThan, .lessThanOrEqualTo, .notEqual, .greaterThan, .greaterThanOrEqualTo]
 
   func nextToken() {
-    token = tokens[index]
     index += 1
+    token = tokens[index]
   }
 
   fileprivate func require(_ expected: TokenType, _ message: String) throws {
@@ -47,7 +47,7 @@ public class SyntaxAnalyzer {
     lexer = Lexer(input)
 
     tokens = []
-    index = 0
+    index = -1
     var currentToken = lexer.next()
     while currentToken.type != .atEnd {
       tokens.append(currentToken)
@@ -136,14 +136,14 @@ public class SyntaxAnalyzer {
     var result: Statement
 
     // 10 END  --> .integer(10), .end, .eol, .atEnd
-    // token = .end, index = 2
+    // token = .end, index = 1
 
 
     let oneWordStatement = anyOf(.end) |> simpleStatement
-    let parseResult = oneWordStatement.parse(tokens[(index-1)...])
+    let parseResult = oneWordStatement.parse(tokens[index...])
     if case .success(let statement, let remaining) = parseResult {
       index = remaining.startIndex
-      nextToken()
+      token = tokens[index]
       return statement
     }
 
