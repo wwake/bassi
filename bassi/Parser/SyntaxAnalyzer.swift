@@ -27,7 +27,6 @@ public class WrapNew<P : Parser>
       return (value, remaining.startIndex)
     }
   }
-
 }
 
 public class SyntaxAnalyzer {
@@ -43,6 +42,14 @@ public class SyntaxAnalyzer {
   var columnNumber = 0
 
   let relops: [TokenType] = [.equals, .lessThan, .lessThanOrEqualTo, .notEqual, .greaterThan, .greaterThanOrEqualTo]
+
+  let tokenToSimpleStatement: [TokenType : Statement] = [
+    .end : .end,
+    .remark : .skip,
+    .restore : .restore,
+    .stop : .stop
+  ]
+
 
   func nextToken() {
     index += 1
@@ -150,11 +157,11 @@ public class SyntaxAnalyzer {
   }
 
   func simpleStatement(_ token: Token) -> Statement {
-    Statement.end
+    tokenToSimpleStatement[token.type]!
   }
 
   func statement() throws -> Statement {
-    let oneWordStatement = anyOf(.end) |> simpleStatement
+    let oneWordStatement = anyOf(.end, .remark, .restore, .stop) |> simpleStatement
 
     let (theStatement, newIndex) = WrapNew(oneWordStatement).parse(tokens[index...])
     if theStatement != nil {
@@ -174,10 +181,6 @@ public class SyntaxAnalyzer {
 
     case .dim:
       result = try dim()
-
-    case .end:
-      nextToken()
-      result = Statement.end
 
     case .for:
       result = try doFor()
@@ -211,20 +214,8 @@ public class SyntaxAnalyzer {
       let variables = try commaListOfVariables()
       result = .read(variables)
 
-    case .remark:
-      nextToken()
-      result = .skip
-
-    case .restore:
-      nextToken()
-      result = .restore
-
     case .`return`:
       result = try returnStatement()
-
-    case .stop:
-      nextToken()
-      result = .stop
 
     case .variable:
       let name = token.string
