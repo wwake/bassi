@@ -12,6 +12,14 @@ import XCTest
 @testable import bassi
 
 class _ControlFlowTests: InterpreterTests {
+  func testGatherDataWhenStatementHasError() throws {
+    let program = "10 PRINT {}"
+    let outputter = Interactor()
+    let interpreter = Interpreter(Program(program), outputter)
+    try interpreter.gatherData()
+    XCTAssertEqual([], interpreter.data)
+  }
+
   func testSyntaxErrorStopsInterpreter() throws {
     let program = "10 PRINT {}"
     let outputter = Interactor()

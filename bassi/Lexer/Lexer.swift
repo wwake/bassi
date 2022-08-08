@@ -224,6 +224,7 @@ class Lexer {
       return handleVariable()
 
     default:
+      index += 1
       return makeToken(.error, string: "unexpected character")
     }
   }

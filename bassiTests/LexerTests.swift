@@ -63,6 +63,18 @@ class LexerTests: XCTestCase {
     checkToken("\n", .eol)
   }
 
+  func testIndexMovesAfterErrorToken() {
+    let lexer = Lexer("{")
+    let token1 = lexer.next()
+    XCTAssertEqual(token1.type, .error)
+
+    let token2 = lexer.next()
+    XCTAssertEqual(token2.type, .eol)
+
+    let token3 = lexer.next()
+    XCTAssertEqual(token3.type, .atEnd)
+  }
+
   func testTokenKnowsLineNumber() {
     let lexer = Lexer("10 PRINT")
     let token1 = lexer.next()

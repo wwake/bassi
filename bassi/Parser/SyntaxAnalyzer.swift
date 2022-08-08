@@ -6,12 +6,15 @@
 //
 
 import Foundation
+import pcombo
 
 public class SyntaxAnalyzer {
   let maxLineNumber = 99999
 
   var lexer: Lexer = Lexer("")
 
+  var tokens: [Token] = []
+  var index = 0
   var token: Token = Token(line: 0, column: 0, type: .unknown)
 
   var lineNumber = 0
@@ -20,7 +23,8 @@ public class SyntaxAnalyzer {
   let relops: [TokenType] = [.equals, .lessThan, .lessThanOrEqualTo, .notEqual, .greaterThan, .greaterThanOrEqualTo]
 
   func nextToken() {
-    token = lexer.next()
+    token = tokens[index]
+    index += 1
   }
 
   fileprivate func require(_ expected: TokenType, _ message: String) throws {
@@ -41,6 +45,16 @@ public class SyntaxAnalyzer {
 
   func parse(_ input: String) -> Parse {
     lexer = Lexer(input)
+
+    tokens = []
+    index = 0
+    var currentToken = lexer.next()
+    while currentToken.type != .atEnd {
+      tokens.append(currentToken)
+      currentToken = lexer.next()
+    }
+    tokens.append(currentToken)
+
     nextToken()
     return singleLine()
   }
@@ -109,9 +123,20 @@ public class SyntaxAnalyzer {
     return .input(prompt, variables)
   }
 
+  func anyOf(_ tokens: TokenType...) -> satisfy<Token> {
+    satisfy { Set(tokens).contains($0.type)}
+  }
+
+  func simpleStatement(_ token: Token) -> Statement {
+    Statement.end
+  }
+
 
   func statement() throws -> Statement {
     var result: Statement
+
+    let oneWordStatement = anyOf(.end) |> simpleStatement
+    //let parseResult = oneWordStatement.parse(
 
     switch token.type {
     case .data:

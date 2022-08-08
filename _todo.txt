@@ -1,3 +1,5 @@
+* Convert token reading to work a full line of tokens at a time
+* Introduce a new-style parser for the END statement
 
 * Change parser?
   + Abstract over the pattern "x {, x}"
@@ -15,7 +17,9 @@
 
 * Error sync by skipping forward to next line # (or end)   ??
 
-* Parameterized tests package?
+EVO-22-01: August 8, 2022
+* Fix bug in lexer that didn't move forward after illegal character
+
 
 BI-22-43: July 8, 2022
 * Lexer cleanup
