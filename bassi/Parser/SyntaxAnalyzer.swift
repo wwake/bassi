@@ -46,16 +46,13 @@ public class WrapOld<In, Value> : Parser {
     let oldIndex = analyzer.index
     do {
       analyzer.index = input.startIndex
-      analyzer.token = analyzer.tokens[analyzer.index]
       let result = try oldParser()
       return .success(result, input[analyzer.index...])
     } catch ParseError.error(let token, let message) {
       analyzer.index = oldIndex
-      analyzer.token = analyzer.tokens[analyzer.index]
       return .failure(token.column, message)
     } catch {
       analyzer.index = oldIndex
-      analyzer.token = analyzer.tokens[analyzer.index]
       return .failure(0, "can't happen")
     }
   }
@@ -68,7 +65,10 @@ public class SyntaxAnalyzer {
 
   var tokens: [Token] = []
   var index = -1
-  var token: Token = Token(line: 0, column: 0, type: .unknown)
+
+  var token: Token {
+    tokens[index]
+  }//= Token(line: 0, column: 0, type: .unknown)
 
   var lineNumber = 0
   var columnNumber = 0
@@ -84,7 +84,6 @@ public class SyntaxAnalyzer {
 
   func nextToken() {
     index += 1
-    token = tokens[index]
   }
 
   fileprivate func require(_ expected: TokenType, _ message: String) throws {
@@ -203,14 +202,12 @@ public class SyntaxAnalyzer {
     var (theStatement, newIndex) = WrapNew(oneWordStatement).parse(tokens[index...])
     if theStatement != nil {
       index = newIndex
-      token = tokens[index]
       return theStatement!
     }
 
     (theStatement, newIndex) = WrapNew(dimStatement).parse(tokens[index...])
     if theStatement != nil {
       index = newIndex
-      token = tokens[index]
       return theStatement!
     }
 

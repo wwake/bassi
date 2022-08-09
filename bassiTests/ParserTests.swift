@@ -80,7 +80,6 @@ class ParserTests: XCTestCase {
     let token3 = lexer.next()
     analyzer.tokens = [token1, token2, token3]
     analyzer.index = 0
-    analyzer.token = token1
     let result = parser.parse([token1, token2, token3][1...])
 
     guard case .success(let value, let remaining) = result else {
@@ -103,7 +102,6 @@ class ParserTests: XCTestCase {
 
     analyzer.tokens = [token1, token2, token3]
     analyzer.index = 0
-    analyzer.token = token1
     let result = parser.parse([token1, token2, token3][1...])
 
     guard case .failure(let index, let message) = result else {
