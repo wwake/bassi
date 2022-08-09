@@ -74,13 +74,14 @@ class ParserTests: XCTestCase {
     let analyzer = SyntaxAnalyzer()
     let parser = WrapOld<Token, String>(analyzer, analyzer.requireVariable)
 
-    let lexer = Lexer("X,")
+    let lexer = Lexer("+X,")
     let token1 = lexer.next()
     let token2 = lexer.next()
-    analyzer.tokens = [token1, token2]
+    let token3 = lexer.next()
+    analyzer.tokens = [token1, token2, token3]
     analyzer.index = 0
     analyzer.token = token1
-    let result = parser.parse([token1, token2])
+    let result = parser.parse([token1, token2, token3][1...])
 
     guard case .success(let value, let remaining) = result else {
       XCTFail("\(result)")
@@ -88,28 +89,33 @@ class ParserTests: XCTestCase {
     }
 
     XCTAssertEqual(value, "X")
-    XCTAssertEqual(remaining, [token2])
+    XCTAssertEqual(remaining, [token3])
   }
 
   func testWrapOldFailure() {
     let analyzer = SyntaxAnalyzer()
     let parser = WrapOld<Token, String>(analyzer, analyzer.requireVariable)
 
-    let lexer = Lexer(",+")
+    let lexer = Lexer("=,+")
     let token1 = lexer.next()
     let token2 = lexer.next()
-    analyzer.tokens = [token1, token2]
+    let token3 = lexer.next()
+
+    analyzer.tokens = [token1, token2, token3]
     analyzer.index = 0
     analyzer.token = token1
-    let result = parser.parse([token1, token2])
+    let result = parser.parse([token1, token2, token3][1...])
 
     guard case .failure(let index, let message) = result else {
       XCTFail("\(result)")
       return
     }
 
-    XCTAssertEqual(index, 0)
+    XCTAssertEqual(index, 1)
     XCTAssertEqual(message, "Variable is required")
+
+    XCTAssertEqual(analyzer.index, 0)
+    XCTAssertEqual(analyzer.token, token1)
   }
 
   func test10END() throws {

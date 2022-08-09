@@ -43,12 +43,19 @@ public class WrapOld<In, Value> : Parser {
   }
 
   public func parse(_ input: ArraySlice<In>) -> ParseResult<Input, Target> {
+    let oldIndex = analyzer.index
     do {
+      analyzer.index = input.startIndex
+      analyzer.token = analyzer.tokens[analyzer.index]
       let result = try oldParser()
       return .success(result, input[analyzer.index...])
     } catch ParseError.error(let token, let message) {
+      analyzer.index = oldIndex
+      analyzer.token = analyzer.tokens[analyzer.index]
       return .failure(token.column, message)
     } catch {
+      analyzer.index = oldIndex
+      analyzer.token = analyzer.tokens[analyzer.index]
       return .failure(0, "can't happen")
     }
   }
@@ -180,6 +187,10 @@ public class SyntaxAnalyzer {
     satisfy { Set(tokens).contains($0.type)}
   }
 
+  func match(_ tokenType: TokenType) -> satisfy<Token> {
+    satisfy { $0.type == tokenType }
+  }
+
   func simpleStatement(_ token: Token) -> Statement {
     tokenToSimpleStatement[token.type]!
   }
@@ -187,7 +198,16 @@ public class SyntaxAnalyzer {
   func statement() throws -> Statement {
     let oneWordStatement = anyOf(.end, .remark, .restore, .stop) |> simpleStatement
 
-    let (theStatement, newIndex) = WrapNew(oneWordStatement).parse(tokens[index...])
+    let dimStatement =  match(.dim) &> WrapOld(self, dim1) <&& match(.comma) |> { Statement.dim($0) }
+
+    var (theStatement, newIndex) = WrapNew(oneWordStatement).parse(tokens[index...])
+    if theStatement != nil {
+      index = newIndex
+      token = tokens[index]
+      return theStatement!
+    }
+
+    (theStatement, newIndex) = WrapNew(dimStatement).parse(tokens[index...])
     if theStatement != nil {
       index = newIndex
       token = tokens[index]
@@ -204,6 +224,7 @@ public class SyntaxAnalyzer {
       result = try define()
 
     case .dim:
+      print("can't happen")
       result = try dim()
 
     case .for:
