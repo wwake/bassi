@@ -16,7 +16,7 @@ public class WrapNew<P : Parser>
     self.parser = parser
   }
 
-  public func parse(_ input: ArraySlice<P.Input>) -> (P.Target?, Int) {
+  public func parse(_ input: ArraySlice<P.Input>) throws -> (P.Target?, Int) {
     let result = parser.parse(input)
 
     switch result {
@@ -199,13 +199,13 @@ public class SyntaxAnalyzer {
 
     let dimStatement =  match(.dim) &> WrapOld(self, dim1) <&& match(.comma) |> { Statement.dim($0) }
 
-    var (theStatement, newIndex) = WrapNew(oneWordStatement).parse(tokens[index...])
+    var (theStatement, newIndex) = try WrapNew(oneWordStatement).parse(tokens[index...])
     if theStatement != nil {
       index = newIndex
       return theStatement!
     }
 
-    (theStatement, newIndex) = WrapNew(dimStatement).parse(tokens[index...])
+    (theStatement, newIndex) = try WrapNew(dimStatement).parse(tokens[index...])
     if theStatement != nil {
       index = newIndex
       return theStatement!
