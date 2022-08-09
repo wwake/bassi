@@ -70,6 +70,48 @@ class ParserTests: XCTestCase {
     .expr(.number(number))
   }
 
+  func testWrapOldSuccess() {
+    let analyzer = SyntaxAnalyzer()
+    let parser = WrapOld<Token, String>(analyzer, analyzer.requireVariable)
+
+    let lexer = Lexer("X,")
+    let token1 = lexer.next()
+    let token2 = lexer.next()
+    analyzer.tokens = [token1, token2]
+    analyzer.index = 0
+    analyzer.token = token1
+    let result = parser.parse([token1, token2])
+
+    guard case .success(let value, let remaining) = result else {
+      XCTFail("\(result)")
+      return
+    }
+
+    XCTAssertEqual(value, "X")
+    XCTAssertEqual(remaining, [token2])
+  }
+
+  func testWrapOldFailure() {
+    let analyzer = SyntaxAnalyzer()
+    let parser = WrapOld<Token, String>(analyzer, analyzer.requireVariable)
+
+    let lexer = Lexer(",+")
+    let token1 = lexer.next()
+    let token2 = lexer.next()
+    analyzer.tokens = [token1, token2]
+    analyzer.index = 0
+    analyzer.token = token1
+    let result = parser.parse([token1, token2])
+
+    guard case .failure(let index, let message) = result else {
+      XCTFail("\(result)")
+      return
+    }
+
+    XCTAssertEqual(index, 0)
+    XCTAssertEqual(message, "Variable is required")
+  }
+
   func test10END() throws {
     let parser = SyntaxAnalyzer()
 

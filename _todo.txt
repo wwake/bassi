@@ -1,8 +1,18 @@
-* Convert token reading to work a full line of tokens at a time
-* Introduce a new-style parser for the END statement
+* New parser for DIM, calling old parser for DimInfo
+* Make WrapNew throw error like R-D parser does
+* Add tests specifically for wrapper
+* Make lexer provide line() -> [Token]
 
-* Change parser?
-  + Abstract over the pattern "x {, x}"
+EVO-22-02: August 9, 2022
+
+EVO-22-01: August 8, 2022
+* Fix bug in lexer that didn't move forward after illegal character
+* Convert token reading to work a full line of tokens at a time
+* Create a wrapper that lets recursive descent parser call combinator parser
+* Introduce a new-style parser for the END statement
+* Use new parser for REMARK, RESTORE, and STOP
+
+======================
 
 * Handle parser errors better in interpreter
   + Make errors report line & column number
@@ -12,13 +22,9 @@
                  ^
        ? Expected right parenthesis
 
-
 * Move token to the lexer itself, then share the lexer between Parser & a new class ExpressionParser
 
 * Error sync by skipping forward to next line # (or end)   ??
-
-EVO-22-01: August 8, 2022
-* Fix bug in lexer that didn't move forward after illegal character
 
 
 BI-22-43: July 8, 2022

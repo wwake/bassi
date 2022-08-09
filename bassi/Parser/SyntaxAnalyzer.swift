@@ -29,6 +29,31 @@ public class WrapNew<P : Parser>
   }
 }
 
+public class WrapOld<In, Value> : Parser {
+  public typealias Input = In
+
+  public typealias Target = Value
+
+  let analyzer : SyntaxAnalyzer
+  let oldParser: () throws -> Value
+
+  init(_ analyzer: SyntaxAnalyzer, _ oldParser: @escaping () throws -> Value) {
+    self.analyzer = analyzer
+    self.oldParser = oldParser
+  }
+
+  public func parse(_ input: ArraySlice<In>) -> ParseResult<Input, Target> {
+    do {
+      let result = try oldParser()
+      return .success(result, input[analyzer.index...])
+    } catch ParseError.error(let token, let message) {
+      return .failure(token.column, message)
+    } catch {
+      return .failure(0, "can't happen")
+    }
+  }
+}
+
 public class SyntaxAnalyzer {
   let maxLineNumber = 99999
 
@@ -49,7 +74,6 @@ public class SyntaxAnalyzer {
     .restore : .restore,
     .stop : .stop
   ]
-
 
   func nextToken() {
     index += 1
