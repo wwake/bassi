@@ -68,7 +68,7 @@ public class SyntaxAnalyzer {
 
   var token: Token {
     tokens[index]
-  }//= Token(line: 0, column: 0, type: .unknown)
+  }
 
   var lineNumber = 0
   var columnNumber = 0
