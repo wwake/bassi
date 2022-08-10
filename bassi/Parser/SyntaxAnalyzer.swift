@@ -542,7 +542,6 @@ public class SyntaxAnalyzer {
   func makeBinaryExpression(_ argument: (Expression, [(Token, Expression)])) -> Expression {
 
     let (firstExpr, pairs) = argument
-    if pairs.isEmpty { return firstExpr }
 
     return pairs.reduce(firstExpr) { (leftSoFar, opExpr) in
         let (token, right) = opExpr
@@ -556,7 +555,6 @@ public class SyntaxAnalyzer {
       <&| requireFloatTypes
       |> makeBinaryExpression
 
-    //try WrapNew(termParser).parse()
     var left = try WrapNew(self, termParser).parse()
 
     while token.type == .plus || token.type == .minus {
