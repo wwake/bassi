@@ -483,29 +483,6 @@ public class SyntaxAnalyzer {
   }
 
   func andExpr() throws -> Expression {
-    var left = try negation()
-
-    while token.type == .and {
-      let op = token.type
-      nextToken()
-
-      let right = try negation()
-      try requireFloatTypes(left, right)
-
-      left = .op2(op, left, right)
-    }
-    return left
-  }
-
-
-  func requireFloatType(_ argument: ([Token], Expression)) -> (Int, String)? {
-    let (tokens, expr) = argument
-    if tokens.isEmpty { return nil }
-    if expr.type() == .number { return nil }
-    return (indexOf(tokens.last!), "Numeric type is required")
-  }
-
-  func negation() throws -> Expression {
     let termParser =
     WrapOld(self, power) <&&> (match(.times) <|> match(.divide))
     <&| requireFloatTypes
@@ -522,11 +499,23 @@ public class SyntaxAnalyzer {
     |> makeRelationalExpression
 
     let boolNotParser =
-      <*>match(.not) <&> relationalParser
-      <&| requireFloatType
-      |> makeUnaryExpression
+    <*>match(.not) <&> relationalParser
+    <&| requireFloatType
+    |> makeUnaryExpression
 
-    return try WrapNew(self, boolNotParser).parse()
+    let boolAndParser =
+      boolNotParser <&&> match(.and)
+      <&| requireFloatTypes
+      |> makeBinaryExpression
+
+    return try WrapNew(self, boolAndParser).parse()
+  }
+
+  func requireFloatType(_ argument: ([Token], Expression)) -> (Int, String)? {
+    let (tokens, expr) = argument
+    if tokens.isEmpty { return nil }
+    if expr.type() == .number { return nil }
+    return (indexOf(tokens.last!), "Numeric type is required")
   }
 
   func requireMatchingTypes(_ argument: (Expression, (Token, Expression)?)) -> (Int, String)? {
