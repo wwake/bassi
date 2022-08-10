@@ -129,7 +129,7 @@ public class SyntaxAnalyzer {
     return .input(prompt, variables)
   }
 
-  func anyOf(_ tokens: TokenType...) -> satisfy<Token> {
+  func oneOf(_ tokens: [TokenType]) -> satisfy<Token> {
     satisfy { Set(tokens).contains($0.type)}
   }
 
@@ -142,7 +142,7 @@ public class SyntaxAnalyzer {
   }
 
   func statement() throws -> Statement {
-    let oneWordStatement = anyOf(.end, .remark, .restore, .stop) |> simpleStatement
+    let oneWordStatement = oneOf([.end, .remark, .restore, .stop]) |> simpleStatement
 
     let dimStatement =  match(.dim) &> WrapOld(self, dim1) <&& match(.comma) |> { Statement.dim($0) }
 
@@ -497,31 +497,46 @@ public class SyntaxAnalyzer {
     return left
   }
 
-  func negation() throws -> Expression {
-    if .not == token.type {
-      nextToken()
-      let value = try negation()
-      try requireFloatType(value)
-      return .op1(.not, value)
-    }
 
-    return try relational()
+  func requireFloatType(_ argument: ([Token], Expression)) -> (Int, String)? {
+    let (tokens, expr) = argument
+    if tokens.isEmpty { return nil }
+    if expr.type() == .number { return nil }
+    return (indexOf(tokens.last!), "Numeric type is required")
   }
 
-  fileprivate func relational() throws -> Expression  {
-    var left = try subexpression()
+  func negation() throws -> Expression {
+    let termParser =
+    WrapOld(self, power) <&&> (match(.times) <|> match(.divide))
+    <&| requireFloatTypes
+    |> makeBinaryExpression
 
-    if relops.contains(token.type) {
-      let op = token.type
-      nextToken()
+    let subexprParser =
+    termParser <&&> (match(.plus) <|> match(.minus))
+    <&| requireFloatTypes
+    |> makeBinaryExpression
 
-      let right = try subexpression()
+    let relationalParser =
+    subexprParser <&> <?>(oneOf(relops) <&> subexprParser)
+    <&| requireMatchingTypes
+    |> makeRelationalExpression
 
-      try requireMatchingTypes(left, right)
-      left = .op2(op, left, right)
-    }
+    let boolNotParser =
+      <*>match(.not) <&> relationalParser
+      <&| requireFloatType
+      |> makeUnaryExpression
 
-    return left
+    return try WrapNew(self, boolNotParser).parse()
+  }
+
+  func requireMatchingTypes(_ argument: (Expression, (Token, Expression)?)) -> (Int, String)? {
+    let (left, tokenRight) = argument
+    if tokenRight == nil { return nil }
+
+    let (token, right) = tokenRight!
+    if left.type() == right.type() { return nil }
+
+    return (indexOf(token), "Type mismatch")
   }
 
   func requireFloatTypes(_ argument: (Expression, [(Token, Expression)])) -> (Int, String)? {
@@ -543,6 +558,17 @@ public class SyntaxAnalyzer {
     return (indexOf(pairs[failureIndex!].0), "Type mismatch")
   }
 
+  func makeUnaryExpression(_ argument: ([Token], Expression)) -> Expression {
+    let (tokens, expr) = argument
+    if tokens.isEmpty { return expr }
+
+    return tokens
+      .reversed()
+      .reduce(expr) { (exprSoFar, token) in
+        .op1(token.type, exprSoFar)
+    }
+  }
+
   func makeBinaryExpression(_ argument: (Expression, [(Token, Expression)])) -> Expression {
 
     let (firstExpr, pairs) = argument
@@ -553,25 +579,12 @@ public class SyntaxAnalyzer {
     }
   }
 
-  func subexpression() throws -> Expression {
-    let termParser =
-      WrapOld(self, power) <&&> (match(.times) <|> match(.divide))
-      <&| requireFloatTypes
-      |> makeBinaryExpression
+  func makeRelationalExpression(_ argument: (Expression, (Token, Expression)?)) -> Expression {
+    let (left, tokenRight) = argument
+    if tokenRight == nil { return left }
 
-    var left = try WrapNew(self, termParser).parse()
-
-    while token.type == .plus || token.type == .minus {
-      let op = token.type
-      nextToken()
-
-      let right = try WrapNew(self, termParser).parse()
-
-      try requireFloatTypes(left, right)
-
-      left = .op2(op, left, right)
-    }
-    return left
+    let (token, right) = tokenRight!
+    return .op2(token.type, left, right)
   }
 
   func power() throws -> Expression {
