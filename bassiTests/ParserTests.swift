@@ -72,32 +72,27 @@ class ParserTests: XCTestCase {
 
   func testWrapNewSuccess() throws {
     let analyzer = SyntaxAnalyzer()
-    let lexer = Lexer("X+,")
-    let token1 = lexer.next()
-    let token2 = lexer.next()
-    let token3 = lexer.next()
-    analyzer.tokens = [token1, token2, token3]
+    let tokens = Lexer("X+,").line()
+    analyzer.tokens = tokens
     analyzer.index = 1
 
     let result = try WrapNew(analyzer, analyzer.match(.plus)).parse()
 
-    XCTAssertEqual(result, token2)
+    XCTAssertEqual(result, tokens[1])
     XCTAssertEqual(analyzer.index, 2)
   }
 
   func testWrapNewFailure() throws {
     let analyzer = SyntaxAnalyzer()
-    let lexer = Lexer("X,")
-    let token1 = lexer.next()
-    let token2 = lexer.next()
-    analyzer.tokens = [token1, token2]
+    let tokens = Lexer("X,").line()
+    analyzer.tokens = tokens
     analyzer.index = 1
 
     do {
       let result = try WrapNew(analyzer, analyzer.match(.plus)).parse()
       XCTFail("didn't throw - \(result)")
     } catch ParseError.error(let token, let message) {
-      XCTAssertEqual(token, token2)
+      XCTAssertEqual(token, tokens[1])
       XCTAssertEqual(message, "Did not find expected value")
     }
   }
@@ -106,13 +101,10 @@ class ParserTests: XCTestCase {
     let analyzer = SyntaxAnalyzer()
     let parser = WrapOld<Token, String>(analyzer, analyzer.requireVariable)
 
-    let lexer = Lexer("+X,")
-    let token1 = lexer.next()
-    let token2 = lexer.next()
-    let token3 = lexer.next()
-    analyzer.tokens = [token1, token2, token3]
+    let tokens = Lexer("+X,").line()
+    analyzer.tokens = tokens
     analyzer.index = 0
-    let result = parser.parse([token1, token2, token3][1...])
+    let result = parser.parse(tokens[1...])
 
     guard case .success(let value, let remaining) = result else {
       XCTFail("\(result)")
@@ -120,21 +112,17 @@ class ParserTests: XCTestCase {
     }
 
     XCTAssertEqual(value, "X")
-    XCTAssertEqual(remaining, [token3])
+    XCTAssertEqual(remaining, tokens[2...])
   }
 
   func testWrapOldFailure() {
     let analyzer = SyntaxAnalyzer()
     let parser = WrapOld<Token, String>(analyzer, analyzer.requireVariable)
 
-    let lexer = Lexer("=,+")
-    let token1 = lexer.next()
-    let token2 = lexer.next()
-    let token3 = lexer.next()
-
-    analyzer.tokens = [token1, token2, token3]
+    let tokens = Lexer("=,+").line()
+    analyzer.tokens = tokens
     analyzer.index = 0
-    let result = parser.parse([token1, token2, token3][1...])
+    let result = parser.parse(tokens[1...])
 
     guard case .failure(let index, let message) = result else {
       XCTFail("\(result)")
@@ -145,7 +133,7 @@ class ParserTests: XCTestCase {
     XCTAssertEqual(message, "Variable is required")
 
     XCTAssertEqual(analyzer.index, 0)
-    XCTAssertEqual(analyzer.token, token1)
+    XCTAssertEqual(analyzer.token, tokens[0])
   }
 
   func test10END() throws {

@@ -190,6 +190,17 @@ class Lexer {
     }
   }
 
+  func line() -> [Token] {
+    var tokens: [Token] = []
+    var currentToken = next()
+    while currentToken.type != .atEnd {
+      tokens.append(currentToken)
+      currentToken = next()
+    }
+    tokens.append(currentToken)
+    return tokens
+  }
+
   func next() -> Token {
     column = index
 
