@@ -36,6 +36,10 @@ public class SyntaxAnalyzer {
     index += 1
   }
 
+  fileprivate func indexOf(_ token: Token) -> Array<Token>.Index {
+    return tokens.firstIndex(of: token)!
+  }
+
   fileprivate func require(_ expected: TokenType, _ message: String) throws {
     if token.type != expected {
       throw ParseError.error(token, message)
@@ -518,10 +522,6 @@ public class SyntaxAnalyzer {
     }
 
     return left
-  }
-
-  fileprivate func indexOf(_ token: Token) -> Array<Token>.Index {
-    return tokens.firstIndex(of: token)!
   }
 
   func requireFloatTypes(_ argument: (Expression, [(Token, Expression)])) -> (Int, String)? {
