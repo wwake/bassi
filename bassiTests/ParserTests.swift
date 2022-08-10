@@ -93,7 +93,7 @@ class ParserTests: XCTestCase {
       XCTFail("didn't throw - \(result)")
     } catch ParseError.error(let token, let message) {
       XCTAssertEqual(token, tokens[1])
-      XCTAssertEqual(message, "Did not find expected value")
+      XCTAssertEqual(message, "Missing expected character")
     }
   }
 

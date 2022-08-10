@@ -133,8 +133,12 @@ public class SyntaxAnalyzer {
     satisfy { Set(tokens).contains($0.type)}
   }
 
+  let tokenNames : [TokenType : String] =
+    [.rightParend : "')'"]
+
   func match(_ tokenType: TokenType) -> satisfy<Token> {
-    satisfy { $0.type == tokenType }
+    let message = tokenNames[tokenType] ?? "expected character"
+    return satisfy("Missing \(message)"){ $0.type == tokenType }
   }
 
   func simpleStatement(_ token: Token) -> Statement {
@@ -595,13 +599,10 @@ public class SyntaxAnalyzer {
   }
 
   fileprivate func parenthesizedExpression() throws -> Expression {
-    nextToken()
+    let parenthesizedParser =
+    match(.leftParend) &> WrapOld(self, expression) <& match(.rightParend)
 
-    let expr = try expression()
-
-    try require(.rightParend, "Missing ')'")
-
-    return expr
+    return try WrapNew(self, parenthesizedParser).parse()
   }
 
   fileprivate func numericFactor(_ floatValue: (Float)) -> Expression {
