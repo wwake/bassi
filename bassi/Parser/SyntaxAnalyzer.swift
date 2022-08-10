@@ -520,13 +520,17 @@ public class SyntaxAnalyzer {
     return left
   }
 
+  fileprivate func indexOf(_ token: Token) -> Array<Token>.Index {
+    return tokens.firstIndex(of: token)!
+  }
+
   func requireFloatTypes(_ argument: (Expression, [(Token, Expression)])) -> (Int, String)? {
 
     let (firstExpr, pairs) = argument
     if pairs.isEmpty { return nil }
 
     let (token, _) = pairs[0]
-    let tokenPosition = tokens.firstIndex(of: token)!
+    let tokenPosition = indexOf(token)
 
     if firstExpr.type() != .number { return (tokenPosition, "Type mismatch")}
 
@@ -536,7 +540,7 @@ public class SyntaxAnalyzer {
 
     if failureIndex == nil { return nil }
 
-    return (tokens.firstIndex(of: pairs[failureIndex!].0)!, "Type mismatch")
+    return (indexOf(pairs[failureIndex!].0), "Type mismatch")
   }
 
   func makeBinaryExpression(_ argument: (Expression, [(Token, Expression)])) -> Expression {
