@@ -9,22 +9,26 @@ import Foundation
 import pcombo
 
 public class WrapNew<P : Parser>
+where P.Input == Token
 {
+  let analyzer: SyntaxAnalyzer
   let parser: P
 
-  public init(_ parser: P) {
+  public init(_ analyzer: SyntaxAnalyzer, _ parser: P) {
+    self.analyzer = analyzer
     self.parser = parser
   }
 
-  public func parse(_ input: ArraySlice<P.Input>) throws -> (P.Target?, Int) {
-    let result = parser.parse(input)
+  public func parse() throws -> P.Target {
+    let result = parser.parse(analyzer.tokens[analyzer.index...])
 
     switch result {
-    case .failure(_, _):
-      return (nil, input.startIndex)
+    case .failure(let failureIndex, let message):
+      throw ParseError.error(analyzer.tokens[failureIndex], message)
 
     case .success(let value, let remaining):
-      return (value, remaining.startIndex)
+      analyzer.index = remaining.startIndex
+      return value
     }
   }
 }
@@ -50,7 +54,8 @@ public class WrapOld<In, Value> : Parser {
       return .success(result, input[analyzer.index...])
     } catch ParseError.error(let token, let message) {
       analyzer.index = oldIndex
-      return .failure(token.column, message)
+      let failureTokenIndex = analyzer.tokens.firstIndex(of: token)!
+      return .failure(failureTokenIndex, message)
     } catch {
       analyzer.index = oldIndex
       return .failure(0, "can't happen")
@@ -199,16 +204,16 @@ public class SyntaxAnalyzer {
 
     let dimStatement =  match(.dim) &> WrapOld(self, dim1) <&& match(.comma) |> { Statement.dim($0) }
 
-    var (theStatement, newIndex) = try WrapNew(oneWordStatement).parse(tokens[index...])
-    if theStatement != nil {
-      index = newIndex
-      return theStatement!
+    do {
+      return try WrapNew(self, oneWordStatement).parse()
+    } catch {
+      // fall through; let old parser handle it
     }
 
-    (theStatement, newIndex) = try WrapNew(dimStatement).parse(tokens[index...])
-    if theStatement != nil {
-      index = newIndex
-      return theStatement!
+    do {
+      return try WrapNew(self, dimStatement).parse()
+    } catch {
+      // fall through; let old parser handle it
     }
 
     var result: Statement

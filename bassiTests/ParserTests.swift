@@ -70,6 +70,38 @@ class ParserTests: XCTestCase {
     .expr(.number(number))
   }
 
+  func testWrapNewSuccess() throws {
+    let analyzer = SyntaxAnalyzer()
+    let lexer = Lexer("X+,")
+    let token1 = lexer.next()
+    let token2 = lexer.next()
+    let token3 = lexer.next()
+    analyzer.tokens = [token1, token2, token3]
+    analyzer.index = 1
+
+    let result = try WrapNew(analyzer, analyzer.match(.plus)).parse()
+
+    XCTAssertEqual(result, token2)
+    XCTAssertEqual(analyzer.index, 2)
+  }
+
+  func testWrapNewFailure() throws {
+    let analyzer = SyntaxAnalyzer()
+    let lexer = Lexer("X,")
+    let token1 = lexer.next()
+    let token2 = lexer.next()
+    analyzer.tokens = [token1, token2]
+    analyzer.index = 1
+
+    do {
+      let result = try WrapNew(analyzer, analyzer.match(.plus)).parse()
+      XCTFail("didn't throw - \(result)")
+    } catch ParseError.error(let token, let message) {
+      XCTAssertEqual(token, token2)
+      XCTAssertEqual(message, "Did not find expected value")
+    }
+  }
+
   func testWrapOldSuccess() {
     let analyzer = SyntaxAnalyzer()
     let parser = WrapOld<Token, String>(analyzer, analyzer.requireVariable)
