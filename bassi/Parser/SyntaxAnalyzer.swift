@@ -468,18 +468,37 @@ public class SyntaxAnalyzer {
   }
 
   func orExpr() throws -> Expression {
-    var left = try andExpr()
+    let termParser =
+    WrapOld(self, power) <&&> (match(.times) <|> match(.divide))
+    <&| requireFloatTypes
+    |> makeBinaryExpression
 
-    while token.type == .or {
-      let op = token.type
-      nextToken()
+    let subexprParser =
+    termParser <&&> (match(.plus) <|> match(.minus))
+    <&| requireFloatTypes
+    |> makeBinaryExpression
 
-      let right = try andExpr()
-      try requireFloatTypes(left, right)
+    let relationalParser =
+    subexprParser <&> <?>(oneOf(relops) <&> subexprParser)
+    <&| requireMatchingTypes
+    |> makeRelationalExpression
 
-      left = .op2(op, left, right)
-    }
-    return left
+    let boolNotParser =
+    <*>match(.not) <&> relationalParser
+    <&| requireFloatType
+    |> makeUnaryExpression
+
+    let boolAndParser =
+    boolNotParser <&&> match(.and)
+    <&| requireFloatTypes
+    |> makeBinaryExpression
+
+    let boolOrParser =
+    boolAndParser <&&> match(.or)
+    <&| requireFloatTypes
+    |> makeBinaryExpression
+
+    return try WrapNew(self, boolOrParser).parse()
   }
 
   func andExpr() throws -> Expression {
