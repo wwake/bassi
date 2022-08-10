@@ -520,32 +520,53 @@ public class SyntaxAnalyzer {
     return left
   }
 
+  func requireFloatTypes(_ argument: (Expression, [(Token, Expression)])) -> (Int, String)? {
+
+    let (firstExpr, pairs) = argument
+    if pairs.isEmpty { return nil }
+
+    let (token, _) = pairs[0]
+    let tokenPosition = tokens.firstIndex(of: token)!
+
+    if firstExpr.type() != .number { return (tokenPosition, "Type mismatch")}
+
+    let failureIndex = pairs.firstIndex { (_, expr) in
+      expr.type() != .number
+    }
+
+    if failureIndex == nil { return nil }
+
+    return (tokens.firstIndex(of: pairs[failureIndex!].0)!, "Type mismatch")
+  }
+
+  func makeBinaryExpression(_ argument: (Expression, [(Token, Expression)])) -> Expression {
+
+    let (firstExpr, pairs) = argument
+    if pairs.isEmpty { return firstExpr }
+
+    return pairs.reduce(firstExpr) { (leftSoFar, opExpr) in
+        let (token, right) = opExpr
+        return .op2(token.type, leftSoFar, right)
+    }
+  }
+
   func subexpression() throws -> Expression {
-    var left = try term()
+    let termParser =
+      WrapOld(self, power) <&&> (match(.times) <|> match(.divide))
+      <&| requireFloatTypes
+      |> makeBinaryExpression
+
+    //try WrapNew(termParser).parse()
+    var left = try WrapNew(self, termParser).parse()
 
     while token.type == .plus || token.type == .minus {
       let op = token.type
       nextToken()
 
-      let right = try term()
+      let right = try WrapNew(self, termParser).parse()
 
       try requireFloatTypes(left, right)
 
-      left = .op2(op, left, right)
-    }
-    return left
-  }
-
-  func term() throws -> Expression {
-    var left = try power()
-
-    while token.type == .times || token.type == .divide {
-      let op = token.type
-      nextToken()
-
-      let right = try power()
-
-      try requireFloatTypes(left, right)
       left = .op2(op, left, right)
     }
     return left
