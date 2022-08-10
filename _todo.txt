@@ -1,12 +1,13 @@
-* Pull adapters to separate file
+* Make lexer provide line() -> [Token]
+* Expressions
 * DIM should enforce numeric types for sizes
 
-* New parser for DIM, calling old parser for DimInfo - error handling
-* Make lexer provide line() -> [Token]
 
 EVO-22-03: August 10, 2022
 * Re-enable testRightParendErrorInDim()
 * Make WrapOld use the index of the token, not its column, for error report
+* Pull adapters to separate file
+* New parser for DIM, calling old parser for DimInfo - error handling
 
 EVO-22-02: August 9, 2022
 * Make WrapOld that calls old parser

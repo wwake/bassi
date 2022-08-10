@@ -52,19 +52,23 @@ public class SyntaxAnalyzer {
     return variable
   }
 
-  func parse(_ input: String) -> Parse {
-    lexer = Lexer(input)
-
-    tokens = []
-    index = -1
+  fileprivate func extractedFunc() -> [Token] {
+    var tokens: [Token] = []
     var currentToken = lexer.next()
     while currentToken.type != .atEnd {
       tokens.append(currentToken)
       currentToken = lexer.next()
     }
     tokens.append(currentToken)
+    return tokens
+  }
 
-    nextToken()
+  func parse(_ input: String) -> Parse {
+    lexer = Lexer(input)
+
+    tokens = extractedFunc()
+    index = 0
+
     return singleLine()
   }
 
