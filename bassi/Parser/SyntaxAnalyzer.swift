@@ -464,12 +464,18 @@ public class SyntaxAnalyzer {
     }
 
   func expression() throws -> Expression {
-    return try orExpr()
-  }
+    let powerParser =
+    WrapOld(self, factor) <&&> match(.exponent)
+    <&| requireFloatTypes
+    |> makeBinaryExpression
 
-  func orExpr() throws -> Expression {
+    let negationParser =
+    <*>match(.minus) <&> powerParser
+    <&| requireFloatType
+    |> makeUnaryExpression
+
     let termParser =
-    WrapOld(self, power) <&&> (match(.times) <|> match(.divide))
+    negationParser <&&> (match(.times) <|> match(.divide))
     <&| requireFloatTypes
     |> makeBinaryExpression
 
@@ -499,35 +505,6 @@ public class SyntaxAnalyzer {
     |> makeBinaryExpression
 
     return try WrapNew(self, boolOrParser).parse()
-  }
-
-  func andExpr() throws -> Expression {
-    let termParser =
-    WrapOld(self, power) <&&> (match(.times) <|> match(.divide))
-    <&| requireFloatTypes
-    |> makeBinaryExpression
-
-    let subexprParser =
-    termParser <&&> (match(.plus) <|> match(.minus))
-    <&| requireFloatTypes
-    |> makeBinaryExpression
-
-    let relationalParser =
-    subexprParser <&> <?>(oneOf(relops) <&> subexprParser)
-    <&| requireMatchingTypes
-    |> makeRelationalExpression
-
-    let boolNotParser =
-    <*>match(.not) <&> relationalParser
-    <&| requireFloatType
-    |> makeUnaryExpression
-
-    let boolAndParser =
-      boolNotParser <&&> match(.and)
-      <&| requireFloatTypes
-      |> makeBinaryExpression
-
-    return try WrapNew(self, boolAndParser).parse()
   }
 
   func requireFloatType(_ argument: ([Token], Expression)) -> (Int, String)? {
@@ -593,28 +570,6 @@ public class SyntaxAnalyzer {
 
     let (token, right) = tokenRight!
     return .op2(token.type, left, right)
-  }
-
-  func power() throws -> Expression {
-    if .minus ==  token.type {
-      nextToken()
-      let value = try power()
-      try requireFloatType(value)
-      return .op1(.minus, value)
-    }
-    
-    var left = try factor()
-
-    while token.type == .exponent {
-      let op = token.type
-      nextToken()
-
-      let right = try factor()
-
-      try requireFloatTypes(left, right)
-      left = .op2(op, left, right)
-    }
-    return left
   }
 
   func factor() throws -> Expression {
