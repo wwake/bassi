@@ -475,9 +475,11 @@ public class SyntaxAnalyzer {
       }
     }
 
-  func expression() throws -> Expression {
+  func expressionParser() -> Bind<Token, Expression> {
+    let expressionParser = Bind<Token, Expression>()
+
     let parenthesizedParser =
-    match(.leftParend) &> WrapOld(self, expression) <& match(.rightParend)
+    match(.leftParend) &> expressionParser <& match(.rightParend)
 
     let numberParser = match(.number) |> { Expression.number($0.float) }
 
@@ -488,7 +490,7 @@ public class SyntaxAnalyzer {
     let variableParser =
     match(.variable) <&> <?>(
       match(.leftParend) &>
-      WrapOld(self, expression) <&& match(.comma)
+      expressionParser <&& match(.comma)
       <& match(.rightParend)
     ) |> makeVariableOrArray
 
@@ -496,7 +498,7 @@ public class SyntaxAnalyzer {
     match(.predefined) <&>
     (
       match(.leftParend) &>
-      WrapOld(self, expression) <&& match(.comma)
+      expressionParser <&& match(.comma)
       <& match(.rightParend)
     )
     <&| checkPredefinedCall
@@ -508,7 +510,7 @@ public class SyntaxAnalyzer {
       match(.variable, "Call to FNx must have letter after FN")
       <& match(.leftParend)
     )
-    <&> WrapOld(self, expression)
+    <&> expressionParser
     <& match(.rightParend)
     <&| checkUserDefinedCall
     |> makeUserDefinedCall
@@ -558,7 +560,99 @@ public class SyntaxAnalyzer {
     <&| requireFloatTypes
     |> makeBinaryExpression
 
-    return try WrapNew(self, boolOrParser).parse()
+    expressionParser.bind(boolOrParser.parse)
+    return expressionParser
+  }
+
+  func expression() throws -> Expression {
+//    return try WrapNew(self, expressionParser()).parse()
+    let expressionParser = Bind<Token, Expression>()
+
+    let parenthesizedParser =
+    match(.leftParend) &> WrapOld(self, expression) <& match(.rightParend)
+
+    let numberParser = match(.number) |> { Expression.number($0.float) }
+
+    let integerParser = match(.integer) |> { Expression.number($0.float) }
+
+    let stringParser = match(.string) |> { Expression.string($0.string!) }
+
+    let variableParser =
+    match(.variable) <&> <?>(
+      match(.leftParend) &>
+      WrapOld(self, expression) <&& match(.comma)
+      <& match(.rightParend)
+    ) |> makeVariableOrArray
+
+    let predefFunctionParser =
+    match(.predefined) <&>
+    (
+      match(.leftParend) &>
+      expressionParser <&& match(.comma)
+      <& match(.rightParend)
+    )
+    <&| checkPredefinedCall
+    |> makePredefinedFunctionCall
+
+    let udfFunctionParser =
+    (
+      match(.fn) &>
+      match(.variable, "Call to FNx must have letter after FN")
+      <& match(.leftParend)
+    )
+    <&> expressionParser
+    <& match(.rightParend)
+    <&| checkUserDefinedCall
+    |> makeUserDefinedCall
+
+    let factorParser =
+    parenthesizedParser <|> numberParser <|> integerParser <|> stringParser
+    <|> variableParser <|> predefFunctionParser <|> udfFunctionParser
+    <%> "Expected start of expression"
+
+    let powerParser =
+    factorParser <&&> match(.exponent)
+    <&| requireFloatTypes
+    |> makeBinaryExpression
+
+    let negationParser =
+    <*>match(.minus) <&> powerParser
+    <&| requireFloatType
+    |> makeUnaryExpression
+
+    let termParser =
+    negationParser <&&> (match(.times) <|> match(.divide))
+    <&| requireFloatTypes
+    |> makeBinaryExpression
+
+    let subexprParser =
+    termParser <&&> (match(.plus) <|> match(.minus))
+    <&| requireFloatTypes
+    |> makeBinaryExpression
+
+    let relationalParser =
+    subexprParser <&> <?>(oneOf(relops) <&> subexprParser)
+    <&| requireMatchingTypes
+    |> makeRelationalExpression
+
+    let boolNotParser =
+    <*>match(.not) <&> relationalParser
+    <&| requireFloatType
+    |> makeUnaryExpression
+
+    let boolAndParser =
+    boolNotParser <&&> match(.and)
+    <&| requireFloatTypes
+    |> makeBinaryExpression
+
+    let boolOrParser =
+    boolAndParser <&&> match(.or)
+    <&| requireFloatTypes
+    |> makeBinaryExpression
+
+    expressionParser.bind(boolOrParser.parse)
+
+    return try WrapNew(self, expressionParser).parse()
   }
 
   func requireFloatType(_ argument: ([Token], Expression)) -> (Int, String)? {
@@ -702,9 +796,9 @@ public class SyntaxAnalyzer {
     }
 
     do {
-      try typeCheck(parameterTypes, actualArguments)
+      try typeCheck(token, parameterTypes, actualArguments)
     } catch ParseError.error(let token, let message) {
-      return (indexOf(token), message)
+      return (indexOf(token) + 2, message)  // error is in args, not .predefined
     } catch {
       return (indexOf(token), "Internal error in type checking")
     }
@@ -712,6 +806,7 @@ public class SyntaxAnalyzer {
   }
 
   fileprivate func typeCheck(
+    _ token: Token,
     _ parameterTypes: [`Type`],
     _ arguments: [Expression]) throws {
 
@@ -748,7 +843,7 @@ public class SyntaxAnalyzer {
     let (token, expr) = argument
 
     do {
-      try typeCheck([.number], [expr])
+      try typeCheck(token, [.number], [expr])
     } catch ParseError.error(let token, let message) {
       return (indexOf(token), message)
     } catch {
