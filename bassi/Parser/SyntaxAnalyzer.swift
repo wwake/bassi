@@ -652,10 +652,6 @@ public class SyntaxAnalyzer {
     return .arrayAccess(name, type, exprs!)
   }
 
-  fileprivate func variable(_ name: Name) throws -> Expression  {
-    return try WrapNew(self, variableParser).parse()
-  }
-
   func makePredefinedFunctionCall(_ argument: (Token, [Expression])) -> Expression {
     let (token, exprs) = argument
 
