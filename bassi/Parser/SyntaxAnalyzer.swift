@@ -32,6 +32,14 @@ public class SyntaxAnalyzer {
     .stop : .stop
   ]
 
+  var expressionParser : Bind<Token, Expression> = Bind()
+
+  init() {
+    defer {
+      expressionParser = makeExpressionParser()
+    }
+  }
+
   func nextToken() {
     index += 1
   }
@@ -475,7 +483,7 @@ public class SyntaxAnalyzer {
       }
     }
 
-  func expressionParser() -> Bind<Token, Expression> {
+  func makeExpressionParser() -> Bind<Token, Expression> {
     let expressionParser = Bind<Token, Expression>()
 
     let parenthesizedParser =
@@ -565,93 +573,6 @@ public class SyntaxAnalyzer {
   }
 
   func expression() throws -> Expression {
-//    return try WrapNew(self, expressionParser()).parse()
-    let expressionParser = Bind<Token, Expression>()
-
-    let parenthesizedParser =
-    match(.leftParend) &> expressionParser <& match(.rightParend)
-
-    let numberParser = match(.number) |> { Expression.number($0.float) }
-
-    let integerParser = match(.integer) |> { Expression.number($0.float) }
-
-    let stringParser = match(.string) |> { Expression.string($0.string!) }
-
-    let variableParser =
-    match(.variable) <&> <?>(
-      match(.leftParend) &>
-      expressionParser <&& match(.comma)
-      <& match(.rightParend)
-    ) |> makeVariableOrArray
-
-    let predefFunctionParser =
-    match(.predefined) <&>
-    (
-      match(.leftParend) &>
-      expressionParser <&& match(.comma)
-      <& match(.rightParend)
-    )
-    <&| checkPredefinedCall
-    |> makePredefinedFunctionCall
-
-    let udfFunctionParser =
-    (
-      match(.fn) &>
-      match(.variable, "Call to FNx must have letter after FN")
-      <& match(.leftParend)
-    )
-    <&> expressionParser
-    <& match(.rightParend)
-    <&| checkUserDefinedCall
-    |> makeUserDefinedCall
-
-    let factorParser =
-    parenthesizedParser <|> numberParser <|> integerParser <|> stringParser
-    <|> variableParser <|> predefFunctionParser <|> udfFunctionParser
-    <%> "Expected start of expression"
-
-    let powerParser =
-    factorParser <&&> match(.exponent)
-    <&| requireFloatTypes
-    |> makeBinaryExpression
-
-    let negationParser =
-    <*>match(.minus) <&> powerParser
-    <&| requireFloatType
-    |> makeUnaryExpression
-
-    let termParser =
-    negationParser <&&> (match(.times) <|> match(.divide))
-    <&| requireFloatTypes
-    |> makeBinaryExpression
-
-    let subexprParser =
-    termParser <&&> (match(.plus) <|> match(.minus))
-    <&| requireFloatTypes
-    |> makeBinaryExpression
-
-    let relationalParser =
-    subexprParser <&> <?>(oneOf(relops) <&> subexprParser)
-    <&| requireMatchingTypes
-    |> makeRelationalExpression
-
-    let boolNotParser =
-    <*>match(.not) <&> relationalParser
-    <&| requireFloatType
-    |> makeUnaryExpression
-
-    let boolAndParser =
-    boolNotParser <&&> match(.and)
-    <&| requireFloatTypes
-    |> makeBinaryExpression
-
-    let boolOrParser =
-    boolAndParser <&&> match(.or)
-    <&| requireFloatTypes
-    |> makeBinaryExpression
-
-    expressionParser.bind(boolOrParser.parse)
-
     return try WrapNew(self, expressionParser).parse()
   }
 
