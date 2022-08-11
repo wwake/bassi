@@ -478,6 +478,10 @@ class ParserTests: XCTestCase {
     )
   }
 
+  func testPredefinedFunctionMissingLeftParend() {
+    checkError("17 PRINT SQR 4)", "Missing '('")
+  }
+
   func testPredefinedStringFunctionReturnType() {
     checkOneStatement(
       "25 PRINT CHR$(4)",

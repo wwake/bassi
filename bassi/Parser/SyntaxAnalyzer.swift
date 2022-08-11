@@ -134,7 +134,9 @@ public class SyntaxAnalyzer {
   }
 
   let tokenNames : [TokenType : String] =
-    [.rightParend : "')'"]
+    [
+      .leftParend: "'('",
+      .rightParend : "')'"]
 
   func match(_ tokenType: TokenType) -> satisfy<Token> {
     let message = tokenNames[tokenType] ?? "expected character"
@@ -633,32 +635,61 @@ public class SyntaxAnalyzer {
     return try WrapNew(self, variableParser).parse()
   }
 
-  fileprivate func predefinedFunctionCall(_ name: Name, _ type: `Type`) throws -> Expression  {
-    nextToken()
+  func makePredefinedFunctionCall(_ argument: (Token, [Expression])) -> Expression {
+    let (token, exprs) = argument
+
+    let name = token.string!
+    let type = token.resultType
 
     guard case .function(let parameterTypes, let resultType) = type else {
-      throw ParseError.error(token, "Internal error: Function has non-function type")
+      return .missing // can't happen
     }
 
-    try require(.leftParend, "Missing '('")
-
-    var exprs: [Expression] = []
-    exprs.append(try expression())
-
-    while token.type == .comma {
-      nextToken()
-      exprs.append(try expression())
+    var actualArguments = exprs
+    while actualArguments.count < parameterTypes.count {
+      actualArguments.append(.missing)
     }
 
-    while exprs.count < parameterTypes.count {
-      exprs.append(.missing)
+    return .predefined(name, actualArguments, resultType)
+  }
+
+  fileprivate func predefinedFunctionCall(_ name: Name, _ type: `Type`) throws -> Expression  {
+
+    let predefFunctionParser =
+    match(.predefined) <&>
+    (
+      match(.leftParend) &>
+        WrapOld(self, expression) <&& match(.comma)
+      <& match(.rightParend)
+     )
+    <&| checkPredefinedCall
+    |> makePredefinedFunctionCall
+
+    return try WrapNew(self, predefFunctionParser).parse()
+  }
+
+  func checkPredefinedCall(_ argument: (Token, [Expression])) -> (Int, String)? {
+    let (token, exprs) = argument
+
+    let type = token.resultType
+
+    guard case .function(let parameterTypes, _) = type else {
+      return (indexOf(token), "Can't happen - predefined has inconsistent type")
     }
 
-    try require(.rightParend, "Missing ')'")
+    var actualArguments = exprs
+    while actualArguments.count < parameterTypes.count {
+      actualArguments.append(.missing)
+    }
 
-    try typeCheck(parameterTypes, exprs)
-
-    return .predefined(name, exprs, resultType)
+    do {
+      try typeCheck(parameterTypes, actualArguments)
+    } catch ParseError.error(let token, let message) {
+      return (indexOf(token), message)
+    } catch {
+      return (indexOf(token), "Unexpected error in type checking")
+    }
+    return nil
   }
 
   fileprivate func typeCheck(
@@ -693,7 +724,6 @@ public class SyntaxAnalyzer {
       }
       return false
     }
-
 
   fileprivate func userdefinedFunctionCall() throws -> Expression {
     nextToken()
