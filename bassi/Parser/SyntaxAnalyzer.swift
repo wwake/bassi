@@ -609,33 +609,28 @@ public class SyntaxAnalyzer {
     return Expression.number(token.float)
   }
 
-  fileprivate func variable(_ name: Name) throws -> Expression  {
-    nextToken()
+  func makeVariableOrArray(_ argument: (Token, [Expression]?)) -> Expression {
+    let (token, exprs) = argument
 
-    let type : `Type` =
-    name.last! == "$" ? .string : .number
+    let name = token.string!
+    let type : `Type` = name.last! == "$" ? .string : .number
 
-    if token.type != .leftParend {
+    if exprs == nil {
       return .variable(name, type)
     }
 
-    var exprs: [Expression] = []
+    return .arrayAccess(name, type, exprs!)
+  }
 
-    try require(.leftParend, "Missing '('")
+  fileprivate func variable(_ name: Name) throws -> Expression  {
+    let variableParser =
+      match(.variable) <&> <?>(
+        match(.leftParend) &>
+          WrapOld(self, expression) <&& match(.comma)
+        <& match(.rightParend)
+      ) |> makeVariableOrArray
 
-    let expr = try expression()
-    exprs.append(expr)
-
-    while token.type == .comma {
-      nextToken()
-
-      let expr = try expression()
-      exprs.append(expr)
-    }
-
-    try require(.rightParend, "Missing ')'")
-
-    return .arrayAccess(name, type, exprs)
+    return try WrapNew(self, variableParser).parse()
   }
 
   fileprivate func predefinedFunctionCall(_ name: Name, _ type: `Type`) throws -> Expression  {
