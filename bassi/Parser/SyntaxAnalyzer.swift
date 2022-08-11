@@ -32,10 +32,20 @@ public class SyntaxAnalyzer {
     .stop : .stop
   ]
 
+  var variableParser: Bind<Token, Expression> = Bind()
   var expressionParser : Bind<Token, Expression> = Bind()
 
   init() {
+
     defer {
+      let parser =
+        match(.variable) <&> <?>(
+          match(.leftParend) &>
+          expressionParser <&& match(.comma)
+          <& match(.rightParend)
+        ) |> makeVariableOrArray
+      variableParser.bind(parser.parse)
+
       expressionParser = makeExpressionParser()
     }
   }
@@ -239,7 +249,7 @@ public class SyntaxAnalyzer {
   }
 
   func assign(_ name: String) throws -> Statement {
-    let variable = try variable(name)
+    let variable = try variable(name) //try WrapNew(self, variableParser).parse()
 
     try require(.equals, "Assignment is missing '='")
 
@@ -484,8 +494,6 @@ public class SyntaxAnalyzer {
     }
 
   func makeExpressionParser() -> Bind<Token, Expression> {
-    let expressionParser = Bind<Token, Expression>()
-
     let parenthesizedParser =
     match(.leftParend) &> expressionParser <& match(.rightParend)
 
@@ -494,13 +502,6 @@ public class SyntaxAnalyzer {
     let integerParser = match(.integer) |> { Expression.number($0.float) }
 
     let stringParser = match(.string) |> { Expression.string($0.string!) }
-
-    let variableParser =
-    match(.variable) <&> <?>(
-      match(.leftParend) &>
-      expressionParser <&& match(.comma)
-      <& match(.rightParend)
-    ) |> makeVariableOrArray
 
     let predefFunctionParser =
     match(.predefined) <&>
@@ -655,13 +656,6 @@ public class SyntaxAnalyzer {
   }
 
   fileprivate func variable(_ name: Name) throws -> Expression  {
-    let variableParser =
-      match(.variable) <&> <?>(
-        match(.leftParend) &>
-          expressionParser <&& match(.comma)
-        <& match(.rightParend)
-      ) |> makeVariableOrArray
-
     return try WrapNew(self, variableParser).parse()
   }
 

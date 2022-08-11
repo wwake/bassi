@@ -89,12 +89,12 @@ class Interpreter {
     stopped = false
     awaitingInput = false
 
+    parse = Parse(0, [])
+
     data = []
     try gatherData()
 
     globals = Predefined.functionsUsing(interactor)
-
-    parse = Parse(0, [])
 
     location = Location(program.firstLineNumber())
     nextLocation = nil
