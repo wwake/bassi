@@ -243,7 +243,7 @@ public class SyntaxAnalyzer {
 
     try require(.equals, "Assignment is missing '='")
 
-    let expr = try expression()
+    let expr = try WrapNew(self, expressionParser).parse()
 
     try requireMatchingTypes(variable, expr)
 
@@ -297,7 +297,7 @@ public class SyntaxAnalyzer {
 
     try require(.equals, "DEF requires '=' after parameter definition")
 
-    let expr = try expression()
+    let expr = try WrapNew(self, expressionParser).parse()
     try requireFloatType(expr)
 
     return .def(
@@ -334,7 +334,7 @@ public class SyntaxAnalyzer {
   func ifThen() throws -> Statement {
     nextToken()
 
-    let expr = try expression()
+    let expr = try WrapNew(self, expressionParser).parse()
     try requireFloatType(expr)
     
     try require(.then, "Missing 'THEN'")
@@ -387,7 +387,7 @@ public class SyntaxAnalyzer {
   func on() throws -> Statement {
     nextToken()
 
-    let expr = try expression()
+    let expr = try WrapNew(self, expressionParser).parse()
 
     let savedToken = token.type
     if token.type != .goto && token.type != .gosub {
@@ -436,7 +436,7 @@ public class SyntaxAnalyzer {
         nextToken()
         values.append(.tab)
       } else {
-        let value = try expression()
+        let value = try WrapNew(self, expressionParser).parse()
         values.append(.expr(value))
       }
     }
@@ -572,10 +572,6 @@ public class SyntaxAnalyzer {
     return expressionParser
   }
 
-  func expression() throws -> Expression {
-    return try WrapNew(self, expressionParser).parse()
-  }
-
   func requireFloatType(_ argument: ([Token], Expression)) -> (Int, String)? {
     let (tokens, expr) = argument
     if tokens.isEmpty { return nil }
@@ -662,7 +658,7 @@ public class SyntaxAnalyzer {
     let variableParser =
       match(.variable) <&> <?>(
         match(.leftParend) &>
-          WrapOld(self, expression) <&& match(.comma)
+          expressionParser <&& match(.comma)
         <& match(.rightParend)
       ) |> makeVariableOrArray
 
@@ -693,7 +689,7 @@ public class SyntaxAnalyzer {
     match(.predefined) <&>
     (
       match(.leftParend) &>
-        WrapOld(self, expression) <&& match(.comma)
+        expressionParser <&& match(.comma)
       <& match(.rightParend)
      )
     <&| checkPredefinedCall
@@ -805,13 +801,13 @@ public class SyntaxAnalyzer {
 
     var dimensions : [Expression] = []
 
-    let expr = try expression()
+    let expr = try WrapNew(self, expressionParser).parse()
     dimensions.append(expr)
 
     while .comma == token.type {
       nextToken()
 
-      let expr = try expression()
+      let expr = try WrapNew(self, expressionParser).parse()
       dimensions.append(expr)
     }
 
@@ -827,18 +823,18 @@ public class SyntaxAnalyzer {
 
     try require(.equals, "'=' is required")
 
-    let initial = try expression()
+    let initial = try WrapNew(self, expressionParser).parse()
     try requireFloatType(initial)
 
     try require(.to, "'TO' is required")
 
-    let final = try expression()
+    let final = try WrapNew(self, expressionParser).parse()
     try requireFloatType(final)
 
     var step = Expression.number(1)
     if token.type == .step {
       nextToken()
-      step = try expression()
+      step = try WrapNew(self, expressionParser).parse()
       try requireFloatType(step)
     }
 
