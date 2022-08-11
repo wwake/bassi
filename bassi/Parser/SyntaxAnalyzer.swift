@@ -594,6 +594,17 @@ public class SyntaxAnalyzer {
 
     let stringParser = match(.string) |> { Expression.string($0.string!) }
 
+    let udfFunctionParser =
+    (
+      match(.fn) &>
+      match(.variable, "Call to FNx must have letter after FN")
+      <& match(.leftParend)
+    )
+    <&> WrapOld(self, expression)
+    <& match(.rightParend)
+    <&| checkUserDefinedCall
+    |> makeUserDefinedCall
+
     if token.type == .leftParend {
       return try WrapNew(self, parenthesizedParser).parse()
     } else if case .number = token.type {
@@ -607,7 +618,7 @@ public class SyntaxAnalyzer {
     } else if case .predefined = token.type {
       return try predefinedFunctionCall(token.string, token.resultType)
     } else if case .fn = token.type {
-      return try userdefinedFunctionCall()
+      return try WrapNew(self, udfFunctionParser).parse()
     } else {
       throw ParseError.error(token, "Expected start of expression")
     }
@@ -693,7 +704,7 @@ public class SyntaxAnalyzer {
     } catch ParseError.error(let token, let message) {
       return (indexOf(token), message)
     } catch {
-      return (indexOf(token), "Unexpected error in type checking")
+      return (indexOf(token), "Internal error in type checking")
     }
     return nil
   }
@@ -731,27 +742,23 @@ public class SyntaxAnalyzer {
       return false
     }
 
-  fileprivate func userdefinedFunctionCall() throws -> Expression {
-    let udfFunctionParser =
-      match(.fn) &>
-    match(.variable)
+  func checkUserDefinedCall(_ argument: (Token, Expression)) -> (Int, String)? {
+    let (token, expr) = argument
 
-    nextToken()
-
-    guard case .variable = token.type else {
-      throw ParseError.error(token, "Call to FNx must have letter after FN")
+    do {
+      try typeCheck([.number], [expr])
+    } catch ParseError.error(let token, let message) {
+      return (indexOf(token), message)
+    } catch {
+      return (indexOf(token), "Internal error in type checking")
     }
+
+    return nil
+  }
+
+  func makeUserDefinedCall(_ argument: (Token, Expression)) -> Expression {
+    let (token, expr) = argument
     let parameter = token.string!
-    nextToken()
-
-    try require(.leftParend, "Missing '('")
-
-    let expr = try expression()
-
-    try require(.rightParend, "Missing ')'")
-
-    try typeCheck([.number], [expr])
-
     return .userdefined("FN" + parameter, expr)
   }
 
