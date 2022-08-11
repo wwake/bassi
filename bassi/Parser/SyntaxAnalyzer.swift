@@ -476,8 +476,50 @@ public class SyntaxAnalyzer {
     }
 
   func expression() throws -> Expression {
+    let parenthesizedParser =
+    match(.leftParend) &> WrapOld(self, expression) <& match(.rightParend)
+
+    let numberParser = match(.number) |> { Expression.number($0.float) }
+
+    let integerParser = match(.integer) |> { Expression.number($0.float) }
+
+    let stringParser = match(.string) |> { Expression.string($0.string!) }
+
+    let variableParser =
+    match(.variable) <&> <?>(
+      match(.leftParend) &>
+      WrapOld(self, expression) <&& match(.comma)
+      <& match(.rightParend)
+    ) |> makeVariableOrArray
+
+    let predefFunctionParser =
+    match(.predefined) <&>
+    (
+      match(.leftParend) &>
+      WrapOld(self, expression) <&& match(.comma)
+      <& match(.rightParend)
+    )
+    <&| checkPredefinedCall
+    |> makePredefinedFunctionCall
+
+    let udfFunctionParser =
+    (
+      match(.fn) &>
+      match(.variable, "Call to FNx must have letter after FN")
+      <& match(.leftParend)
+    )
+    <&> WrapOld(self, expression)
+    <& match(.rightParend)
+    <&| checkUserDefinedCall
+    |> makeUserDefinedCall
+
+    let factorParser =
+    parenthesizedParser <|> numberParser <|> integerParser <|> stringParser
+    <|> variableParser <|> predefFunctionParser <|> udfFunctionParser
+    <%> "Expected start of expression"
+
     let powerParser =
-    WrapOld(self, factor) <&&> match(.exponent)
+    factorParser <&&> match(.exponent)
     <&| requireFloatTypes
     |> makeBinaryExpression
 
@@ -582,52 +624,6 @@ public class SyntaxAnalyzer {
 
     let (token, right) = tokenRight!
     return .op2(token.type, left, right)
-  }
-
-  func factor() throws -> Expression {
-    let parenthesizedParser =
-    match(.leftParend) &> WrapOld(self, expression) <& match(.rightParend)
-
-    let numberParser = match(.number) |> { Expression.number($0.float) }
-
-    let integerParser = match(.integer) |> { Expression.number($0.float) }
-
-    let stringParser = match(.string) |> { Expression.string($0.string!) }
-
-    let variableParser =
-    match(.variable) <&> <?>(
-      match(.leftParend) &>
-      WrapOld(self, expression) <&& match(.comma)
-      <& match(.rightParend)
-    ) |> makeVariableOrArray
-
-    let predefFunctionParser =
-    match(.predefined) <&>
-    (
-      match(.leftParend) &>
-      WrapOld(self, expression) <&& match(.comma)
-      <& match(.rightParend)
-    )
-    <&| checkPredefinedCall
-    |> makePredefinedFunctionCall
-
-    let udfFunctionParser =
-    (
-      match(.fn) &>
-      match(.variable, "Call to FNx must have letter after FN")
-      <& match(.leftParend)
-    )
-    <&> WrapOld(self, expression)
-    <& match(.rightParend)
-    <&| checkUserDefinedCall
-    |> makeUserDefinedCall
-
-    let factorParser =
-      parenthesizedParser <|> numberParser <|> integerParser <|> stringParser
-    <|> variableParser <|> predefFunctionParser <|> udfFunctionParser
-    <%> "Expected start of expression"
-
-    return try WrapNew(self, factorParser).parse()
   }
 
   func makeNumber(_ token: Token) -> Expression {
