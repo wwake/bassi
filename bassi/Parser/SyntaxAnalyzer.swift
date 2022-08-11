@@ -260,28 +260,39 @@ public class SyntaxAnalyzer {
     return .assign(variable, expr)
   }
 
-  func data() throws -> Statement {
-    nextToken()
-
-    var strings : [String] = []
-
-    guard case .string = token.type else {
-      throw ParseError.error(token, "Expected a data value")
-    }
-    strings.append(token.string)
-    nextToken()
-
-    while token.type == .comma {
-      nextToken()
-
-      guard case .string = token.type else {
-        throw ParseError.error(token, "Expected a data value")
-      }
-      strings.append(token.string)
-      nextToken()
-    }
-
+  func makeData(_ tokens: [Token]) -> Statement {
+    let strings = tokens.map { $0.string! }
     return .data(strings)
+  }
+
+  func data() throws -> Statement {
+    let dataParser =
+      match(.data)
+    &> match(.string, "Expected a data value") <&& match(.comma)
+    |> makeData
+
+    return try WrapNew(self, dataParser).parse()
+//    nextToken()
+//
+//    var strings : [String] = []
+//
+//    guard case .string = token.type else {
+//      throw ParseError.error(token, "Expected a data value")
+//    }
+//    strings.append(token.string)
+//    nextToken()
+//
+//    while token.type == .comma {
+//      nextToken()
+//
+//      guard case .string = token.type else {
+//        throw ParseError.error(token, "Expected a data value")
+//      }
+//      strings.append(token.string)
+//      nextToken()
+//    }
+//
+//    return .data(strings)
   }
 
   func define() throws -> Statement {

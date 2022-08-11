@@ -238,13 +238,13 @@ class ParserTests: XCTestCase {
   func testDataWithoutDataAfterCommaIsError() {
     checkError(
       "25 DATA x,,y",
-      "Expected a data value")
+      "Extra characters at end of line")
   }
 
   func testDataWithoutDataAtEndIsError() {
     checkError(
       "25 DATA x,y,",
-      "Expected a data value")
+      "Extra characters at end of line")
   }
 
   func testGoto() throws {
