@@ -136,11 +136,17 @@ public class SyntaxAnalyzer {
   let tokenNames : [TokenType : String] =
     [
       .leftParend: "'('",
-      .rightParend : "')'"]
+      .rightParend : "')'",
+      .variable: "variable name"
+    ]
 
   func match(_ tokenType: TokenType) -> satisfy<Token> {
-    let message = tokenNames[tokenType] ?? "expected character"
-    return satisfy("Missing \(message)"){ $0.type == tokenType }
+    let tokenDescription = tokenNames[tokenType] ?? "expected character"
+    return match(tokenType, "Missing \(tokenDescription)")
+  }
+
+  func match(_ tokenType: TokenType, _ message: String) -> satisfy<Token> {
+    return satisfy(message) { $0.type == tokenType }
   }
 
   func simpleStatement(_ token: Token) -> Statement {
@@ -726,6 +732,10 @@ public class SyntaxAnalyzer {
     }
 
   fileprivate func userdefinedFunctionCall() throws -> Expression {
+    let udfFunctionParser =
+      match(.fn) &>
+    match(.variable)
+
     nextToken()
 
     guard case .variable = token.type else {
