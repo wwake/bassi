@@ -594,6 +594,16 @@ public class SyntaxAnalyzer {
 
     let stringParser = match(.string) |> { Expression.string($0.string!) }
 
+    let predefFunctionParser =
+    match(.predefined) <&>
+    (
+      match(.leftParend) &>
+      WrapOld(self, expression) <&& match(.comma)
+      <& match(.rightParend)
+    )
+    <&| checkPredefinedCall
+    |> makePredefinedFunctionCall
+
     let udfFunctionParser =
     (
       match(.fn) &>
@@ -616,7 +626,7 @@ public class SyntaxAnalyzer {
     } else if case .variable = token.type {
       return try variable(token.string!)
     } else if case .predefined = token.type {
-      return try predefinedFunctionCall(token.string, token.resultType)
+      return try WrapNew(self, predefFunctionParser).parse()
     } else if case .fn = token.type {
       return try WrapNew(self, udfFunctionParser).parse()
     } else {
