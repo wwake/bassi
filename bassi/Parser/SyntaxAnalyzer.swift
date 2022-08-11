@@ -594,6 +594,13 @@ public class SyntaxAnalyzer {
 
     let stringParser = match(.string) |> { Expression.string($0.string!) }
 
+    let variableParser =
+    match(.variable) <&> <?>(
+      match(.leftParend) &>
+      WrapOld(self, expression) <&& match(.comma)
+      <& match(.rightParend)
+    ) |> makeVariableOrArray
+
     let predefFunctionParser =
     match(.predefined) <&>
     (
@@ -615,23 +622,12 @@ public class SyntaxAnalyzer {
     <&| checkUserDefinedCall
     |> makeUserDefinedCall
 
-    if token.type == .leftParend {
-      return try WrapNew(self, parenthesizedParser).parse()
-    } else if case .number = token.type {
-      return try WrapNew(self, numberParser).parse()
-    } else if case .integer = token.type {
-      return try WrapNew(self, integerParser).parse()
-    } else if case .string = token.type {
-      return try WrapNew(self, stringParser).parse()
-    } else if case .variable = token.type {
-      return try variable(token.string!)
-    } else if case .predefined = token.type {
-      return try WrapNew(self, predefFunctionParser).parse()
-    } else if case .fn = token.type {
-      return try WrapNew(self, udfFunctionParser).parse()
-    } else {
-      throw ParseError.error(token, "Expected start of expression")
-    }
+    let factorParser =
+      parenthesizedParser <|> numberParser <|> integerParser <|> stringParser
+    <|> variableParser <|> predefFunctionParser <|> udfFunctionParser
+    <%> "Expected start of expression"
+
+    return try WrapNew(self, factorParser).parse()
   }
 
   func makeNumber(_ token: Token) -> Expression {
