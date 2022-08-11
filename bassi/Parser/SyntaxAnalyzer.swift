@@ -580,13 +580,15 @@ public class SyntaxAnalyzer {
     let parenthesizedParser =
     match(.leftParend) &> WrapOld(self, expression) <& match(.rightParend)
 
+    let numberParser = match(.number) |> makeNumber
+    let integerParser = match(.integer) |> makeNumber
 
     if token.type == .leftParend {
       return try WrapNew(self, parenthesizedParser).parse()
     } else if case .number = token.type {
-      return numericFactor(token.float)
+      return try WrapNew(self, numberParser).parse()
     } else if case .integer = token.type {
-      return numericFactor(token.float)
+      return try WrapNew(self, integerParser).parse()
     } else if case .string = token.type {
       let text = token.string!
       nextToken()
@@ -602,10 +604,8 @@ public class SyntaxAnalyzer {
     }
   }
 
-  fileprivate func numericFactor(_ floatValue: (Float)) -> Expression {
-    let value = Expression.number(floatValue)
-    nextToken()
-    return value
+  func makeNumber(_ token: Token) -> Expression {
+    return Expression.number(token.float)
   }
 
   fileprivate func variable(_ name: Name) throws -> Expression  {
