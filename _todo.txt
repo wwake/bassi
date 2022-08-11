@@ -1,6 +1,5 @@
-* Expressions
+* Remaining expressions
 * DIM should enforce numeric types for sizes
-
 
 EVO-22-03: August 10, 2022
 * Re-enable testRightParendErrorInDim()
@@ -8,6 +7,7 @@ EVO-22-03: August 10, 2022
 * Pull adapters to separate file
 * New parser for DIM, calling old parser for DimInfo - error handling
 * Make lexer provide line() -> [Token]
+* Expressions
 
 EVO-22-02: August 9, 2022
 * Make WrapOld that calls old parser

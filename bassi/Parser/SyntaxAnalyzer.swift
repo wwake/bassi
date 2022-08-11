@@ -577,8 +577,12 @@ public class SyntaxAnalyzer {
   }
 
   func factor() throws -> Expression {
+    let parenthesizedParser =
+    match(.leftParend) &> WrapOld(self, expression) <& match(.rightParend)
+
+
     if token.type == .leftParend {
-      return try parenthesizedExpression()
+      return try WrapNew(self, parenthesizedParser).parse()
     } else if case .number = token.type {
       return numericFactor(token.float)
     } else if case .integer = token.type {
@@ -596,13 +600,6 @@ public class SyntaxAnalyzer {
     } else {
       throw ParseError.error(token, "Expected start of expression")
     }
-  }
-
-  fileprivate func parenthesizedExpression() throws -> Expression {
-    let parenthesizedParser =
-    match(.leftParend) &> WrapOld(self, expression) <& match(.rightParend)
-
-    return try WrapNew(self, parenthesizedParser).parse()
   }
 
   fileprivate func numericFactor(_ floatValue: (Float)) -> Expression {
