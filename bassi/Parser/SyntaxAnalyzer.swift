@@ -580,8 +580,11 @@ public class SyntaxAnalyzer {
     let parenthesizedParser =
     match(.leftParend) &> WrapOld(self, expression) <& match(.rightParend)
 
-    let numberParser = match(.number) |> makeNumber
-    let integerParser = match(.integer) |> makeNumber
+    let numberParser = match(.number) |> { Expression.number($0.float) }
+
+    let integerParser = match(.integer) |> { Expression.number($0.float) }
+
+    let stringParser = match(.string) |> { Expression.string($0.string!) }
 
     if token.type == .leftParend {
       return try WrapNew(self, parenthesizedParser).parse()
@@ -590,9 +593,7 @@ public class SyntaxAnalyzer {
     } else if case .integer = token.type {
       return try WrapNew(self, integerParser).parse()
     } else if case .string = token.type {
-      let text = token.string!
-      nextToken()
-      return .string(text)
+      return try WrapNew(self, stringParser).parse()
     } else if case .variable = token.type {
       return try variable(token.string!)
     } else if case .predefined = token.type {
