@@ -46,7 +46,7 @@ public class SyntaxAnalyzer {
         ) |> makeVariableOrArray
       variableParser.bind(parser.parse)
 
-      expressionParser = makeExpressionParser()
+      expressionParser.bind(makeExpressionParser().parse)
     }
   }
 
@@ -569,8 +569,7 @@ public class SyntaxAnalyzer {
     <&| requireFloatTypes
     |> makeBinaryExpression
 
-    expressionParser.bind(boolOrParser.parse)
-    return expressionParser
+    return Bind(boolOrParser.parse)
   }
 
   func requireFloatType(_ argument: ([Token], Expression)) -> (Int, String)? {
