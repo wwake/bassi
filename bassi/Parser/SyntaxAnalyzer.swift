@@ -569,7 +569,7 @@ public class SyntaxAnalyzer {
     let expressionParser = Bind<Token, Expression>()
 
     let parenthesizedParser =
-    match(.leftParend) &> WrapOld(self, expression) <& match(.rightParend)
+    match(.leftParend) &> expressionParser <& match(.rightParend)
 
     let numberParser = match(.number) |> { Expression.number($0.float) }
 
@@ -580,7 +580,7 @@ public class SyntaxAnalyzer {
     let variableParser =
     match(.variable) <&> <?>(
       match(.leftParend) &>
-      WrapOld(self, expression) <&& match(.comma)
+      expressionParser <&& match(.comma)
       <& match(.rightParend)
     ) |> makeVariableOrArray
 
