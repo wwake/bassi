@@ -249,7 +249,7 @@ public class SyntaxAnalyzer {
   }
 
   func assign(_ name: String) throws -> Statement {
-    let variable = try variable(name) //try WrapNew(self, variableParser).parse()
+    let variable = try WrapNew(self, variableParser).parse()
 
     try require(.equals, "Assignment is missing '='")
 
@@ -363,8 +363,7 @@ public class SyntaxAnalyzer {
     var variables: [Expression] = []
 
     if case .variable = token.type {
-      let name = token.string!
-      let variable = try variable(name)
+      let variable = try WrapNew(self, variableParser).parse()
       variables.append(variable)
     } else {
       throw ParseError.error(token, "At least one variable is required")
