@@ -174,6 +174,11 @@ public class SyntaxAnalyzer {
   func statement() throws -> Statement {
     let oneWordStatement = oneOf([.end, .remark, .restore, .stop]) |> simpleStatement
 
+    let dataParser =
+    match(.data)
+    &> match(.string, "Expected a data value") <&& match(.comma)
+    |> makeData
+
     let dimStatement =  match(.dim) &> WrapOld(self, dim1) <&& match(.comma) |> { Statement.dim($0) }
 
     do {
@@ -192,7 +197,7 @@ public class SyntaxAnalyzer {
 
     switch token.type {
     case .data:
-      result = try data()
+      result = try WrapNew(self, dataParser).parse()
 
     case .def:
       result = try define()
@@ -272,30 +277,36 @@ public class SyntaxAnalyzer {
     |> makeData
 
     return try WrapNew(self, dataParser).parse()
-//    nextToken()
-//
-//    var strings : [String] = []
-//
-//    guard case .string = token.type else {
-//      throw ParseError.error(token, "Expected a data value")
-//    }
-//    strings.append(token.string)
-//    nextToken()
-//
-//    while token.type == .comma {
-//      nextToken()
-//
-//      guard case .string = token.type else {
-//        throw ParseError.error(token, "Expected a data value")
-//      }
-//      strings.append(token.string)
-//      nextToken()
-//    }
-//
-//    return .data(strings)
+  }
+
+  func checkDefStatement(_ argument: ((Token, Token), Expression)) -> (Int, String)? {
+    return nil
+  }
+
+  func makeDefStatement(_ argument: ((Token, Token), Expression)) -> Statement {
+    return .skip
   }
 
   func define() throws -> Statement {
+    let defPart =
+    match(.def)
+    &> match(.fn, "DEF requires a name of the form FNx")
+    &> match(.variable, "DEF requires a name of the form FNx")
+    <& match(.leftParend)
+
+    let variablePart =
+    match(.variable, "Variable is required")
+    <& match(.rightParend, "DEF requires ')' after parameter")
+    <& match(.equals, "DEF requires '=' after parameter definition")
+
+    let tokens = defPart <&> variablePart
+
+
+    let defineParser =
+    AndThenTuple(tokens, expressionParser)
+    <&| checkDefStatement
+    |> makeDefStatement
+
     nextToken()
 
     try require(.fn, "DEF requires a name of the form FNx")
