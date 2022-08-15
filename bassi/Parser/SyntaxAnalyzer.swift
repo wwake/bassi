@@ -790,26 +790,23 @@ public class SyntaxAnalyzer {
     return .dim(result)
   }
 
-  func dim1() throws -> DimInfo {
-    let arrayName = try requireVariable()
+  func makeDimension(_ argument: (Token, [Expression])) -> DimInfo {
+    let (token, dimensions) = argument
 
-    try require(.leftParend, "Missing '('")
-
-    var dimensions : [Expression] = []
-
-    let expr = try WrapNew(self, expressionParser).parse()
-    dimensions.append(expr)
-
-    while .comma == token.type {
-      nextToken()
-
-      let expr = try WrapNew(self, expressionParser).parse()
-      dimensions.append(expr)
-    }
-
-    try require(.rightParend, "Missing ')'")
-
+    let arrayName = token.string!
     return DimInfo(arrayName, dimensions, typeFor(arrayName))
+  }
+
+  func dim1() throws -> DimInfo {
+    let parser =
+    (match(.variable)
+     <& match(.leftParend)
+    )
+    <&> expressionParser <&& match(.comma)
+    <& match(.rightParend)
+    |> makeDimension
+
+    return try WrapNew(self, parser).parse()
   }
 
   func doFor() throws -> Statement {
