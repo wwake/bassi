@@ -1,10 +1,12 @@
-* New GOSUB parser
+
 * DIM should enforce numeric types for sizes
 
 EVO-22-06: August 15, 2022
 * New DEF parser
 * New DIM parser
 * New FOR parser
+* New GOSUB parser
+* New GOTO parser
 
 EVO-22-05: August 11, 2022
 * New DIM parser

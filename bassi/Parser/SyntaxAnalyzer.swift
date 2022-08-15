@@ -327,15 +327,12 @@ public class SyntaxAnalyzer {
   }
 
   func goto() throws -> Statement {
-    nextToken()
+    let gotoParser =
+    match(.goto)
+    &> match(.integer, "Missing target of GOTO")
+    |> { Statement.goto(LineNumber($0.float)) }
 
-    if case .integer = token.type {
-      let lineNumber = LineNumber(token.float)
-      nextToken()
-      return .goto(lineNumber)
-    }
-    
-    throw ParseError.error(token, "Missing target of GOTO")
+    return try WrapNew(self, gotoParser).parse()
   }
 
   func ifThen() throws -> Statement {
