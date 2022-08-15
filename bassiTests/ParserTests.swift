@@ -662,7 +662,7 @@ class ParserTests: XCTestCase {
   func testFORrequiresVariableEqualsAndTO() {
     checkError(
       "10 FOR 1 TO 10",
-      "Variable is required"
+      "Missing variable name"
     )
     checkError(
       "10 FOR X (1) TO 10",

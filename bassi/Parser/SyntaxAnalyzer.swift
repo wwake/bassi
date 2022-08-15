@@ -791,29 +791,68 @@ public class SyntaxAnalyzer {
     return DimInfo(arrayName, dimensions, typeFor(arrayName))
   }
 
-  func doFor() throws -> Statement {
-    nextToken()
+  func flatten<T1, T2, T3, T4>(_ argument: (((T1, T2), T3), T4)) -> (T1, T2, T3, T4) {
+    let (((t1, t2), t3), t4) = argument
+    return (t1, t2, t3, t4)
+  }
 
-    let variable = try requireVariable()
+  func makeForStatement(_ argument: (((Token, Expression), Expression), Expression?), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Statement> {
+    let (variable, initial, final, stepOptional) = flatten(argument)
 
-    try require(.equals, "'=' is required")
+    let step = stepOptional == nil ? Expression.number(1) : stepOptional!
 
-    let initial = try WrapNew(self, expressionParser).parse()
-    try requireFloatType(initial)
-
-    try require(.to, "'TO' is required")
-
-    let final = try WrapNew(self, expressionParser).parse()
-    try requireFloatType(final)
-
-    var step = Expression.number(1)
-    if token.type == .step {
-      nextToken()
-      step = try WrapNew(self, expressionParser).parse()
+    do {
+      try requireFloatType(initial)
+      try requireFloatType(final)
       try requireFloatType(step)
+    } catch ParseError.error(let token, let message) {
+      return .failure(indexOf(token), message)
+    } catch {
+      return .failure(0, "Can't happen: requireFloatType() failed")
     }
 
-    return .`for`(variable, initial, final, step)
+    let statement = Statement.for(variable.string, initial, final, step)
+    return .success(statement, remaining)
+  }
+
+  func doFor() throws -> Statement {
+    let forParser =
+    (match(.for)
+     &> match(.variable)
+     <& match(.equals, "'=' is required")
+    )
+    <&> expressionParser
+    <&> (
+      match(.to, "'TO' is required")
+      &> expressionParser
+    )
+    <&> <?>(match(.step) &> expressionParser)
+    |&> makeForStatement
+
+    return try WrapNew(self, forParser).parse()
+
+//    nextToken()
+//
+//    let variable = try requireVariable()
+//
+//    try require(.equals, "'=' is required")
+//
+//    let initial = try WrapNew(self, expressionParser).parse()
+//    try requireFloatType(initial)
+//
+//    try require(.to, "'TO' is required")
+//
+//    let final = try WrapNew(self, expressionParser).parse()
+//    try requireFloatType(final)
+//
+//    var step = Expression.number(1)
+//    if token.type == .step {
+//      nextToken()
+//      step = try WrapNew(self, expressionParser).parse()
+//      try requireFloatType(step)
+//    }
+//
+//    return .`for`(variable, initial, final, step)
   }
 
   func doNext() throws -> Statement {
