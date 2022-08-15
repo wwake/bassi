@@ -318,15 +318,12 @@ public class SyntaxAnalyzer {
   }
 
   func gosub() throws -> Statement {
-    nextToken()
+    let gosubParser =
+    match(.gosub)
+    &> match(.integer, "Missing target of GOSUB")
+    |> { Statement.gosub(LineNumber($0.float)) }
 
-    if case .integer = token.type {
-      let lineNumber = LineNumber(token.float)
-      nextToken()
-      return .gosub(lineNumber)
-    }
-
-    throw ParseError.error(token, "Missing target of GOSUB")
+    return try WrapNew(self, gosubParser).parse()
   }
 
   func goto() throws -> Statement {
