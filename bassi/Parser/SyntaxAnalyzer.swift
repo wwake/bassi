@@ -179,16 +179,8 @@ public class SyntaxAnalyzer {
     &> match(.string, "Expected a data value") <&& match(.comma)
     |> makeData
 
-    let dimStatement =  match(.dim) &> WrapOld(self, dim1) <&& match(.comma) |> { Statement.dim($0) }
-
     do {
       return try WrapNew(self, oneWordStatement).parse()
-    } catch {
-      // fall through; let old parser handle it
-    }
-
-    do {
-      return try WrapNew(self, dimStatement).parse()
     } catch {
       // fall through; let old parser handle it
     }
@@ -203,8 +195,7 @@ public class SyntaxAnalyzer {
       result = try define()
 
     case .dim:
-      print("can't happen")
-      result = try dim()
+      return try WrapNew(self, dimParser()).parse()
 
     case .for:
       result = try doFor()
@@ -772,33 +763,8 @@ public class SyntaxAnalyzer {
     return .userdefined("FN" + parameter, expr)
   }
 
-  func dim() throws -> Statement {
-    nextToken()
-
-    var result: [DimInfo] = []
-
-    let dimInfo = try dim1()
-    result.append(dimInfo)
-
-    while token.type == .comma {
-      nextToken()
-      
-      let dimInfo = try dim1()
-      result.append(dimInfo)
-    }
-
-    return .dim(result)
-  }
-
-  func makeDimension(_ argument: (Token, [Expression])) -> DimInfo {
-    let (token, dimensions) = argument
-
-    let arrayName = token.string!
-    return DimInfo(arrayName, dimensions, typeFor(arrayName))
-  }
-
-  func dim1() throws -> DimInfo {
-    let parser =
+  func dimParser() -> Bind<Token, Statement> {
+    let dim1Parser =
     (match(.variable)
      <& match(.leftParend)
     )
@@ -806,7 +772,23 @@ public class SyntaxAnalyzer {
     <& match(.rightParend)
     |> makeDimension
 
-    return try WrapNew(self, parser).parse()
+    let parser =
+    match(.dim)
+    &> dim1Parser <&& match(.comma)
+    |> { Statement.dim($0) }
+
+    return Bind(parser.parse)
+  }
+
+  func dim() throws -> Statement {
+    return try WrapNew(self, dimParser()).parse()
+  }
+
+  func makeDimension(_ argument: (Token, [Expression])) -> DimInfo {
+    let (token, dimensions) = argument
+
+    let arrayName = token.string!
+    return DimInfo(arrayName, dimensions, typeFor(arrayName))
   }
 
   func doFor() throws -> Statement {
