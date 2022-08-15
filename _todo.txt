@@ -1,5 +1,16 @@
-* Remaining expressions
+* New DEF parser
+
 * DIM should enforce numeric types for sizes
+
+EVO-22-06: August 15, 2022
+
+
+EVO-22-05: August 11, 2022
+* New DIM parser
+
+EVO-22-04: August 11, 2022
+* Remaining expressions
+* New parser for uses of variable()
 
 EVO-22-03: August 10, 2022
 * Re-enable testRightParendErrorInDim()

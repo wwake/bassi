@@ -279,12 +279,30 @@ public class SyntaxAnalyzer {
     return try WrapNew(self, dataParser).parse()
   }
 
-  func checkDefStatement(_ argument: ((Token, Token), Expression)) -> (Int, String)? {
-    return nil
-  }
+  func checkDefStatement(_ argument: ((Token, Token), Expression), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Statement> {
+    let (tokens, expr) = argument
+    let (nameToken, parameterToken) = tokens
 
-  func makeDefStatement(_ argument: ((Token, Token), Expression)) -> Statement {
-    return .skip
+    let name = nameToken.string!
+
+    if name.count != 1 {
+      return .failure(indexOf(nameToken),  "DEF function name cannot be followed by extra letters")
+    }
+
+    do {
+      try requireFloatType(expr)
+    } catch ParseError.error(let token, let message) {
+      return .failure(indexOf(token), message)
+    } catch {
+      return .failure(indexOf(parameterToken), "Can't happen: unexpected error in requireFloatType()")
+    }
+
+    let result = Statement.def(
+      "FN"+name,
+      parameterToken.string,
+      expr,
+      .function([.number], .number))
+    return .success(result, remaining)
   }
 
   func define() throws -> Statement {
@@ -301,42 +319,11 @@ public class SyntaxAnalyzer {
 
     let tokens = defPart <&> variablePart
 
-
     let defineParser =
     AndThenTuple(tokens, expressionParser)
-    <&| checkDefStatement
-    |> makeDefStatement
+    |&> checkDefStatement
 
-    nextToken()
-
-    try require(.fn, "DEF requires a name of the form FNx")
-
-    guard case .variable = token.type else {
-      throw ParseError.error(token, "DEF requires a name of the form FNx")
-    }
-    let name = token.string!
-    nextToken()
-
-    if name.count != 1 {
-      throw ParseError.error(token, "DEF function name cannot be followed by extra letters")
-    }
-
-    try require(.leftParend, "Missing '('")
-
-    let parameter = try requireVariable()
-
-    try require(.rightParend, "DEF requires ')' after parameter")
-
-    try require(.equals, "DEF requires '=' after parameter definition")
-
-    let expr = try WrapNew(self, expressionParser).parse()
-    try requireFloatType(expr)
-
-    return .def(
-      "FN"+name,
-      parameter,
-      expr,
-      .function([.number], .number))
+    return try WrapNew(self, defineParser).parse()
   }
 
   func gosub() throws -> Statement {

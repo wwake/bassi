@@ -57,6 +57,8 @@
 		9195174C286CA4DC009BFC5B /* BasicArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9195174B286CA4DC009BFC5B /* BasicArray.swift */; };
 		9195174E286CA9FA009BFC5B /* BasicArrayTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9195174D286CA9FA009BFC5B /* BasicArrayTests.swift */; };
 		91BE90E8283E7CD9004F0CF9 /* ExpressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91BE90E7283E7CD9004F0CF9 /* ExpressionTests.swift */; };
+		91FC122628AA89EB00D2A20A /* ParserCombinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91FC122528AA89EB00D2A20A /* ParserCombinator.swift */; };
+		91FC122A28AA8A5C00D2A20A /* ParserCombinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91FC122928AA8A5C00D2A20A /* ParserCombinatorTests.swift */; };
 		91FD83CA28A1550600232D0B /* pcombo in Frameworks */ = {isa = PBXBuildFile; productRef = 91FD83C928A1550600232D0B /* pcombo */; };
 		91FD83CC28A3F3EB00232D0B /* ParserAdapters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91FD83CB28A3F3EB00232D0B /* ParserAdapters.swift */; };
 /* End PBXBuildFile section */
@@ -135,6 +137,8 @@
 		9195174B286CA4DC009BFC5B /* BasicArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicArray.swift; sourceTree = "<group>"; };
 		9195174D286CA9FA009BFC5B /* BasicArrayTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicArrayTests.swift; sourceTree = "<group>"; };
 		91BE90E7283E7CD9004F0CF9 /* ExpressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionTests.swift; sourceTree = "<group>"; };
+		91FC122528AA89EB00D2A20A /* ParserCombinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParserCombinator.swift; sourceTree = "<group>"; };
+		91FC122928AA8A5C00D2A20A /* ParserCombinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParserCombinatorTests.swift; sourceTree = "<group>"; };
 		91FD83CB28A3F3EB00232D0B /* ParserAdapters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParserAdapters.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -266,6 +270,7 @@
 		9192F7342828B68F00FAFFA1 /* bassi */ = {
 			isa = PBXGroup;
 			children = (
+				91FC122728AA8A2000D2A20A /* PCombo */,
 				9130885D282ABD6300E5C62E /* Lexer */,
 				9130885E282ABD7400E5C62E /* Parser */,
 				9130885F282AC1C400E5C62E /* Interpreter */,
@@ -289,6 +294,7 @@
 		9192F7462828B69000FAFFA1 /* bassiTests */ = {
 			isa = PBXGroup;
 			children = (
+				91FC122828AA8A3700D2A20A /* PCombo */,
 				91308862282D5F6300E5C62E /* Expression+make.swift */,
 				918861C42862182800B7B19C /* Repl+Test.swift */,
 				91BE90E7283E7CD9004F0CF9 /* ExpressionTests.swift */,
@@ -313,6 +319,22 @@
 				9192F7532828B69000FAFFA1 /* bassiUITestsLaunchTests.swift */,
 			);
 			path = bassiUITests;
+			sourceTree = "<group>";
+		};
+		91FC122728AA8A2000D2A20A /* PCombo */ = {
+			isa = PBXGroup;
+			children = (
+				91FC122528AA89EB00D2A20A /* ParserCombinator.swift */,
+			);
+			path = PCombo;
+			sourceTree = "<group>";
+		};
+		91FC122828AA8A3700D2A20A /* PCombo */ = {
+			isa = PBXGroup;
+			children = (
+				91FC122928AA8A5C00D2A20A /* ParserCombinatorTests.swift */,
+			);
+			path = PCombo;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -455,6 +477,7 @@
 			files = (
 				9116576E28295D2A0000D3AA /* Token.swift in Sources */,
 				9130886A282EBA6C00E5C62E /* Repl.swift in Sources */,
+				91FC122628AA89EB00D2A20A /* ParserCombinator.swift in Sources */,
 				91165772282AB0790000D3AA /* Parse.swift in Sources */,
 				9195174C286CA4DC009BFC5B /* BasicArray.swift in Sources */,
 				9116576628295A2B0000D3AA /* Interpreter.swift in Sources */,
@@ -502,6 +525,7 @@
 				9145B1D5287340A8009DB706 /* RemarkTests.swift in Sources */,
 				9145B1E52873465B009DB706 /* _ExpressionTests.swift in Sources */,
 				918861C52862182800B7B19C /* Repl+Test.swift in Sources */,
+				91FC122A28AA8A5C00D2A20A /* ParserCombinatorTests.swift in Sources */,
 				918861BD2858E0DB00B7B19C /* ParserExpressionTests.swift in Sources */,
 				91BE90E8283E7CD9004F0CF9 /* ExpressionTests.swift in Sources */,
 				9145B1D72873414D009DB706 /* PrintTests.swift in Sources */,
