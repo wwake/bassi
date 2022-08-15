@@ -830,29 +830,6 @@ public class SyntaxAnalyzer {
     |&> makeForStatement
 
     return try WrapNew(self, forParser).parse()
-
-//    nextToken()
-//
-//    let variable = try requireVariable()
-//
-//    try require(.equals, "'=' is required")
-//
-//    let initial = try WrapNew(self, expressionParser).parse()
-//    try requireFloatType(initial)
-//
-//    try require(.to, "'TO' is required")
-//
-//    let final = try WrapNew(self, expressionParser).parse()
-//    try requireFloatType(final)
-//
-//    var step = Expression.number(1)
-//    if token.type == .step {
-//      nextToken()
-//      step = try WrapNew(self, expressionParser).parse()
-//      try requireFloatType(step)
-//    }
-//
-//    return .`for`(variable, initial, final, step)
   }
 
   func doNext() throws -> Statement {
