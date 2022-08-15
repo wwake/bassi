@@ -791,13 +791,8 @@ public class SyntaxAnalyzer {
     return DimInfo(arrayName, dimensions, typeFor(arrayName))
   }
 
-  func flatten<T1, T2, T3, T4>(_ argument: (((T1, T2), T3), T4)) -> (T1, T2, T3, T4) {
-    let (((t1, t2), t3), t4) = argument
-    return (t1, t2, t3, t4)
-  }
-
   func makeForStatement(_ argument: (((Token, Expression), Expression), Expression?), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Statement> {
-    let (variable, initial, final, stepOptional) = flatten(argument)
+    let (((variable, initial), final), stepOptional) = argument
 
     let step = stepOptional == nil ? Expression.number(1) : stepOptional!
 
