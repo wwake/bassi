@@ -81,6 +81,7 @@ public class SyntaxAnalyzer {
     nextToken()
   }
 
+  // TODO - DELETE ME when the wrappers go away
   func requireVariable() throws -> String {
     guard case .variable = token.type else {
       throw ParseError.error(token, "Variable is required")
@@ -162,8 +163,8 @@ public class SyntaxAnalyzer {
     return try WrapNew(self, inputParser).parse()
   }
 
-  func oneOf(_ tokens: [TokenType]) -> satisfy<Token> {
-    satisfy { Set(tokens).contains($0.type)}
+  func oneOf(_ tokens: [TokenType], _ message : String = "Expected symbol not found") -> satisfy<Token> {
+    satisfy(message) { Set(tokens).contains($0.type) }
   }
 
   let tokenNames : [TokenType : String] =
@@ -389,43 +390,29 @@ public class SyntaxAnalyzer {
     return try WrapNew(self, ifParser).parse()
   }
 
+  func makeOnStatement(_ argument: ((Expression, Token), [Token])) -> Statement {
+    let ((expr, typeToken), targetTokens) = argument
+
+    let targets = targetTokens.map { LineNumber($0.float) }
+
+    return typeToken.type == .goto
+      ? .onGoto(expr, targets)
+      : .onGosub(expr, targets)
+  }
+
   func on() throws -> Statement {
-    nextToken()
+    let onParser =
+      ( match(.on)
+        &> expressionParser
+      )
+      <&> oneOf([.goto, .gosub], "ON statement requires GOTO or GOSUB")
+      <&> (
+         match(.integer) <&& match(.comma)
+         <%> "ON statement requires comma-separated list of line numbers"
+        )
+      |> makeOnStatement
 
-    let expr = try WrapNew(self, expressionParser).parse()
-
-    let savedToken = token.type
-    if token.type != .goto && token.type != .gosub {
-      throw ParseError.error(token, "ON statement requires GOTO or GOSUB")
-    }
-    nextToken()
-
-    var targets : [LineNumber] = []
-
-    guard case .integer = token.type else {
-      throw ParseError.error(token, "ON requires at least one line number")
-    }
-    let target = LineNumber(token.float)
-    nextToken()
-
-    targets.append(target)
-
-    while token.type == .comma {
-      nextToken()
-
-      guard case .integer = token.type else {
-        throw ParseError.error(token, "ON requires line number after comma")
-      }
-      let target = LineNumber(token.float)
-      nextToken()
-      targets.append(target)
-    }
-
-    if savedToken == .goto {
-      return .onGoto(expr, targets)
-    } else {
-      return .onGosub(expr, targets)
-    }
+    return try WrapNew(self, onParser).parse()
   }
 
   func printStatement() throws -> Statement {
