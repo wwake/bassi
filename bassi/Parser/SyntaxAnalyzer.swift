@@ -34,6 +34,7 @@ public class SyntaxAnalyzer {
 
   var variableParser: Bind<Token, Expression> = Bind()
   var expressionParser : Bind<Token, Expression> = Bind()
+  var commaVariablesParser: Bind<Token, [Expression]> = Bind()
 
   init() {
 
@@ -47,6 +48,11 @@ public class SyntaxAnalyzer {
       variableParser.bind(parser.parse)
 
       expressionParser.bind(makeExpressionParser().parse)
+
+      let commaVariables =
+        variableParser <&& match(.comma)
+        <%> "At least one variable is required"
+      commaVariablesParser.bind(commaVariables.parse)
     }
   }
 
@@ -133,18 +139,32 @@ public class SyntaxAnalyzer {
     return statements
   }
 
+  func makeInputStatement(_ argument: (Token?, [Expression])) -> Statement {
+    let (tokenOptional, exprs) = argument
+
+    let prompt = tokenOptional == nil ? "" : tokenOptional!.string!
+
+    return .input(prompt, exprs)
+  }
+
   fileprivate func doInput() throws -> Statement {
-    nextToken()
+    var defaultPrompt = Token(line: 0, column: 0, type: .string)
+    defaultPrompt.string = ""
 
-    var prompt: String = ""
-    if case .string = token.type {
-      prompt = token.string
-      nextToken()
-      try require(.semicolon, "? Semicolon required after prompt")
-    }
+    let promptPlusVariables =
+      match(.string)
+      <& match(.semicolon, "? Semicolon required after prompt")
+      <&> commaVariablesParser
 
-    let variables = try commaListOfVariables()
-    return .input(prompt, variables)
+    let inputParser =
+    match(.input)
+    &>
+    (    promptPlusVariables
+     <|> inject(defaultPrompt) <&> commaVariablesParser
+    )
+    |> makeInputStatement
+
+    return try WrapNew(self, inputParser).parse()
   }
 
   func oneOf(_ tokens: [TokenType]) -> satisfy<Token> {
@@ -226,7 +246,7 @@ public class SyntaxAnalyzer {
 
     case .read:
       nextToken()
-      let variables = try commaListOfVariables()
+      let variables = try WrapNew(self, commaVariablesParser).parse()
       result = .read(variables)
 
     case .`return`:
@@ -351,30 +371,6 @@ public class SyntaxAnalyzer {
 
     let statements = try statements()
     return .`if`(expr, statements)
-  }
-
-  func commaListOfVariables() throws -> [Expression] {
-    var variables: [Expression] = []
-
-    if case .variable = token.type {
-      let variable = try WrapNew(self, variableParser).parse()
-      variables.append(variable)
-    } else {
-      throw ParseError.error(token, "At least one variable is required")
-    }
-
-    while token.type == .comma {
-      nextToken()
-
-      if case .variable = token.type {
-        let variable = try WrapNew(self, variableParser).parse()
-        variables.append(variable)
-      } else {
-        throw ParseError.error(token, "At least one variable is required")
-      }
-    }
-
-    return variables
   }
 
   func letAssign() throws -> Statement {

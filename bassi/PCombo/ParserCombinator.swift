@@ -39,3 +39,19 @@ infix operator |&> : MultiplicationPrecedence
 public func |&> <P: Parser, Target2>(p: P, fn: @escaping (P.Target, ArraySlice<P.Input>) -> ParseResult<P.Input, Target2>) -> Check2<P, Target2> {
   return Check2(p, fn)
 }
+
+
+public class inject<Input, InjectedValue> : Parser {
+  public typealias Target = InjectedValue
+
+  let value: InjectedValue
+
+  init(_ value: InjectedValue) {
+    self.value = value
+  }
+
+  public func parse(_ input: ArraySlice<Input>) -> ParseResult<Input, Target> {
+    return .success(value, input)
+  }
+}
+

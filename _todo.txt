@@ -1,3 +1,4 @@
+* New INPUT parser
 
 * DIM should enforce numeric types for sizes
 
