@@ -820,10 +820,11 @@ public class SyntaxAnalyzer {
   }
 
   func doNext() throws -> Statement {
-    nextToken()
+    let nextParser =
+      match(.next)
+    &> match(.variable, "Variable is required")
+    |> { Statement.next($0.string) }
 
-    let variable = try requireVariable()
-
-    return .next(variable)
+    return try WrapNew(self, nextParser).parse()
   }
 }
