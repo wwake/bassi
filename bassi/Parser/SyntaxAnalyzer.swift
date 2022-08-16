@@ -238,7 +238,12 @@ public class SyntaxAnalyzer {
       result = try WrapNew(self, letParser).parse()
 
     case .next:
-      result = try doNext()
+      let nextParser =
+        match(.next)
+        &> match(.variable, "Variable is required")
+        |> { Statement.next($0.string) }
+
+      result = try WrapNew(self, nextParser).parse()
 
     case .on:
       result = try on()
@@ -817,14 +822,5 @@ public class SyntaxAnalyzer {
     |&> makeForStatement
 
     return try WrapNew(self, forParser).parse()
-  }
-
-  func doNext() throws -> Statement {
-    let nextParser =
-      match(.next)
-    &> match(.variable, "Variable is required")
-    |> { Statement.next($0.string) }
-
-    return try WrapNew(self, nextParser).parse()
   }
 }
