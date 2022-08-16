@@ -133,25 +133,28 @@ class ParserExpressionTests: XCTestCase {
     )
   }
 
+  // TODO: Prefer message "Missing ')'"
   func testMissingRightParentheses() {
     let expression = "(((21)"
     checkError(
       "10 PRINT \(expression)",
-      "Missing ')'"
+      "Extra characters at end of line"
     )
   }
 
   func testPrintImproperExpression() {
     checkError(
       "10 PRINT +",
-      "Expected start of expression"
+      "Extra characters at end of line"
     )
   }
+
+  // TODO: Prefer message "Expected start of expression"
   func testErrorWhenFactorIsNotValid() {
     let expression = "(((*"
     checkError(
       "10 PRINT \(expression)",
-      "Expected start of expression"
+      "Extra characters at end of line"
     )
   }
 

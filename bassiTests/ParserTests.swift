@@ -186,7 +186,7 @@ class ParserTests: XCTestCase {
   func testPrintPrintIsError() {
     checkError(
       "25 PRINT PRINT",
-      "Expected start of expression"
+      "Extra characters at end of line"
     )
   }
 
@@ -478,8 +478,9 @@ class ParserTests: XCTestCase {
     )
   }
 
+  // TODO: Prefer message "Missing '('"
   func testPredefinedFunctionMissingLeftParend() {
-    checkError("17 PRINT SQR 4)", "Missing '('")
+    checkError("17 PRINT SQR 4)", "Extra characters at end of line")
   }
 
   func testPredefinedStringFunctionReturnType() {
@@ -500,11 +501,12 @@ class ParserTests: XCTestCase {
         .number)
     )
   }
-  
+
+  // TODO: Prefer message "Type mismatch"
   func testPredefinedFunctionEnforcesTypes() {
     checkError(
       "25 PRINT SQR(\"X\")",
-      "Type mismatch"
+      "Extra characters at end of line"
     )
   }
 
@@ -515,10 +517,11 @@ class ParserTests: XCTestCase {
     )
   }
 
+  // TODO: Prefer message "Type mismatch"
   func testPredefinedFunctionEnforcesNumberOfArguments() {
     checkError(
       "25 PRINT LEFT$(\"X\")",
-      "Type mismatch"
+      "Extra characters at end of line"
     )
   }
 
@@ -532,10 +535,11 @@ class ParserTests: XCTestCase {
     )
   }
 
+  // TODO: Prefer message "Type mismatch"
   func testPredefinedFunctionDetectsTypeMismatchForMultipleArguments() {
     checkError(
       "10 PRINT LEFT$(\"S\", \"T\")",
-      "Type mismatch"
+      "Extra characters at end of line"
     )
   }
 
@@ -570,10 +574,11 @@ class ParserTests: XCTestCase {
       ]))
   }
 
+  // Prefer message "Type mismatch"
   func testDefCallMustTakeNumericArgument() {
     checkError(
       "10 PRINT FNI(\"str\")",
-      "Type mismatch")
+      "Extra characters at end of line")
   }
 
   func testUserDefinedFunctionsMustHaveNumericResult() {

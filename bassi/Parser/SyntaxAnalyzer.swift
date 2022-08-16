@@ -411,23 +411,8 @@ public class SyntaxAnalyzer {
       : .onGosub(expr, targets)
   }
 
-  func printStatement() throws -> Statement {
-    nextToken()
-
-    var values: [Printable] = []
-
-    while token.type != .colon && token.type != .eol {
-      if token.type == .semicolon {
-        nextToken()
-        values.append(.thinSpace)
-      } else if token.type == .comma {
-        nextToken()
-        values.append(.tab)
-      } else {
-        let value = try WrapNew(self, expressionParser).parse()
-        values.append(.expr(value))
-      }
-    }
+  func makePrintStatement(_ arguments: [Printable]) -> Statement {
+    var values = arguments
 
     if values.count == 0 {
       return Statement.print([.newline])
@@ -438,6 +423,47 @@ public class SyntaxAnalyzer {
     }
 
     return Statement.print(values)
+  }
+
+  func printStatement() throws -> Statement {
+    let printParser =
+    match(.print)
+    &> <*>(
+    ( match(.semicolon) |> { _ in Printable.thinSpace })
+      <|> (match(.comma) |> { _ in Printable.tab })
+      <|> (expressionParser |> { Printable.expr($0) })
+      <%> "Expected start of expression"
+    )
+    |> makePrintStatement
+
+    return try WrapNew(self, printParser).parse()
+
+//    nextToken()
+//
+//    var values: [Printable] = []
+//
+//    while token.type != .colon && token.type != .eol {
+//      if token.type == .semicolon {
+//        nextToken()
+//        values.append(.thinSpace)
+//      } else if token.type == .comma {
+//        nextToken()
+//        values.append(.tab)
+//      } else {
+//        let value = try WrapNew(self, expressionParser).parse()
+//        values.append(.expr(value))
+//      }
+//    }
+//
+//    if values.count == 0 {
+//      return Statement.print([.newline])
+//    }
+//
+//    if values.last! != .thinSpace && values.last != .tab {
+//      values.append(.newline)
+//    }
+//
+//    return Statement.print(values)
   }
 
   func returnStatement() throws -> Statement {

@@ -1,5 +1,6 @@
-* New LET parser
+* New PRINT parser
 
+* Can we improve messages on TODO tests?
 * Make requireFloatTypes be better - attach to expression & type
 * DIM should enforce numeric types for sizes
 
@@ -7,6 +8,9 @@ EVO-22-07: August 16, 2022
 * New INPUT parser
 * New IF parser
 * New assign() parser
+* New LET parser
+* New NEXT parser
+* New ON parser
 
 EVO-22-06: August 15, 2022
 * New DEF parser
