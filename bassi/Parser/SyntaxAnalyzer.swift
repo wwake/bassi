@@ -355,22 +355,35 @@ public class SyntaxAnalyzer {
     return try WrapNew(self, gotoParser).parse()
   }
 
+  func ifGoto(_ argument: (Expression, Token), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Statement> {
+    let (expr, token) = argument
+    return .success(.ifGoto(expr, LineNumber(token.float!)), remaining)
+  }
+
+  func ifStatements(_ argument: (Expression, [Statement]), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Statement> {
+    let (expr, statements) = argument
+    return .success(.`if`(expr, statements), remaining)
+  }
+
+  func requireFloatType(_ expr: Expression, _ remaining: ArraySlice<Token>) -> ParseResult<Token, Expression> {
+    if expr.type() == .number { return .success(expr, remaining) }
+
+    return .failure(remaining.startIndex, "Numeric type is required")
+  }
+
   func ifThen() throws -> Statement {
-    nextToken()
+    let ifPrefix =
+      match(.if)
+      &> expressionParser
+      <& match(.then, "Missing 'THEN'")
+      |&> requireFloatType
 
-    let expr = try WrapNew(self, expressionParser).parse()
-    try requireFloatType(expr)
-    
-    try require(.then, "Missing 'THEN'")
+    let ifParser =
+      (ifPrefix <&> match(.integer) |&> ifGoto)
+      <|>
+      (ifPrefix <&> WrapOld(self, statements) |&> ifStatements)
 
-    if case .integer = token.type {
-      let target = LineNumber(token.float)
-      nextToken()
-      return .ifGoto(expr, target)
-    }
-
-    let statements = try statements()
-    return .`if`(expr, statements)
+    return try WrapNew(self, ifParser).parse()
   }
 
   func letAssign() throws -> Statement {
