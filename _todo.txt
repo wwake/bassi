@@ -1,4 +1,3 @@
-* New PRINT parser
 
 * Can we improve messages on TODO tests?
 * Make requireFloatTypes be better - attach to expression & type
@@ -11,6 +10,7 @@ EVO-22-07: August 16, 2022
 * New LET parser
 * New NEXT parser
 * New ON parser
+* New PRINT parser
 
 EVO-22-06: August 15, 2022
 * New DEF parser

@@ -264,9 +264,9 @@ public class SyntaxAnalyzer {
       result = try printStatement()
 
     case .read:
-      nextToken()
-      let variables = try WrapNew(self, commaVariablesParser).parse()
-      result = .read(variables)
+      let readParser =
+        match(.read) &> commaVariablesParser |> { Statement.read($0) }
+      result = try WrapNew(self, readParser).parse()
 
     case .`return`:
       result = try returnStatement()
