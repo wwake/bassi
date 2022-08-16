@@ -35,6 +35,7 @@ public class SyntaxAnalyzer {
   var variableParser: Bind<Token, Expression> = Bind()
   var expressionParser : Bind<Token, Expression> = Bind()
   var commaVariablesParser: Bind<Token, [Expression]> = Bind()
+  var assignParser: Bind<Token, Statement> = Bind()
 
   init() {
 
@@ -53,6 +54,15 @@ public class SyntaxAnalyzer {
         variableParser <&& match(.comma)
         <%> "At least one variable is required"
       commaVariablesParser.bind(commaVariables.parse)
+
+      let assign =
+      (  variableParser
+         <& match(.equals, "Assignment is missing '='")
+      ) <&> expressionParser
+      |&> requireMatchingTypes
+      |> { Statement.assign($0.0, $0.1) }
+
+      assignParser.bind(assign.parse)
     }
   }
 
@@ -218,7 +228,14 @@ public class SyntaxAnalyzer {
       result = try doInput()
 
     case .`let`:
-      result = try letAssign()
+      let letParser =
+      match(.let)
+      &> (
+        assignParser
+        <%> "LET is missing variable to assign to"
+      )
+
+      result = try WrapNew(self, letParser).parse()
 
     case .next:
       result = try doNext()
@@ -238,8 +255,7 @@ public class SyntaxAnalyzer {
       result = try returnStatement()
 
     case .variable:
-      let name = token.string
-      result = try assign(name!)
+      result = try WrapNew(self, assignParser).parse()
 
     default:
       nextToken()
@@ -249,16 +265,12 @@ public class SyntaxAnalyzer {
     return result
   }
 
-  func assign(_ name: String) throws -> Statement {
-    let variable = try WrapNew(self, variableParser).parse()
-
-    try require(.equals, "Assignment is missing '='")
-
-    let expr = try WrapNew(self, expressionParser).parse()
-
-    try requireMatchingTypes(variable, expr)
-
-    return .assign(variable, expr)
+  func requireMatchingTypes(_ argument: (Expression, Expression), _ remaining: ArraySlice<Token>) -> ParseResult<Token, (Expression, Expression)> {
+    let (left, right) = argument
+    if left.type() != right.type() {
+      return .failure(remaining.startIndex, "Type mismatch")
+    }
+    return .success(argument, remaining)
   }
 
   func makeData(_ tokens: [Token]) -> Statement {
@@ -370,15 +382,6 @@ public class SyntaxAnalyzer {
           |&> ifStatements)
 
     return try WrapNew(self, ifParser).parse()
-  }
-
-  func letAssign() throws -> Statement {
-    nextToken()
-
-    if case .variable = token.type {
-      return try assign(token.string!)
-    }
-    throw ParseError.error(token, "LET is missing variable to assign to")
   }
 
   func on() throws -> Statement {
