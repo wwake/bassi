@@ -247,7 +247,18 @@ public class SyntaxAnalyzer {
       result = try WrapNew(self, nextParser).parse()
 
     case .on:
-      result = try on()
+      let onParser =
+        ( match(.on)
+          &> expressionParser
+        )
+        <&> oneOf([.goto, .gosub], "ON statement requires GOTO or GOSUB")
+        <&> (
+          match(.integer) <&& match(.comma)
+          <%> "ON statement requires comma-separated list of line numbers"
+        )
+        |> makeOnStatement
+
+      result = try  WrapNew(self, onParser).parse()
 
     case .print:
       result = try printStatement()
@@ -398,21 +409,6 @@ public class SyntaxAnalyzer {
     return typeToken.type == .goto
       ? .onGoto(expr, targets)
       : .onGosub(expr, targets)
-  }
-
-  func on() throws -> Statement {
-    let onParser =
-      ( match(.on)
-        &> expressionParser
-      )
-      <&> oneOf([.goto, .gosub], "ON statement requires GOTO or GOSUB")
-      <&> (
-         match(.integer) <&& match(.comma)
-         <%> "ON statement requires comma-separated list of line numbers"
-        )
-      |> makeOnStatement
-
-    return try WrapNew(self, onParser).parse()
   }
 
   func printStatement() throws -> Statement {
