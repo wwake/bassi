@@ -377,8 +377,7 @@ public class SyntaxAnalyzer {
   }
 
   func checkDefStatement(_ argument: ((Token, Token), Expression), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Statement> {
-    let (tokens, expr) = argument
-    let (nameToken, parameterToken) = tokens
+    let ((nameToken, parameterToken), expr) = argument
 
     let name = nameToken.string!
 
@@ -416,16 +415,16 @@ public class SyntaxAnalyzer {
     name.last! == "$" ? .string : .number
   }
 
-  func requireFloatType(_ expr: Expression, _ remaining: ArraySlice<Token>) -> ParseResult<Token, Expression> {
-    if expr.type() == .number { return .success(expr, remaining) }
-
-    return .failure(remaining.startIndex, "Numeric type is required")
-  }
-
   fileprivate func requireFloatType(_ expr: Expression) throws {
     if expr.type() != .number {
       throw ParseError.error(token, "Numeric type is required")
     }
+  }
+
+  func requireFloatType(_ expr: Expression, _ remaining: ArraySlice<Token>) -> ParseResult<Token, Expression> {
+    if expr.type() == .number { return .success(expr, remaining) }
+
+    return .failure(remaining.startIndex, "Numeric type is required")
   }
 
   func requireFloatType(_ argument: ([Token], Expression)) -> (Int, String)? {
@@ -567,7 +566,6 @@ public class SyntaxAnalyzer {
 
   /// Make expression methods
   func makeBinaryExpression(_ argument: (Expression, [(Token, Expression)])) -> Expression {
-
     let (firstExpr, pairs) = argument
 
     return pairs.reduce(firstExpr) { (leftSoFar, opExpr) in
