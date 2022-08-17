@@ -408,12 +408,6 @@ public class SyntaxAnalyzer {
     name.last! == "$" ? .string : .number
   }
 
-  fileprivate func requireFloatType(_ expr: Expression) throws {
-    if expr.type() != .number {
-      throw ParseError.error(token, "Numeric type is required")
-    }
-  }
-
   func requireFloatType(_ expr: Expression, _ remaining: ArraySlice<Token>) -> ParseResult<Token, Expression> {
     if expr.type() == .number { return .success(expr, remaining) }
 
