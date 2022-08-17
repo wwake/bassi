@@ -100,6 +100,7 @@ public class SyntaxAnalyzer {
 
   func singleLine() -> Parse {
     let result = lineParser.parse(tokens[...])
+
     switch result {
     case .failure(let position, let message):
       let errorLine = tokens[0].type == .integer ? LineNumber(tokens[0].float!) : 0
@@ -610,21 +611,6 @@ public class SyntaxAnalyzer {
     }
 
     return .predefined(name, actualArguments, resultType)
-  }
-
-  fileprivate func predefinedFunctionCall(_ name: Name, _ type: `Type`) throws -> Expression  {
-
-    let predefFunctionParser =
-    match(.predefined) <&>
-    (
-      match(.leftParend) &>
-        expressionParser <&& match(.comma)
-      <& match(.rightParend)
-     )
-    <&| checkPredefinedCall
-    |> makePredefinedFunctionCall
-
-    return try WrapNew(self, predefFunctionParser).parse()
   }
 
   func checkPredefinedCall(_ argument: (Token, [Expression])) -> (Int, String)? {
