@@ -166,7 +166,7 @@ class ParserTests: XCTestCase {
   func testNoLineNumber() {
     checkError(
       "REM remark",
-      "Line number is required; found remark")
+      "Line number is required at start of statement")
   }
 
   func testPrintStatement() {

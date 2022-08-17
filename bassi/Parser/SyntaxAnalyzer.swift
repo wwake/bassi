@@ -115,30 +115,31 @@ public class SyntaxAnalyzer {
 
   func line() throws -> Parse  {
     let lineParser =
-    match(.integer)
+    match(.integer, "Line number is required at start of statement")
     <&> statementParser <&& match(.colon)
     <& match(.eol, "Extra characters at end of line")
     |&> makeLine
 
-    if case .integer = token.type {
-      let lineNumber = LineNumber(token.float)
-      nextToken()
-
-      if lineNumber <= 0 || lineNumber > maxLineNumber {
-        throw ParseError.error(token, "Line number must be between 1 and \(maxLineNumber)")
-      }
-
-      let statementsParser = statementParser <&& match(.colon)
-
-      let statementParse = try WrapNew(self, statementsParser).parse()
-
-      try require(.eol, "Extra characters at end of line")
-
-      return Parse(LineNumber(lineNumber), statementParse)
-    }
-    let errorToken = token.type
-    nextToken()
-    throw ParseError.error(token, "Line number is required; found \(errorToken)")
+    return try WrapNew(self, lineParser).parse()
+//    if case .integer = token.type {
+//      let lineNumber = LineNumber(token.float)
+//      nextToken()
+//
+//      if lineNumber <= 0 || lineNumber > maxLineNumber {
+//        throw ParseError.error(token, "Line number must be between 1 and \(maxLineNumber)")
+//      }
+//
+//      let statementsParser = statementParser <&& match(.colon)
+//
+//      let statementParse = try WrapNew(self, statementsParser).parse()
+//
+//      try require(.eol, "Extra characters at end of line")
+//
+//      return Parse(LineNumber(lineNumber), statementParse)
+//    }
+//    let errorToken = token.type
+//    nextToken()
+//    throw ParseError.error(token, "Line number is required; found \(errorToken)")
   }
 
   func makeInputStatement(_ argument: (Token?, [Expression])) -> Statement {
