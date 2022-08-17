@@ -236,7 +236,12 @@ public class SyntaxAnalyzer {
       result = try doFor()
 
     case .gosub:
-      result = try gosub()
+      let gosubParser =
+      match(.gosub)
+      &> match(.integer, "Missing target of GOSUB")
+      |> { Statement.gosub(LineNumber($0.float)) }
+
+      result = try WrapNew(self, gosubParser).parse()
 
     case .goto:
       result = try goto()
@@ -348,15 +353,6 @@ public class SyntaxAnalyzer {
       expr,
       .function([.number], .number))
     return .success(result, remaining)
-  }
-
-  func gosub() throws -> Statement {
-    let gosubParser =
-    match(.gosub)
-    &> match(.integer, "Missing target of GOSUB")
-    |> { Statement.gosub(LineNumber($0.float)) }
-
-    return try WrapNew(self, gosubParser).parse()
   }
 
   func goto() throws -> Statement {
