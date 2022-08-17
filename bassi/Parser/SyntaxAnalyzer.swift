@@ -36,8 +36,6 @@ public class SyntaxAnalyzer {
   var variableParser: Bind<Token, Expression> = Bind()
   var expressionParser : Bind<Token, Expression> = Bind()
 
-  var commaVariablesParser: Bind<Token, [Expression]> = Bind()
-
   var statementParser: Bind<Token, Statement> = Bind()
 
   init() {
@@ -52,11 +50,6 @@ public class SyntaxAnalyzer {
       variableParser.bind(parser.parse)
 
       expressionParser.bind(makeExpressionParser().parse)
-
-      let commaVariables =
-        variableParser <&& match(.comma)
-        <%> "At least one variable is required"
-      commaVariablesParser.bind(commaVariables.parse)
 
       statementParser.bind(makeStatementParser().parse)
     }
@@ -169,6 +162,11 @@ public class SyntaxAnalyzer {
   }
 
   func makeStatementParser() -> Bind<Token, Statement> {
+    let commaVariablesParser =
+    variableParser <&& match(.comma)
+    <%> "At least one variable is required"
+
+    
     let oneWordStatement = oneOf([.end, .remark, .restore, .return, .stop]) |> simpleStatement
 
 
