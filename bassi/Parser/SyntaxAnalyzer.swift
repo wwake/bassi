@@ -111,7 +111,8 @@ public class SyntaxAnalyzer {
         throw ParseError.error(token, "Line number must be between 1 and \(maxLineNumber)")
       }
 
-      let statementsParser = WrapOld(self, statement) <&& match(.colon)
+
+      let statementsParser = statementParser <&& match(.colon)
 
       let statementParse = try WrapNew(self, statementsParser).parse()
 
@@ -155,10 +156,6 @@ public class SyntaxAnalyzer {
 
   func simpleStatement(_ token: Token) -> Statement {
     tokenToSimpleStatement[token.type]!
-  }
-
-  func statement() throws -> Statement {
-    return try WrapNew(self, statementParser).parse()
   }
 
   func makeStatementParser() -> Bind<Token, Statement> {
