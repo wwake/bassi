@@ -323,65 +323,69 @@ public class SyntaxAnalyzer {
     <|> nextParser
     <|> onParser
     <|> printParser
+    <|> readParser
     <%> "Unknown statement"
 
-    do {
-      return try WrapNew(self, oneWordStatement).parse()
-    } catch {
-      // fall through; let old parser handle it
-    }
+    return try WrapNew(self, statementParser).parse()
 
-    var result: Statement
-
-    switch token.type {
-    case .data:
-      result = try WrapNew(self, dataParser).parse()
-
-    case .def:
-      result = try WrapNew(self, defineParser).parse()
-
-    case .dim:
-      return try WrapNew(self, dimParser).parse()
-
-    case .for:
-      result = try WrapNew(self, forParser).parse()
-
-    case .gosub:
-      result = try WrapNew(self, gosubParser).parse()
-
-    case .goto:
-      result = try WrapNew(self, gotoParser).parse()
-
-    case .`if`:
-      result = try WrapNew(self, ifParser).parse()
-
-    case .input:
-      result = try WrapNew(self, inputParser).parse()
-
-    case .`let`:
-      result = try WrapNew(self, letParser).parse()
-
-    case .next:
-      result = try WrapNew(self, nextParser).parse()
-
-    case .on:
-      result = try  WrapNew(self, onParser).parse()
-
-    case .print:
-      result = try WrapNew(self, printParser).parse()
-
-    case .read:
-      result = try WrapNew(self, readParser).parse()
-
-    case .variable:
-      result = try WrapNew(self, assignParser).parse()
-
-    default:
-      nextToken()
-      throw ParseError.error(token, "Unknown statement")
-    }
-
-    return result
+//    do {
+//      return try WrapNew(self, oneWordStatement).parse()
+//    } catch {
+//      // fall through; let old parser handle it
+//    }
+//
+//
+//    var result: Statement
+//
+//    switch token.type {
+//    case .data:
+//      result = try WrapNew(self, dataParser).parse()
+//
+//    case .def:
+//      result = try WrapNew(self, defineParser).parse()
+//
+//    case .dim:
+//      return try WrapNew(self, dimParser).parse()
+//
+//    case .for:
+//      result = try WrapNew(self, forParser).parse()
+//
+//    case .gosub:
+//      result = try WrapNew(self, gosubParser).parse()
+//
+//    case .goto:
+//      result = try WrapNew(self, gotoParser).parse()
+//
+//    case .`if`:
+//      result = try WrapNew(self, ifParser).parse()
+//
+//    case .input:
+//      result = try WrapNew(self, inputParser).parse()
+//
+//    case .`let`:
+//      result = try WrapNew(self, letParser).parse()
+//
+//    case .next:
+//      result = try WrapNew(self, nextParser).parse()
+//
+//    case .on:
+//      result = try  WrapNew(self, onParser).parse()
+//
+//    case .print:
+//      result = try WrapNew(self, printParser).parse()
+//
+//    case .read:
+//      result = try WrapNew(self, readParser).parse()
+//
+//    case .variable:
+//      result = try WrapNew(self, assignParser).parse()
+//
+//    default:
+//      nextToken()
+//      throw ParseError.error(token, "Unknown statement")
+//    }
+//
+//    return result
   }
 
   func requireMatchingTypes(_ argument: (Expression, Expression), _ remaining: ArraySlice<Token>) -> ParseResult<Token, (Expression, Expression)> {
