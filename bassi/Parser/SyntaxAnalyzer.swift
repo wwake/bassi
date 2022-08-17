@@ -287,7 +287,17 @@ public class SyntaxAnalyzer {
       result = try  WrapNew(self, onParser).parse()
 
     case .print:
-      result = try printStatement()
+      let printParser =
+      match(.print)
+      &> <*>(
+        ( match(.semicolon) |> { _ in Printable.thinSpace })
+        <|> (match(.comma) |> { _ in Printable.tab })
+        <|> (expressionParser |> { Printable.expr($0) })
+        <%> "Expected start of expression"
+      )
+      |> makePrintStatement
+
+      result = try WrapNew(self, printParser).parse()
 
     case .read:
       let readParser =
@@ -411,47 +421,6 @@ public class SyntaxAnalyzer {
     }
 
     return Statement.print(values)
-  }
-
-  func printStatement() throws -> Statement {
-    let printParser =
-    match(.print)
-    &> <*>(
-    ( match(.semicolon) |> { _ in Printable.thinSpace })
-      <|> (match(.comma) |> { _ in Printable.tab })
-      <|> (expressionParser |> { Printable.expr($0) })
-      <%> "Expected start of expression"
-    )
-    |> makePrintStatement
-
-    return try WrapNew(self, printParser).parse()
-
-//    nextToken()
-//
-//    var values: [Printable] = []
-//
-//    while token.type != .colon && token.type != .eol {
-//      if token.type == .semicolon {
-//        nextToken()
-//        values.append(.thinSpace)
-//      } else if token.type == .comma {
-//        nextToken()
-//        values.append(.tab)
-//      } else {
-//        let value = try WrapNew(self, expressionParser).parse()
-//        values.append(.expr(value))
-//      }
-//    }
-//
-//    if values.count == 0 {
-//      return Statement.print([.newline])
-//    }
-//
-//    if values.last! != .thinSpace && values.last != .tab {
-//      values.append(.newline)
-//    }
-//
-//    return Statement.print(values)
   }
 
   func typeFor(_ name: String) -> `Type` {
