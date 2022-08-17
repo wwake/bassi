@@ -210,7 +210,24 @@ public class SyntaxAnalyzer {
       result = try WrapNew(self, dataParser).parse()
 
     case .def:
-      result = try define()
+      let defPart =
+      match(.def)
+      &> match(.fn, "DEF requires a name of the form FNx")
+      &> match(.variable, "DEF requires a name of the form FNx")
+      <& match(.leftParend)
+
+      let variablePart =
+      match(.variable, "Variable is required")
+      <& match(.rightParend, "DEF requires ')' after parameter")
+      <& match(.equals, "DEF requires '=' after parameter definition")
+
+      let tokens = defPart <&> variablePart
+
+      let defineParser =
+      AndThenTuple(tokens, expressionParser)
+      |&> checkDefStatement
+
+      result = try WrapNew(self, defineParser).parse()
 
     case .dim:
       return try WrapNew(self, dimParser()).parse()
@@ -331,27 +348,6 @@ public class SyntaxAnalyzer {
       expr,
       .function([.number], .number))
     return .success(result, remaining)
-  }
-
-  func define() throws -> Statement {
-    let defPart =
-    match(.def)
-    &> match(.fn, "DEF requires a name of the form FNx")
-    &> match(.variable, "DEF requires a name of the form FNx")
-    <& match(.leftParend)
-
-    let variablePart =
-    match(.variable, "Variable is required")
-    <& match(.rightParend, "DEF requires ')' after parameter")
-    <& match(.equals, "DEF requires '=' after parameter definition")
-
-    let tokens = defPart <&> variablePart
-
-    let defineParser =
-    AndThenTuple(tokens, expressionParser)
-    |&> checkDefStatement
-
-    return try WrapNew(self, defineParser).parse()
   }
 
   func gosub() throws -> Statement {
