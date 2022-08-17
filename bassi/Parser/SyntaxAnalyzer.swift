@@ -145,25 +145,6 @@ public class SyntaxAnalyzer {
     return .input(prompt, exprs)
   }
 
-  fileprivate func doInput() throws -> Statement {
-    var defaultPrompt = Token(line: 0, column: 0, type: .string)
-    defaultPrompt.string = ""
-
-    let promptPlusVariables =
-      match(.string)
-      <& match(.semicolon, "? Semicolon required after prompt")
-      <&> commaVariablesParser
-
-    let inputParser =
-    match(.input)
-    &>
-    (    promptPlusVariables
-     <|> inject(defaultPrompt) <&> commaVariablesParser
-    )
-    |> makeInputStatement
-
-    return try WrapNew(self, inputParser).parse()
-  }
 
   func oneOf(_ tokens: [TokenType], _ message : String = "Expected symbol not found") -> satisfy<Token> {
     satisfy(message) { Set(tokens).contains($0.type) }
@@ -255,7 +236,23 @@ public class SyntaxAnalyzer {
       result = try ifThen()
 
     case .input:
-      result = try doInput()
+      var defaultPrompt = Token(line: 0, column: 0, type: .string)
+      defaultPrompt.string = ""
+
+      let promptPlusVariables =
+      match(.string)
+      <& match(.semicolon, "? Semicolon required after prompt")
+      <&> commaVariablesParser
+
+      let inputParser =
+      match(.input)
+      &>
+      (    promptPlusVariables
+           <|> inject(defaultPrompt) <&> commaVariablesParser
+      )
+      |> makeInputStatement
+
+      result = try WrapNew(self, inputParser).parse()
 
     case .`let`:
       let letParser =
