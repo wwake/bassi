@@ -111,7 +111,6 @@ public class SyntaxAnalyzer {
         throw ParseError.error(token, "Line number must be between 1 and \(maxLineNumber)")
       }
 
-
       let statementsParser = statementParser <&& match(.colon)
 
       let statementParse = try WrapNew(self, statementsParser).parse()
@@ -342,15 +341,6 @@ public class SyntaxAnalyzer {
   func makeData(_ tokens: [Token]) -> Statement {
     let strings = tokens.map { $0.string! }
     return .data(strings)
-  }
-
-  func data() throws -> Statement {
-    let dataParser =
-      match(.data)
-    &> match(.string, "Expected a data value") <&& match(.comma)
-    |> makeData
-
-    return try WrapNew(self, dataParser).parse()
   }
 
   func checkDefStatement(_ argument: ((Token, Token), Expression), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Statement> {
