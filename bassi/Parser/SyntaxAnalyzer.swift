@@ -157,8 +157,8 @@ public class SyntaxAnalyzer {
     |> makeBinaryExpression
 
     let negationParser =
-    <*>match(.minus) <&> powerParser
-    <&| requireFloatType
+    powerParser
+    <|> <+>match(.minus) <&> (powerParser |&> requireFloatType)
     |> makeUnaryExpression
 
     let termParser =
@@ -177,8 +177,8 @@ public class SyntaxAnalyzer {
     |> makeRelationalExpression
 
     let boolNotParser =
-    <*>match(.not) <&> relationalParser
-    <&| requireFloatType
+    relationalParser
+    <|> <+>match(.not) <&> (relationalParser |&> requireFloatType)
     |> makeUnaryExpression
 
     let boolAndParser =
@@ -412,13 +412,6 @@ public class SyntaxAnalyzer {
     if expr.type() == .number { return .success(expr, remaining) }
 
     return .failure(remaining.startIndex, "Numeric type is required")
-  }
-
-  func requireFloatType(_ argument: ([Token], Expression)) -> (Int, String)? {
-    let (tokens, expr) = argument
-    if tokens.isEmpty { return nil }
-    if expr.type() == .number { return nil }
-    return (indexOf(tokens.last!), "Numeric type is required")
   }
 
   fileprivate func requireFloatTypes(
