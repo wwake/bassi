@@ -253,6 +253,46 @@ public class SyntaxAnalyzer {
     |> makeInputStatement
 
 
+    let letParser =
+    match(.let)
+    &> (
+      assignParser
+      <%> "LET is missing variable to assign to"
+    )
+
+
+    let nextParser =
+    match(.next)
+    &> match(.variable, "Variable is required")
+    |> { Statement.next($0.string) }
+
+
+    let onParser =
+    ( match(.on)
+      &> expressionParser
+    )
+    <&> oneOf([.goto, .gosub], "ON statement requires GOTO or GOSUB")
+    <&> (
+      match(.integer) <&& match(.comma)
+      <%> "ON statement requires comma-separated list of line numbers"
+    )
+    |> makeOnStatement
+
+    
+    let printParser =
+    match(.print)
+    &> <*>(
+      ( match(.semicolon) |> { _ in Printable.thinSpace })
+      <|> (match(.comma) |> { _ in Printable.tab })
+      <|> (expressionParser |> { Printable.expr($0) })
+      <%> "Expected start of expression"
+    )
+    |> makePrintStatement
+
+
+    let readParser =
+    match(.read) &> commaVariablesParser |> { Statement.read($0) }
+
 
     do {
       return try WrapNew(self, oneWordStatement).parse()
@@ -288,53 +328,18 @@ public class SyntaxAnalyzer {
       result = try WrapNew(self, inputParser).parse()
 
     case .`let`:
-      let letParser =
-      match(.let)
-      &> (
-        assignParser
-        <%> "LET is missing variable to assign to"
-      )
-
       result = try WrapNew(self, letParser).parse()
 
     case .next:
-      let nextParser =
-        match(.next)
-        &> match(.variable, "Variable is required")
-        |> { Statement.next($0.string) }
-
       result = try WrapNew(self, nextParser).parse()
 
     case .on:
-      let onParser =
-        ( match(.on)
-          &> expressionParser
-        )
-        <&> oneOf([.goto, .gosub], "ON statement requires GOTO or GOSUB")
-        <&> (
-          match(.integer) <&& match(.comma)
-          <%> "ON statement requires comma-separated list of line numbers"
-        )
-        |> makeOnStatement
-
       result = try  WrapNew(self, onParser).parse()
 
     case .print:
-      let printParser =
-      match(.print)
-      &> <*>(
-        ( match(.semicolon) |> { _ in Printable.thinSpace })
-        <|> (match(.comma) |> { _ in Printable.tab })
-        <|> (expressionParser |> { Printable.expr($0) })
-        <%> "Expected start of expression"
-      )
-      |> makePrintStatement
-
       result = try WrapNew(self, printParser).parse()
 
     case .read:
-      let readParser =
-        match(.read) &> commaVariablesParser |> { Statement.read($0) }
       result = try WrapNew(self, readParser).parse()
 
     case .variable:
