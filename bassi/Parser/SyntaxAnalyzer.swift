@@ -244,7 +244,12 @@ public class SyntaxAnalyzer {
       result = try WrapNew(self, gosubParser).parse()
 
     case .goto:
-      result = try goto()
+      let gotoParser =
+      match(.goto)
+      &> match(.integer, "Missing target of GOTO")
+      |> { Statement.goto(LineNumber($0.float)) }
+
+      result = try WrapNew(self, gotoParser).parse()
 
     case .`if`:
       result = try ifThen()
@@ -353,15 +358,6 @@ public class SyntaxAnalyzer {
       expr,
       .function([.number], .number))
     return .success(result, remaining)
-  }
-
-  func goto() throws -> Statement {
-    let gotoParser =
-    match(.goto)
-    &> match(.integer, "Missing target of GOTO")
-    |> { Statement.goto(LineNumber($0.float)) }
-
-    return try WrapNew(self, gotoParser).parse()
   }
 
   func ifGoto(_ argument: (Expression, Token), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Statement> {
