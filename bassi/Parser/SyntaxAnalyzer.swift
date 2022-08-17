@@ -37,7 +37,6 @@ public class SyntaxAnalyzer {
   var expressionParser : Bind<Token, Expression> = Bind()
 
   var commaVariablesParser: Bind<Token, [Expression]> = Bind()
-  var assignParser: Bind<Token, Statement> = Bind()
 
   var statementParser: Bind<Token, Statement> = Bind()
 
@@ -58,15 +57,6 @@ public class SyntaxAnalyzer {
         variableParser <&& match(.comma)
         <%> "At least one variable is required"
       commaVariablesParser.bind(commaVariables.parse)
-
-      let assign =
-      (  variableParser
-         <& match(.equals, "Assignment is missing '='")
-      ) <&> expressionParser
-      |&> requireMatchingTypes
-      |> { Statement.assign($0.0, $0.1) }
-
-      assignParser.bind(assign.parse)
 
       statementParser.bind(makeStatementParser().parse)
     }
@@ -180,6 +170,15 @@ public class SyntaxAnalyzer {
 
   func makeStatementParser() -> Bind<Token, Statement> {
     let oneWordStatement = oneOf([.end, .remark, .restore, .return, .stop]) |> simpleStatement
+
+
+    let assignParser =
+    (  variableParser
+       <& match(.equals, "Assignment is missing '='")
+    ) <&> expressionParser
+    |&> requireMatchingTypes
+    |> { Statement.assign($0.0, $0.1) }
+
 
     let dataParser =
     match(.data)
