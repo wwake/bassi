@@ -39,6 +39,8 @@ public class SyntaxAnalyzer {
   var commaVariablesParser: Bind<Token, [Expression]> = Bind()
   var assignParser: Bind<Token, Statement> = Bind()
 
+  var statementParser: Bind<Token, Statement> = Bind()
+
   init() {
 
     defer {
@@ -65,6 +67,8 @@ public class SyntaxAnalyzer {
       |> { Statement.assign($0.0, $0.1) }
 
       assignParser.bind(assign.parse)
+
+      statementParser.bind(makeStatementParser().parse)
     }
   }
 
@@ -171,6 +175,10 @@ public class SyntaxAnalyzer {
   }
 
   func statement() throws -> Statement {
+    return try WrapNew(self, statementParser).parse()
+  }
+
+  func makeStatementParser() -> Bind<Token, Statement> {
     let oneWordStatement = oneOf([.end, .remark, .restore, .return, .stop]) |> simpleStatement
 
     let dataParser =
@@ -326,66 +334,7 @@ public class SyntaxAnalyzer {
     <|> readParser
     <%> "Unknown statement"
 
-    return try WrapNew(self, statementParser).parse()
-
-//    do {
-//      return try WrapNew(self, oneWordStatement).parse()
-//    } catch {
-//      // fall through; let old parser handle it
-//    }
-//
-//
-//    var result: Statement
-//
-//    switch token.type {
-//    case .data:
-//      result = try WrapNew(self, dataParser).parse()
-//
-//    case .def:
-//      result = try WrapNew(self, defineParser).parse()
-//
-//    case .dim:
-//      return try WrapNew(self, dimParser).parse()
-//
-//    case .for:
-//      result = try WrapNew(self, forParser).parse()
-//
-//    case .gosub:
-//      result = try WrapNew(self, gosubParser).parse()
-//
-//    case .goto:
-//      result = try WrapNew(self, gotoParser).parse()
-//
-//    case .`if`:
-//      result = try WrapNew(self, ifParser).parse()
-//
-//    case .input:
-//      result = try WrapNew(self, inputParser).parse()
-//
-//    case .`let`:
-//      result = try WrapNew(self, letParser).parse()
-//
-//    case .next:
-//      result = try WrapNew(self, nextParser).parse()
-//
-//    case .on:
-//      result = try  WrapNew(self, onParser).parse()
-//
-//    case .print:
-//      result = try WrapNew(self, printParser).parse()
-//
-//    case .read:
-//      result = try WrapNew(self, readParser).parse()
-//
-//    case .variable:
-//      result = try WrapNew(self, assignParser).parse()
-//
-//    default:
-//      nextToken()
-//      throw ParseError.error(token, "Unknown statement")
-//    }
-//
-//    return result
+    return Bind(statementParser.parse)
   }
 
   func requireMatchingTypes(_ argument: (Expression, Expression), _ remaining: ArraySlice<Token>) -> ParseResult<Token, (Expression, Expression)> {
