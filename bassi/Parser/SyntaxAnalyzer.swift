@@ -25,6 +25,13 @@ public class SyntaxAnalyzer {
 
   let relops: [TokenType] = [.equals, .lessThan, .lessThanOrEqualTo, .notEqual, .greaterThan, .greaterThanOrEqualTo]
 
+  let tokenNames : [TokenType : String] =
+  [
+    .leftParend: "'('",
+    .rightParend : "')'",
+    .variable: "variable name"
+  ]
+
   let tokenToSimpleStatement: [TokenType : Statement] = [
     .end : .end,
     .remark : .skip,
@@ -68,6 +75,19 @@ public class SyntaxAnalyzer {
     return tokens.firstIndex(of: token)!
   }
 
+  func oneOf(_ tokens: [TokenType], _ message : String = "Expected symbol not found") -> satisfy<Token> {
+    satisfy(message) { Set(tokens).contains($0.type) }
+  }
+
+  func match(_ tokenType: TokenType) -> satisfy<Token> {
+    let tokenDescription = tokenNames[tokenType] ?? "expected character"
+    return match(tokenType, "Missing \(tokenDescription)")
+  }
+
+  func match(_ tokenType: TokenType, _ message: String) -> satisfy<Token> {
+    return satisfy(message) { $0.type == tokenType }
+  }
+
   func parse(_ input: String) -> Parse {
     lexer = Lexer(input)
 
@@ -91,29 +111,89 @@ public class SyntaxAnalyzer {
     }
   }
 
-  func oneOf(_ tokens: [TokenType], _ message : String = "Expected symbol not found") -> satisfy<Token> {
-    satisfy(message) { Set(tokens).contains($0.type) }
-  }
-
-  let tokenNames : [TokenType : String] =
-    [
-      .leftParend: "'('",
-      .rightParend : "')'",
-      .variable: "variable name"
-    ]
-
-  func match(_ tokenType: TokenType) -> satisfy<Token> {
-    let tokenDescription = tokenNames[tokenType] ?? "expected character"
-    return match(tokenType, "Missing \(tokenDescription)")
-  }
-
-  func match(_ tokenType: TokenType, _ message: String) -> satisfy<Token> {
-    return satisfy(message) { $0.type == tokenType }
-  }
-
   func simpleStatement(_ token: Token) -> Statement {
     tokenToSimpleStatement[token.type]!
   }
+
+  func makeExpressionParser() -> Bind<Token, Expression> {
+    let parenthesizedParser =
+    match(.leftParend) &> expressionParser <& match(.rightParend)
+
+    let numberParser = match(.number) |> { Expression.number($0.float) }
+
+    let integerParser = match(.integer) |> { Expression.number($0.float) }
+
+    let stringParser = match(.string) |> { Expression.string($0.string!) }
+
+    let predefFunctionParser =
+    match(.predefined) <&>
+    (
+      match(.leftParend) &>
+      expressionParser <&& match(.comma)
+      <& match(.rightParend)
+    )
+    <&| checkPredefinedCall
+    |> makePredefinedFunctionCall
+
+    let udfFunctionParser =
+    (
+      match(.fn) &>
+      match(.variable, "Call to FNx must have letter after FN")
+      <& match(.leftParend)
+    )
+    <&> expressionParser
+    <& match(.rightParend)
+    <&| checkUserDefinedCall
+    |> makeUserDefinedCall
+
+    let factorParser =
+    parenthesizedParser <|> numberParser <|> integerParser <|> stringParser
+    <|> variableParser <|> predefFunctionParser <|> udfFunctionParser
+    <%> "Expected start of expression"
+
+    let powerParser =
+    factorParser <&&> match(.exponent)
+    <&| requireFloatTypes
+    |> makeBinaryExpression
+
+    let negationParser =
+    <*>match(.minus) <&> powerParser
+    <&| requireFloatType
+    |> makeUnaryExpression
+
+    let termParser =
+    negationParser <&&> (match(.times) <|> match(.divide))
+    <&| requireFloatTypes
+    |> makeBinaryExpression
+
+    let subexprParser =
+    termParser <&&> (match(.plus) <|> match(.minus))
+    <&| requireFloatTypes
+    |> makeBinaryExpression
+
+    let relationalParser =
+    subexprParser <&> <?>(oneOf(relops) <&> subexprParser)
+    <&| requireMatchingTypes
+    |> makeRelationalExpression
+
+    let boolNotParser =
+    <*>match(.not) <&> relationalParser
+    <&| requireFloatType
+    |> makeUnaryExpression
+
+    let boolAndParser =
+    boolNotParser <&&> match(.and)
+    <&| requireFloatTypes
+    |> makeBinaryExpression
+
+    let boolOrParser =
+    boolAndParser <&&> match(.or)
+    <&| requireFloatTypes
+    |> makeBinaryExpression
+
+    return Bind(boolOrParser.parse)
+  }
+
 
   func makeStatementParser() -> Bind<Token, Statement> {
     let commaVariablesParser =
@@ -332,20 +412,27 @@ public class SyntaxAnalyzer {
     return .success(.`if`(expr, statements), remaining)
   }
 
+  func typeFor(_ name: String) -> `Type` {
+    name.last! == "$" ? .string : .number
+  }
+
   func requireFloatType(_ expr: Expression, _ remaining: ArraySlice<Token>) -> ParseResult<Token, Expression> {
     if expr.type() == .number { return .success(expr, remaining) }
 
     return .failure(remaining.startIndex, "Numeric type is required")
   }
 
-  func typeFor(_ name: String) -> `Type` {
-    name.last! == "$" ? .string : .number
-  }
-
   fileprivate func requireFloatType(_ expr: Expression) throws {
     if expr.type() != .number {
       throw ParseError.error(token, "Numeric type is required")
     }
+  }
+
+  func requireFloatType(_ argument: ([Token], Expression)) -> (Int, String)? {
+    let (tokens, expr) = argument
+    if tokens.isEmpty { return nil }
+    if expr.type() == .number { return nil }
+    return (indexOf(tokens.last!), "Numeric type is required")
   }
 
   fileprivate func requireFloatTypes(
@@ -363,92 +450,6 @@ public class SyntaxAnalyzer {
         throw ParseError.error(token, "Type mismatch")
       }
     }
-
-  func makeExpressionParser() -> Bind<Token, Expression> {
-    let parenthesizedParser =
-    match(.leftParend) &> expressionParser <& match(.rightParend)
-
-    let numberParser = match(.number) |> { Expression.number($0.float) }
-
-    let integerParser = match(.integer) |> { Expression.number($0.float) }
-
-    let stringParser = match(.string) |> { Expression.string($0.string!) }
-
-    let predefFunctionParser =
-    match(.predefined) <&>
-    (
-      match(.leftParend) &>
-      expressionParser <&& match(.comma)
-      <& match(.rightParend)
-    )
-    <&| checkPredefinedCall
-    |> makePredefinedFunctionCall
-
-    let udfFunctionParser =
-    (
-      match(.fn) &>
-      match(.variable, "Call to FNx must have letter after FN")
-      <& match(.leftParend)
-    )
-    <&> expressionParser
-    <& match(.rightParend)
-    <&| checkUserDefinedCall
-    |> makeUserDefinedCall
-
-    let factorParser =
-    parenthesizedParser <|> numberParser <|> integerParser <|> stringParser
-    <|> variableParser <|> predefFunctionParser <|> udfFunctionParser
-    <%> "Expected start of expression"
-
-    let powerParser =
-    factorParser <&&> match(.exponent)
-    <&| requireFloatTypes
-    |> makeBinaryExpression
-
-    let negationParser =
-    <*>match(.minus) <&> powerParser
-    <&| requireFloatType
-    |> makeUnaryExpression
-
-    let termParser =
-    negationParser <&&> (match(.times) <|> match(.divide))
-    <&| requireFloatTypes
-    |> makeBinaryExpression
-
-    let subexprParser =
-    termParser <&&> (match(.plus) <|> match(.minus))
-    <&| requireFloatTypes
-    |> makeBinaryExpression
-
-    let relationalParser =
-    subexprParser <&> <?>(oneOf(relops) <&> subexprParser)
-    <&| requireMatchingTypes
-    |> makeRelationalExpression
-
-    let boolNotParser =
-    <*>match(.not) <&> relationalParser
-    <&| requireFloatType
-    |> makeUnaryExpression
-
-    let boolAndParser =
-    boolNotParser <&&> match(.and)
-    <&| requireFloatTypes
-    |> makeBinaryExpression
-
-    let boolOrParser =
-    boolAndParser <&&> match(.or)
-    <&| requireFloatTypes
-    |> makeBinaryExpression
-
-    return Bind(boolOrParser.parse)
-  }
-
-  func requireFloatType(_ argument: ([Token], Expression)) -> (Int, String)? {
-    let (tokens, expr) = argument
-    if tokens.isEmpty { return nil }
-    if expr.type() == .number { return nil }
-    return (indexOf(tokens.last!), "Numeric type is required")
-  }
 
   func requireMatchingTypes(_ argument: (Expression, (Token, Expression)?)) -> (Int, String)? {
     let (left, tokenRight) = argument
@@ -700,7 +701,4 @@ public class SyntaxAnalyzer {
 
     return Statement.print(values)
   }
-
-
-
 }
