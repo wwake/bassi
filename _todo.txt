@@ -1,4 +1,6 @@
 * Unify all the requireFloatTypes() methods to newer check style
+* Unify all the requireMatchingTypes() methods to newer check style
+* Delete unused "token" field
 * Can we improve messages on TODO tests?
 
 * DIM should enforce numeric types for sizes
