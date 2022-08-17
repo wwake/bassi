@@ -304,10 +304,6 @@ public class SyntaxAnalyzer {
         match(.read) &> commaVariablesParser |> { Statement.read($0) }
       result = try WrapNew(self, readParser).parse()
 
-    case .`return`:
-      nextToken()
-      result = .`return`
-
     case .variable:
       result = try WrapNew(self, assignParser).parse()
 
