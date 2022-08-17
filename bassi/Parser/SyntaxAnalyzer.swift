@@ -422,24 +422,6 @@ public class SyntaxAnalyzer {
       }
     }
 
-  fileprivate func requireMatchingTypes(
-    _ left: Expression,
-    _ right: Expression) throws {
-      if left.type() != right.type() {
-        throw ParseError.error(token, "Type mismatch")
-      }
-    }
-
-  func requireMatchingTypes(_ argument: (Expression, (Token, Expression)?)) -> (Int, String)? {
-    let (left, tokenRight) = argument
-    if tokenRight == nil { return nil }
-
-    let (token, right) = tokenRight!
-    if left.type() == right.type() { return nil }
-
-    return (indexOf(token), "Type mismatch")
-  }
-
   func requireFloatTypes(_ argument: (Expression, [(Token, Expression)])) -> (Int, String)? {
 
     let (firstExpr, pairs) = argument
@@ -457,6 +439,25 @@ public class SyntaxAnalyzer {
     if failureIndex == nil { return nil }
 
     return (indexOf(pairs[failureIndex!].0), "Type mismatch")
+  }
+
+
+  fileprivate func requireMatchingTypes(
+    _ left: Expression,
+    _ right: Expression) throws {
+      if left.type() != right.type() {
+        throw ParseError.error(token, "Type mismatch")
+      }
+    }
+
+  func requireMatchingTypes(_ argument: (Expression, (Token, Expression)?)) -> (Int, String)? {
+    let (left, tokenRight) = argument
+    if tokenRight == nil { return nil }
+
+    let (token, right) = tokenRight!
+    if left.type() == right.type() { return nil }
+
+    return (indexOf(token), "Type mismatch")
   }
 
   func makeUnaryExpression(_ argument: ([Token], Expression)) -> Expression {

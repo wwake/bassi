@@ -1,4 +1,4 @@
-* Make requireFloatTypes be better - attach to expression & type
+* Unify all the requireFloatTypes() methods to newer check style
 * Can we improve messages on TODO tests?
 
 * DIM should enforce numeric types for sizes
@@ -10,6 +10,7 @@ EVO-22-08: August 17, 2022
 * Replace statements, statement, & line with new-style parser
 * Make singleLine() deal with new-style failure
 * Delete the wrappers (yay!)
+* Make requireFloatTypes be better - attach to expression & type - only use the newest check style
 
 EVO-22-07: August 16, 2022
 * New INPUT parser
