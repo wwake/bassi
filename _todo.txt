@@ -1,4 +1,4 @@
-* Make singleLine() deal with new-style failure
+* Delete the wrappers (yay!)
 * Can we improve messages on TODO tests?
 * Make requireFloatTypes be better - attach to expression & type
 * DIM should enforce numeric types for sizes
@@ -7,6 +7,7 @@
 EVO-22-08: August 17, 2022
 * New RETURN parser
 * Replace statements, statement, & line with new-style parser
+* Make singleLine() deal with new-style failure
 
 EVO-22-07: August 16, 2022
 * New INPUT parser

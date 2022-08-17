@@ -60,7 +60,6 @@
 		91FC122628AA89EB00D2A20A /* ParserCombinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91FC122528AA89EB00D2A20A /* ParserCombinator.swift */; };
 		91FC122A28AA8A5C00D2A20A /* ParserCombinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91FC122928AA8A5C00D2A20A /* ParserCombinatorTests.swift */; };
 		91FD83CA28A1550600232D0B /* pcombo in Frameworks */ = {isa = PBXBuildFile; productRef = 91FD83C928A1550600232D0B /* pcombo */; };
-		91FD83CC28A3F3EB00232D0B /* ParserAdapters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91FD83CB28A3F3EB00232D0B /* ParserAdapters.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -139,7 +138,6 @@
 		91BE90E7283E7CD9004F0CF9 /* ExpressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionTests.swift; sourceTree = "<group>"; };
 		91FC122528AA89EB00D2A20A /* ParserCombinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParserCombinator.swift; sourceTree = "<group>"; };
 		91FC122928AA8A5C00D2A20A /* ParserCombinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParserCombinatorTests.swift; sourceTree = "<group>"; };
-		91FD83CB28A3F3EB00232D0B /* ParserAdapters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParserAdapters.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -183,7 +181,6 @@
 			children = (
 				91165771282AB0790000D3AA /* Parse.swift */,
 				91165773282AB1030000D3AA /* SyntaxAnalyzer.swift */,
-				91FD83CB28A3F3EB00232D0B /* ParserAdapters.swift */,
 			);
 			path = Parser;
 			sourceTree = "<group>";
@@ -492,7 +489,6 @@
 				9145B1F52875D715009DB706 /* Type+defaultValue.swift in Sources */,
 				9192F7362828B68F00FAFFA1 /* bassiApp.swift in Sources */,
 				91165774282AB1030000D3AA /* SyntaxAnalyzer.swift in Sources */,
-				91FD83CC28A3F3EB00232D0B /* ParserAdapters.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
