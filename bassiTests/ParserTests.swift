@@ -515,12 +515,11 @@ class ParserTests: XCTestCase {
       "Extra characters at end of line")
   }
 
-  // TODO: We'd prefer error message back to "Numeric type is required"
   func testUserDefinedFunctionsMustHaveNumericResult() {
     checkError("""
 10 DEF FNA(Y)="string"
 """,
-      "Unknown statement")
+      "Numeric type is required")
   }
 
   func testDIMNumber() {
@@ -629,6 +628,12 @@ class ParserTests: XCTestCase {
       "Extra characters at end of line"
     )
   }
+
+  // "a" "a" <|> "a" "b" <%> "unknown start"
+  // "a" <?>"a" <|> "a" "b" <%> "xx"
+  // "FOR" ("STEP" number |&> check <|> empty)
+  // error productions -
+  //   ("FOR" STEP expression |&> check) <|> FOR STEP expression <|> "FOR"
 
   func testNEXTwithVariable() {
     checkOneStatement(

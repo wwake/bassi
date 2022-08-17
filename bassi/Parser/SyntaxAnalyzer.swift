@@ -232,7 +232,7 @@ public class SyntaxAnalyzer {
     let tokens = defPart <&> variablePart
 
     let defineParser =
-    AndThenTuple(tokens, expressionParser)
+    AndThenTuple(tokens, expressionParser |&> requireFloatType)
     |&> checkDefStatement
 
 
@@ -384,14 +384,6 @@ public class SyntaxAnalyzer {
 
     if name.count != 1 {
       return .failure(indexOf(nameToken),  "DEF function name cannot be followed by extra letters")
-    }
-
-    do {
-      try requireFloatType(expr)
-    } catch ParseError.error(let token, let message) {
-      return .failure(indexOf(token), message)
-    } catch {
-      return .failure(indexOf(parameterToken), "Can't happen: unexpected error in requireFloatType()")
     }
 
     let result = Statement.def(

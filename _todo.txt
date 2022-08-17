@@ -3,6 +3,7 @@
 
 * DIM should enforce numeric types for sizes
 * Needed to call AndThen directly
+* For alternatives, should default message apply if they all got equally far?
 
 EVO-22-08: August 17, 2022
 * New RETURN parser
