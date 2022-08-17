@@ -255,12 +255,13 @@ public class SyntaxAnalyzer {
      &> match(.variable)
      <& match(.equals, "'=' is required")
     )
-    <&> expressionParser
+    <&> (expressionParser |&> requireFloatType)
     <&> (
       match(.to, "'TO' is required")
       &> expressionParser
+      |&> requireFloatType
     )
-    <&> <?>(match(.step) &> expressionParser)
+    <&> <?>(match(.step) &> expressionParser |&> requireFloatType)
     |&> makeForStatement
 
 
@@ -642,16 +643,6 @@ public class SyntaxAnalyzer {
     let (((variable, initial), final), stepOptional) = argument
 
     let step = stepOptional == nil ? Expression.number(1) : stepOptional!
-
-    do {
-      try requireFloatType(initial)
-      try requireFloatType(final)
-      try requireFloatType(step)
-    } catch ParseError.error(let token, let message) {
-      return .failure(indexOf(token), message)
-    } catch {
-      return .failure(0, "Can't happen: requireFloatType() failed")
-    }
 
     let statement = Statement.for(variable.string, initial, final, step)
     return .success(statement, remaining)

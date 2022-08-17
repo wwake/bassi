@@ -614,19 +614,19 @@ class ParserTests: XCTestCase {
     )
   }
 
-  // TODO: We'd prefer message "Numeric type is required"
+  // TODO: We'd prefer "Numeric type is required" for illegal STEP
   func testFORrequiresNumericExpressions() {
     checkError(
       "10 FOR X=\"string\" TO 10",
-      "Unknown statement"
+      "Numeric type is required"
     )
     checkError(
       "10 FOR X=1 TO \"10\"",
-      "Unknown statement"
+      "Numeric type is required"
     )
     checkError(
       "10 FOR X = 1 TO 10 STEP \"X\"",
-      "Unknown statement"
+      "Extra characters at end of line"
     )
   }
 
