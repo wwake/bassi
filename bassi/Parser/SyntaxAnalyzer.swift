@@ -178,6 +178,26 @@ public class SyntaxAnalyzer {
     &> match(.string, "Expected a data value") <&& match(.comma)
     |> makeData
 
+
+    let defPart =
+    match(.def)
+    &> match(.fn, "DEF requires a name of the form FNx")
+    &> match(.variable, "DEF requires a name of the form FNx")
+    <& match(.leftParend)
+
+    let variablePart =
+    match(.variable, "Variable is required")
+    <& match(.rightParend, "DEF requires ')' after parameter")
+    <& match(.equals, "DEF requires '=' after parameter definition")
+
+    let tokens = defPart <&> variablePart
+
+    let defineParser =
+    AndThenTuple(tokens, expressionParser)
+    |&> checkDefStatement
+
+
+
     do {
       return try WrapNew(self, oneWordStatement).parse()
     } catch {
@@ -191,30 +211,26 @@ public class SyntaxAnalyzer {
       result = try WrapNew(self, dataParser).parse()
 
     case .def:
-      let defPart =
-      match(.def)
-      &> match(.fn, "DEF requires a name of the form FNx")
-      &> match(.variable, "DEF requires a name of the form FNx")
-      <& match(.leftParend)
-
-      let variablePart =
-      match(.variable, "Variable is required")
-      <& match(.rightParend, "DEF requires ')' after parameter")
-      <& match(.equals, "DEF requires '=' after parameter definition")
-
-      let tokens = defPart <&> variablePart
-
-      let defineParser =
-      AndThenTuple(tokens, expressionParser)
-      |&> checkDefStatement
-
       result = try WrapNew(self, defineParser).parse()
 
     case .dim:
       return try WrapNew(self, dimParser()).parse()
 
     case .for:
-      result = try doFor()
+      let forParser =
+      (match(.for)
+       &> match(.variable)
+       <& match(.equals, "'=' is required")
+      )
+      <&> expressionParser
+      <&> (
+        match(.to, "'TO' is required")
+        &> expressionParser
+      )
+      <&> <?>(match(.step) &> expressionParser)
+      |&> makeForStatement
+
+      result = try WrapNew(self, forParser).parse()
 
     case .gosub:
       let gosubParser =
@@ -758,22 +774,5 @@ public class SyntaxAnalyzer {
 
     let statement = Statement.for(variable.string, initial, final, step)
     return .success(statement, remaining)
-  }
-
-  func doFor() throws -> Statement {
-    let forParser =
-    (match(.for)
-     &> match(.variable)
-     <& match(.equals, "'=' is required")
-    )
-    <&> expressionParser
-    <&> (
-      match(.to, "'TO' is required")
-      &> expressionParser
-    )
-    <&> <?>(match(.step) &> expressionParser)
-    |&> makeForStatement
-
-    return try WrapNew(self, forParser).parse()
   }
 }
