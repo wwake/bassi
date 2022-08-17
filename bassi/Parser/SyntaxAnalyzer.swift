@@ -233,7 +233,19 @@ public class SyntaxAnalyzer {
       result = try WrapNew(self, gotoParser).parse()
 
     case .`if`:
-      result = try ifThen()
+      let ifPrefix =
+      match(.if)
+      &> expressionParser
+      <& match(.then, "Missing 'THEN'")
+      |&> requireFloatType
+
+      let ifParser =
+      (ifPrefix <&> match(.integer) |&> ifGoto)
+      <|>
+      (ifPrefix <&> WrapOld(self, statement) <&& match(.colon)
+       |&> ifStatements)
+
+      result = try WrapNew(self, ifParser).parse()
 
     case .input:
       var defaultPrompt = Token(line: 0, column: 0, type: .string)
@@ -377,22 +389,6 @@ public class SyntaxAnalyzer {
     if expr.type() == .number { return .success(expr, remaining) }
 
     return .failure(remaining.startIndex, "Numeric type is required")
-  }
-
-  func ifThen() throws -> Statement {
-    let ifPrefix =
-      match(.if)
-      &> expressionParser
-      <& match(.then, "Missing 'THEN'")
-      |&> requireFloatType
-
-    let ifParser =
-      (ifPrefix <&> match(.integer) |&> ifGoto)
-      <|>
-      (ifPrefix <&> WrapOld(self, statement) <&& match(.colon)
-          |&> ifStatements)
-
-    return try WrapNew(self, ifParser).parse()
   }
 
   func makeOnStatement(_ argument: ((Expression, Token), [Token])) -> Statement {
