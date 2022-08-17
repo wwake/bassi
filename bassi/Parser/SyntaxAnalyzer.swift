@@ -79,16 +79,6 @@ public class SyntaxAnalyzer {
     nextToken()
   }
 
-  // TODO - DELETE ME when the wrappers go away
-  func requireVariable() throws -> String {
-    guard case .variable = token.type else {
-      throw ParseError.error(token, "Variable is required")
-    }
-    let variable = token.string!
-    nextToken()
-    return variable
-  }
-
   func parse(_ input: String) -> Parse {
     lexer = Lexer(input)
 
