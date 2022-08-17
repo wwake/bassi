@@ -166,7 +166,7 @@ public class SyntaxAnalyzer {
     variableParser <&& match(.comma)
     <%> "At least one variable is required"
 
-    
+
     let oneWordStatement = oneOf([.end, .remark, .restore, .return, .stop]) |> simpleStatement
 
 
@@ -251,7 +251,7 @@ public class SyntaxAnalyzer {
     let ifParser =
     (ifPrefix <&> match(.integer) |&> ifGoto)
     <|>
-    (ifPrefix <&> WrapOld(self, statement) <&& match(.colon)
+    (ifPrefix <&> statementParser <&& match(.colon)
      |&> ifStatements)
 
 
