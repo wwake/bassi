@@ -37,21 +37,30 @@ public class SyntaxAnalyzer {
   var expressionParser : Bind<Token, Expression> = Bind()
 
   var statementParser: Bind<Token, Statement> = Bind()
+  var lineParser: Bind<Token, Parse> = Bind()
 
   init() {
 
     defer {
-      let parser =
+      let varOrArray =
         match(.variable) <&> <?>(
           match(.leftParend) &>
           expressionParser <&& match(.comma)
           <& match(.rightParend)
         ) |> makeVariableOrArray
-      variableParser.bind(parser.parse)
+      variableParser.bind(varOrArray.parse)
 
       expressionParser.bind(makeExpressionParser().parse)
 
       statementParser.bind(makeStatementParser().parse)
+
+      let line =
+      match(.integer, "Line number is required at start of statement")
+      <&> statementParser <&& match(.colon)
+      <& match(.eol, "Extra characters at end of line")
+      |&> makeLine
+
+      lineParser.bind(line.parse)
     }
   }
 
@@ -91,12 +100,6 @@ public class SyntaxAnalyzer {
 
   func singleLine() -> Parse {
     do {
-      let lineParser =
-      match(.integer, "Line number is required at start of statement")
-      <&> statementParser <&& match(.colon)
-      <& match(.eol, "Extra characters at end of line")
-      |&> makeLine
-
       return try WrapNew(self, lineParser).parse()
     } catch {
       if case .error(let errorToken, let message) = error as! ParseError {
