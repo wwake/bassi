@@ -197,6 +197,20 @@ public class SyntaxAnalyzer {
     |&> checkDefStatement
 
 
+    let dim1Parser =
+    (match(.variable)
+     <& match(.leftParend)
+    )
+    <&> expressionParser <&& match(.comma)
+    <& match(.rightParend)
+    |> makeDimension
+
+    let dimParser =
+    match(.dim)
+    &> dim1Parser <&& match(.comma)
+    |> { Statement.dim($0) }
+
+
     let forParser =
     (match(.for)
      &> match(.variable)
@@ -278,7 +292,7 @@ public class SyntaxAnalyzer {
     )
     |> makeOnStatement
 
-    
+
     let printParser =
     match(.print)
     &> <*>(
@@ -293,6 +307,23 @@ public class SyntaxAnalyzer {
     let readParser =
     match(.read) &> commaVariablesParser |> { Statement.read($0) }
 
+
+    let statementParser =
+    oneWordStatement
+    <|> assignParser
+    <|> dataParser
+    <|> defineParser
+    <|> dimParser
+    <|> forParser
+    <|> gosubParser
+    <|> gotoParser
+    <|> ifParser
+    <|> inputParser
+    <|> letParser
+    <|> nextParser
+    <|> onParser
+    <|> printParser
+    <%> "Unknown statement"
 
     do {
       return try WrapNew(self, oneWordStatement).parse()
@@ -310,7 +341,7 @@ public class SyntaxAnalyzer {
       result = try WrapNew(self, defineParser).parse()
 
     case .dim:
-      return try WrapNew(self, dimParser()).parse()
+      return try WrapNew(self, dimParser).parse()
 
     case .for:
       result = try WrapNew(self, forParser).parse()
@@ -737,27 +768,6 @@ public class SyntaxAnalyzer {
     let (token, expr) = argument
     let parameter = token.string!
     return .userdefined("FN" + parameter, expr)
-  }
-
-  func dimParser() -> Bind<Token, Statement> {
-    let dim1Parser =
-    (match(.variable)
-     <& match(.leftParend)
-    )
-    <&> expressionParser <&& match(.comma)
-    <& match(.rightParend)
-    |> makeDimension
-
-    let parser =
-    match(.dim)
-    &> dim1Parser <&& match(.comma)
-    |> { Statement.dim($0) }
-
-    return Bind(parser.parse)
-  }
-
-  func dim() throws -> Statement {
-    return try WrapNew(self, dimParser()).parse()
   }
 
   func makeDimension(_ argument: (Token, [Expression])) -> DimInfo {
