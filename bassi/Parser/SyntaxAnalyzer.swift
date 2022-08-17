@@ -102,7 +102,24 @@ public class SyntaxAnalyzer {
     }
   }
 
+  func makeLine(_ argument: (Token, [Statement]), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Parse> {
+    let (token, statements) = argument
+
+    let lineNumber = LineNumber(token.float)
+    if lineNumber <= 0 || lineNumber > maxLineNumber {
+      return .failure(indexOf(token)+1, "Line number must be between 1 and \(maxLineNumber)")
+    }
+
+    return .success(Parse(LineNumber(lineNumber), statements), remaining)
+  }
+
   func line() throws -> Parse  {
+    let lineParser =
+    match(.integer)
+    <&> statementParser <&& match(.colon)
+    <& match(.eol, "Extra characters at end of line")
+    |&> makeLine
+
     if case .integer = token.type {
       let lineNumber = LineNumber(token.float)
       nextToken()
