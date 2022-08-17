@@ -29,6 +29,7 @@ public class SyntaxAnalyzer {
     .end : .end,
     .remark : .skip,
     .restore : .restore,
+    .return : .return,
     .stop : .stop
   ]
 
@@ -189,7 +190,7 @@ public class SyntaxAnalyzer {
   }
 
   func statement() throws -> Statement {
-    let oneWordStatement = oneOf([.end, .remark, .restore, .stop]) |> simpleStatement
+    let oneWordStatement = oneOf([.end, .remark, .restore, .return, .stop]) |> simpleStatement
 
     let dataParser =
     match(.data)
