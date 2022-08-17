@@ -99,15 +99,15 @@ public class SyntaxAnalyzer {
   }
 
   func singleLine() -> Parse {
-    do {
-      return try WrapNew(self, lineParser).parse()
-    } catch {
-      if case .error(let errorToken, let message) = error as! ParseError {
-        return Parse(
-          errorToken.line,
-          [.error(errorToken.line, errorToken.column, message)])
-      }
-      return Parse(0, [.error(0, 0, "\(error)")])
+    let result = lineParser.parse(tokens[...])
+    switch result {
+    case .failure(let position, let message):
+      let errorLine = tokens[0].type == .integer ? LineNumber(tokens[0].float!) : 0
+      let errorColumn = tokens[position].column
+      return Parse(errorLine, [.error(errorLine, errorColumn, message)])
+
+    case .success(let parse, _):
+      return parse
     }
   }
 
