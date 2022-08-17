@@ -3,6 +3,10 @@
 * Can we improve messages on TODO tests?
 * Make requireFloatTypes be better - attach to expression & type
 * DIM should enforce numeric types for sizes
+* Needed to call AndThen directly
+
+EVO-22-08: August 17, 2022
+
 
 EVO-22-07: August 16, 2022
 * New INPUT parser

@@ -34,6 +34,7 @@ public class SyntaxAnalyzer {
 
   var variableParser: Bind<Token, Expression> = Bind()
   var expressionParser : Bind<Token, Expression> = Bind()
+
   var commaVariablesParser: Bind<Token, [Expression]> = Bind()
   var assignParser: Bind<Token, Statement> = Bind()
 
@@ -269,7 +270,8 @@ public class SyntaxAnalyzer {
       result = try WrapNew(self, readParser).parse()
 
     case .`return`:
-      result = try returnStatement()
+      nextToken()
+      result = .`return`
 
     case .variable:
       result = try WrapNew(self, assignParser).parse()
@@ -464,11 +466,6 @@ public class SyntaxAnalyzer {
 //    }
 //
 //    return Statement.print(values)
-  }
-
-  func returnStatement() throws -> Statement {
-    nextToken()
-    return .`return`
   }
 
   func typeFor(_ name: String) -> `Type` {
