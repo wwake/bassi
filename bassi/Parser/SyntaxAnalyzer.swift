@@ -197,6 +197,62 @@ public class SyntaxAnalyzer {
     |&> checkDefStatement
 
 
+    let forParser =
+    (match(.for)
+     &> match(.variable)
+     <& match(.equals, "'=' is required")
+    )
+    <&> expressionParser
+    <&> (
+      match(.to, "'TO' is required")
+      &> expressionParser
+    )
+    <&> <?>(match(.step) &> expressionParser)
+    |&> makeForStatement
+
+
+    let gosubParser =
+    match(.gosub)
+    &> match(.integer, "Missing target of GOSUB")
+    |> { Statement.gosub(LineNumber($0.float)) }
+
+
+    let gotoParser =
+    match(.goto)
+    &> match(.integer, "Missing target of GOTO")
+    |> { Statement.goto(LineNumber($0.float)) }
+
+
+    let ifPrefix =
+    match(.if)
+    &> expressionParser
+    <& match(.then, "Missing 'THEN'")
+    |&> requireFloatType
+
+    let ifParser =
+    (ifPrefix <&> match(.integer) |&> ifGoto)
+    <|>
+    (ifPrefix <&> WrapOld(self, statement) <&& match(.colon)
+     |&> ifStatements)
+
+
+    var defaultPrompt = Token(line: 0, column: 0, type: .string)
+    defaultPrompt.string = ""
+
+    let promptPlusVariables =
+    match(.string)
+    <& match(.semicolon, "? Semicolon required after prompt")
+    <&> commaVariablesParser
+
+    let inputParser =
+    match(.input)
+    &>
+    (    promptPlusVariables
+         <|> inject(defaultPrompt) <&> commaVariablesParser
+    )
+    |> makeInputStatement
+
+
 
     do {
       return try WrapNew(self, oneWordStatement).parse()
@@ -217,69 +273,18 @@ public class SyntaxAnalyzer {
       return try WrapNew(self, dimParser()).parse()
 
     case .for:
-      let forParser =
-      (match(.for)
-       &> match(.variable)
-       <& match(.equals, "'=' is required")
-      )
-      <&> expressionParser
-      <&> (
-        match(.to, "'TO' is required")
-        &> expressionParser
-      )
-      <&> <?>(match(.step) &> expressionParser)
-      |&> makeForStatement
-
       result = try WrapNew(self, forParser).parse()
 
     case .gosub:
-      let gosubParser =
-      match(.gosub)
-      &> match(.integer, "Missing target of GOSUB")
-      |> { Statement.gosub(LineNumber($0.float)) }
-
       result = try WrapNew(self, gosubParser).parse()
 
     case .goto:
-      let gotoParser =
-      match(.goto)
-      &> match(.integer, "Missing target of GOTO")
-      |> { Statement.goto(LineNumber($0.float)) }
-
       result = try WrapNew(self, gotoParser).parse()
 
     case .`if`:
-      let ifPrefix =
-      match(.if)
-      &> expressionParser
-      <& match(.then, "Missing 'THEN'")
-      |&> requireFloatType
-
-      let ifParser =
-      (ifPrefix <&> match(.integer) |&> ifGoto)
-      <|>
-      (ifPrefix <&> WrapOld(self, statement) <&& match(.colon)
-       |&> ifStatements)
-
       result = try WrapNew(self, ifParser).parse()
 
     case .input:
-      var defaultPrompt = Token(line: 0, column: 0, type: .string)
-      defaultPrompt.string = ""
-
-      let promptPlusVariables =
-      match(.string)
-      <& match(.semicolon, "? Semicolon required after prompt")
-      <&> commaVariablesParser
-
-      let inputParser =
-      match(.input)
-      &>
-      (    promptPlusVariables
-           <|> inject(defaultPrompt) <&> commaVariablesParser
-      )
-      |> makeInputStatement
-
       result = try WrapNew(self, inputParser).parse()
 
     case .`let`:
