@@ -64,19 +64,8 @@ public class SyntaxAnalyzer {
     }
   }
 
-  func nextToken() {
-    index += 1
-  }
-
   fileprivate func indexOf(_ token: Token) -> Array<Token>.Index {
     return tokens.firstIndex(of: token)!
-  }
-
-  fileprivate func require(_ expected: TokenType, _ message: String) throws {
-    if token.type != expected {
-      throw ParseError.error(token, message)
-    }
-    nextToken()
   }
 
   func parse(_ input: String) -> Parse {
@@ -101,26 +90,6 @@ public class SyntaxAnalyzer {
       return parse
     }
   }
-
-  func makeLine(_ argument: (Token, [Statement]), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Parse> {
-    let (token, statements) = argument
-
-    let lineNumber = LineNumber(token.float)
-    if lineNumber <= 0 || lineNumber > maxLineNumber {
-      return .failure(indexOf(token)+1, "Line number must be between 1 and \(maxLineNumber)")
-    }
-
-    return .success(Parse(LineNumber(lineNumber), statements), remaining)
-  }
-
-  func makeInputStatement(_ argument: (Token?, [Expression])) -> Statement {
-    let (tokenOptional, exprs) = argument
-
-    let prompt = tokenOptional == nil ? "" : tokenOptional!.string!
-
-    return .input(prompt, exprs)
-  }
-
 
   func oneOf(_ tokens: [TokenType], _ message : String = "Expected symbol not found") -> satisfy<Token> {
     satisfy(message) { Set(tokens).contains($0.type) }
@@ -327,11 +296,6 @@ public class SyntaxAnalyzer {
     return .success(argument, remaining)
   }
 
-  func makeData(_ tokens: [Token]) -> Statement {
-    let strings = tokens.map { $0.string! }
-    return .data(strings)
-  }
-
   func checkDefStatement(_ argument: ((Token, Token), Expression), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Statement> {
     let (tokens, expr) = argument
     let (nameToken, parameterToken) = tokens
@@ -372,30 +336,6 @@ public class SyntaxAnalyzer {
     if expr.type() == .number { return .success(expr, remaining) }
 
     return .failure(remaining.startIndex, "Numeric type is required")
-  }
-
-  func makeOnStatement(_ argument: ((Expression, Token), [Token])) -> Statement {
-    let ((expr, typeToken), targetTokens) = argument
-
-    let targets = targetTokens.map { LineNumber($0.float) }
-
-    return typeToken.type == .goto
-      ? .onGoto(expr, targets)
-      : .onGosub(expr, targets)
-  }
-
-  func makePrintStatement(_ arguments: [Printable]) -> Statement {
-    var values = arguments
-
-    if values.count == 0 {
-      return Statement.print([.newline])
-    }
-
-    if values.last! != .thinSpace && values.last != .tab {
-      values.append(.newline)
-    }
-
-    return Statement.print(values)
   }
 
   func typeFor(_ name: String) -> `Type` {
@@ -550,59 +490,6 @@ public class SyntaxAnalyzer {
     }
   }
 
-  func makeBinaryExpression(_ argument: (Expression, [(Token, Expression)])) -> Expression {
-
-    let (firstExpr, pairs) = argument
-
-    return pairs.reduce(firstExpr) { (leftSoFar, opExpr) in
-        let (token, right) = opExpr
-        return .op2(token.type, leftSoFar, right)
-    }
-  }
-
-  func makeRelationalExpression(_ argument: (Expression, (Token, Expression)?)) -> Expression {
-    let (left, tokenRight) = argument
-    if tokenRight == nil { return left }
-
-    let (token, right) = tokenRight!
-    return .op2(token.type, left, right)
-  }
-
-  func makeNumber(_ token: Token) -> Expression {
-    return Expression.number(token.float)
-  }
-
-  func makeVariableOrArray(_ argument: (Token, [Expression]?)) -> Expression {
-    let (token, exprs) = argument
-
-    let name = token.string!
-    let type : `Type` = name.last! == "$" ? .string : .number
-
-    if exprs == nil {
-      return .variable(name, type)
-    }
-
-    return .arrayAccess(name, type, exprs!)
-  }
-
-  func makePredefinedFunctionCall(_ argument: (Token, [Expression])) -> Expression {
-    let (token, exprs) = argument
-
-    let name = token.string!
-    let type = token.resultType
-
-    guard case .function(let parameterTypes, let resultType) = type else {
-      return .missing // can't happen
-    }
-
-    var actualArguments = exprs
-    while actualArguments.count < parameterTypes.count {
-      actualArguments.append(.missing)
-    }
-
-    return .predefined(name, actualArguments, resultType)
-  }
-
   func checkPredefinedCall(_ argument: (Token, [Expression])) -> (Int, String)? {
     let (token, exprs) = argument
 
@@ -661,6 +548,8 @@ public class SyntaxAnalyzer {
       return false
     }
 
+
+
   func checkUserDefinedCall(_ argument: (Token, Expression)) -> (Int, String)? {
     let (token, expr) = argument
 
@@ -675,10 +564,72 @@ public class SyntaxAnalyzer {
     return nil
   }
 
+  /// Make expression methods
+  func makeBinaryExpression(_ argument: (Expression, [(Token, Expression)])) -> Expression {
+
+    let (firstExpr, pairs) = argument
+
+    return pairs.reduce(firstExpr) { (leftSoFar, opExpr) in
+      let (token, right) = opExpr
+      return .op2(token.type, leftSoFar, right)
+    }
+  }
+
+  func makeNumber(_ token: Token) -> Expression {
+    return Expression.number(token.float)
+  }
+
+  func makePredefinedFunctionCall(_ argument: (Token, [Expression])) -> Expression {
+    let (token, exprs) = argument
+
+    let name = token.string!
+    let type = token.resultType
+
+    guard case .function(let parameterTypes, let resultType) = type else {
+      return .missing // can't happen
+    }
+
+    var actualArguments = exprs
+    while actualArguments.count < parameterTypes.count {
+      actualArguments.append(.missing)
+    }
+
+    return .predefined(name, actualArguments, resultType)
+  }
+
+  func makeRelationalExpression(_ argument: (Expression, (Token, Expression)?)) -> Expression {
+    let (left, tokenRight) = argument
+    if tokenRight == nil { return left }
+
+    let (token, right) = tokenRight!
+    return .op2(token.type, left, right)
+  }
+
   func makeUserDefinedCall(_ argument: (Token, Expression)) -> Expression {
     let (token, expr) = argument
     let parameter = token.string!
     return .userdefined("FN" + parameter, expr)
+  }
+
+  func makeVariableOrArray(_ argument: (Token, [Expression]?)) -> Expression {
+    let (token, exprs) = argument
+
+    let name = token.string!
+    let type : `Type` = name.last! == "$" ? .string : .number
+
+    if exprs == nil {
+      return .variable(name, type)
+    }
+
+    return .arrayAccess(name, type, exprs!)
+  }
+
+
+  /// Make statement methods
+
+  func makeData(_ tokens: [Token]) -> Statement {
+    let strings = tokens.map { $0.string! }
+    return .data(strings)
   }
 
   func makeDimension(_ argument: (Token, [Expression])) -> DimInfo {
@@ -706,4 +657,50 @@ public class SyntaxAnalyzer {
     let statement = Statement.for(variable.string, initial, final, step)
     return .success(statement, remaining)
   }
+
+  func makeInputStatement(_ argument: (Token?, [Expression])) -> Statement {
+    let (tokenOptional, exprs) = argument
+
+    let prompt = tokenOptional == nil ? "" : tokenOptional!.string!
+
+    return .input(prompt, exprs)
+  }
+
+  func makeLine(_ argument: (Token, [Statement]), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Parse> {
+    let (token, statements) = argument
+
+    let lineNumber = LineNumber(token.float)
+    if lineNumber <= 0 || lineNumber > maxLineNumber {
+      return .failure(indexOf(token)+1, "Line number must be between 1 and \(maxLineNumber)")
+    }
+
+    return .success(Parse(LineNumber(lineNumber), statements), remaining)
+  }
+
+  func makeOnStatement(_ argument: ((Expression, Token), [Token])) -> Statement {
+    let ((expr, typeToken), targetTokens) = argument
+
+    let targets = targetTokens.map { LineNumber($0.float) }
+
+    return typeToken.type == .goto
+    ? .onGoto(expr, targets)
+    : .onGosub(expr, targets)
+  }
+
+  func makePrintStatement(_ arguments: [Printable]) -> Statement {
+    var values = arguments
+
+    if values.count == 0 {
+      return Statement.print([.newline])
+    }
+
+    if values.last! != .thinSpace && values.last != .tab {
+      values.append(.newline)
+    }
+
+    return Statement.print(values)
+  }
+
+
+
 }
