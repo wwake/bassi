@@ -364,6 +364,10 @@ public class SyntaxAnalyzer {
     return Bind(statementParser.parse)
   }
 
+  func typeFor(_ name: String) -> `Type` {
+    name.last! == "$" ? .string : .number
+  }
+
   func checkDefStatement(_ argument: ((Token, Token), Expression), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Statement> {
     let ((nameToken, parameterToken), expr) = argument
 
@@ -379,10 +383,6 @@ public class SyntaxAnalyzer {
       expr,
       .function([.number], .number))
     return .success(result, remaining)
-  }
-
-  func typeFor(_ name: String) -> `Type` {
-    name.last! == "$" ? .string : .number
   }
 
   func requireFloatType(_ expr: Expression, _ remaining: ArraySlice<Token>) -> ParseResult<Token, Expression> {
@@ -450,30 +450,17 @@ public class SyntaxAnalyzer {
 
       try zip(parameterTypes, arguments)
         .forEach { (parameterType, argument) in
-          if !isCompatible(parameterType, argument.type()) {
+          if !isCompatible(argument.type(), parameterType) {
             throw ParseError.error(token, "Type mismatch")
           }
         }
     }
 
   fileprivate func isCompatible(
-    _ parameterType: `Type`,
-    _ argumentType: `Type`) -> Bool {
-      if parameterType == argumentType {
-        return true
-      }
-      if case .opt(let innerType) = parameterType {
-        if innerType == argumentType {
-          return true
-        }
-        if argumentType == .missing {
-          return true
-        }
-      }
-      return false
+    _ argumentType: `Type`,
+    _ parameterType: `Type`) -> Bool {
+      argumentType.isCompatible(argumentType, parameterType)
     }
-
-
 
   func checkUserDefinedCall(_ argument: (Token, Expression)) -> (Int, String)? {
     let (token, expr) = argument
