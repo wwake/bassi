@@ -25,11 +25,11 @@ public class StatementParser {
   ]
 
   let expressionParser: Bind<Token, Expression>
-  let tokenizer: SyntaxAnalyzer
+  let tokenizer: Tokenizer
 
   var statementParser : Bind<Token, Statement> = Bind()
 
-  init(_ expressionParser: Bind<Token, Expression>, _ tokenizer: SyntaxAnalyzer) {
+  init(_ expressionParser: Bind<Token, Expression>, _ tokenizer: Tokenizer) {
     self.expressionParser = expressionParser
     self.tokenizer = tokenizer
   }

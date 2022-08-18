@@ -18,11 +18,11 @@ class ExpressionParser {
 
   let relops: [TokenType] = [.equals, .lessThan, .lessThanOrEqualTo, .notEqual, .greaterThan, .greaterThanOrEqualTo]
 
-  var tokenizer: SyntaxAnalyzer
+  var tokenizer: Tokenizer
 
   var expressionParser : Bind<Token, Expression> = Bind()
 
-  init(_ tokenizer: SyntaxAnalyzer) {
+  init(_ tokenizer: Tokenizer) {
     self.tokenizer = tokenizer
   }
 

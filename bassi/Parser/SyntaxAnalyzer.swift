@@ -8,7 +8,11 @@
 import Foundation
 import pcombo
 
-public class SyntaxAnalyzer {
+protocol Tokenizer {
+  func indexOf(_ token: Token) -> Array<Token>.Index
+}
+
+public class SyntaxAnalyzer: Tokenizer {
   let maxLineNumber = 99999
 
   var lexer: Lexer = Lexer("")
