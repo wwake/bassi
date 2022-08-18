@@ -11,6 +11,13 @@ import pcombo
 public class Tokenizer {
   var tokens: [Token]
 
+  let tokenNames : [TokenType : String] =
+  [
+    .leftParend: "'('",
+    .rightParend : "')'",
+    .variable: "variable name"
+  ]
+
   init(_ tokens: [Token]) {
     self.tokens = tokens
   }
@@ -19,6 +26,14 @@ public class Tokenizer {
     return tokens.firstIndex(of: token)!
   }
 
+  func match(_ tokenType: TokenType) -> satisfy<Token> {
+    let tokenDescription = tokenNames[tokenType] ?? "expected character"
+    return match(tokenType, "Missing \(tokenDescription)")
+  }
+
+  func match(_ tokenType: TokenType, _ message: String) -> satisfy<Token> {
+    return satisfy(message) { $0.type == tokenType }
+  }
 }
 
 public class SyntaxAnalyzer {
@@ -43,30 +58,25 @@ public class SyntaxAnalyzer {
 
   var tokenizer = Tokenizer([])
 
+  var match: ((_ tokenType: TokenType, _ message: String) -> satisfy<Token>)! = nil
+
   init() {
 
     defer {
+      match = tokenizer.match
+
       expressionParser = ExpressionParser(tokenizer).make()
 
       statementParser = StatementParser(expressionParser, tokenizer).makeStatementParser()
 
       let line =
       match(.integer, "Line number is required at start of statement")
-      <&> statementParser <&& match(.colon)
+      <&> statementParser <&& match(.colon, ":")
       <& match(.eol, "Extra characters at end of line")
       |&> makeLine
 
       lineParser.bind(line.parse)
     }
-  }
-
-  func match(_ tokenType: TokenType) -> satisfy<Token> {
-    let tokenDescription = tokenNames[tokenType] ?? "expected character"
-    return match(tokenType, "Missing \(tokenDescription)")
-  }
-
-  func match(_ tokenType: TokenType, _ message: String) -> satisfy<Token> {
-    return satisfy(message) { $0.type == tokenType }
   }
 
   func parse(_ input: String) -> Parse {
