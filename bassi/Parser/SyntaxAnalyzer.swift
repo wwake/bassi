@@ -409,15 +409,6 @@ public class SyntaxAnalyzer {
     return .failure(remaining.startIndex, "Numeric type is required")
   }
 
-
-  fileprivate func requireMatchingTypes(
-    _ left: Expression,
-    _ right: Expression) throws {
-      if left.type() != right.type() {
-        throw ParseError.error(token, "Type mismatch")
-      }
-    }
-
   func requireMatchingTypes(_ argument: (Expression, (Token, Expression)?)) -> (Int, String)? {
     let (left, tokenRight) = argument
     if tokenRight == nil { return nil }
