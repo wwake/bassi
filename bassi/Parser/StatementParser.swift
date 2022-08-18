@@ -86,10 +86,10 @@ public class StatementParser {
     <& match(.rightParend, "DEF requires ')' after parameter")
     <& match(.equals, "DEF requires '=' after parameter definition")
 
-    let tokens = defPart <&> variablePart
+    let functionAndVariable = defPart <&> variablePart
 
     let defineParser =
-    AndThenTuple(tokens, expressionParser |&> requireFloatType)
+    AndThenTuple(functionAndVariable, expressionParser |&> requireFloatType)
     |&> checkDefStatement
 
 
