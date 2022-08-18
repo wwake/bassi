@@ -8,16 +8,23 @@
 import Foundation
 import pcombo
 
-protocol Tokenizer {
-  func indexOf(_ token: Token) -> Array<Token>.Index
+public class Tokenizer {
+  var tokens: [Token]
+
+  init(_ tokens: [Token]) {
+    self.tokens = tokens
+  }
+
+  func indexOf(_ token: Token) -> Array<Token>.Index {
+    return tokens.firstIndex(of: token)!
+  }
+
 }
 
-public class SyntaxAnalyzer: Tokenizer {
+public class SyntaxAnalyzer {
   let maxLineNumber = 99999
 
   var lexer: Lexer = Lexer("")
-
-  var tokens: [Token] = []
 
   let tokenNames : [TokenType : String] =
   [
@@ -34,12 +41,14 @@ public class SyntaxAnalyzer: Tokenizer {
   var statementParser: Bind<Token, Statement> = Bind()
   var lineParser: Bind<Token, Parse> = Bind()
 
+  var tokenizer = Tokenizer([])
+
   init() {
 
     defer {
-      expressionParser = ExpressionParser(self).make()
+      expressionParser = ExpressionParser(tokenizer).make()
 
-      statementParser = StatementParser(expressionParser, self).makeStatementParser()
+      statementParser = StatementParser(expressionParser, tokenizer).makeStatementParser()
 
       let line =
       match(.integer, "Line number is required at start of statement")
@@ -49,10 +58,6 @@ public class SyntaxAnalyzer: Tokenizer {
 
       lineParser.bind(line.parse)
     }
-  }
-
-  func indexOf(_ token: Token) -> Array<Token>.Index {
-    return tokens.firstIndex(of: token)!
   }
 
   func match(_ tokenType: TokenType) -> satisfy<Token> {
@@ -67,18 +72,19 @@ public class SyntaxAnalyzer: Tokenizer {
   func parse(_ input: String) -> Parse {
     lexer = Lexer(input)
 
-    tokens = lexer.line()
+    let tokens = lexer.line()
+    tokenizer.tokens = tokens
 
     return singleLine()
   }
 
   func singleLine() -> Parse {
-    let result = lineParser.parse(tokens[...])
+    let result = lineParser.parse(tokenizer.tokens[...])
 
     switch result {
     case .failure(let position, let message):
-      let errorLine = tokens[0].type == .integer ? LineNumber(tokens[0].float!) : 0
-      let errorColumn = tokens[position].column
+      let errorLine = tokenizer.tokens[0].type == .integer ? LineNumber(tokenizer.tokens[0].float!) : 0
+      let errorColumn = tokenizer.tokens[position].column
       return Parse(errorLine, [.error(errorLine, errorColumn, message)])
 
     case .success(let parse, _):
@@ -91,7 +97,7 @@ public class SyntaxAnalyzer: Tokenizer {
 
     let lineNumber = LineNumber(token.float)
     if lineNumber <= 0 || lineNumber > maxLineNumber {
-      return .failure(indexOf(token)+1, "Line number must be between 1 and \(maxLineNumber)")
+      return .failure(tokenizer.indexOf(token)+1, "Line number must be between 1 and \(maxLineNumber)")
     }
 
     return .success(Parse(LineNumber(lineNumber), statements), remaining)
