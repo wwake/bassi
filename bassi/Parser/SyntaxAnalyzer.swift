@@ -23,8 +23,6 @@ public class SyntaxAnalyzer {
   var lineNumber = 0
   var columnNumber = 0
 
-  let relops: [TokenType] = [.equals, .lessThan, .lessThanOrEqualTo, .notEqual, .greaterThan, .greaterThanOrEqualTo]
-
   let tokenNames : [TokenType : String] =
   [
     .leftParend: "'('",
@@ -321,106 +319,6 @@ public class SyntaxAnalyzer {
       return .failure(remaining.startIndex, "Type mismatch")
     }
     return .success(argument, remaining)
-  }
-
-  fileprivate func typeCheck(
-    _ token: Token,
-    _ parameterTypes: [`Type`],
-    _ arguments: [Expression]) throws {
-
-      if parameterTypes.count < arguments.count {
-        throw ParseError.error(token, "Function not called with correct number of arguments")
-      }
-
-      try zip(parameterTypes, arguments)
-        .forEach { (parameterType, argument) in
-          if !argument.type().isCompatible(parameterType) {
-            throw ParseError.error(token, "Type mismatch")
-          }
-        }
-    }
-
-
-  /// Make expression methods
-
-  func makeUnaryExpression(_ argument: ([Token], Expression)) -> Expression {
-    let (tokens, expr) = argument
-    if tokens.isEmpty { return expr }
-
-    return tokens
-      .reversed()
-      .reduce(expr) { (exprSoFar, token) in
-          .op1(token.type, exprSoFar)
-      }
-  }
-
-  func makeNumericBinaryExpression(_ argument: (Expression, [(Token, Expression)]), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Expression> {
-    let (firstExpr, pairs) = argument
-    if pairs.isEmpty {
-      return .success(firstExpr, remaining)
-    }
-
-    let (token, _) = pairs[0]
-    let tokenPosition = indexOf(token)
-
-    if firstExpr.type() != .number {
-      return .failure(tokenPosition, "Type mismatch")
-    }
-
-    let failureIndex = pairs.firstIndex { (_, expr) in
-      expr.type() != .number
-    }
-
-    if failureIndex != nil {
-      return .failure(indexOf(pairs[failureIndex!].0), "Type mismatch")
-    }
-
-    return .success(makeBinaryExpression(argument), remaining)
-  }
-
-  func makeBinaryExpression(_ argument: (Expression, [(Token, Expression)])) -> Expression {
-    let (firstExpr, pairs) = argument
-
-    return pairs.reduce(firstExpr) { (leftSoFar, opExpr) in
-      let (token, right) = opExpr
-      return .op2(token.type, leftSoFar, right)
-    }
-  }
-
-  func makeNumber(_ token: Token) -> Expression {
-    return Expression.number(token.float)
-  }
-
-  func makePredefinedFunctionCall(_ argument: (Token, [Expression])) -> Expression {
-    let (token, exprs) = argument
-
-    let name = token.string!
-    let type = token.resultType
-
-    guard case .function(let parameterTypes, let resultType) = type else {
-      return .missing // can't happen
-    }
-
-    var actualArguments = exprs
-    while actualArguments.count < parameterTypes.count {
-      actualArguments.append(.missing)
-    }
-
-    return .predefined(name, actualArguments, resultType)
-  }
-
-  func makeRelationalExpression(_ argument: (Expression, (Token, Expression)?)) -> Expression {
-    let (left, tokenRight) = argument
-    if tokenRight == nil { return left }
-
-    let (token, right) = tokenRight!
-    return .op2(token.type, left, right)
-  }
-
-  func makeUserDefinedCall(_ argument: (Token, Expression)) -> Expression {
-    let (token, expr) = argument
-    let parameter = token.string!
-    return .userdefined("FN" + parameter, expr)
   }
 
   func makeVariableOrArray(_ argument: (Token, [Expression]?)) -> Expression {
