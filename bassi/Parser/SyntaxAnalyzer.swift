@@ -153,8 +153,7 @@ public class SyntaxAnalyzer {
 
     let powerParser =
     factorParser <&&> match(.exponent)
-    <&| requireFloatTypes
-    |> makeBinaryExpression
+    |&> makeNumericBinaryExpression
 
     let negationParser =
     powerParser
@@ -163,13 +162,11 @@ public class SyntaxAnalyzer {
 
     let termParser =
     negationParser <&&> (match(.times) <|> match(.divide))
-    <&| requireFloatTypes
-    |> makeBinaryExpression
+    |&> makeNumericBinaryExpression
 
     let subexprParser =
     termParser <&&> (match(.plus) <|> match(.minus))
-    <&| requireFloatTypes
-    |> makeBinaryExpression
+    |&> makeNumericBinaryExpression
 
     let relationalParser =
     subexprParser <&> <?>(oneOf(relops) <&> subexprParser)
@@ -183,13 +180,11 @@ public class SyntaxAnalyzer {
 
     let boolAndParser =
     boolNotParser <&&> match(.and)
-    <&| requireFloatTypes
-    |> makeBinaryExpression
+    |&> makeNumericBinaryExpression
 
     let boolOrParser =
     boolAndParser <&&> match(.or)
-    <&| requireFloatTypes
-    |> makeBinaryExpression
+    |&> makeNumericBinaryExpression
 
     return Bind(boolOrParser.parse)
   }
@@ -414,25 +409,6 @@ public class SyntaxAnalyzer {
     return .failure(remaining.startIndex, "Numeric type is required")
   }
 
-  func requireFloatTypes(_ argument: (Expression, [(Token, Expression)])) -> (Int, String)? {
-
-    let (firstExpr, pairs) = argument
-    if pairs.isEmpty { return nil }
-
-    let (token, _) = pairs[0]
-    let tokenPosition = indexOf(token)
-
-    if firstExpr.type() != .number { return (tokenPosition, "Type mismatch")}
-
-    let failureIndex = pairs.firstIndex { (_, expr) in
-      expr.type() != .number
-    }
-
-    if failureIndex == nil { return nil }
-
-    return (indexOf(pairs[failureIndex!].0), "Type mismatch")
-  }
-
 
   fileprivate func requireMatchingTypes(
     _ left: Expression,
@@ -537,6 +513,30 @@ public class SyntaxAnalyzer {
       .reduce(expr) { (exprSoFar, token) in
           .op1(token.type, exprSoFar)
       }
+  }
+
+  func makeNumericBinaryExpression(_ argument: (Expression, [(Token, Expression)]), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Expression> {
+    let (firstExpr, pairs) = argument
+    if pairs.isEmpty {
+      return .success(firstExpr, remaining)
+    }
+
+    let (token, _) = pairs[0]
+    let tokenPosition = indexOf(token)
+
+    if firstExpr.type() != .number {
+      return .failure(tokenPosition, "Type mismatch")
+    }
+
+    let failureIndex = pairs.firstIndex { (_, expr) in
+      expr.type() != .number
+    }
+
+    if failureIndex != nil {
+      return .failure(indexOf(pairs[failureIndex!].0), "Type mismatch")
+    }
+
+    return .success(makeBinaryExpression(argument), remaining)
   }
 
   func makeBinaryExpression(_ argument: (Expression, [(Token, Expression)])) -> Expression {
