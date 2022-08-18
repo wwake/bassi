@@ -170,7 +170,7 @@ public class SyntaxAnalyzer {
 
     let relationalParser =
     subexprParser <&> <?>(oneOf(relops) <&> subexprParser)
-    <&| requireMatchingTypes
+    |&> requireMatchingTypes
     |> makeRelationalExpression
 
     let boolNotParser =
@@ -409,14 +409,19 @@ public class SyntaxAnalyzer {
     return .failure(remaining.startIndex, "Numeric type is required")
   }
 
-  func requireMatchingTypes(_ argument: (Expression, (Token, Expression)?)) -> (Int, String)? {
+  func requireMatchingTypes(_ argument: (Expression, (Token, Expression)?), _ remaining: ArraySlice<Token>) -> ParseResult<Token, (Expression, (Token, Expression)?)> {
+
     let (left, tokenRight) = argument
-    if tokenRight == nil { return nil }
+    if tokenRight == nil {
+      return .success(argument, remaining)
+    }
 
     let (token, right) = tokenRight!
-    if left.type() == right.type() { return nil }
+    if left.type() == right.type() {
+      return .success(argument, remaining)
+    }
 
-    return (indexOf(token), "Type mismatch")
+    return .failure(indexOf(token), "Type mismatch")
   }
 
   func checkPredefinedCall(_ argument: (Token, [Expression])) -> (Int, String)? {
