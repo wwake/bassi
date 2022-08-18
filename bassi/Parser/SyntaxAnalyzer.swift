@@ -450,16 +450,10 @@ public class SyntaxAnalyzer {
 
       try zip(parameterTypes, arguments)
         .forEach { (parameterType, argument) in
-          if !isCompatible(argument.type(), parameterType) {
+          if !argument.type().isCompatible(parameterType) {
             throw ParseError.error(token, "Type mismatch")
           }
         }
-    }
-
-  fileprivate func isCompatible(
-    _ argumentType: `Type`,
-    _ parameterType: `Type`) -> Bool {
-      argumentType.isCompatible(argumentType, parameterType)
     }
 
   func checkUserDefinedCall(_ argument: (Token, Expression)) -> (Int, String)? {

@@ -15,16 +15,15 @@ public indirect enum `Type` : Equatable {
   case opt(`Type`)
 
   func isCompatible(
-    _ argumentType: `Type`,
     _ parameterType: `Type`) -> Bool {
-      if parameterType == argumentType {
+      if self == parameterType {
         return true
       }
       if case .opt(let innerType) = parameterType {
-        if innerType == argumentType {
+        if self == innerType {
           return true
         }
-        if argumentType == .missing {
+        if self == .missing {
           return true
         }
       }
