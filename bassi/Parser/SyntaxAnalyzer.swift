@@ -1,5 +1,5 @@
 //
-//  Parser.swift
+//  SyntaxAnalyzer.swift
 //  bassi
 //
 //  Created by Bill Wake on 5/10/22.
@@ -26,7 +26,7 @@ public class Tokenizer {
     return tokens.firstIndex(of: token)!
   }
 
-  func match(_ tokenType: TokenType) -> satisfy<Token> {
+  func match1(_ tokenType: TokenType) -> satisfy<Token> {
     let tokenDescription = tokenNames[tokenType] ?? "expected character"
     return match(tokenType, "Missing \(tokenDescription)")
   }

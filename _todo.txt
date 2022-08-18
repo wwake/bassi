@@ -1,11 +1,23 @@
-* Unify all the requireFloatTypes() methods to newer check style
-* Unify all the requireMatchingTypes() methods to newer check style
-* Delete unused "token" field
+* Rename Tokenizer -> TokenMatcher
+* Make match, match1 come from Tokenizer (ExpressionParser & StatementParser)
+* Move oneOf to Tokenizer?
+* Let TokenMatcher provide line number?
+* Eliminate uses of <&|  - move to new style
+* Reorganize tests to StatementTests and ExpressionTests
+
 * Can we improve messages on TODO tests?
 
 * DIM should enforce numeric types for sizes
 * Why did we need to call AndThen directly?
 * For alternatives, should default message apply if they all got equally far?
+
+EVO-22-09: August 18, 2022
+* Unify all the requireFloatTypes() methods to newer check style
+* Unify all the requireMatchingTypes() methods to newer check style
+* Delete unused "token" field
+* Extract ExpressionParser
+* Extract StatementParser
+* Introduce Tokenizer to hold tokens and do some matching
 
 EVO-22-08: August 17, 2022
 * New RETURN parser
