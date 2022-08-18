@@ -200,9 +200,9 @@ public class SyntaxAnalyzer {
 
 
     let assignParser =
-    (  variableParser
-       <& match(.equals, "Assignment is missing '='")
-    ) <&> expressionParser
+    variableParser
+    <& match(.equals, "Assignment is missing '='")
+    <&> expressionParser
     |&> requireMatchingTypes
     |> { Statement.assign($0.0, $0.1) }
 
@@ -364,14 +364,6 @@ public class SyntaxAnalyzer {
     return Bind(statementParser.parse)
   }
 
-  func requireMatchingTypes(_ argument: (Expression, Expression), _ remaining: ArraySlice<Token>) -> ParseResult<Token, (Expression, Expression)> {
-    let (left, right) = argument
-    if left.type() != right.type() {
-      return .failure(remaining.startIndex, "Type mismatch")
-    }
-    return .success(argument, remaining)
-  }
-
   func checkDefStatement(_ argument: ((Token, Token), Expression), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Statement> {
     let ((nameToken, parameterToken), expr) = argument
 
@@ -412,6 +404,15 @@ public class SyntaxAnalyzer {
     }
 
     return .failure(indexOf(token), "Type mismatch")
+  }
+
+  func requireMatchingTypes(_ argument: (Expression, Expression), _ remaining: ArraySlice<Token>) -> ParseResult<Token, (Expression, Expression)> {
+    let (left, right) = argument
+
+    if left.type() != right.type() {
+      return .failure(remaining.startIndex, "Type mismatch")
+    }
+    return .success(argument, remaining)
   }
 
   func checkPredefinedCall(_ argument: (Token, [Expression])) -> (Int, String)? {
