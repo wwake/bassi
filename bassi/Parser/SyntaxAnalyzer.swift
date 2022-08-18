@@ -56,7 +56,6 @@ public class SyntaxAnalyzer {
     return tokens.firstIndex(of: token)!
   }
 
-
   func match(_ tokenType: TokenType) -> satisfy<Token> {
     let tokenDescription = tokenNames[tokenType] ?? "expected character"
     return match(tokenType, "Missing \(tokenDescription)")
@@ -99,5 +98,4 @@ public class SyntaxAnalyzer {
 
     return .success(Parse(LineNumber(lineNumber), statements), remaining)
   }
-
 }
