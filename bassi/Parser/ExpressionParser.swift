@@ -1,5 +1,5 @@
 //
-//  Expression.swift
+//  ExpressionParser.swift
 //  bassi
 //
 //  Created by Bill Wake on 8/18/22.
@@ -39,7 +39,7 @@ class ExpressionParser {
     satisfy(message) { Set(tokens).contains($0.type) }
   }
 
-  func makeExpressionParser() -> Bind<Token, Expression> {
+  func make() -> Bind<Token, Expression> {
     let parenthesizedParser =
     match(.leftParend) &> expressionParser <& match(.rightParend)
 

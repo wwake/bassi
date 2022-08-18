@@ -46,7 +46,7 @@ public class SyntaxAnalyzer {
   init() {
 
     defer {
-      expressionParser = ExpressionParser(self).makeExpressionParser()
+      expressionParser = ExpressionParser(self).make()
 
       statementParser.bind(makeStatementParser().parse)
 
