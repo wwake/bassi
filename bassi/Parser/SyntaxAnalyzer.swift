@@ -279,10 +279,10 @@ public class SyntaxAnalyzer {
     |&> requireFloatType
 
     let ifParser =
-    (ifPrefix <&> match(.integer) |&> ifGoto)
+    (ifPrefix <&> match(.integer) |&> makeIfGoto)
     <|>
     (ifPrefix <&> statementParser <&& match(.colon)
-     |&> ifStatements)
+     |&> makeIfStatements)
 
 
     var defaultPrompt = Token(line: 0, column: 0, type: .string)
@@ -387,16 +387,6 @@ public class SyntaxAnalyzer {
       expr,
       .function([.number], .number))
     return .success(result, remaining)
-  }
-
-  func ifGoto(_ argument: (Expression, Token), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Statement> {
-    let (expr, token) = argument
-    return .success(.ifGoto(expr, LineNumber(token.float!)), remaining)
-  }
-
-  func ifStatements(_ argument: (Expression, [Statement]), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Statement> {
-    let (expr, statements) = argument
-    return .success(.`if`(expr, statements), remaining)
   }
 
   func typeFor(_ name: String) -> `Type` {
@@ -542,6 +532,16 @@ public class SyntaxAnalyzer {
       let (token, right) = opExpr
       return .op2(token.type, leftSoFar, right)
     }
+  }
+
+  func makeIfGoto(_ argument: (Expression, Token), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Statement> {
+    let (expr, token) = argument
+    return .success(.ifGoto(expr, LineNumber(token.float!)), remaining)
+  }
+
+  func makeIfStatements(_ argument: (Expression, [Statement]), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Statement> {
+    let (expr, statements) = argument
+    return .success(.`if`(expr, statements), remaining)
   }
 
   func makeNumber(_ token: Token) -> Expression {
