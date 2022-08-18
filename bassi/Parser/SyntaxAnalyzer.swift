@@ -40,7 +40,6 @@ public class SyntaxAnalyzer {
     .stop : .stop
   ]
 
-//  var variableParser: Bind<Token, Expression> = Bind()
   var expressionParser : Bind<Token, Expression> = Bind()
 
   var statementParser: Bind<Token, Statement> = Bind()
@@ -49,17 +48,7 @@ public class SyntaxAnalyzer {
   init() {
 
     defer {
-//      let varOrArray =
-//        match(.variable) <&> <?>(
-//          match(.leftParend) &>
-//          expressionParser <&& match(.comma)
-//          <& match(.rightParend)
-//        ) |> makeVariableOrArray
-//      variableParser.bind(varOrArray.parse)
-
       expressionParser = ExpressionParser(self).makeExpressionParser()
-
-//      expressionParser.bind(makeExpressionParser().parse)
 
       statementParser.bind(makeStatementParser().parse)
 
@@ -116,81 +105,6 @@ public class SyntaxAnalyzer {
   func simpleStatement(_ token: Token) -> Statement {
     tokenToSimpleStatement[token.type]!
   }
-
-//  func makeExpressionParser() -> Bind<Token, Expression> {
-//    let parenthesizedParser =
-//    match(.leftParend) &> expressionParser <& match(.rightParend)
-//
-//    let numberParser = match(.number) |> { Expression.number($0.float) }
-//
-//    let integerParser = match(.integer) |> { Expression.number($0.float) }
-//
-//    let stringParser = match(.string) |> { Expression.string($0.string!) }
-//
-//    let predefFunctionParser =
-//    match(.predefined) <&>
-//    (
-//      match(.leftParend) &>
-//      expressionParser <&& match(.comma)
-//      <& match(.rightParend)
-//    )
-//    <&| checkPredefinedCall
-//    |> makePredefinedFunctionCall
-//
-//    let udfFunctionParser =
-//    (
-//      match(.fn) &>
-//      match(.variable, "Call to FNx must have letter after FN")
-//      <& match(.leftParend)
-//    )
-//    <&> expressionParser
-//    <& match(.rightParend)
-//    <&| checkUserDefinedCall
-//    |> makeUserDefinedCall
-//
-//    let factorParser =
-//    parenthesizedParser <|> numberParser <|> integerParser <|> stringParser
-//    <|> variableParser <|> predefFunctionParser <|> udfFunctionParser
-//    <%> "Expected start of expression"
-//
-//    let powerParser =
-//    factorParser <&&> match(.exponent)
-//    |&> makeNumericBinaryExpression
-//
-//    let negationParser =
-//    powerParser
-//    <|> <+>match(.minus) <&> (powerParser |&> requireFloatType)
-//    |> makeUnaryExpression
-//
-//    let termParser =
-//    negationParser <&&> (match(.times) <|> match(.divide))
-//    |&> makeNumericBinaryExpression
-//
-//    let subexprParser =
-//    termParser <&&> (match(.plus) <|> match(.minus))
-//    |&> makeNumericBinaryExpression
-//
-//    let relationalParser =
-//    subexprParser <&> <?>(oneOf(relops) <&> subexprParser)
-//    |&> requireMatchingTypes
-//    |> makeRelationalExpression
-//
-//    let boolNotParser =
-//    relationalParser
-//    <|> <+>match(.not) <&> (relationalParser |&> requireFloatType)
-//    |> makeUnaryExpression
-//
-//    let boolAndParser =
-//    boolNotParser <&&> match(.and)
-//    |&> makeNumericBinaryExpression
-//
-//    let boolOrParser =
-//    boolAndParser <&&> match(.or)
-//    |&> makeNumericBinaryExpression
-//
-//    return Bind(boolOrParser.parse)
-//  }
-//
 
   func makeStatementParser() -> Bind<Token, Statement> {
     let variableParser =
@@ -400,21 +314,6 @@ public class SyntaxAnalyzer {
     return .failure(remaining.startIndex, "Numeric type is required")
   }
 
-  func requireMatchingTypes(_ argument: (Expression, (Token, Expression)?), _ remaining: ArraySlice<Token>) -> ParseResult<Token, (Expression, (Token, Expression)?)> {
-
-    let (left, tokenRight) = argument
-    if tokenRight == nil {
-      return .success(argument, remaining)
-    }
-
-    let (token, right) = tokenRight!
-    if left.type() == right.type() {
-      return .success(argument, remaining)
-    }
-
-    return .failure(indexOf(token), "Type mismatch")
-  }
-
   func requireMatchingTypes(_ argument: (Expression, Expression), _ remaining: ArraySlice<Token>) -> ParseResult<Token, (Expression, Expression)> {
     let (left, right) = argument
 
@@ -422,30 +321,6 @@ public class SyntaxAnalyzer {
       return .failure(remaining.startIndex, "Type mismatch")
     }
     return .success(argument, remaining)
-  }
-
-  func checkPredefinedCall(_ argument: (Token, [Expression])) -> (Int, String)? {
-    let (token, exprs) = argument
-
-    let type = token.resultType
-
-    guard case .function(let parameterTypes, _) = type else {
-      return (indexOf(token), "Can't happen - predefined has inconsistent type")
-    }
-
-    var actualArguments = exprs
-    while actualArguments.count < parameterTypes.count {
-      actualArguments.append(.missing)
-    }
-
-    do {
-      try typeCheck(token, parameterTypes, actualArguments)
-    } catch ParseError.error(let token, let message) {
-      return (indexOf(token) + 2, message)  // error is in args, not .predefined
-    } catch {
-      return (indexOf(token), "Internal error in type checking")
-    }
-    return nil
   }
 
   fileprivate func typeCheck(
@@ -465,19 +340,6 @@ public class SyntaxAnalyzer {
         }
     }
 
-  func checkUserDefinedCall(_ argument: (Token, Expression)) -> (Int, String)? {
-    let (token, expr) = argument
-
-    do {
-      try typeCheck(token, [.number], [expr])
-    } catch ParseError.error(let token, let message) {
-      return (indexOf(token), message)
-    } catch {
-      return (indexOf(token), "Internal error in type checking")
-    }
-
-    return nil
-  }
 
   /// Make expression methods
 
