@@ -18,11 +18,6 @@ public class SyntaxAnalyzer: Tokenizer {
   var lexer: Lexer = Lexer("")
 
   var tokens: [Token] = []
-  var index = -1
-
-  var token: Token {
-    tokens[index]
-  }
 
   let tokenNames : [TokenType : String] =
   [
@@ -73,7 +68,6 @@ public class SyntaxAnalyzer: Tokenizer {
     lexer = Lexer(input)
 
     tokens = lexer.line()
-    index = 0
 
     return singleLine()
   }
