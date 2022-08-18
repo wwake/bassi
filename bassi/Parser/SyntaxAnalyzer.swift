@@ -40,7 +40,7 @@ public class SyntaxAnalyzer {
     .stop : .stop
   ]
 
-  var variableParser: Bind<Token, Expression> = Bind()
+//  var variableParser: Bind<Token, Expression> = Bind()
   var expressionParser : Bind<Token, Expression> = Bind()
 
   var statementParser: Bind<Token, Statement> = Bind()
@@ -49,15 +49,17 @@ public class SyntaxAnalyzer {
   init() {
 
     defer {
-      let varOrArray =
-        match(.variable) <&> <?>(
-          match(.leftParend) &>
-          expressionParser <&& match(.comma)
-          <& match(.rightParend)
-        ) |> makeVariableOrArray
-      variableParser.bind(varOrArray.parse)
+//      let varOrArray =
+//        match(.variable) <&> <?>(
+//          match(.leftParend) &>
+//          expressionParser <&& match(.comma)
+//          <& match(.rightParend)
+//        ) |> makeVariableOrArray
+//      variableParser.bind(varOrArray.parse)
 
-      expressionParser.bind(makeExpressionParser().parse)
+      expressionParser = ExpressionParser(self).makeExpressionParser()
+
+//      expressionParser.bind(makeExpressionParser().parse)
 
       statementParser.bind(makeStatementParser().parse)
 
@@ -71,7 +73,7 @@ public class SyntaxAnalyzer {
     }
   }
 
-  fileprivate func indexOf(_ token: Token) -> Array<Token>.Index {
+  func indexOf(_ token: Token) -> Array<Token>.Index {
     return tokens.firstIndex(of: token)!
   }
 
@@ -115,82 +117,89 @@ public class SyntaxAnalyzer {
     tokenToSimpleStatement[token.type]!
   }
 
-  func makeExpressionParser() -> Bind<Token, Expression> {
-    let parenthesizedParser =
-    match(.leftParend) &> expressionParser <& match(.rightParend)
+//  func makeExpressionParser() -> Bind<Token, Expression> {
+//    let parenthesizedParser =
+//    match(.leftParend) &> expressionParser <& match(.rightParend)
+//
+//    let numberParser = match(.number) |> { Expression.number($0.float) }
+//
+//    let integerParser = match(.integer) |> { Expression.number($0.float) }
+//
+//    let stringParser = match(.string) |> { Expression.string($0.string!) }
+//
+//    let predefFunctionParser =
+//    match(.predefined) <&>
+//    (
+//      match(.leftParend) &>
+//      expressionParser <&& match(.comma)
+//      <& match(.rightParend)
+//    )
+//    <&| checkPredefinedCall
+//    |> makePredefinedFunctionCall
+//
+//    let udfFunctionParser =
+//    (
+//      match(.fn) &>
+//      match(.variable, "Call to FNx must have letter after FN")
+//      <& match(.leftParend)
+//    )
+//    <&> expressionParser
+//    <& match(.rightParend)
+//    <&| checkUserDefinedCall
+//    |> makeUserDefinedCall
+//
+//    let factorParser =
+//    parenthesizedParser <|> numberParser <|> integerParser <|> stringParser
+//    <|> variableParser <|> predefFunctionParser <|> udfFunctionParser
+//    <%> "Expected start of expression"
+//
+//    let powerParser =
+//    factorParser <&&> match(.exponent)
+//    |&> makeNumericBinaryExpression
+//
+//    let negationParser =
+//    powerParser
+//    <|> <+>match(.minus) <&> (powerParser |&> requireFloatType)
+//    |> makeUnaryExpression
+//
+//    let termParser =
+//    negationParser <&&> (match(.times) <|> match(.divide))
+//    |&> makeNumericBinaryExpression
+//
+//    let subexprParser =
+//    termParser <&&> (match(.plus) <|> match(.minus))
+//    |&> makeNumericBinaryExpression
+//
+//    let relationalParser =
+//    subexprParser <&> <?>(oneOf(relops) <&> subexprParser)
+//    |&> requireMatchingTypes
+//    |> makeRelationalExpression
+//
+//    let boolNotParser =
+//    relationalParser
+//    <|> <+>match(.not) <&> (relationalParser |&> requireFloatType)
+//    |> makeUnaryExpression
+//
+//    let boolAndParser =
+//    boolNotParser <&&> match(.and)
+//    |&> makeNumericBinaryExpression
+//
+//    let boolOrParser =
+//    boolAndParser <&&> match(.or)
+//    |&> makeNumericBinaryExpression
+//
+//    return Bind(boolOrParser.parse)
+//  }
+//
 
-    let numberParser = match(.number) |> { Expression.number($0.float) }
-
-    let integerParser = match(.integer) |> { Expression.number($0.float) }
-
-    let stringParser = match(.string) |> { Expression.string($0.string!) }
-
-    let predefFunctionParser =
-    match(.predefined) <&>
-    (
+  func makeStatementParser() -> Bind<Token, Statement> {
+    let variableParser =
+    match(.variable) <&> <?>(
       match(.leftParend) &>
       expressionParser <&& match(.comma)
       <& match(.rightParend)
-    )
-    <&| checkPredefinedCall
-    |> makePredefinedFunctionCall
+    ) |> makeVariableOrArray
 
-    let udfFunctionParser =
-    (
-      match(.fn) &>
-      match(.variable, "Call to FNx must have letter after FN")
-      <& match(.leftParend)
-    )
-    <&> expressionParser
-    <& match(.rightParend)
-    <&| checkUserDefinedCall
-    |> makeUserDefinedCall
-
-    let factorParser =
-    parenthesizedParser <|> numberParser <|> integerParser <|> stringParser
-    <|> variableParser <|> predefFunctionParser <|> udfFunctionParser
-    <%> "Expected start of expression"
-
-    let powerParser =
-    factorParser <&&> match(.exponent)
-    |&> makeNumericBinaryExpression
-
-    let negationParser =
-    powerParser
-    <|> <+>match(.minus) <&> (powerParser |&> requireFloatType)
-    |> makeUnaryExpression
-
-    let termParser =
-    negationParser <&&> (match(.times) <|> match(.divide))
-    |&> makeNumericBinaryExpression
-
-    let subexprParser =
-    termParser <&&> (match(.plus) <|> match(.minus))
-    |&> makeNumericBinaryExpression
-
-    let relationalParser =
-    subexprParser <&> <?>(oneOf(relops) <&> subexprParser)
-    |&> requireMatchingTypes
-    |> makeRelationalExpression
-
-    let boolNotParser =
-    relationalParser
-    <|> <+>match(.not) <&> (relationalParser |&> requireFloatType)
-    |> makeUnaryExpression
-
-    let boolAndParser =
-    boolNotParser <&&> match(.and)
-    |&> makeNumericBinaryExpression
-
-    let boolOrParser =
-    boolAndParser <&&> match(.or)
-    |&> makeNumericBinaryExpression
-
-    return Bind(boolOrParser.parse)
-  }
-
-
-  func makeStatementParser() -> Bind<Token, Statement> {
     let commaVariablesParser =
     variableParser <&& match(.comma)
     <%> "At least one variable is required"
@@ -516,16 +525,6 @@ public class SyntaxAnalyzer {
     }
   }
 
-  func makeIfGoto(_ argument: (Expression, Token), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Statement> {
-    let (expr, token) = argument
-    return .success(.ifGoto(expr, LineNumber(token.float!)), remaining)
-  }
-
-  func makeIfStatements(_ argument: (Expression, [Statement]), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Statement> {
-    let (expr, statements) = argument
-    return .success(.`if`(expr, statements), remaining)
-  }
-
   func makeNumber(_ token: Token) -> Expression {
     return Expression.number(token.float)
   }
@@ -597,6 +596,16 @@ public class SyntaxAnalyzer {
 
     let statement = Statement.for(variable.string, initial, final, step)
     return .success(statement, remaining)
+  }
+
+  func makeIfGoto(_ argument: (Expression, Token), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Statement> {
+    let (expr, token) = argument
+    return .success(.ifGoto(expr, LineNumber(token.float!)), remaining)
+  }
+
+  func makeIfStatements(_ argument: (Expression, [Statement]), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Statement> {
+    let (expr, statements) = argument
+    return .success(.`if`(expr, statements), remaining)
   }
 
   func makeInputStatement(_ argument: (Token?, [Expression])) -> Statement {

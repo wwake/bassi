@@ -59,6 +59,7 @@
 		91BE90E8283E7CD9004F0CF9 /* ExpressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91BE90E7283E7CD9004F0CF9 /* ExpressionTests.swift */; };
 		91FC122628AA89EB00D2A20A /* ParserCombinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91FC122528AA89EB00D2A20A /* ParserCombinator.swift */; };
 		91FC122A28AA8A5C00D2A20A /* ParserCombinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91FC122928AA8A5C00D2A20A /* ParserCombinatorTests.swift */; };
+		91FC122C28AE8AE100D2A20A /* ExpressionParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91FC122B28AE8AE100D2A20A /* ExpressionParser.swift */; };
 		91FD83CA28A1550600232D0B /* pcombo in Frameworks */ = {isa = PBXBuildFile; productRef = 91FD83C928A1550600232D0B /* pcombo */; };
 /* End PBXBuildFile section */
 
@@ -138,6 +139,7 @@
 		91BE90E7283E7CD9004F0CF9 /* ExpressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionTests.swift; sourceTree = "<group>"; };
 		91FC122528AA89EB00D2A20A /* ParserCombinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParserCombinator.swift; sourceTree = "<group>"; };
 		91FC122928AA8A5C00D2A20A /* ParserCombinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParserCombinatorTests.swift; sourceTree = "<group>"; };
+		91FC122B28AE8AE100D2A20A /* ExpressionParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionParser.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -181,6 +183,7 @@
 			children = (
 				91165771282AB0790000D3AA /* Parse.swift */,
 				91165773282AB1030000D3AA /* SyntaxAnalyzer.swift */,
+				91FC122B28AE8AE100D2A20A /* ExpressionParser.swift */,
 			);
 			path = Parser;
 			sourceTree = "<group>";
@@ -483,6 +486,7 @@
 				9145B1F72875D792009DB706 /* PredefinedValues.swift in Sources */,
 				9192F7382828B68F00FAFFA1 /* ContentView.swift in Sources */,
 				914A53F22845249D00A47B35 /* Type.swift in Sources */,
+				91FC122C28AE8AE100D2A20A /* ExpressionParser.swift in Sources */,
 				91308868282EB64500E5C62E /* Program.swift in Sources */,
 				9116576C28295CF20000D3AA /* Lexer.swift in Sources */,
 				914A53F02841315C00A47B35 /* Value.swift in Sources */,
