@@ -414,14 +414,6 @@ public class SyntaxAnalyzer {
     return .failure(remaining.startIndex, "Numeric type is required")
   }
 
-  fileprivate func requireFloatTypes(
-    _ left: Expression,
-    _ right: Expression) throws {
-      if left.type() != .number || right.type() != .number {
-        throw ParseError.error(token, "Type mismatch")
-      }
-    }
-
   func requireFloatTypes(_ argument: (Expression, [(Token, Expression)])) -> (Int, String)? {
 
     let (firstExpr, pairs) = argument
@@ -458,17 +450,6 @@ public class SyntaxAnalyzer {
     if left.type() == right.type() { return nil }
 
     return (indexOf(token), "Type mismatch")
-  }
-
-  func makeUnaryExpression(_ argument: ([Token], Expression)) -> Expression {
-    let (tokens, expr) = argument
-    if tokens.isEmpty { return expr }
-
-    return tokens
-      .reversed()
-      .reduce(expr) { (exprSoFar, token) in
-        .op1(token.type, exprSoFar)
-    }
   }
 
   func checkPredefinedCall(_ argument: (Token, [Expression])) -> (Int, String)? {
@@ -546,6 +527,18 @@ public class SyntaxAnalyzer {
   }
 
   /// Make expression methods
+
+  func makeUnaryExpression(_ argument: ([Token], Expression)) -> Expression {
+    let (tokens, expr) = argument
+    if tokens.isEmpty { return expr }
+
+    return tokens
+      .reversed()
+      .reduce(expr) { (exprSoFar, token) in
+          .op1(token.type, exprSoFar)
+      }
+  }
+
   func makeBinaryExpression(_ argument: (Expression, [(Token, Expression)])) -> Expression {
     let (firstExpr, pairs) = argument
 
