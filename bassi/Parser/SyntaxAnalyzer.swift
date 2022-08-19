@@ -8,7 +8,7 @@
 import Foundation
 import pcombo
 
-public class Tokenizer {
+public class TokenMatcher {
   var tokens: [Token]
 
   let tokenNames : [TokenType : String] =
@@ -20,6 +20,12 @@ public class Tokenizer {
 
   init(_ tokens: [Token]) {
     self.tokens = tokens
+  }
+
+  var lineNumber : LineNumber {
+    return tokens[0].type == .integer
+      ? LineNumber(tokens[0].float!)
+      : LineNumber(0)
   }
 
   func indexOf(_ token: Token) -> Array<Token>.Index {
@@ -56,7 +62,7 @@ public class SyntaxAnalyzer {
   var statementParser: Bind<Token, Statement> = Bind()
   var lineParser: Bind<Token, Parse> = Bind()
 
-  var tokenizer = Tokenizer([])
+  var tokenizer = TokenMatcher([])
 
   var match: ((_ tokenType: TokenType, _ message: String) -> satisfy<Token>)! = nil
 
@@ -93,7 +99,7 @@ public class SyntaxAnalyzer {
 
     switch result {
     case .failure(let position, let message):
-      let errorLine = tokenizer.tokens[0].type == .integer ? LineNumber(tokenizer.tokens[0].float!) : 0
+      let errorLine = tokenizer.lineNumber
       let errorColumn = tokenizer.tokens[position].column
       return Parse(errorLine, [.error(errorLine, errorColumn, message)])
 

@@ -1,7 +1,8 @@
 * Rename Tokenizer -> TokenMatcher
 * Make match, match1 come from Tokenizer (ExpressionParser & StatementParser)
 * Move oneOf to Tokenizer?
-* Let TokenMatcher provide line number?
+* Let TokenMatcher provide the line number?
+
 * Eliminate uses of <&|  - move to new style
 * Reorganize tests to StatementTests and ExpressionTests
 
