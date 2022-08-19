@@ -33,21 +33,6 @@ class ParserTests: XCTestCase {
     )
   }
 
-  func checkExpression(
-    _ expression: String,
-    _ expected: Expression) {
-
-      let input = "10 PRINT \(expression)"
-      let parser = SyntaxAnalyzer()
-      let result = parser.parse(input)
-      XCTAssertEqual(
-        result,
-        Parse(
-          10,
-          [.print([.expr(expected), .newline])])
-      )
-    }
-
   func checkError(
     _ program: String,
     _ expected: String)
@@ -364,23 +349,6 @@ class ParserTests: XCTestCase {
     )
   }
 
-  func testStringCantDoArithmetic() {
-    checkError("17 A=-B$", "Numeric type is required")
-
-    checkError("17 A=B$^3", "Type mismatch")
-    checkError("17 A=3^B$", "Type mismatch")
-
-    checkError("17 A=B$*C$", "Type mismatch")
-    checkError("17 A=3/B$", "Type mismatch")
-
-    checkError("17 A=B$+C$", "Type mismatch")
-    checkError("17 A=3-B$", "Type mismatch")
-
-    checkError("17 A=NOT B$", "Numeric type is required")
-    checkError("17 A=B$ AND 3", "Type mismatch")
-    checkError("17 A=42 OR B$", "Type mismatch")
-  }
-
   func testDefDefinesHelperFunctions() {
     checkOneStatement(
       "25 DEF FNI(x)=x",
@@ -426,102 +394,6 @@ class ParserTests: XCTestCase {
     )
   }
 
-  func testChrParsesString() {
-    checkExpression(
-      "ASC(\"\")",
-      .predefined(
-        "ASC",
-        [.string("")],
-        .number)
-    )
-  }
-
-  // TODO: Prefer message "Type mismatch"
-  func testPredefinedFunctionEnforcesTypes() {
-    checkError(
-      "25 PRINT SQR(\"X\")",
-      "Extra characters at end of line"
-    )
-  }
-
-  func testCantAssignPredefinedStringFunctionCallToNumericVariable() {
-    checkError(
-      "25 A=CHR$(17)",
-      "Type mismatch"
-    )
-  }
-
-  // TODO: Prefer message "Type mismatch"
-  func testPredefinedFunctionEnforcesNumberOfArguments() {
-    checkError(
-      "25 PRINT LEFT$(\"X\")",
-      "Extra characters at end of line"
-    )
-  }
-
-  func testPredefinedFunctionCallSupportsMultipleArguments() {
-    checkExpression(
-      "LEFT$(\"S\", 1)",
-      .predefined(
-        "LEFT$",
-        [.string("S"), .number(1)],
-        .string)
-    )
-  }
-
-  // TODO: Prefer message "Type mismatch"
-  func testPredefinedFunctionDetectsTypeMismatchForMultipleArguments() {
-    checkError(
-      "10 PRINT LEFT$(\"S\", \"T\")",
-      "Extra characters at end of line"
-    )
-  }
-
-  func testMIDworksWithThreeArguments() {
-    checkExpression(
-      "MID$(\"STR\", 1, 2)",
-      .predefined(
-        "MID$",
-        [.string("STR"), .number(1), .number(2)],
-        .string)
-    )
-  }
-
-  func testMIDworksWithTwoArguments() {
-    checkExpression(
-      "MID$(\"STR\", 1)",
-      .predefined(
-        "MID$",
-        [.string("STR"), .number(1), .missing],
-        .string)
-    )
-  }
-
-  func testDefCall() {
-    checkOneStatement(
-      "10 PRINT FNI(3)",
-      .print([
-        .expr(.userdefined(
-          "FNI",
-          .number(3) )),
-        .newline
-      ]))
-  }
-
-  // Prefer message "Type mismatch"
-  func testDefCallMustTakeNumericArgument() {
-    checkError(
-      "10 PRINT FNI(\"str\")",
-      "Extra characters at end of line")
-  }
-
-  func testUserDefinedFunctionsMustHaveNumericResult() {
-    checkError("""
-10 DEF FNA(Y)="string"
-""",
-      "Numeric type is required")
-  }
-
   func testDIMNumber() {
     checkOneStatement(
       "10 DIM A(5)",
@@ -563,27 +435,6 @@ class ParserTests: XCTestCase {
       "Missing ')'")
   }
   
-  func testFetchFromArray() {
-    checkOneStatement(
-      "10 PRINT A(0)",
-      .print([
-        .expr(.arrayAccess("A", .number, [.number(0)])),
-        .newline
-      ])
-    )
-  }
-
-  func testFetchFromMultiDArray() {
-    checkOneStatement(
-      "10 PRINT A(1,2)",
-      .print([
-        .expr(.arrayAccess("A", .number, [.number(1),
-                                    .number(2)])),
-        .newline
-      ])
-    )
-  }
-
   func testFORwithoutSTEP() {
     checkOneStatement(
       "10 FOR X=1 TO 10",
@@ -628,12 +479,6 @@ class ParserTests: XCTestCase {
       "Extra characters at end of line"
     )
   }
-
-  // "a" "a" <|> "a" "b" <%> "unknown start"
-  // "a" <?>"a" <|> "a" "b" <%> "xx"
-  // "FOR" ("STEP" number |&> check <|> empty)
-  // error productions -
-  //   ("FOR" STEP expression |&> check) <|> FOR STEP expression <|> "FOR"
 
   func testNEXTwithVariable() {
     checkOneStatement(

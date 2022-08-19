@@ -9,6 +9,51 @@ import XCTest
 @testable import bassi
 
 class ExpressionTests: XCTestCase {
+  func checkExpression(
+    _ expression: String,
+    _ expected: Expression) {
+
+      let input = "10 PRINT \(expression)"
+      let parser = SyntaxAnalyzer()
+      let result = parser.parse(input)
+      XCTAssertEqual(
+        result,
+        Parse(
+          10,
+          [.print([.expr(expected), .newline])])
+      )
+    }
+
+  func checkError(
+    _ program: String,
+    _ expected: String)
+  {
+    let line = program
+    let parser = SyntaxAnalyzer()
+    let output = parser.parse(line)
+
+    if case .error(_, _, let actualMessage) = output.statements[0] {
+      XCTAssertEqual(
+        actualMessage,
+        expected)
+      return
+    }
+
+    XCTFail("no error found")
+  }
+
+  func checkOneStatement(
+    _ program: String,
+    _ expected: Statement)
+  {
+    let parser = SyntaxAnalyzer()
+    let result = parser.parse(program)
+    XCTAssertEqual(
+      result.statements,
+      [expected]
+    )
+  }
+
   func testNumberHasTypeFloat() {
     let number = Expression.number(37.5)
     XCTAssertEqual(number.type(), .number)
@@ -30,9 +75,143 @@ class ExpressionTests: XCTestCase {
       .number)
   }
 
+  func testStringCantDoArithmetic() {
+    checkError("17 A=-B$", "Numeric type is required")
+
+    checkError("17 A=B$^3", "Type mismatch")
+    checkError("17 A=3^B$", "Type mismatch")
+
+    checkError("17 A=B$*C$", "Type mismatch")
+    checkError("17 A=3/B$", "Type mismatch")
+
+    checkError("17 A=B$+C$", "Type mismatch")
+    checkError("17 A=3-B$", "Type mismatch")
+
+    checkError("17 A=NOT B$", "Numeric type is required")
+    checkError("17 A=B$ AND 3", "Type mismatch")
+    checkError("17 A=42 OR B$", "Type mismatch")
+  }
+
   func testCallOfPredefinedFunctionHasProperReturnType() {
     let call = Expression.predefined("CHR$", [.number(3)], .string)
     XCTAssertEqual(call.type(), .string)
+  }
+
+  func testChrParsesString() {
+    checkExpression(
+      "ASC(\"\")",
+      .predefined(
+        "ASC",
+        [.string("")],
+        .number)
+    )
+  }
+
+  // TODO: Prefer message "Type mismatch"
+  func testPredefinedFunctionEnforcesTypes() {
+    checkError(
+      "25 PRINT SQR(\"X\")",
+      "Extra characters at end of line"
+    )
+  }
+
+  func testCantAssignPredefinedStringFunctionCallToNumericVariable() {
+    checkError(
+      "25 A=CHR$(17)",
+      "Type mismatch"
+    )
+  }
+
+  // TODO: Prefer message "Type mismatch"
+  func testPredefinedFunctionEnforcesNumberOfArguments() {
+    checkError(
+      "25 PRINT LEFT$(\"X\")",
+      "Extra characters at end of line"
+    )
+  }
+
+  func testPredefinedFunctionCallSupportsMultipleArguments() {
+    checkExpression(
+      "LEFT$(\"S\", 1)",
+      .predefined(
+        "LEFT$",
+        [.string("S"), .number(1)],
+        .string)
+    )
+  }
+
+  // TODO: Prefer message "Type mismatch"
+  func testPredefinedFunctionDetectsTypeMismatchForMultipleArguments() {
+    checkError(
+      "10 PRINT LEFT$(\"S\", \"T\")",
+      "Extra characters at end of line"
+    )
+  }
+
+  func testMIDworksWithThreeArguments() {
+    checkExpression(
+      "MID$(\"STR\", 1, 2)",
+      .predefined(
+        "MID$",
+        [.string("STR"), .number(1), .number(2)],
+        .string)
+    )
+  }
+
+  func testMIDworksWithTwoArguments() {
+    checkExpression(
+      "MID$(\"STR\", 1)",
+      .predefined(
+        "MID$",
+        [.string("STR"), .number(1), .missing],
+        .string)
+    )
+  }
+
+  func testDefCall() {
+    checkOneStatement(
+      "10 PRINT FNI(3)",
+      .print([
+        .expr(.userdefined(
+          "FNI",
+          .number(3) )),
+        .newline
+      ]))
+  }
+
+  func testFetchFromArray() {
+    checkOneStatement(
+      "10 PRINT A(0)",
+      .print([
+        .expr(.arrayAccess("A", .number, [.number(0)])),
+        .newline
+      ])
+    )
+  }
+
+  func testFetchFromMultiDArray() {
+    checkOneStatement(
+      "10 PRINT A(1,2)",
+      .print([
+        .expr(.arrayAccess("A", .number, [.number(1),
+                                          .number(2)])),
+        .newline
+      ])
+    )
+  }
+
+  // Prefer message "Type mismatch"
+  func testDefCallMustTakeNumericArgument() {
+    checkError(
+      "10 PRINT FNI(\"str\")",
+      "Extra characters at end of line")
+  }
+
+  func testUserDefinedFunctionsMustHaveNumericResult() {
+    checkError("""
+10 DEF FNA(Y)="string"
+""",
+      "Numeric type is required")
   }
 
 }
