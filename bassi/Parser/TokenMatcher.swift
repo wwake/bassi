@@ -48,6 +48,8 @@ public class TokenMatcher {
   func match(_ tokenType: TokenType, _ message: String) -> satisfy<Token> {
     return satisfy(message) { $0.type == tokenType }
   }
+
+  func oneOf(_ tokens: [TokenType], _ message : String = "Expected symbol not found") -> satisfy<Token> {
+    satisfy(message) { Set(tokens).contains($0.type) }
+  }
 }
-
-

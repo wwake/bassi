@@ -33,7 +33,7 @@ public class StatementParser {
 
   var match1: ((TokenType) -> satisfy<Token>)! = nil
 
-  var oneOf: ((TokenType) -> satisfy<Token>)! = nil
+  var oneOf: (([TokenType], String) -> satisfy<Token>)! = nil
 
   init(_ expressionParser: Bind<Token, Expression>, _ tokenizer: TokenMatcher) {
     self.expressionParser = expressionParser
@@ -41,15 +41,7 @@ public class StatementParser {
     self.tokenizer = tokenizer
     self.match = tokenizer.match
     self.match1 = tokenizer.match1
-  }
-
-  func match1(_ tokenType: TokenType) -> satisfy<Token> {
-    let tokenDescription = tokenNames[tokenType] ?? "expected character"
-    return match(tokenType, "Missing \(tokenDescription)")
-  }
-
-  func oneOf(_ tokens: [TokenType], _ message : String = "Expected symbol not found") -> satisfy<Token> {
-    satisfy(message) { Set(tokens).contains($0.type) }
+    self.oneOf = tokenizer.oneOf
   }
 
   func makeStatementParser() -> Bind<Token, Statement> {
@@ -64,7 +56,7 @@ public class StatementParser {
     variableParser <&& match1(.comma)
     <%> "At least one variable is required"
 
-    let oneWordStatement = oneOf([.end, .remark, .restore, .return, .stop]) |> simpleStatement
+    let oneWordStatement = oneOf([.end, .remark, .restore, .return, .stop], "Expected statement start not found") |> simpleStatement
 
     let assignParser =
     variableParser

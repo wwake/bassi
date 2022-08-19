@@ -36,7 +36,7 @@ class ExpressionParser {
     return satisfy(message) { $0.type == tokenType }
   }
 
-  func oneOf(_ tokens: [TokenType], _ message : String = "Expected symbol not found") -> satisfy<Token> {
+  func oneOf(_ tokens: [TokenType], _ message: String = "Expected symbol not found") -> satisfy<Token> {
     satisfy(message) { Set(tokens).contains($0.type) }
   }
 
