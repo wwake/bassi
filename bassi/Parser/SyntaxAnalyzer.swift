@@ -28,6 +28,14 @@ public class TokenMatcher {
       : LineNumber(0)
   }
 
+  var tokenSlice: ArraySlice<Token> {
+    tokens[...]
+  }
+
+  func columnAt(_ position: Int) -> Int {
+    tokens[position].column
+  }
+  
   func indexOf(_ token: Token) -> Array<Token>.Index {
     return tokens.firstIndex(of: token)!
   }
@@ -95,12 +103,12 @@ public class SyntaxAnalyzer {
   }
 
   func singleLine() -> Parse {
-    let result = lineParser.parse(tokenizer.tokens[...])
+    let result = lineParser.parse(tokenizer.tokenSlice)
 
     switch result {
     case .failure(let position, let message):
       let errorLine = tokenizer.lineNumber
-      let errorColumn = tokenizer.tokens[position].column
+      let errorColumn = tokenizer.columnAt(position)
       return Parse(errorLine, [.error(errorLine, errorColumn, message)])
 
     case .success(let parse, _):
