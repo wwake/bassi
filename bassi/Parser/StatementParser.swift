@@ -29,18 +29,23 @@ public class StatementParser {
 
   var statementParser : Bind<Token, Statement> = Bind()
 
+  var match: ((TokenType, String) -> satisfy<Token>)! = nil
+
+  var match1: ((TokenType) -> satisfy<Token>)! = nil
+
+  var oneOf: ((TokenType) -> satisfy<Token>)! = nil
+
   init(_ expressionParser: Bind<Token, Expression>, _ tokenizer: TokenMatcher) {
     self.expressionParser = expressionParser
+
     self.tokenizer = tokenizer
+    self.match = tokenizer.match
+    self.match1 = tokenizer.match1
   }
 
-  func match(_ tokenType: TokenType) -> satisfy<Token> {
+  func match1(_ tokenType: TokenType) -> satisfy<Token> {
     let tokenDescription = tokenNames[tokenType] ?? "expected character"
     return match(tokenType, "Missing \(tokenDescription)")
-  }
-
-  func match(_ tokenType: TokenType, _ message: String) -> satisfy<Token> {
-    return satisfy(message) { $0.type == tokenType }
   }
 
   func oneOf(_ tokens: [TokenType], _ message : String = "Expected symbol not found") -> satisfy<Token> {
@@ -49,14 +54,14 @@ public class StatementParser {
 
   func makeStatementParser() -> Bind<Token, Statement> {
     let variableParser =
-    match(.variable) <&> <?>(
-      match(.leftParend) &>
-      expressionParser <&& match(.comma)
-      <& match(.rightParend)
+    match1(.variable) <&> <?>(
+      match1(.leftParend) &>
+      expressionParser <&& match1(.comma)
+      <& match1(.rightParend)
     ) |> makeVariableOrArray
 
     let commaVariablesParser =
-    variableParser <&& match(.comma)
+    variableParser <&& match1(.comma)
     <%> "At least one variable is required"
 
     let oneWordStatement = oneOf([.end, .remark, .restore, .return, .stop]) |> simpleStatement
@@ -70,16 +75,16 @@ public class StatementParser {
 
 
     let dataParser =
-    match(.data)
-    &> match(.string, "Expected a data value") <&& match(.comma)
+    match1(.data)
+    &> match(.string, "Expected a data value") <&& match1(.comma)
     |> makeData
 
 
     let defPart =
-    match(.def)
+    match1(.def)
     &> match(.fn, "DEF requires a name of the form FNx")
     &> match(.variable, "DEF requires a name of the form FNx")
-    <& match(.leftParend)
+    <& match1(.leftParend)
 
     let variablePart =
     match(.variable, "Variable is required")
@@ -94,22 +99,22 @@ public class StatementParser {
 
 
     let dim1Parser =
-    (match(.variable)
-     <& match(.leftParend)
+    (match1(.variable)
+     <& match1(.leftParend)
     )
-    <&> expressionParser <&& match(.comma)
-    <& match(.rightParend)
+    <&> expressionParser <&& match1(.comma)
+    <& match1(.rightParend)
     |> makeDimension
 
     let dimParser =
-    match(.dim)
-    &> dim1Parser <&& match(.comma)
+    match1(.dim)
+    &> dim1Parser <&& match1(.comma)
     |> { Statement.dim($0) }
 
 
     let forParser =
-    (match(.for)
-     &> match(.variable)
+    (match1(.for)
+     &> match1(.variable)
      <& match(.equals, "'=' is required")
     )
     <&> (expressionParser |&> requireFloatType)
@@ -118,32 +123,32 @@ public class StatementParser {
       &> expressionParser
       |&> requireFloatType
     )
-    <&> <?>(match(.step) &> expressionParser |&> requireFloatType)
+    <&> <?>(match1(.step) &> expressionParser |&> requireFloatType)
     |&> makeForStatement
 
 
     let gosubParser =
-    match(.gosub)
+    match1(.gosub)
     &> match(.integer, "Missing target of GOSUB")
     |> { Statement.gosub(LineNumber($0.float)) }
 
 
     let gotoParser =
-    match(.goto)
+    match1(.goto)
     &> match(.integer, "Missing target of GOTO")
     |> { Statement.goto(LineNumber($0.float)) }
 
 
     let ifPrefix =
-    match(.if)
+    match1(.if)
     &> expressionParser
     <& match(.then, "Missing 'THEN'")
     |&> requireFloatType
 
     let ifParser =
-    (ifPrefix <&> match(.integer) |&> makeIfGoto)
+    (ifPrefix <&> match1(.integer) |&> makeIfGoto)
     <|>
-    (ifPrefix <&> statementParser <&& match(.colon)
+    (ifPrefix <&> statementParser <&& match1(.colon)
      |&> makeIfStatements)
 
 
@@ -151,12 +156,12 @@ public class StatementParser {
     defaultPrompt.string = ""
 
     let promptPlusVariables =
-    match(.string)
+    match1(.string)
     <& match(.semicolon, "? Semicolon required after prompt")
     <&> commaVariablesParser
 
     let inputParser =
-    match(.input)
+    match1(.input)
     &>
     (    promptPlusVariables
          <|> inject(defaultPrompt) <&> commaVariablesParser
@@ -165,7 +170,7 @@ public class StatementParser {
 
 
     let letParser =
-    match(.let)
+    match1(.let)
     &> (
       assignParser
       <%> "LET is missing variable to assign to"
@@ -173,28 +178,28 @@ public class StatementParser {
 
 
     let nextParser =
-    match(.next)
+    match1(.next)
     &> match(.variable, "Variable is required")
     |> { Statement.next($0.string) }
 
 
     let onParser =
-    ( match(.on)
+    ( match1(.on)
       &> expressionParser
     )
     <&> oneOf([.goto, .gosub], "ON statement requires GOTO or GOSUB")
     <&> (
-      match(.integer) <&& match(.comma)
+      match1(.integer) <&& match1(.comma)
       <%> "ON statement requires comma-separated list of line numbers"
     )
     |> makeOnStatement
 
 
     let printParser =
-    match(.print)
+    match1(.print)
     &> <*>(
-      ( match(.semicolon) |> { _ in Printable.thinSpace })
-      <|> (match(.comma) |> { _ in Printable.tab })
+      ( match1(.semicolon) |> { _ in Printable.thinSpace })
+      <|> (match1(.comma) |> { _ in Printable.tab })
       <|> (expressionParser |> { Printable.expr($0) })
       <%> "Expected start of expression"
     )
@@ -202,7 +207,7 @@ public class StatementParser {
 
 
     let readParser =
-    match(.read) &> commaVariablesParser |> { Statement.read($0) }
+    match1(.read) &> commaVariablesParser |> { Statement.read($0) }
 
 
     let theStatementParser =
