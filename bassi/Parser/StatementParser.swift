@@ -91,7 +91,7 @@ public class StatementParser {
     let functionAndVariable = defPart <&> variablePart
 
     let defineParser =
-    AndThenTuple(functionAndVariable, expressionParser |&> requireFloatType)
+    (functionAndVariable <&> (expressionParser |&> requireFloatType))
     |&> checkDefStatement
 
 

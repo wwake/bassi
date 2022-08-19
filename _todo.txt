@@ -1,11 +1,8 @@
-* Handle ifPrefix without backtracking
-
 * Reorganize tests to StatementTests and ExpressionTests
 
 * Can we improve messages on TODO tests?
 
 * DIM should enforce numeric types for sizes
-* Why did we need to call AndThen directly?
 * For alternatives, should default message apply if they all got equally far?
 * Variables should know their type at the token level
 
@@ -15,6 +12,8 @@ EVO-22-10: August 19, 2022
 * Move oneOf to Tokenizer
 * Let TokenMatcher provide the line number?
 * Eliminate uses of <&|  - move to new style
+* Handle ifPrefix without backtracking
+* Remove other use of AndThenTuple
 
 EVO-22-09: August 18, 2022
 * Unify all the requireFloatTypes() methods to newer check style
