@@ -35,6 +35,11 @@ public class StatementParser {
 
   var oneOf: (([TokenType], String) -> satisfy<Token>)! = nil
 
+  enum ThenTarget {
+    case lineNumber(Token)
+    case statements([Statement])
+  }
+
   init(_ expressionParser: Bind<Token, Expression>, _ tokenizer: TokenMatcher) {
     self.expressionParser = expressionParser
 
@@ -137,12 +142,18 @@ public class StatementParser {
     <& match(.then, "Missing 'THEN'")
     |&> requireFloatType
 
-    let ifParser =
-    (ifPrefix <&> match1(.integer) |&> makeIfGoto)
-    <|>
-    (ifPrefix <&> statementParser <&& match1(.colon)
-     |&> makeIfStatements)
+    let ifTarget =
+    ( match1(.integer) |> { ThenTarget.lineNumber($0) })
+      <|>
+    ( statementParser <&& match1(.colon)
+        |> { ThenTarget.statements($0) })
 
+    let ifParser =
+    AndThenTuple(
+      ifPrefix,
+      ifTarget
+    )
+    |> makeIfThen
 
     var defaultPrompt = Token(line: 0, column: 0, type: .string)
     defaultPrompt.string = ""
@@ -302,6 +313,18 @@ public class StatementParser {
   func makeIfGoto(_ argument: (Expression, Token), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Statement> {
     let (expr, token) = argument
     return .success(.ifGoto(expr, LineNumber(token.float!)), remaining)
+  }
+
+  func makeIfThen(_ argument: (Expression, ThenTarget)) -> Statement {
+    let (expr, thenTarget) = argument
+
+    switch thenTarget {
+    case .lineNumber(let token):
+      return .ifGoto(expr, LineNumber(token.float!))
+
+    case .statements(let statements):
+      return .`if`(expr, statements)
+    }
   }
 
   func makeIfStatements(_ argument: (Expression, [Statement]), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Statement> {

@@ -1,4 +1,3 @@
-* Eliminate uses of <&|  - move to new style
 * Handle ifPrefix without backtracking
 
 * Reorganize tests to StatementTests and ExpressionTests
@@ -15,6 +14,7 @@ EVO-22-10: August 19, 2022
 * Make match, match1 come from Tokenizer (ExpressionParser & StatementParser)
 * Move oneOf to Tokenizer
 * Let TokenMatcher provide the line number?
+* Eliminate uses of <&|  - move to new style
 
 EVO-22-09: August 18, 2022
 * Unify all the requireFloatTypes() methods to newer check style
