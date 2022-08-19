@@ -134,15 +134,13 @@ class ExpressionParser {
       actualArguments.append(.missing)
     }
 
-    do {
-      try typeCheck(token, parameterTypes, actualArguments)
-    } catch ParseError.error(let token, let message) {
-      return .failure(indexOf(token) + 2, message)  // error is in args, not .predefined
-    } catch {
-      return .failure(indexOf(token), "Internal error in type checking")
-    }
-    return .success(argument, remaining)
+    let errorMessage = typeCheck(parameterTypes, actualArguments)
 
+    if errorMessage == nil {
+      return .success(argument, remaining)
+    }
+
+    return .failure(indexOf(token), errorMessage!)
   }
 
   func makeUnaryExpression(_ argument: ([Token], Expression)) -> Expression {
@@ -222,15 +220,13 @@ class ExpressionParser {
   func checkUserDefinedCall(_ argument: (Token, Expression), _ remaining: ArraySlice<Token>) -> ParseResult<Token, (Token, Expression)> {
     let (token, expr) = argument
 
-    do {
-      try typeCheck(token, [.number], [expr])
-    } catch ParseError.error(let token, let message) {
-      return .failure(indexOf(token), message)
-    } catch {
-      return .failure(indexOf(token), "Internal error in type checking")
+    let errorMessage = typeCheck([.number], [expr])
+
+    if errorMessage == nil {
+      return .success(argument, remaining)
     }
 
-    return .success(argument, remaining)
+    return .failure(indexOf(token), errorMessage!)
   }
 
   func makeUserDefinedCall(_ argument: (Token, Expression)) -> Expression {
@@ -283,21 +279,19 @@ class ExpressionParser {
   }
 
   fileprivate func typeCheck(
-    _ token: Token,
     _ parameterTypes: [`Type`],
-    _ arguments: [Expression]) throws {
+    _ arguments: [Expression]) -> String? {
 
       if parameterTypes.count < arguments.count {
-        throw ParseError.error(token, "Function not called with correct number of arguments")
+        return "Function not called with correct number of arguments"
       }
 
-      try zip(parameterTypes, arguments)
-        .forEach { (parameterType, argument) in
-          if !argument.type().isCompatible(parameterType) {
-            throw ParseError.error(token, "Type mismatch")
-          }
+      let result = zip(parameterTypes, arguments)
+        .first { (parameterType, argument) in
+          !argument.type().isCompatible(parameterType)
         }
+        .map { _ in "Type mismatch" }
+
+      return result
     }
-
-
 }
