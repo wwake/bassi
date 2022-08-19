@@ -214,4 +214,28 @@ class ExpressionTests: XCTestCase {
       "Numeric type is required")
   }
 
+  func testPredefinedFunction() {
+    checkOneStatement(
+      "25 PRINT SQR(4)",
+      .print(
+        [.expr(.predefined("SQR", [.number(4)], .number)), .newline]
+      )
+    )
+  }
+
+  // TODO: Prefer message "Missing '('"
+  func testPredefinedFunctionMissingLeftParend() {
+    checkError("17 PRINT SQR 4)", "Extra characters at end of line")
+  }
+
+  func testPredefinedStringFunctionReturnType() {
+    checkOneStatement(
+      "25 PRINT CHR$(4)",
+      .print(
+        [.expr(.predefined("CHR$", [.number(4)], .string)), .newline]
+      )
+    )
+  }
+
+
 }

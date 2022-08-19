@@ -55,31 +55,19 @@ class ParserTests: XCTestCase {
     .expr(.number(number))
   }
 
-  func test10END() throws {
-    let parser = SyntaxAnalyzer()
-
-    XCTAssertEqual(
-      parser.parse("1 END"),
-      Parse(1, [.end]))
-
-    XCTAssertEqual(
-      parser.parse("99999 END"),
-      Parse(99999, [.end]))
+  func testValidLineNumber() throws {
+    checkOneStatement(
+      "10 REM whatever",
+      .skip
+    )
   }
 
-  func testLineNumberIsInRange0to99999() {
+  func testLineNumberMustBeInRange0to99999() {
     checkError(
       "0 END", "Line number must be between 1 and 99999")
 
     checkError(
       "100000 END", "Line number must be between 1 and 99999")
-  }
-
-  func test10REM() throws {
-    checkOneStatement(
-      "10 REM whatever",
-      .skip
-    )
   }
 
   func testNoLineNumber() {
@@ -88,52 +76,11 @@ class ParserTests: XCTestCase {
       "Line number is required at start of statement")
   }
 
-  func testPrintStatement() {
-    checkOneStatement(
-      "25 PRINT",
-      .print([.newline])
-    )
-  }
-
-  func testPrintStatementWithNumber() {
-    checkOneStatement(
-      "25 PRINT 42",
-      .print([.expr(.number(42.0)), .newline])
-    )
-  }
-
-  func testPrintPrintIsError() {
-    checkError(
-      "25 PRINT PRINT",
-      "Extra characters at end of line"
-    )
-  }
-
   func testMultipleStatementsOnOneLine() {
     checkStatements(
       "10 PRINT 10: PRINT 20",
       [.print([number(10), .newline]), .print([number(20), .newline])]
     )
-  }
-
-  func testMultipleEmptyPrintStatementsOnOneLine() {
-    checkStatements(
-      "10 PRINT: PRINT",
-      [.print([.newline]), .print([.newline])])
-  }
-
-  func testSemicolonAtEndOfPrintSuppressesNewline() {
-    checkStatements("10 PRINT;", [.print([.thinSpace])])
-  }
-
-  func testCommaAtEndOfPRINTsuppressesNewline() {
-    checkStatements("10 PRINT,", [.print([.tab])])
-  }
-
-  func testCommaInPRINTyieldsTab() {
-    checkStatements(
-      "10 PRINT 1,2",
-      [.print([.expr(.number(1)), .tab, .expr(.number(2)), .newline])])
   }
 
   func testDataWithSingleNumber() throws {
@@ -164,6 +111,40 @@ class ParserTests: XCTestCase {
     checkError(
       "25 DATA x,y,",
       "Extra characters at end of line")
+  }
+
+  func testDefDefinesHelperFunctions() {
+    checkOneStatement(
+      "25 DEF FNI(x)=x",
+      .def(
+        "FNI",
+        "X",
+        .variable("X", .number),
+        .function([.number], .number)
+      )
+    )
+  }
+
+  func testDefErrorMessages() {
+    checkError("17 DEF F(X)=X", "DEF requires a name of the form FNx")
+    checkError("17 DEF FN(x)=X", "DEF requires a name of the form FNx")
+    checkError("17 DEF FNX9(x)=X", "DEF function name cannot be followed by extra letters")
+    checkError("17 DEF FNI x)=X", "Missing '('")
+    checkError("17 DEF FNZ()=X", "Variable is required")
+    checkError("17 DEF FNA(x=X", "DEF requires ')' after parameter")
+    checkError("17 DEF FNP(x) -> X", "DEF requires '=' after parameter definition")
+  }
+
+  func test10END() throws {
+    let parser = SyntaxAnalyzer()
+
+    XCTAssertEqual(
+      parser.parse("1 END"),
+      Parse(1, [.end]))
+
+    XCTAssertEqual(
+      parser.parse("99999 END"),
+      Parse(99999, [.end]))
   }
 
   func testGoto() throws {
@@ -283,6 +264,13 @@ class ParserTests: XCTestCase {
       "At least one variable is required")
   }
 
+  func testLETMissingAssignment() {
+    checkError(
+      "42 LET",
+      "LET is missing variable to assign to"
+    )
+  }
+
   func testAssignmentStatementWithNumber() {
     checkOneStatement(
       "25 X = 42",
@@ -308,13 +296,6 @@ class ParserTests: XCTestCase {
     )
   }
 
-  func testLETMissingAssignment() {
-    checkError(
-      "42 LET",
-      "LET is missing variable to assign to"
-    )
-  }
-
   func testAssignStringToNumberFails() {
     checkError(
       "17 A=B$",
@@ -329,6 +310,47 @@ class ParserTests: XCTestCase {
         .variable("A$", .string),
         .string("body"))
     )
+  }
+
+  func testPrintStatement() {
+    checkOneStatement(
+      "25 PRINT",
+      .print([.newline])
+    )
+  }
+
+  func testPrintStatementWithNumber() {
+    checkOneStatement(
+      "25 PRINT 42",
+      .print([.expr(.number(42.0)), .newline])
+    )
+  }
+
+  func testPrintPrintIsError() {
+    checkError(
+      "25 PRINT PRINT",
+      "Extra characters at end of line"
+    )
+  }
+
+  func testMultipleEmptyPrintStatementsOnOneLine() {
+    checkStatements(
+      "10 PRINT: PRINT",
+      [.print([.newline]), .print([.newline])])
+  }
+
+  func testSemicolonAtEndOfPrintSuppressesNewline() {
+    checkStatements("10 PRINT;", [.print([.thinSpace])])
+  }
+
+  func testCommaAtEndOfPRINTsuppressesNewline() {
+    checkStatements("10 PRINT,", [.print([.tab])])
+  }
+
+  func testCommaInPRINTyieldsTab() {
+    checkStatements(
+      "10 PRINT 1,2",
+      [.print([.expr(.number(1)), .tab, .expr(.number(2)), .newline])])
   }
 
   func testPrintString() {
@@ -346,51 +368,6 @@ class ParserTests: XCTestCase {
              .arrayAccess("Y", .number, [.number(3)]),
              .variable("A$", .string)
       ])
-    )
-  }
-
-  func testDefDefinesHelperFunctions() {
-    checkOneStatement(
-      "25 DEF FNI(x)=x",
-      .def(
-        "FNI",
-        "X",
-        .variable("X", .number),
-        .function([.number], .number)
-      )
-    )
-  }
-
-  func testDefErrorMessages() {
-    checkError("17 DEF F(X)=X", "DEF requires a name of the form FNx")
-    checkError("17 DEF FN(x)=X", "DEF requires a name of the form FNx")
-    checkError("17 DEF FNX9(x)=X", "DEF function name cannot be followed by extra letters")
-    checkError("17 DEF FNI x)=X", "Missing '('")
-    checkError("17 DEF FNZ()=X", "Variable is required")
-    checkError("17 DEF FNA(x=X", "DEF requires ')' after parameter")
-    checkError("17 DEF FNP(x) -> X", "DEF requires '=' after parameter definition")
-  }
-
-  func testPredefinedFunction() {
-    checkOneStatement(
-      "25 PRINT SQR(4)",
-      .print(
-        [.expr(.predefined("SQR", [.number(4)], .number)), .newline]
-      )
-    )
-  }
-
-  // TODO: Prefer message "Missing '('"
-  func testPredefinedFunctionMissingLeftParend() {
-    checkError("17 PRINT SQR 4)", "Extra characters at end of line")
-  }
-
-  func testPredefinedStringFunctionReturnType() {
-    checkOneStatement(
-      "25 PRINT CHR$(4)",
-      .print(
-        [.expr(.predefined("CHR$", [.number(4)], .string)), .newline]
-      )
     )
   }
 
@@ -556,6 +533,17 @@ class ParserTests: XCTestCase {
       "Extra characters at end of line")
   }
 
+  func testRestore() throws {
+    checkOneStatement("10 RESTORE", .restore)
+  }
+
+  func testStop() throws {
+    checkOneStatement(
+      "10 stop",
+      .stop
+    )
+  }
+
   func testSimpleStatementsJustCount() {
     XCTAssertEqual(
       Statement.count([.gosub(1), .gosub(2), .goto(3)]),
@@ -565,13 +553,13 @@ class ParserTests: XCTestCase {
   func testIfStatementAddsCountOfChildren() {
     XCTAssertEqual(
       Statement.count(
-      [
-        .goto(1),
-        .if(.number(1),
-            [.goto(2), .gosub(3)])
-      ]),
+        [
+          .goto(1),
+          .if(.number(1),
+              [.goto(2), .gosub(3)])
+        ]),
       4
-      )
+    )
   }
 
   func testIfStatementAddsCountOfChildrenRecursively() {
@@ -608,16 +596,5 @@ class ParserTests: XCTestCase {
     XCTAssertEqual(Statement.at(list, 4), innerIf)
     XCTAssertEqual(Statement.at(list, 5), .gosub(5))
     XCTAssertEqual(Statement.at(list, 6), .gosub(6))
-  }
-
-  func testRestore() throws {
-    checkOneStatement("10 RESTORE", .restore)
-  }
-
-  func testStop() throws {
-    checkOneStatement(
-      "10 stop",
-      .stop
-    )
   }
 }
