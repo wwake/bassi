@@ -1,7 +1,4 @@
-* Rename Tokenizer -> TokenMatcher
-* Make match, match1 come from Tokenizer (ExpressionParser & StatementParser)
-* Move oneOf to Tokenizer?
-* Let TokenMatcher provide the line number?
+* Handle ifPrefix without backtracking
 
 * Eliminate uses of <&|  - move to new style
 * Reorganize tests to StatementTests and ExpressionTests
@@ -11,6 +8,13 @@
 * DIM should enforce numeric types for sizes
 * Why did we need to call AndThen directly?
 * For alternatives, should default message apply if they all got equally far?
+* Variables should know their type at the token level
+
+EVO-22-10: August 19, 2022
+* Rename Tokenizer -> TokenMatcher
+* Make match, match1 come from Tokenizer (ExpressionParser & StatementParser)
+* Move oneOf to Tokenizer
+* Let TokenMatcher provide the line number?
 
 EVO-22-09: August 18, 2022
 * Unify all the requireFloatTypes() methods to newer check style

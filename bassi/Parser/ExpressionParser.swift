@@ -22,60 +22,55 @@ class ExpressionParser {
 
   var expressionParser : Bind<Token, Expression> = Bind()
 
-  
+  var match: ((TokenType, String) -> satisfy<Token>)! = nil
+
+  var match1: ((TokenType) -> satisfy<Token>)! = nil
+
+  var oneOf: (([TokenType], String) -> satisfy<Token>)! = nil
+
   init(_ tokenizer: TokenMatcher) {
     self.tokenizer = tokenizer
-  }
-
-  func match(_ tokenType: TokenType) -> satisfy<Token> {
-    let tokenDescription = tokenNames[tokenType] ?? "expected character"
-    return match(tokenType, "Missing \(tokenDescription)")
-  }
-
-  func match(_ tokenType: TokenType, _ message: String) -> satisfy<Token> {
-    return satisfy(message) { $0.type == tokenType }
-  }
-
-  func oneOf(_ tokens: [TokenType], _ message: String = "Expected symbol not found") -> satisfy<Token> {
-    satisfy(message) { Set(tokens).contains($0.type) }
+    self.match = tokenizer.match
+    self.match1 = tokenizer.match1
+    self.oneOf = tokenizer.oneOf
   }
 
   func make() -> Bind<Token, Expression> {
     let parenthesizedParser =
-    match(.leftParend) &> expressionParser <& match(.rightParend)
+    match1(.leftParend) &> expressionParser <& match1(.rightParend)
 
-    let numberParser = match(.number) |> { Expression.number($0.float) }
+    let numberParser = match1(.number) |> { Expression.number($0.float) }
 
-    let integerParser = match(.integer) |> { Expression.number($0.float) }
+    let integerParser = match1(.integer) |> { Expression.number($0.float) }
 
-    let stringParser = match(.string) |> { Expression.string($0.string!) }
+    let stringParser = match1(.string) |> { Expression.string($0.string!) }
 
     let predefFunctionParser =
-    match(.predefined) <&>
+    match1(.predefined) <&>
     (
-      match(.leftParend) &>
-      expressionParser <&& match(.comma)
-      <& match(.rightParend)
+      match1(.leftParend) &>
+      expressionParser <&& match1(.comma)
+      <& match1(.rightParend)
     )
     <&| checkPredefinedCall
     |> makePredefinedFunctionCall
 
     let udfFunctionParser =
     (
-      match(.fn) &>
+      match1(.fn) &>
       match(.variable, "Call to FNx must have letter after FN")
-      <& match(.leftParend)
+      <& match1(.leftParend)
     )
     <&> expressionParser
-    <& match(.rightParend)
+    <& match1(.rightParend)
     <&| checkUserDefinedCall
     |> makeUserDefinedCall
 
     let variableParser =
-    match(.variable) <&> <?>(
-      match(.leftParend) &>
-      expressionParser <&& match(.comma)
-      <& match(.rightParend)
+    match1(.variable) <&> <?>(
+      match1(.leftParend) &>
+      expressionParser <&& match1(.comma)
+      <& match1(.rightParend)
     ) |> makeVariableOrArray
 
     let factorParser =
@@ -84,38 +79,38 @@ class ExpressionParser {
     <%> "Expected start of expression"
 
     let powerParser =
-    factorParser <&&> match(.exponent)
+    factorParser <&&> match1(.exponent)
     |&> makeNumericBinaryExpression
 
     let negationParser =
     powerParser
-    <|> <+>match(.minus) <&> (powerParser |&> requireFloatType)
+    <|> <+>match1(.minus) <&> (powerParser |&> requireFloatType)
     |> makeUnaryExpression
 
     let termParser =
-    negationParser <&&> (match(.times) <|> match(.divide))
+    negationParser <&&> (match1(.times) <|> match1(.divide))
     |&> makeNumericBinaryExpression
 
     let subexprParser =
-    termParser <&&> (match(.plus) <|> match(.minus))
+    termParser <&&> (match1(.plus) <|> match1(.minus))
     |&> makeNumericBinaryExpression
 
     let relationalParser =
-    subexprParser <&> <?>(oneOf(relops) <&> subexprParser)
+    subexprParser <&> <?>(oneOf(relops, "Expected relational operator") <&> subexprParser)
     |&> requireMatchingTypes
     |> makeRelationalExpression
 
     let boolNotParser =
     relationalParser
-    <|> <+>match(.not) <&> (relationalParser |&> requireFloatType)
+    <|> <+>match1(.not) <&> (relationalParser |&> requireFloatType)
     |> makeUnaryExpression
 
     let boolAndParser =
-    boolNotParser <&&> match(.and)
+    boolNotParser <&&> match1(.and)
     |&> makeNumericBinaryExpression
 
     let boolOrParser =
-    boolAndParser <&&> match(.or)
+    boolAndParser <&&> match1(.or)
     |&> makeNumericBinaryExpression
 
     expressionParser.bind(boolOrParser.parse)
