@@ -149,11 +149,7 @@ public class StatementParser {
         |> { ThenTarget.statements($0) })
 
     let ifParser =
-    AndThenTuple(
-      ifPrefix,
-      ifTarget
-    )
-    |> makeIfThen
+      ifPrefix <&> ifTarget |> makeIfThen
 
     var defaultPrompt = Token(line: 0, column: 0, type: .string)
     defaultPrompt.string = ""
@@ -310,11 +306,6 @@ public class StatementParser {
     return .success(statement, remaining)
   }
 
-  func makeIfGoto(_ argument: (Expression, Token), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Statement> {
-    let (expr, token) = argument
-    return .success(.ifGoto(expr, LineNumber(token.float!)), remaining)
-  }
-
   func makeIfThen(_ argument: (Expression, ThenTarget)) -> Statement {
     let (expr, thenTarget) = argument
 
@@ -325,11 +316,6 @@ public class StatementParser {
     case .statements(let statements):
       return .`if`(expr, statements)
     }
-  }
-
-  func makeIfStatements(_ argument: (Expression, [Statement]), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Statement> {
-    let (expr, statements) = argument
-    return .success(.`if`(expr, statements), remaining)
   }
 
   func makeInputStatement(_ argument: (Token?, [Expression])) -> Statement {
