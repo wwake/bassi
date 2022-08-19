@@ -66,7 +66,7 @@ class ExpressionParser {
     )
     <&> expressionParser
     <& match1(.rightParend)
-    <&| checkUserDefinedCall
+    |&> checkUserDefinedCall
     |> makeUserDefinedCall
 
     let variableParser =
@@ -219,18 +219,18 @@ class ExpressionParser {
     return .op2(token.type, left, right)
   }
 
-  func checkUserDefinedCall(_ argument: (Token, Expression)) -> (Int, String)? {
+  func checkUserDefinedCall(_ argument: (Token, Expression), _ remaining: ArraySlice<Token>) -> ParseResult<Token, (Token, Expression)> {
     let (token, expr) = argument
 
     do {
       try typeCheck(token, [.number], [expr])
     } catch ParseError.error(let token, let message) {
-      return (tokenMatcher.indexOf(token), message)
+      return .failure(indexOf(token), message)
     } catch {
-      return (tokenMatcher.indexOf(token), "Internal error in type checking")
+      return .failure(indexOf(token), "Internal error in type checking")
     }
 
-    return nil
+    return .success(argument, remaining)
   }
 
   func makeUserDefinedCall(_ argument: (Token, Expression)) -> Expression {
