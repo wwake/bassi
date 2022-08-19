@@ -9,7 +9,7 @@ import Foundation
 import pcombo
 
 public class TokenMatcher {
-  var tokens: [Token]
+  private var tokens: [Token] = []
 
   let tokenNames : [TokenType : String] =
   [
@@ -18,7 +18,7 @@ public class TokenMatcher {
     .variable: "variable name"
   ]
 
-  init(_ tokens: [Token]) {
+  func setTokens(_ tokens: [Token]) {
     self.tokens = tokens
   }
 
@@ -35,7 +35,7 @@ public class TokenMatcher {
   func columnAt(_ position: Int) -> Int {
     tokens[position].column
   }
-  
+
   func indexOf(_ token: Token) -> Array<Token>.Index {
     return tokens.firstIndex(of: token)!
   }
@@ -70,7 +70,7 @@ public class SyntaxAnalyzer {
   var statementParser: Bind<Token, Statement> = Bind()
   var lineParser: Bind<Token, Parse> = Bind()
 
-  var tokenizer = TokenMatcher([])
+  var tokenizer = TokenMatcher()
 
   var match: ((_ tokenType: TokenType, _ message: String) -> satisfy<Token>)! = nil
 
@@ -97,7 +97,7 @@ public class SyntaxAnalyzer {
     lexer = Lexer(input)
 
     let tokens = lexer.line()
-    tokenizer.tokens = tokens
+    tokenizer.setTokens(tokens)
 
     return singleLine()
   }
