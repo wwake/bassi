@@ -1,6 +1,6 @@
+* Eliminate uses of <&|  - move to new style
 * Handle ifPrefix without backtracking
 
-* Eliminate uses of <&|  - move to new style
 * Reorganize tests to StatementTests and ExpressionTests
 
 * Can we improve messages on TODO tests?

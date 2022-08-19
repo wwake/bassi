@@ -44,7 +44,7 @@ public class StatementParser {
     self.oneOf = tokenizer.oneOf
   }
 
-  func makeStatementParser() -> Bind<Token, Statement> {
+  func make() -> Bind<Token, Statement> {
     let variableParser =
     match1(.variable) <&> <?>(
       match1(.leftParend) &>

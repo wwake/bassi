@@ -39,7 +39,7 @@ public class SyntaxAnalyzer {
 
       expressionParser = ExpressionParser(tokenizer).make()
 
-      statementParser = StatementParser(expressionParser, tokenizer).makeStatementParser()
+      statementParser = StatementParser(expressionParser, tokenizer).make()
 
       let line =
       match(.integer, "Line number is required at start of statement")

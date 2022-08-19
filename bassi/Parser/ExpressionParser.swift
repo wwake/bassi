@@ -18,7 +18,7 @@ class ExpressionParser {
 
   let relops: [TokenType] = [.equals, .lessThan, .lessThanOrEqualTo, .notEqual, .greaterThan, .greaterThanOrEqualTo]
 
-  var tokenizer: TokenMatcher
+  var tokenMatcher: TokenMatcher
 
   var expressionParser : Bind<Token, Expression> = Bind()
 
@@ -28,11 +28,14 @@ class ExpressionParser {
 
   var oneOf: (([TokenType], String) -> satisfy<Token>)! = nil
 
-  init(_ tokenizer: TokenMatcher) {
-    self.tokenizer = tokenizer
-    self.match = tokenizer.match
-    self.match1 = tokenizer.match1
-    self.oneOf = tokenizer.oneOf
+  var indexOf: (Token) -> Array<Token>.Index
+
+  init(_ tokenMatcher: TokenMatcher) {
+    self.tokenMatcher = tokenMatcher
+    self.match = tokenMatcher.match
+    self.match1 = tokenMatcher.match1
+    self.oneOf = tokenMatcher.oneOf
+    self.indexOf = tokenMatcher.indexOf
   }
 
   func make() -> Bind<Token, Expression> {
@@ -52,7 +55,7 @@ class ExpressionParser {
       expressionParser <&& match1(.comma)
       <& match1(.rightParend)
     )
-    <&| checkPredefinedCall
+    |&> checkPredefinedCall
     |> makePredefinedFunctionCall
 
     let udfFunctionParser =
@@ -117,13 +120,13 @@ class ExpressionParser {
     return expressionParser
   }
 
-  func checkPredefinedCall(_ argument: (Token, [Expression])) -> (Int, String)? {
+  func checkPredefinedCall(_ argument: (Token, [Expression]), _ remaining: ArraySlice<Token>) -> ParseResult<Token, (Token, [Expression])> {
     let (token, exprs) = argument
 
     let type = token.resultType
 
     guard case .function(let parameterTypes, _) = type else {
-      return (tokenizer.indexOf(token), "Can't happen - predefined has inconsistent type")
+      return .failure(indexOf(token), "Can't happen - predefined has inconsistent type")
     }
 
     var actualArguments = exprs
@@ -134,11 +137,12 @@ class ExpressionParser {
     do {
       try typeCheck(token, parameterTypes, actualArguments)
     } catch ParseError.error(let token, let message) {
-      return (tokenizer.indexOf(token) + 2, message)  // error is in args, not .predefined
+      return .failure(indexOf(token) + 2, message)  // error is in args, not .predefined
     } catch {
-      return (tokenizer.indexOf(token), "Internal error in type checking")
+      return .failure(indexOf(token), "Internal error in type checking")
     }
-    return nil
+    return .success(argument, remaining)
+
   }
 
   func makeUnaryExpression(_ argument: ([Token], Expression)) -> Expression {
@@ -159,7 +163,7 @@ class ExpressionParser {
     }
 
     let (token, _) = pairs[0]
-    let tokenPosition = tokenizer.indexOf(token)
+    let tokenPosition = tokenMatcher.indexOf(token)
 
     if firstExpr.type() != .number {
       return .failure(tokenPosition, "Type mismatch")
@@ -170,7 +174,7 @@ class ExpressionParser {
     }
 
     if failureIndex != nil {
-      return .failure(tokenizer.indexOf(pairs[failureIndex!].0), "Type mismatch")
+      return .failure(tokenMatcher.indexOf(pairs[failureIndex!].0), "Type mismatch")
     }
 
     return .success(makeBinaryExpression(argument), remaining)
@@ -221,9 +225,9 @@ class ExpressionParser {
     do {
       try typeCheck(token, [.number], [expr])
     } catch ParseError.error(let token, let message) {
-      return (tokenizer.indexOf(token), message)
+      return (tokenMatcher.indexOf(token), message)
     } catch {
-      return (tokenizer.indexOf(token), "Internal error in type checking")
+      return (tokenMatcher.indexOf(token), "Internal error in type checking")
     }
 
     return nil
@@ -266,7 +270,7 @@ class ExpressionParser {
       return .success(argument, remaining)
     }
 
-    return .failure(tokenizer.indexOf(token), "Type mismatch")
+    return .failure(tokenMatcher.indexOf(token), "Type mismatch")
   }
 
   func requireMatchingTypes(_ argument: (Expression, Expression), _ remaining: ArraySlice<Token>) -> ParseResult<Token, (Expression, Expression)> {
