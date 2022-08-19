@@ -1,5 +1,3 @@
-* Reorganize tests to StatementTests and ExpressionTests
-
 * Can we improve messages on TODO tests?
 
 * DIM should enforce numeric types for sizes
@@ -14,6 +12,7 @@ EVO-22-10: August 19, 2022
 * Eliminate uses of <&|  - move to new style
 * Handle ifPrefix without backtracking
 * Remove other use of AndThenTuple
+* Reorganize tests to StatementTests and ExpressionTests
 
 EVO-22-09: August 18, 2022
 * Unify all the requireFloatTypes() methods to newer check style

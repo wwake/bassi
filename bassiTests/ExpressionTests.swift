@@ -200,7 +200,7 @@ class ExpressionTests: XCTestCase {
     )
   }
 
-  // Prefer message "Type mismatch"
+  // TODO: Prefer message "Type mismatch"
   func testDefCallMustTakeNumericArgument() {
     checkError(
       "10 PRINT FNI(\"str\")",
