@@ -1,3 +1,5 @@
+* Update pcombo library
+
 * Can we improve messages on TODO tests?
 
 * DIM should enforce numeric types for sizes
