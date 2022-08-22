@@ -530,7 +530,7 @@ class ParserTests: XCTestCase {
   func testONmissingLineNumberAfterCommaIsError() {
     checkError(
       "10 ON 2 GOTO 10,",
-      "Missing expected character")
+      "Missing integer")
   }
 
   func testRestore() throws {

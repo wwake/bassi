@@ -13,6 +13,7 @@ public class TokenMatcher {
 
   let tokenNames : [TokenType : String] =
   [
+    .integer: "integer",
     .leftParend: "'('",
     .rightParend : "')'",
     .variable: "variable name"
