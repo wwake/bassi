@@ -1,10 +1,11 @@
+* Improve messages on TODO tests
+
+* Variables should know their type at the token level
+* DIM should enforce numeric types for sizes
+
+EVO-22-11: August 22, 2022
 * Update pcombo library
 
-* Can we improve messages on TODO tests?
-
-* DIM should enforce numeric types for sizes
-* For alternatives, should default message apply if they all got equally far?
-* Variables should know their type at the token level
 
 EVO-22-10: August 19, 2022
 * Rename Tokenizer -> TokenMatcher

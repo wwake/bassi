@@ -104,13 +104,13 @@ class ParserTests: XCTestCase {
   func testDataWithoutDataAfterCommaIsError() {
     checkError(
       "25 DATA x,,y",
-      "Extra characters at end of line")
+      "Expected a data value")
   }
 
   func testDataWithoutDataAtEndIsError() {
     checkError(
       "25 DATA x,y,",
-      "Extra characters at end of line")
+      "Expected a data value")
   }
 
   func testDefDefinesHelperFunctions() {
@@ -526,10 +526,11 @@ class ParserTests: XCTestCase {
       "ON statement requires comma-separated list of line numbers")
   }
 
+  // TODO - better message? 
   func testONmissingLineNumberAfterCommaIsError() {
     checkError(
       "10 ON 2 GOTO 10,",
-      "Extra characters at end of line")
+      "Missing expected character")
   }
 
   func testRestore() throws {

@@ -107,11 +107,10 @@ class ExpressionTests: XCTestCase {
     )
   }
 
-  // TODO: Prefer message "Type mismatch"
   func testPredefinedFunctionEnforcesTypes() {
     checkError(
       "25 PRINT SQR(\"X\")",
-      "Extra characters at end of line"
+      "Type mismatch"
     )
   }
 
@@ -122,11 +121,10 @@ class ExpressionTests: XCTestCase {
     )
   }
 
-  // TODO: Prefer message "Type mismatch"
   func testPredefinedFunctionEnforcesNumberOfArguments() {
     checkError(
       "25 PRINT LEFT$(\"X\")",
-      "Extra characters at end of line"
+      "Type mismatch"
     )
   }
 
@@ -140,11 +138,10 @@ class ExpressionTests: XCTestCase {
     )
   }
 
-  // TODO: Prefer message "Type mismatch"
   func testPredefinedFunctionDetectsTypeMismatchForMultipleArguments() {
     checkError(
       "10 PRINT LEFT$(\"S\", \"T\")",
-      "Extra characters at end of line"
+      "Type mismatch"
     )
   }
 
@@ -200,11 +197,10 @@ class ExpressionTests: XCTestCase {
     )
   }
 
-  // TODO: Prefer message "Type mismatch"
   func testDefCallMustTakeNumericArgument() {
     checkError(
       "10 PRINT FNI(\"str\")",
-      "Extra characters at end of line")
+      "Type mismatch")
   }
 
   func testUserDefinedFunctionsMustHaveNumericResult() {
@@ -223,9 +219,8 @@ class ExpressionTests: XCTestCase {
     )
   }
 
-  // TODO: Prefer message "Missing '('"
   func testPredefinedFunctionMissingLeftParend() {
-    checkError("17 PRINT SQR 4)", "Extra characters at end of line")
+    checkError("17 PRINT SQR 4)", "Missing '('")
   }
 
   func testPredefinedStringFunctionReturnType() {
@@ -236,6 +231,4 @@ class ExpressionTests: XCTestCase {
       )
     )
   }
-
-
 }

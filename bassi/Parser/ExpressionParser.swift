@@ -120,6 +120,7 @@ class ExpressionParser {
     return expressionParser
   }
 
+  // SQR("junk")
   func checkPredefinedCall(_ argument: (Token, [Expression]), _ remaining: ArraySlice<Token>) -> ParseResult<Token, (Token, [Expression])> {
     let (token, exprs) = argument
 
@@ -140,7 +141,7 @@ class ExpressionParser {
       return .success(argument, remaining)
     }
 
-    return .failure(indexOf(token), errorMessage!)
+    return .failure(indexOf(token)+2, errorMessage!)
   }
 
   func makeUnaryExpression(_ argument: ([Token], Expression)) -> Expression {
