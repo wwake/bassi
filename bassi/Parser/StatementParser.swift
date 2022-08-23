@@ -188,7 +188,7 @@ public class StatementParser {
     )
     <&> oneOf([.goto, .gosub], "ON statement requires GOTO or GOSUB")
     <&> (
-      match1(.integer) <&& match1(.comma)
+      match(.integer, "Expected line number") <&& match1(.comma)
       <%> "ON statement requires comma-separated list of line numbers"
     )
     |> makeOnStatement

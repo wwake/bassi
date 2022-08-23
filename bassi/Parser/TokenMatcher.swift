@@ -14,6 +14,7 @@ public class TokenMatcher {
   let tokenNames : [TokenType : String] =
   [
     .integer: "integer",
+    .minus: "'-'",
     .leftParend: "'('",
     .rightParend : "')'",
     .variable: "variable name"
@@ -42,7 +43,7 @@ public class TokenMatcher {
   }
 
   func match1(_ tokenType: TokenType) -> satisfy<Token> {
-    let tokenDescription = tokenNames[tokenType] ?? "expected character"
+    let tokenDescription = tokenNames[tokenType] ?? "expected character \(tokenType)"
     return match(tokenType, "Missing \(tokenDescription)")
   }
 

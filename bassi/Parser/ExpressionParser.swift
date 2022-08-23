@@ -86,9 +86,9 @@ class ExpressionParser {
     |&> makeNumericBinaryExpression
 
     let negationParser =
-    powerParser
-    <|> <+>match1(.minus) <&> (powerParser |&> requireFloatType)
-    |> makeUnaryExpression
+    <+>match1(.minus) <&> (powerParser |&> requireFloatType)
+        |> makeUnaryExpression
+    <|> powerParser
 
     let termParser =
     negationParser <&&> (match1(.times) <|> match1(.divide))
@@ -104,9 +104,9 @@ class ExpressionParser {
     |> makeRelationalExpression
 
     let boolNotParser =
-    relationalParser
-    <|> <+>match1(.not) <&> (relationalParser |&> requireFloatType)
-    |> makeUnaryExpression
+    <+>match1(.not) <&> (relationalParser |&> requireFloatType)
+        |> makeUnaryExpression
+    <|> relationalParser
 
     let boolAndParser =
     boolNotParser <&&> match1(.and)
@@ -120,7 +120,6 @@ class ExpressionParser {
     return expressionParser
   }
 
-  // SQR("junk")
   func checkPredefinedCall(_ argument: (Token, [Expression]), _ remaining: ArraySlice<Token>) -> ParseResult<Token, (Token, [Expression])> {
     let (token, exprs) = argument
 

@@ -148,12 +148,11 @@ class ParserExpressionTests: XCTestCase {
     )
   }
 
-  // TODO: Prefer message "Expected start of expression"
   func testErrorWhenFactorIsNotValid() {
     let expression = "(((*"
     checkError(
       "10 PRINT \(expression)",
-      "Missing expected character"
+      "Expected start of expression"
     )
   }
 

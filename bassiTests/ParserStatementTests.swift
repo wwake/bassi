@@ -526,11 +526,16 @@ class ParserTests: XCTestCase {
       "ON statement requires comma-separated list of line numbers")
   }
 
-  // TODO - better message? 
   func testONmissingLineNumberAfterCommaIsError() {
     checkError(
       "10 ON 2 GOTO 10,",
-      "Missing integer")
+      "Expected line number")
+  }
+
+  func testONwithoutAnyLineNumbersIsError() {
+    checkError(
+      "10 ON 2 GOSUB",
+      "ON statement requires comma-separated list of line numbers")
   }
 
   func testRestore() throws {

@@ -1,11 +1,15 @@
-* Improve messages on TODO tests
-
+* "Missing expected character" -> "Missing 'xyz'"
+* Non-backtracking <*>, <+>, <&&>
 * Variables should know their type at the token level
 * DIM should enforce numeric types for sizes
 
+EVO-22-12: August 23, 2022
+* Improve test on error for "(((*", now gets "expected start of expression"
+* Improve test on errors in ON statement
+
 EVO-22-11: August 22, 2022
 * Update pcombo library
-
+* Improve failure messages on most tests that changed because of parser combinator approach
 
 EVO-22-10: August 19, 2022
 * Rename Tokenizer -> TokenMatcher
