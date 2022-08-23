@@ -5,6 +5,7 @@ EVO-22-12: August 23, 2022
 * Improve test on error for "(((*", now gets "expected start of expression"
 * Improve test on errors in ON statement
 * "Missing expected character" -> "Expected 'xyz'"
+* Reduce duplication across tests (using an extension on String)
 
 EVO-22-11: August 22, 2022
 * Update pcombo library
