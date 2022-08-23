@@ -220,7 +220,7 @@ class ExpressionTests: XCTestCase {
   }
 
   func testPredefinedFunctionMissingLeftParend() {
-    checkError("17 PRINT SQR 4)", "Missing '('")
+    checkError("17 PRINT SQR 4)", "Expected '('")
   }
 
   func testPredefinedStringFunctionReturnType() {

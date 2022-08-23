@@ -43,8 +43,8 @@ public class TokenMatcher {
   }
 
   func match1(_ tokenType: TokenType) -> satisfy<Token> {
-    let tokenDescription = tokenNames[tokenType] ?? "expected character \(tokenType)"
-    return match(tokenType, "Missing \(tokenDescription)")
+    let tokenDescription = tokenNames[tokenType] ?? "'\(tokenType)'"
+    return match(tokenType, "Expected \(tokenDescription)")
   }
 
   func match(_ tokenType: TokenType, _ message: String) -> satisfy<Token> {

@@ -129,7 +129,7 @@ class ParserTests: XCTestCase {
     checkError("17 DEF F(X)=X", "DEF requires a name of the form FNx")
     checkError("17 DEF FN(x)=X", "DEF requires a name of the form FNx")
     checkError("17 DEF FNX9(x)=X", "DEF function name cannot be followed by extra letters")
-    checkError("17 DEF FNI x)=X", "Missing '('")
+    checkError("17 DEF FNI x)=X", "Expected '('")
     checkError("17 DEF FNZ()=X", "Variable is required")
     checkError("17 DEF FNA(x=X", "DEF requires ')' after parameter")
     checkError("17 DEF FNP(x) -> X", "DEF requires '=' after parameter definition")
@@ -409,7 +409,7 @@ class ParserTests: XCTestCase {
   func testRightParendErrorInDim() {
     checkError(
       "10 DIM Z(3",
-      "Missing ')'")
+      "Expected ')'")
   }
   
   func testFORwithoutSTEP() {
@@ -429,7 +429,7 @@ class ParserTests: XCTestCase {
   func testFORrequiresVariableEqualsAndTO() {
     checkError(
       "10 FOR 1 TO 10",
-      "Missing variable name"
+      "Expected variable name"
     )
     checkError(
       "10 FOR X (1) TO 10",

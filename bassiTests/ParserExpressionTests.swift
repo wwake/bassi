@@ -137,7 +137,7 @@ class ParserExpressionTests: XCTestCase {
     let expression = "(((21)"
     checkError(
       "10 PRINT \(expression)",
-      "Missing ')'"
+      "Expected ')'"
     )
   }
 
