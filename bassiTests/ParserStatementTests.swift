@@ -13,42 +13,21 @@ class ParserTests: XCTestCase {
     _ program: String,
     _ expected: Statement)
   {
-    let parser = SyntaxAnalyzer()
-    let result = parser.parse(program)
-    XCTAssertEqual(
-      result.statements,
-      [expected]
-    )
+    program.checkStatement(expected)
   }
 
   func checkStatements(
     _ program: String,
     _ expected: [Statement])
   {
-    let parser = SyntaxAnalyzer()
-    let result = parser.parse(program)
-    XCTAssertEqual(
-      result.statements,
-      expected
-    )
+    program.checkStatements(expected)
   }
 
   func checkError(
     _ program: String,
     _ expected: String)
   {
-    let line = program
-    let parser = SyntaxAnalyzer()
-    let output = parser.parse(line)
-
-    if case .error(_, _, let actualMessage) = output.statements[0] {
-      XCTAssertEqual(
-        actualMessage,
-        expected)
-      return
-    }
-
-    XCTFail("no error found")
+    program.checkError(expected)
   }
 
   func number(_ number: Float) -> Printable {

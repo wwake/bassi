@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		9104CA4D28B51A650099E7EF /* TokenMatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9104CA4C28B51A650099E7EF /* TokenMatcherTests.swift */; };
+		9104CA4F28B51D370099E7EF /* String+Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9104CA4E28B51D370099E7EF /* String+Test.swift */; };
 		911657632828C5F40000D3AA /* _todo.txt in Resources */ = {isa = PBXBuildFile; fileRef = 911657622828C5F40000D3AA /* _todo.txt */; };
 		9116576628295A2B0000D3AA /* Interpreter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9116576528295A2B0000D3AA /* Interpreter.swift */; };
 		9116576828295B970000D3AA /* _InterpreterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9116576728295B970000D3AA /* _InterpreterTests.swift */; };
@@ -83,6 +84,7 @@
 
 /* Begin PBXFileReference section */
 		9104CA4C28B51A650099E7EF /* TokenMatcherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenMatcherTests.swift; sourceTree = "<group>"; };
+		9104CA4E28B51D370099E7EF /* String+Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Test.swift"; sourceTree = "<group>"; };
 		911657622828C5F40000D3AA /* _todo.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = _todo.txt; sourceTree = "<group>"; };
 		911657642828C9BD0000D3AA /* Bint.key */ = {isa = PBXFileReference; lastKnownFileType = file; path = Bint.key; sourceTree = "<group>"; };
 		9116576528295A2B0000D3AA /* Interpreter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Interpreter.swift; sourceTree = "<group>"; };
@@ -299,6 +301,7 @@
 			children = (
 				91308862282D5F6300E5C62E /* Expression+make.swift */,
 				918861C42862182800B7B19C /* Repl+Test.swift */,
+				9104CA4E28B51D370099E7EF /* String+Test.swift */,
 				9195174D286CA9FA009BFC5B /* BasicArrayTests.swift */,
 				91BE90E7283E7CD9004F0CF9 /* ExpressionTests.swift */,
 				9145B1F82875E132009DB706 /* InteractorTests.swift */,
@@ -500,6 +503,7 @@
 				9145B1E128734563009DB706 /* OnTests.swift in Sources */,
 				91308863282D5F6300E5C62E /* Expression+make.swift in Sources */,
 				9145B1DB287343FD009DB706 /* DimArrayTests.swift in Sources */,
+				9104CA4F28B51D370099E7EF /* String+Test.swift in Sources */,
 				9130886C282EBADA00E5C62E /* ProgramTests.swift in Sources */,
 				9145B1ED28734895009DB706 /* DefTests.swift in Sources */,
 				9145B1F92875E133009DB706 /* InteractorTests.swift in Sources */,
