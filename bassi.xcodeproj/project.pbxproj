@@ -132,6 +132,7 @@
 		91951749286B5794009BFC5B /* ValueTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueTests.swift; sourceTree = "<group>"; };
 		9195174B286CA4DC009BFC5B /* BasicArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicArray.swift; sourceTree = "<group>"; };
 		9195174D286CA9FA009BFC5B /* BasicArrayTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicArrayTests.swift; sourceTree = "<group>"; };
+		91B3922128BD1C57005E20F9 /* Bint-strat.key */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Bint-strat.key"; sourceTree = "<group>"; };
 		91BE90E7283E7CD9004F0CF9 /* ExpressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -244,6 +245,7 @@
 				9192F7502828B69000FAFFA1 /* bassiUITests */,
 				918861C128616F9B00B7B19C /* resources */,
 				911657642828C9BD0000D3AA /* Bint.key */,
+				91B3922128BD1C57005E20F9 /* Bint-strat.key */,
 				9192F7332828B68F00FAFFA1 /* Products */,
 			);
 			sourceTree = "<group>";
