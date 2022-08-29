@@ -60,6 +60,7 @@
 		91B3922528BD345A005E20F9 /* Parser+currentParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B3922428BD345A005E20F9 /* Parser+currentParser.swift */; };
 		91B3922728BD35DB005E20F9 /* BasicParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B3922628BD35DB005E20F9 /* BasicParser.swift */; };
 		91B3922A28BD3A1B005E20F9 /* pcombo in Frameworks */ = {isa = PBXBuildFile; productRef = 91B3922928BD3A1B005E20F9 /* pcombo */; };
+		91B3922C28BD4443005E20F9 /* WrapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B3922B28BD4443005E20F9 /* WrapperTests.swift */; };
 		91BE90E8283E7CD9004F0CF9 /* ExpressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91BE90E7283E7CD9004F0CF9 /* ExpressionTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -140,6 +141,7 @@
 		91B3922228BD2E26005E20F9 /* OldParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OldParser.swift; sourceTree = "<group>"; };
 		91B3922428BD345A005E20F9 /* Parser+currentParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Parser+currentParser.swift"; sourceTree = "<group>"; };
 		91B3922628BD35DB005E20F9 /* BasicParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicParser.swift; sourceTree = "<group>"; };
+		91B3922B28BD4443005E20F9 /* WrapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WrapperTests.swift; sourceTree = "<group>"; };
 		91BE90E7283E7CD9004F0CF9 /* ExpressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -310,6 +312,7 @@
 				91951749286B5794009BFC5B /* ValueTests.swift */,
 				9195174D286CA9FA009BFC5B /* BasicArrayTests.swift */,
 				9145B1F82875E132009DB706 /* InteractorTests.swift */,
+				91B3922B28BD4443005E20F9 /* WrapperTests.swift */,
 			);
 			path = bassiTests;
 			sourceTree = "<group>";
@@ -509,6 +512,7 @@
 				9145B1EB287347C2009DB706 /* _PredefinedFunctionTests.swift in Sources */,
 				9116576A28295C2B0000D3AA /* LexerTests.swift in Sources */,
 				9116576828295B970000D3AA /* _InterpreterTests.swift in Sources */,
+				91B3922C28BD4443005E20F9 /* WrapperTests.swift in Sources */,
 				9145B1D5287340A8009DB706 /* RemarkTests.swift in Sources */,
 				9145B1E52873465B009DB706 /* _ExpressionTests.swift in Sources */,
 				918861C52862182800B7B19C /* Repl+Test.swift in Sources */,

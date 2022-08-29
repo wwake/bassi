@@ -16,7 +16,7 @@ public class BasicParser : Parsing {
   var token: Token {
     tokens[tokenIndex]
   }
-  
+
   var tokens : ArraySlice<Token>
   var tokenIndex = 0
 
@@ -38,8 +38,6 @@ public class BasicParser : Parsing {
     tokenIndex += 1
   }
 
-
-
   fileprivate func require(_ expected: TokenType, _ message: String) throws {
     if token.type != expected {
       throw ParseError.error(token, message)
@@ -58,6 +56,8 @@ public class BasicParser : Parsing {
 
 
   private func singleLine() -> Parse {
+    //let singleLineParser = WrapOld(line)
+
     do {
       return try line()
     } catch {
