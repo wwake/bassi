@@ -14,7 +14,7 @@ class ParserExpressionTests: XCTestCase {
     _ expected: Expression) {
 
       let input = "10 PRINT \(expression)"
-      let parser = Parser()
+      let parser = SyntaxAnalyzer()
       let result = parser.parse(input)
       XCTAssertEqual(
         result,
@@ -36,7 +36,7 @@ class ParserExpressionTests: XCTestCase {
     _ expected: String)
   {
     let line = program
-    let parser = Parser()
+    let parser = SyntaxAnalyzer()
     let output = parser.parse(line)
 
     if case .error(_, _, let actualMessage) = output.statements[0] {

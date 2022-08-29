@@ -1,16 +1,16 @@
 //
-//  Parser.swift
+//  OldParser.swift
 //  bassi
 //
-//  Created by Bill Wake on 5/10/22.
+//  Created by Bill Wake on 8/29/22.
 //
 
 import Foundation
 
-public class Parser {
+public class OldParser {
   let maxLineNumber = 99999
 
-  var lexer: Lexer = Lexer("")
+  var lexer: Lexer
 
   var token: Token = Token(line: 0, column: 0, type: .unknown)
 
@@ -18,6 +18,15 @@ public class Parser {
   var columnNumber = 0
 
   let relops: [TokenType] = [.equals, .lessThan, .lessThanOrEqualTo, .notEqual, .greaterThan, .greaterThanOrEqualTo]
+
+  init(_ lexer: Lexer) {
+    self.lexer = lexer
+  }
+
+  func parse() -> Parse {
+    nextToken()
+    return singleLine()
+  }
 
   func nextToken() {
     token = lexer.next()
@@ -39,13 +48,8 @@ public class Parser {
     return variable
   }
 
-  func parse(_ input: String) -> Parse {
-    lexer = Lexer(input)
-    nextToken()
-    return singleLine()
-  }
 
-  func singleLine() -> Parse {
+  private func singleLine() -> Parse {
     do {
       return try line()
     } catch {
@@ -58,7 +62,7 @@ public class Parser {
     }
   }
 
-  func line() throws -> Parse  {
+  private func line() throws -> Parse  {
     if case .integer = token.type {
       let lineNumber = LineNumber(token.float)
       nextToken()
@@ -274,7 +278,7 @@ public class Parser {
       nextToken()
       return .goto(lineNumber)
     }
-    
+
     throw ParseError.error(token, "Missing target of GOTO")
   }
 
@@ -283,7 +287,7 @@ public class Parser {
 
     let expr = try expression()
     try requireFloatType(expr)
-    
+
     try require(.then, "Missing 'THEN'")
 
     if case .integer = token.type {
@@ -529,7 +533,7 @@ public class Parser {
       try requireFloatType(value)
       return .op1(.minus, value)
     }
-    
+
     var left = try factor()
 
     while token.type == .exponent {
@@ -703,7 +707,7 @@ public class Parser {
 
     while token.type == .comma {
       nextToken()
-      
+
       let dimInfo = try dim1()
       result.append(dimInfo)
     }
@@ -765,4 +769,5 @@ public class Parser {
 
     return .next(variable)
   }
+
 }
