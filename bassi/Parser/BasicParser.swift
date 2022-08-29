@@ -13,9 +13,12 @@ public class BasicParser : Parsing {
 
   var lexer: Lexer
 
-  var token: Token = Token(line: 0, column: 0, type: .unknown)
-
-//  var tokens : ArraySlice<Token>
+  var token: Token {
+    tokens[tokenIndex]
+  }
+  
+  var tokens : ArraySlice<Token>
+  var tokenIndex = 0
 
   var lineNumber = 0
   var columnNumber = 0
@@ -24,17 +27,18 @@ public class BasicParser : Parsing {
 
   init(_ lexer: Lexer) {
     self.lexer = lexer
-//    self.tokens = lexer.line()
+    self.tokens = lexer.line()
   }
 
   func parse() -> Parse {
-    nextToken()
     return singleLine()
   }
 
   func nextToken() {
-    token = lexer.next()
+    tokenIndex += 1
   }
+
+
 
   fileprivate func require(_ expected: TokenType, _ message: String) throws {
     if token.type != expected {
