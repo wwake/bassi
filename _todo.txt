@@ -1,6 +1,4 @@
-* Create the new strategy
-Set up the strategy pattern
-
+Start moving to the parser combinator approach
 
 EVO-22-13: August 29, 2022
 Set up the strategy pattern
@@ -9,6 +7,7 @@ Set up the strategy pattern
 * Move methods to new strategy object (delegate from old)
 * Extract the strategy interface
 * Parameterize Method to set up plug-in capability
+* Create the new strategy - BasicParser
 
 
 

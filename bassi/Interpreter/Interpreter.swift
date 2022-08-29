@@ -34,10 +34,12 @@ class Interpreter {
   let defaultArraySize : Float = 10
   let columnsPerTab = 12
 
+  let useNewParser = true
+
   let program: Program
   let interactor : Interactor
 
-  let parser : SyntaxAnalyzer
+  let analyzer : SyntaxAnalyzer
   var parse: Parse
 
   var location: Location
@@ -67,11 +69,17 @@ class Interpreter {
     self.location = Location(0,0)
     self.parse = Parse(0, [])
 
-    self.parser = SyntaxAnalyzer()
+    self.analyzer = SyntaxAnalyzer()
     
     defer {
       globals = Predefined.functionsUsing(interactor)
     }
+  }
+
+  func currentParser(_ line: String) -> Parser {
+    return useNewParser
+     ? BasicParser(Lexer(line))
+     : OldParser(Lexer(line))
   }
 
   func nextLocationFor(_ location: Location) -> Location {
@@ -120,7 +128,7 @@ class Interpreter {
   func gatherData() throws {
     program.program
       .sorted(by: <)
-      .map { (lineNumber, line) in parser.parse(OldParser(Lexer(line))) }
+      .map { (lineNumber, line) in analyzer.parse(currentParser(line)) }
       .forEach { parse in
         (0..<Statement.count(parse.statements))
           .map { Statement.at(parse.statements, $0) }
@@ -136,7 +144,7 @@ class Interpreter {
 
   fileprivate func runLoop() throws {
     let line = program[location.lineNumber]!
-    parse = parser.parse(OldParser(Lexer(line)))
+    parse = analyzer.parse(currentParser(line))
 
     try step(parse.statements[location.part])
 
@@ -151,7 +159,7 @@ class Interpreter {
           return
         }
 
-        parse = parser.parse(OldParser(Lexer(line)))
+        parse = analyzer.parse(currentParser(line))
       }
 
       location = nextLocation!
@@ -598,7 +606,7 @@ class Interpreter {
 
     var currentLine = Location(program.lineAfter(location.lineNumber))
     while currentLine.lineNumber < program.maxLineNumber {
-      let parse = parser.parse(OldParser(Lexer(program[currentLine.lineNumber]!)))
+      let parse = analyzer.parse(currentParser(program[currentLine.lineNumber]!))
 
       let nextLocation = try findNextInLine(
         currentLine,

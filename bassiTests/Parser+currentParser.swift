@@ -9,5 +9,5 @@ import Foundation
 @testable import bassi
 
 func currentParser(_ input: String) -> Parser {
-  return OldParser(Lexer(input))
+  return BasicParser(Lexer(input))
 }
