@@ -7,10 +7,6 @@
 
 import Foundation
 
-protocol Parser {
-  func parse() -> Parse
-}
-
 public class OldParser : Parser {
   let maxLineNumber = 99999
 
