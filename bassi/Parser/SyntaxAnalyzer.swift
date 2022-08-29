@@ -1,5 +1,5 @@
 //
-//  Parser.swift
+//  SyntaxAnalyzer.swift
 //  bassi
 //
 //  Created by Bill Wake on 5/10/22.

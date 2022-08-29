@@ -7,7 +7,11 @@
 
 import Foundation
 
-public class OldParser {
+protocol Parser {
+  func parse() -> Parse
+}
+
+public class OldParser : Parser {
   let maxLineNumber = 99999
 
   var lexer: Lexer
