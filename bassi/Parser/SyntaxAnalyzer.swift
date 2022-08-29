@@ -16,4 +16,10 @@ public class SyntaxAnalyzer {
     parser = OldParser(lexer)
     return parser.parse()
   }
+
+  func parse(_ lexer: Lexer) -> Parse {
+    self.lexer = lexer
+    parser = OldParser(lexer)
+    return parser.parse()
+  }
 }

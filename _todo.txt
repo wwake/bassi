@@ -1,4 +1,3 @@
-* Extract the strategy interface
 * Parameterize Method to set up plug-in capability
 * Create the new strategy
 Set up the strategy pattern
@@ -9,6 +8,7 @@ Set up the strategy pattern
 * Extract methods to be abstracted - parse()
 * Extract class - OldParser
 * Move methods to new strategy object (delegate from old)
+* Extract the strategy interface
 
 
 

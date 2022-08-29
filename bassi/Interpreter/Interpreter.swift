@@ -37,7 +37,7 @@ class Interpreter {
   let program: Program
   let interactor : Interactor
 
-  let parser = SyntaxAnalyzer()
+  let parser : SyntaxAnalyzer
   var parse: Parse
 
   var location: Location
@@ -67,6 +67,8 @@ class Interpreter {
     self.location = Location(0,0)
     self.parse = Parse(0, [])
 
+    self.parser = SyntaxAnalyzer()
+    
     defer {
       globals = Predefined.functionsUsing(interactor)
     }
@@ -118,7 +120,7 @@ class Interpreter {
   func gatherData() throws {
     program.program
       .sorted(by: <)
-      .map { (lineNumber, line) in parser.parse(line) }
+      .map { (lineNumber, line) in parser.parse(Lexer(line)) }
       .forEach { parse in
         (0..<Statement.count(parse.statements))
           .map { Statement.at(parse.statements, $0) }
@@ -134,7 +136,7 @@ class Interpreter {
 
   fileprivate func runLoop() throws {
     let line = program[location.lineNumber]!
-    parse = parser.parse(line)
+    parse = parser.parse(Lexer(line))
 
     try step(parse.statements[location.part])
 
@@ -149,7 +151,7 @@ class Interpreter {
           return
         }
 
-        parse = parser.parse(line)
+        parse = parser.parse(Lexer(line))
       }
 
       location = nextLocation!
@@ -596,7 +598,7 @@ class Interpreter {
 
     var currentLine = Location(program.lineAfter(location.lineNumber))
     while currentLine.lineNumber < program.maxLineNumber {
-      let parse = parser.parse(program[currentLine.lineNumber]!)
+      let parse = parser.parse(Lexer(program[currentLine.lineNumber]!))
 
       let nextLocation = try findNextInLine(
         currentLine,
