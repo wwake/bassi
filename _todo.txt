@@ -1,9 +1,16 @@
-* Extract class
-* Move methods to new strategy object (delegate from old)
 * Extract the strategy interface
 * Parameterize Method to set up plug-in capability
 * Create the new strategy
 Set up the strategy pattern
+
+
+EVO-22-13: August 29, 2022
+Set up the strategy pattern
+* Extract methods to be abstracted - parse()
+* Extract class - OldParser
+* Move methods to new strategy object (delegate from old)
+
+
 
 * Change parser?
   + Abstract over the pattern "x {, x}"
@@ -22,12 +29,6 @@ Set up the strategy pattern
 * Error sync by skipping forward to next line # (or end)   ??
 
 * Parameterized tests package?
-
-EVO-22-13: August 29, 2022
-Set up the strategy pattern
-* Extract methods to be abstracted - parse()
-
-
 
 BI-22-43: July 8, 2022
 * Lexer cleanup
