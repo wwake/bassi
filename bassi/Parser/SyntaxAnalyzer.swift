@@ -8,11 +8,9 @@
 import Foundation
 
 public class SyntaxAnalyzer {
-  var lexer: Lexer = Lexer("")
   var parser: OldParser = OldParser(Lexer(""))
 
   func parse(_ lexer: Lexer) -> Parse {
-    self.lexer = lexer
     parser = OldParser(lexer)
     return parser.parse()
   }
