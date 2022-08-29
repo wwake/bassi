@@ -6,8 +6,9 @@
 //
 
 import Foundation
+import pcombo
 
-public class BasicParser : Parser {
+public class BasicParser : Parsing {
   let maxLineNumber = 99999
 
   var lexer: Lexer

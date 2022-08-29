@@ -76,7 +76,7 @@ class Interpreter {
     }
   }
 
-  func currentParser(_ line: String) -> Parser {
+  func currentParser(_ line: String) -> Parsing {
     return useNewParser
      ? BasicParser(Lexer(line))
      : OldParser(Lexer(line))

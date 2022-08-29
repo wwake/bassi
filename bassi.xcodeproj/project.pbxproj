@@ -59,6 +59,7 @@
 		91B3922328BD2E26005E20F9 /* OldParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B3922228BD2E26005E20F9 /* OldParser.swift */; };
 		91B3922528BD345A005E20F9 /* Parser+currentParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B3922428BD345A005E20F9 /* Parser+currentParser.swift */; };
 		91B3922728BD35DB005E20F9 /* BasicParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B3922628BD35DB005E20F9 /* BasicParser.swift */; };
+		91B3922A28BD3A1B005E20F9 /* pcombo in Frameworks */ = {isa = PBXBuildFile; productRef = 91B3922928BD3A1B005E20F9 /* pcombo */; };
 		91BE90E8283E7CD9004F0CF9 /* ExpressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91BE90E7283E7CD9004F0CF9 /* ExpressionTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -147,6 +148,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				91B3922A28BD3A1B005E20F9 /* pcombo in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -338,6 +340,7 @@
 			);
 			name = bassi;
 			packageProductDependencies = (
+				91B3922928BD3A1B005E20F9 /* pcombo */,
 			);
 			productName = bassi;
 			productReference = 9192F7322828B68F00FAFFA1 /* bassi.app */;
@@ -412,6 +415,7 @@
 			);
 			mainGroup = 9192F7292828B68F00FAFFA1;
 			packageReferences = (
+				91B3922828BD3A1B005E20F9 /* XCRemoteSwiftPackageReference "pcombo" */,
 			);
 			productRefGroup = 9192F7332828B68F00FAFFA1 /* Products */;
 			projectDirPath = "";
@@ -822,6 +826,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		91B3922828BD3A1B005E20F9 /* XCRemoteSwiftPackageReference "pcombo" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/wwake/pcombo.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		91B3922928BD3A1B005E20F9 /* pcombo */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 91B3922828BD3A1B005E20F9 /* XCRemoteSwiftPackageReference "pcombo" */;
+			productName = pcombo;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 9192F72A2828B68F00FAFFA1 /* Project object */;
 }

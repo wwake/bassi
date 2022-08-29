@@ -122,6 +122,6 @@ public indirect enum Statement : Equatable {
   }
 }
 
-protocol Parser {
+protocol Parsing {
   func parse() -> Parse
 }
