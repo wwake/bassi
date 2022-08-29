@@ -15,6 +15,8 @@ public class BasicParser : Parsing {
 
   var token: Token = Token(line: 0, column: 0, type: .unknown)
 
+//  var tokens : ArraySlice<Token>
+
   var lineNumber = 0
   var columnNumber = 0
 
@@ -22,6 +24,7 @@ public class BasicParser : Parsing {
 
   init(_ lexer: Lexer) {
     self.lexer = lexer
+//    self.tokens = lexer.line()
   }
 
   func parse() -> Parse {

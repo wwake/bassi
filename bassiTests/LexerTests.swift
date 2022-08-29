@@ -49,6 +49,28 @@ class LexerTests: XCTestCase {
     token = lexer.next()
   }
 
+  func testErrorTokensConsumeInput() {
+    let lexer = Lexer("}")
+
+    var token = lexer.next()
+    XCTAssertEqual(token.type, .error)
+
+    token = lexer.next()
+    XCTAssertEqual(token.type, .eol)
+
+    token = lexer.next()
+    XCTAssertEqual(token.type, .atEnd)
+  }
+
+  func testLineKnowsAllTokensInLine() {
+    let tokens = Lexer("10 PRINT 2.0").line()
+    XCTAssertEqual(tokens[0].type, .integer)
+    XCTAssertEqual(tokens[1].type, .print)
+    XCTAssertEqual(tokens[2].type, .number)
+    XCTAssertEqual(tokens[3].type, .eol)
+    XCTAssertEqual(tokens[4].type, .atEnd)
+  }
+
   func testAtEnd() {
     let lexer = Lexer("")
     

@@ -190,6 +190,20 @@ class Lexer {
     }
   }
 
+  func line() -> ArraySlice<Token> {
+    let startingIndex = index
+    var token: Token
+    var result : [Token] = []
+
+    repeat {
+      token = next()
+      result.append(token)
+    } while token.type != .atEnd
+
+    index = startingIndex
+    return result[...]
+  }
+
   func next() -> Token {
     column = index
 
@@ -224,6 +238,7 @@ class Lexer {
       return handleVariable()
 
     default:
+      index += 1
       return makeToken(.error, string: "unexpected character")
     }
   }
