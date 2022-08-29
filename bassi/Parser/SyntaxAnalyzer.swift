@@ -11,12 +11,6 @@ public class SyntaxAnalyzer {
   var lexer: Lexer = Lexer("")
   var parser: OldParser = OldParser(Lexer(""))
 
-  func parse(_ input: String) -> Parse {
-    lexer = Lexer(input)
-    parser = OldParser(lexer)
-    return parser.parse()
-  }
-
   func parse(_ lexer: Lexer) -> Parse {
     self.lexer = lexer
     parser = OldParser(lexer)
