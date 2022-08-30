@@ -25,9 +25,15 @@ public class BasicParser : Parsing {
 
   let relops: [TokenType] = [.equals, .lessThan, .lessThanOrEqualTo, .notEqual, .greaterThan, .greaterThanOrEqualTo]
 
+  var singleLineParser: WrapOld<Parse>!
+
   init(_ lexer: Lexer) {
     self.lexer = lexer
     self.tokens = lexer.line()
+
+    defer {
+      singleLineParser = WrapOld(self, line)
+    }
   }
 
   func parse() -> Parse {
@@ -58,10 +64,7 @@ public class BasicParser : Parsing {
     return variable
   }
 
-
   private func singleLine() -> Parse {
-    let singleLineParser = WrapOld(self, line)
-
     let result = singleLineParser.parse(tokens)
 
     switch result {
