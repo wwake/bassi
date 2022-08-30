@@ -24,17 +24,25 @@ final class WrapperTests: XCTestCase {
     }
 
     func parse(_ input: ArraySlice<Token>) -> ParseResult<Token, Target> {
+      let originalIndex = basicParser.tokenIndex
+      defer {
+        basicParser.tokenIndex = originalIndex
+      }
+
       do {
         let result = try oldParser()
         return ParseResult.success(result, basicParser.tokens[basicParser.tokenIndex...])
+      } catch ParseError.error(let token, let message) {
+        return .failure(basicParser.indexOf(token), message)
       } catch {
-        return .failure(-1, "failed")
+        return .failure(0, "can't happen \(error)")
       }
     }
   }
 
   func test_WrapOldWithSuccessfulParse() throws {
     let basicParser = BasicParser(Lexer("RETURN"))
+    XCTAssertEqual(basicParser.tokenIndex, 0)
 
     let result = WrapOld<Statement>(basicParser, basicParser.returnStatement).parse(basicParser.tokens)
 
@@ -45,9 +53,22 @@ final class WrapperTests: XCTestCase {
 
     XCTAssertEqual(statement, .return)
     XCTAssertEqual(remaining.startIndex, 1)
+    XCTAssertEqual(basicParser.tokenIndex, 0)
   }
 
   func test_WrapOldWithFailedParse() throws {
-//    XCTFail("Tests not yet implemented in WrapperTests")
+    let basicParser = BasicParser(Lexer("GOTO"))  // missing target
+    XCTAssertEqual(basicParser.tokenIndex, 0)
+
+    let result = WrapOld<Statement>(basicParser, basicParser.goto).parse(basicParser.tokens)
+
+    guard case .failure(let errorIndex, let message) = result else {
+      XCTFail("expected failure but got \(result)")
+      return
+    }
+
+    XCTAssertEqual(errorIndex, 1)
+    XCTAssertEqual(message, "Missing target of GOTO")
+    XCTAssertEqual(basicParser.tokenIndex, 0)
   }
 }
