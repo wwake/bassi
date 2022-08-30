@@ -32,8 +32,12 @@ public class BasicParser : Parsing {
     self.tokens = lexer.line()
 
     defer {
-      singleLineParser = WrapOld(self, line)
+      singleLineParser = makeSingleLineParser()
     }
+  }
+
+  fileprivate func makeSingleLineParser() -> WrapOld<Parse> {
+    return WrapOld(self, line)
   }
 
   func parse() -> Parse {
@@ -79,7 +83,27 @@ public class BasicParser : Parsing {
     }
   }
 
+  private func match(_ type: TokenType, _ message: String) -> satisfy<Token> {
+    satisfy<Token>(message) { $0.type == type }
+  }
+
+  func lineNumberInRange(_ token: Token, _ remaining: ArraySlice<Token>) -> ParseResult<Token, LineNumber> {
+    let lineNumber = LineNumber(token.float)
+    if lineNumber <= 0 || lineNumber > maxLineNumber {
+      return .failure(indexOf(token), "Line number must be between 1 and \(maxLineNumber)")
+    }
+    return .success(lineNumber, remaining)
+  }
+
   private func line() throws -> Parse  {
+    let lineParser =
+    ( match(.integer, "Line number is required")
+      |&> lineNumberInRange
+    )
+    <&> WrapOld(self, statements)
+    <& match(.eol, "Extra characters at end of line")
+    |> {(lineNumber, statements) in Parse(lineNumber, statements)}
+
     if case .integer = token.type {
       let lineNumber = LineNumber(token.float)
       nextToken()
