@@ -60,17 +60,19 @@ public class BasicParser : Parsing {
 
 
   private func singleLine() -> Parse {
-    //let singleLineParser = WrapOld(line)
+    let singleLineParser = WrapOld(self, line)
 
-    do {
-      return try line()
-    } catch {
-      if case .error(let errorToken, let message) = error as! ParseError {
-        return Parse(
-          errorToken.line,
-          [.error(errorToken.line, errorToken.column, message)])
-      }
-      return Parse(0, [.error(0, 0, "\(error)")])
+    let result = singleLineParser.parse(tokens)
+
+    switch result {
+    case .success(let parseResult, _):
+      return parseResult
+
+    case .failure(let errorIndex, let message):
+      let errorToken = tokens[errorIndex]
+      return Parse(
+        errorToken.line,
+        [.error(errorToken.line, errorToken.column, message)])
     }
   }
 
