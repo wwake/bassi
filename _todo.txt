@@ -1,7 +1,9 @@
 Start moving to the parser combinator approach
 
+
 EVO-22-14: August 30, 2022
 * Create a WrapOld adapter so new parser can call recursive descent
+* Convert singleLineParser to the new approach, and have a makeSingleLineParser method to build that parser (once)
 
 EVO-22-13: August 29, 2022
 Set up the strategy pattern

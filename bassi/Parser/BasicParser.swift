@@ -45,11 +45,7 @@ public class BasicParser : Parsing {
     <& match(.eol, "Extra characters at end of line")
     |> {(lineNumber, statements) in Parse(lineNumber, statements)}
 
-   // return Bind<Token, Parse>(lineParser.parse)
-    let singleLineParser = Bind<Token, Parse>()
-    let theSingleLineParser = WrapOld(self, line)
-    singleLineParser.bind(theSingleLineParser.parse)
-    return singleLineParser
+    return Bind<Token, Parse>(lineParser.parse)
   }
 
   func parse() -> Parse {
@@ -105,34 +101,6 @@ public class BasicParser : Parsing {
       return .failure(indexOf(token), "Line number must be between 1 and \(maxLineNumber)")
     }
     return .success(lineNumber, remaining)
-  }
-
-  private func line() throws -> Parse  {
-    let lineParser =
-    ( match(.integer, "Line number is required")
-      |&> lineNumberInRange
-    )
-    <&> WrapOld(self, statements)
-    <& match(.eol, "Extra characters at end of line")
-    |> {(lineNumber, statements) in Parse(lineNumber, statements)}
-
-    if case .integer = token.type {
-      let lineNumber = LineNumber(token.float)
-      nextToken()
-
-      if lineNumber <= 0 || lineNumber > maxLineNumber {
-        throw ParseError.error(token, "Line number must be between 1 and \(maxLineNumber)")
-      }
-
-      let statementParse = try statements()
-
-      try require(.eol, "Extra characters at end of line")
-
-      return Parse(LineNumber(lineNumber), statementParse)
-    }
-    let errorToken = token.type
-    nextToken()
-    throw ParseError.error(token, "Line number is required; found \(errorToken)")
   }
 
   func statements() throws -> [Statement] {

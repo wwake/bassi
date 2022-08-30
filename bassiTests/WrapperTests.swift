@@ -4,10 +4,11 @@ import pcombo
 
 final class WrapperTests: XCTestCase {
   func test_WrapOldWithSuccessfulParse() throws {
-    let basicParser = BasicParser(Lexer("RETURN"))
+    let input = "10RETURN"
+    let basicParser = BasicParser(Lexer(input))
     XCTAssertEqual(basicParser.tokenIndex, 0)
 
-    let result = WrapOld<Statement>(basicParser, basicParser.returnStatement).parse(basicParser.tokens)
+    let result = WrapOld<Statement>(basicParser, basicParser.returnStatement).parse(basicParser.tokens[1...])
 
     guard case .success(let statement, let remaining) = result else {
       XCTFail("expected success but got \(result)")
@@ -15,7 +16,7 @@ final class WrapperTests: XCTestCase {
     }
 
     XCTAssertEqual(statement, .return)
-    XCTAssertEqual(remaining.startIndex, 1)
+    XCTAssertEqual(remaining.startIndex, 2)
     XCTAssertEqual(basicParser.tokenIndex, 0)
   }
 

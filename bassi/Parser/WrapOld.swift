@@ -27,6 +27,7 @@ class WrapOld<TheTarget>: Parser {
     }
 
     do {
+      basicParser.tokenIndex = input.startIndex
       let result = try oldParser()
       return ParseResult.success(result, basicParser.tokens[basicParser.tokenIndex...])
     } catch ParseError.error(let token, let message) {

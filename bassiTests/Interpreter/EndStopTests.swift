@@ -29,7 +29,6 @@ class EndStopTests: InterpreterTests {
       expecting: "Ended program without returning from active subroutine")
   }
 
-
   func testStop() throws {
     checkProgramResults(
 """
@@ -39,5 +38,4 @@ class EndStopTests: InterpreterTests {
 """,
 expecting: "")
     }
-
 }
