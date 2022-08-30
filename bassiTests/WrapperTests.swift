@@ -3,13 +3,6 @@ import XCTest
 import pcombo
 
 final class WrapperTests: XCTestCase {
-  var index = 0
-  var tokens: ArraySlice<Token>!
-
-  func returnStatement() throws -> Statement {
-    index += 1
-    return .`return`
-  }
 
   class WrapOld<TheTarget>: Parser {
     typealias Input = Token
