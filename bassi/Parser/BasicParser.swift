@@ -25,7 +25,7 @@ public class BasicParser : Parsing {
 
   let relops: [TokenType] = [.equals, .lessThan, .lessThanOrEqualTo, .notEqual, .greaterThan, .greaterThanOrEqualTo]
 
-  var singleLineParser: WrapOld<Parse>!
+  var singleLineParser: Bind<Token, Parse>!
 
   init(_ lexer: Lexer) {
     self.lexer = lexer
@@ -36,7 +36,7 @@ public class BasicParser : Parsing {
     }
   }
 
-  fileprivate func makeSingleLineParser() -> WrapOld<Parse> {
+  fileprivate func makeSingleLineParser() -> Bind<Token, Parse> {
     let lineParser =
     ( match(.integer, "Line number is required")
       |&> lineNumberInRange
@@ -45,7 +45,11 @@ public class BasicParser : Parsing {
     <& match(.eol, "Extra characters at end of line")
     |> {(lineNumber, statements) in Parse(lineNumber, statements)}
 
-    return WrapOld(self, line)
+   // return Bind<Token, Parse>(lineParser.parse)
+    let singleLineParser = Bind<Token, Parse>()
+    let theSingleLineParser = WrapOld(self, line)
+    singleLineParser.bind(theSingleLineParser.parse)
+    return singleLineParser
   }
 
   func parse() -> Parse {
