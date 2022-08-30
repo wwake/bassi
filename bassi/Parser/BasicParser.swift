@@ -37,6 +37,14 @@ public class BasicParser : Parsing {
   }
 
   fileprivate func makeSingleLineParser() -> WrapOld<Parse> {
+    let lineParser =
+    ( match(.integer, "Line number is required")
+      |&> lineNumberInRange
+    )
+    <&> WrapOld(self, statements)
+    <& match(.eol, "Extra characters at end of line")
+    |> {(lineNumber, statements) in Parse(lineNumber, statements)}
+
     return WrapOld(self, line)
   }
 
