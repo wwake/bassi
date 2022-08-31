@@ -43,7 +43,7 @@ public class BasicParser : Parsing {
   }
 
   fileprivate func makeStatementsParser() -> Bind<Token, [Statement]> {
-    let result = Bind<Token, [Statement]>()
+    let statementsParser = Bind<Token, [Statement]>()
 
     let dataParser =
     match(.data)
@@ -99,11 +99,11 @@ public class BasicParser : Parsing {
     })
     <%> "Unknown statement"
 
-    let statementsParser =
+    let theStatementsParser =
     statementParser <&& match(.colon, "Expected ':'")
 
-    result.bind(statementsParser.parse)
-    return result
+    statementsParser.bind(theStatementsParser.parse)
+    return statementsParser
   }
 
   fileprivate func makeSingleLineParser() -> Bind<Token, Parse> {
