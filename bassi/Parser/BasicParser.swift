@@ -43,6 +43,8 @@ public class BasicParser : Parsing {
   }
 
   fileprivate func makeStatementsParser() -> Bind<Token, [Statement]> {
+    let result = Bind<Token, [Statement]>()
+
     let dataParser =
     match(.data)
     &> match(.string, "Expected a data value") <&& match(.comma)
@@ -100,7 +102,8 @@ public class BasicParser : Parsing {
     let statementsParser =
     statementParser <&& match(.colon, "Expected ':'")
 
-    return Bind<Token, [Statement]>(statementsParser.parse)
+    result.bind(statementsParser.parse)
+    return result
   }
 
   fileprivate func makeSingleLineParser() -> Bind<Token, Parse> {
