@@ -120,6 +120,11 @@ public class BasicParser : Parsing {
     &> match(.integer, "Missing target of GOSUB")
     |> { token in Statement.gosub(LineNumber(token.float))}
 
+    let gotoParser =
+    match(.goto)
+    &> match(.integer, "Missing target of GOTO")
+    |> { token in Statement.goto(LineNumber(token.float))}
+
 
     let ifThenParser =
     match(.if) &>
@@ -138,7 +143,7 @@ public class BasicParser : Parsing {
     <|> dimParser
     <|> forParser
     <|> gosubParser
-    <|> when(.goto) &> WrapOld(self, goto)
+    <|> gotoParser
     <|> ifThenParser
     <|> when(.input) &> WrapOld(self, doInput)
     <|> when(.let) &> WrapOld(self, letAssign)
