@@ -42,10 +42,7 @@ public class BasicParser : Parsing {
 
   fileprivate func makeSingleLineParser() -> Bind<Token, Parse> {
     let statementParser =
-    when(.end) &> WrapOld(self, {
-      self.nextToken()
-      return Statement.end
-    })
+    match(.end) |> { _ in Statement.end }
     <|> when(.data) &> WrapOld(self, data)
     <|> when(.def) &> WrapOld(self, define)
     <|> when(.dim) &> WrapOld(self, dim)
