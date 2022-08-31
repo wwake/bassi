@@ -115,6 +115,12 @@ public class BasicParser : Parsing {
       return Statement.`for`(variable, initial, final, step)
     }
 
+    let gosubParser =
+    match(.gosub)
+    &> match(.integer, "Missing target of GOSUB")
+    |> { token in Statement.gosub(LineNumber(token.float))}
+
+
     let ifThenParser =
     match(.if) &>
     (exprThenGoto <||> exprThenStatements <%> "Numeric type is required")
@@ -131,7 +137,7 @@ public class BasicParser : Parsing {
     <|> defParser
     <|> dimParser
     <|> forParser
-    <|> when(.gosub) &> WrapOld(self, gosub)
+    <|> gosubParser
     <|> when(.goto) &> WrapOld(self, goto)
     <|> ifThenParser
     <|> when(.input) &> WrapOld(self, doInput)
@@ -273,18 +279,6 @@ public class BasicParser : Parsing {
     }
 
     return .data(strings)
-  }
-
-  func gosub() throws -> Statement {
-    nextToken()
-
-    if case .integer = token.type {
-      let lineNumber = LineNumber(token.float)
-      nextToken()
-      return .gosub(lineNumber)
-    }
-
-    throw ParseError.error(token, "Missing target of GOSUB")
   }
 
   func goto() throws -> Statement {

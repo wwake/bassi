@@ -1,6 +1,9 @@
-Convert statement() to the parser combinator approach
+Convert remaining statements to new parser
 Design a peek2() combinator that returns the peeked value
 Parser combinator documentation for <|> is awkward
+
+EVO-22-15: August 31, 2022
+* Convert statements to new parser: one-word statements, read, data, def, dim, for, gosub, if
 
 EVO-22-14: August 30, 2022
 * Create a WrapOld adapter so new parser can call recursive descent
