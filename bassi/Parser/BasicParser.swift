@@ -41,9 +41,15 @@ public class BasicParser : Parsing {
   }
 
   fileprivate func makeSingleLineParser() -> Bind<Token, Parse> {
+    let dataParser =
+    match(.data)
+    &> match(.string, "Expected a data value") <&& match(.comma)
+    |> { tokens in tokens.map {$0.string} }
+    |> { strings in Statement.data(strings) }
+
     let statementParser =
     match(.end) |> { _ in Statement.end }
-    <|> when(.data) &> WrapOld(self, data)
+    <|> dataParser
     <|> when(.def) &> WrapOld(self, define)
     <|> when(.dim) &> WrapOld(self, dim)
     <|> when(.for) &> WrapOld(self, doFor)
