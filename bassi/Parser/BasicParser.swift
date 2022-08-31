@@ -60,7 +60,7 @@ public class BasicParser : Parsing {
     let exprThenStatements =
     (WrapOld(self, expression) |&> requireFloatType)
     <& match(.then, "Missing 'THEN'")
-    <&> WrapOld(self, statements)
+    <&> statementsParser
     |> {(expr, stmts) in Statement.`if`(expr, stmts) }
 
     let ifThenParser =
