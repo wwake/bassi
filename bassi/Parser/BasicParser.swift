@@ -68,16 +68,9 @@ public class BasicParser : Parsing {
     <|> when(.print) &> WrapOld(self, printStatement)
     <|> readParser
     <|> match(.remark) |> { _ in Statement.skip }
-    <|> when(.restore) &> WrapOld(self, { [self] in
-      nextToken()
-      return .restore
-    })
-    <|> when(.return) &> WrapOld(self, returnStatement)
-
-    <|> when(.stop) &> WrapOld(self, { [self] in
-      nextToken()
-      return .stop
-    })
+    <|> match(.restore) |> { _ in Statement.restore }
+    <|> match(.return) |> { _ in Statement.return }
+    <|> match(.stop) |> { _ in Statement.stop }
 
     <|> when(.variable) &> WrapOld(self, { [self] in
       let name = token.string
