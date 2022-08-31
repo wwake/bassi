@@ -25,6 +25,7 @@ public class BasicParser : Parsing {
 
   let relops: [TokenType] = [.equals, .lessThan, .lessThanOrEqualTo, .notEqual, .greaterThan, .greaterThanOrEqualTo]
 
+  var statementsParser: Bind<Token, [Statement]>!
   var singleLineParser: Bind<Token, Parse>!
 
   init(_ lexer: Lexer) {
@@ -32,6 +33,7 @@ public class BasicParser : Parsing {
     self.tokens = lexer.line()
 
     defer {
+      statementsParser = makeStatementsParser()
       singleLineParser = makeSingleLineParser()
     }
   }
@@ -40,12 +42,29 @@ public class BasicParser : Parsing {
     peek(match(tokenType))
   }
 
-  fileprivate func makeSingleLineParser() -> Bind<Token, Parse> {
+  fileprivate func makeStatementsParser() -> Bind<Token, [Statement]> {
     let dataParser =
     match(.data)
     &> match(.string, "Expected a data value") <&& match(.comma)
     |> { tokens in tokens.map {$0.string} }
     |> { strings in Statement.data(strings) }
+
+    let exprThenGoto =
+    (WrapOld(self, expression) |&> requireFloatType)
+    <& match(.then, "Missing 'THEN'")
+    <&> match(.integer)
+    |> {(expr, token) in Statement.ifGoto(expr, LineNumber(token.float))}
+
+    let exprThenStatements =
+    (WrapOld(self, expression) |&> requireFloatType)
+    <& match(.then, "Missing 'THEN'")
+    <&> WrapOld(self, statements)
+    |> {(expr, stmts) in Statement.`if`(expr, stmts) }
+
+    let ifThenParser =
+    match(.if) &>
+    (exprThenGoto <||> exprThenStatements <%> "Numeric type is required")
+
 
     let readParser =
     match(.read)
@@ -60,7 +79,7 @@ public class BasicParser : Parsing {
     <|> when(.for) &> WrapOld(self, doFor)
     <|> when(.gosub) &> WrapOld(self, gosub)
     <|> when(.goto) &> WrapOld(self, goto)
-    <|> when(.if) &> WrapOld(self, ifThen)
+    <|> ifThenParser
     <|> when(.input) &> WrapOld(self, doInput)
     <|> when(.let) &> WrapOld(self, letAssign)
     <|> when(.next) &> WrapOld(self, doNext)
@@ -79,8 +98,12 @@ public class BasicParser : Parsing {
     <%> "Unknown statement"
 
     let statementsParser =
-      statementParser <&& match(.colon, "Expected ':'")
+    statementParser <&& match(.colon, "Expected ':'")
 
+    return Bind<Token, [Statement]>(statementsParser.parse)
+  }
+
+  fileprivate func makeSingleLineParser() -> Bind<Token, Parse> {
     let lineParser =
     ( match(.integer, "Line number is required")
       |&> lineNumberInRange
@@ -475,6 +498,14 @@ public class BasicParser : Parsing {
 
   func typeFor(_ name: String) -> `Type` {
     name.last! == "$" ? .string : .number
+  }
+
+  func requireFloatType(_ expr: Expression, _ remaining: ArraySlice<Token>) -> ParseResult<Token, Expression> {
+
+    if expr.type() == .number {
+      return .success(expr, remaining)
+    }
+    return .failure(indexOf(token), "Numeric type is required")
   }
 
   fileprivate func requireFloatType(_ expr: Expression) throws {
