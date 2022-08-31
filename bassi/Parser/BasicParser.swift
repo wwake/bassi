@@ -230,9 +230,6 @@ public class BasicParser : Parsing {
     case .goto:
       result = try goto()
 
-    case .`if`:
-      result = try ifThen()
-
     case .input:
       result = try doInput()
 
@@ -373,23 +370,6 @@ public class BasicParser : Parsing {
     throw ParseError.error(token, "Missing target of GOTO")
   }
 
-  func ifThen() throws -> Statement {
-    nextToken()
-
-    let expr = try expression()
-    try requireFloatType(expr)
-
-    try require(.then, "Missing 'THEN'")
-
-    if case .integer = token.type {
-      let target = LineNumber(token.float)
-      nextToken()
-      return .ifGoto(expr, target)
-    }
-
-    let statements = try statements()
-    return .`if`(expr, statements)
-  }
 
   func commaListOfVariables() throws -> [Expression] {
     var variables: [Expression] = []
