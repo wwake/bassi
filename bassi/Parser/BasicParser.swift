@@ -257,40 +257,6 @@ public class BasicParser : Parsing {
     return .data(strings)
   }
 
-  func define() throws -> Statement {
-
-    nextToken()
-
-    try require(.fn, "DEF requires a name of the form FNx")
-
-    guard case .variable = token.type else {
-      throw ParseError.error(token, "DEF requires a name of the form FNx")
-    }
-    let name = token.string!
-    nextToken()
-
-    if name.count != 1 {
-      throw ParseError.error(token, "DEF function name cannot be followed by extra letters")
-    }
-
-    try require(.leftParend, "Missing '('")
-
-    let parameter = try requireVariable()
-
-    try require(.rightParend, "DEF requires ')' after parameter")
-
-    try require(.equals, "DEF requires '=' after parameter definition")
-
-    let expr = try expression()
-    try requireFloatType(expr)
-
-    return .def(
-      "FN"+name,
-      parameter,
-      expr,
-      .function([.number], .number))
-  }
-
   func gosub() throws -> Statement {
     nextToken()
 
