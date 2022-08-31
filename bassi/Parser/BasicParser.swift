@@ -67,12 +67,7 @@ public class BasicParser : Parsing {
     <|> when(.on) &> WrapOld(self, on)
     <|> when(.print) &> WrapOld(self, printStatement)
     <|> readParser
-
-    <|> when(.remark) &> WrapOld(self, { [self] in
-      nextToken()
-      return .skip
-    })
-
+    <|> match(.remark) |> { _ in Statement.skip }
     <|> when(.restore) &> WrapOld(self, { [self] in
       nextToken()
       return .restore
