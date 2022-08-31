@@ -84,6 +84,10 @@ public class BasicParser : Parsing {
     <&> WrapOld(self, expression)
     |&> makeDefStatement
 
+    let dimParser =
+    match(.dim)
+    &> WrapOld(self, dim1) <&& match(.comma)
+    |> { Statement.dim($0) }
 
     let exprThenGoto =
     (WrapOld(self, expression) |&> requireFloatType)
@@ -96,6 +100,24 @@ public class BasicParser : Parsing {
     <& match(.then, "Missing 'THEN'")
     <&> statementsParser
     |> {(expr, stmts) in Statement.`if`(expr, stmts) }
+
+    let forParser =
+    match(.for)
+    &> WrapOld(self, requireVariable)
+    <& match(.equals, "'=' is required")
+    <&> (WrapOld(self, expression) |&> requireFloatType)
+    <& match(.to, "'TO' is required")
+    <&> (WrapOld(self, expression) |&> requireFloatType)
+    <&> <?>(
+      match(.step)
+      &> (WrapOld(self, expression) |&> requireFloatType)
+    )
+    |> { (varFromTo, stepOpt) -> Statement in
+      let ((variable, initial), final) = varFromTo
+
+      let step = stepOpt ?? Expression.number(1)
+      return Statement.`for`(variable, initial, final, step)
+    }
 
     let ifThenParser =
     match(.if) &>
@@ -111,8 +133,8 @@ public class BasicParser : Parsing {
         match(.end) |> { _ in Statement.end }
     <|> dataParser
     <|> defParser
-    <|> when(.dim) &> WrapOld(self, dim)
-    <|> when(.for) &> WrapOld(self, doFor)
+    <|> dimParser
+    <|> forParser
     <|> when(.gosub) &> WrapOld(self, gosub)
     <|> when(.goto) &> WrapOld(self, goto)
     <|> ifThenParser
@@ -399,7 +421,7 @@ public class BasicParser : Parsing {
     if expr.type() == .number {
       return .success(expr, remaining)
     }
-    return .failure(indexOf(token), "Numeric type is required")
+    return .failure(remaining.startIndex-1, "Numeric type is required")
   }
 
   fileprivate func requireFloatType(_ expr: Expression) throws {
@@ -685,24 +707,6 @@ public class BasicParser : Parsing {
     try typeCheck([.number], [expr])
 
     return .userdefined("FN" + parameter, expr)
-  }
-
-  func dim() throws -> Statement {
-    nextToken()
-
-    var result: [DimInfo] = []
-
-    let dimInfo = try dim1()
-    result.append(dimInfo)
-
-    while token.type == .comma {
-      nextToken()
-
-      let dimInfo = try dim1()
-      result.append(dimInfo)
-    }
-
-    return .dim(result)
   }
 
   func dim1() throws -> DimInfo {
