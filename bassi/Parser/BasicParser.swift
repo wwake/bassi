@@ -47,6 +47,11 @@ public class BasicParser : Parsing {
     |> { tokens in tokens.map {$0.string} }
     |> { strings in Statement.data(strings) }
 
+    let readParser =
+    match(.read)
+    &> WrapOld(self, commaListOfVariables)
+    |> { exprs in Statement.read(exprs) }
+
     let statementParser =
     match(.end) |> { _ in Statement.end }
     <|> dataParser
@@ -61,11 +66,7 @@ public class BasicParser : Parsing {
     <|> when(.next) &> WrapOld(self, doNext)
     <|> when(.on) &> WrapOld(self, on)
     <|> when(.print) &> WrapOld(self, printStatement)
-    <|> when(.read) &> WrapOld(self, { [self] in
-      nextToken()
-      let variables = try commaListOfVariables()
-      return .read(variables)
-    })
+    <|> readParser
 
     <|> when(.remark) &> WrapOld(self, { [self] in
       nextToken()
