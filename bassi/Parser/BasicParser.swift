@@ -49,10 +49,6 @@ public class BasicParser : Parsing {
       return .failure(indexOf(token), "DEF function name cannot be followed by extra letters")
     }
 
-    guard expr.type() == .number else {
-      return .failure(indexOf(token), "Numeric type is required")
-    }
-
     let statement = Statement.def(
         "FN"+token.string,
         name,
@@ -81,7 +77,7 @@ public class BasicParser : Parsing {
        <& match(.rightParend, "DEF requires ')' after parameter")
     )
     <& match(.equals, "DEF requires '=' after parameter definition")
-    <&> WrapOld(self, expression)
+    <&> (WrapOld(self, expression) |&> requireFloatType)
     |&> makeDefStatement
 
     let dimParser =
