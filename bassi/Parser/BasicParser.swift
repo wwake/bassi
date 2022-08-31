@@ -42,6 +42,26 @@ public class BasicParser : Parsing {
     peek(match(tokenType))
   }
 
+  fileprivate func makeDefStatement(_ nameParameterExpr: ((Token, String), Expression), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Statement> {
+    let ((token, name), expr) = nameParameterExpr
+
+    guard token.string.count == 1 else {
+      return .failure(indexOf(token), "DEF function name cannot be followed by extra letters")
+    }
+
+    guard expr.type() == .number else {
+      return .failure(indexOf(token), "Numeric type is required")
+    }
+
+    let statement = Statement.def(
+        "FN"+token.string,
+        name,
+        expr,
+        .function([.number], .number))
+
+    return .success(statement, remaining)
+  }
+
   fileprivate func makeStatementsParser() -> Bind<Token, [Statement]> {
     let statementsParser = Bind<Token, [Statement]>()
 
@@ -50,6 +70,20 @@ public class BasicParser : Parsing {
     &> match(.string, "Expected a data value") <&& match(.comma)
     |> { tokens in tokens.map {$0.string} }
     |> { strings in Statement.data(strings) }
+
+    let defParser =
+    match(.def)
+    &>
+    (  match(.fn, "DEF requires a name of the form FNx")
+       &> match(.variable, "DEF requires a name of the form FNx")
+       <& match(.leftParend, "Missing '('")
+       <&> WrapOld(self, requireVariable)
+       <& match(.rightParend, "DEF requires ')' after parameter")
+    )
+    <& match(.equals, "DEF requires '=' after parameter definition")
+    <&> WrapOld(self, expression)
+    |&> makeDefStatement
+
 
     let exprThenGoto =
     (WrapOld(self, expression) |&> requireFloatType)
@@ -74,9 +108,9 @@ public class BasicParser : Parsing {
     |> { exprs in Statement.read(exprs) }
 
     let statementParser =
-    match(.end) |> { _ in Statement.end }
+        match(.end) |> { _ in Statement.end }
     <|> dataParser
-    <|> when(.def) &> WrapOld(self, define)
+    <|> defParser
     <|> when(.dim) &> WrapOld(self, dim)
     <|> when(.for) &> WrapOld(self, doFor)
     <|> when(.gosub) &> WrapOld(self, gosub)
@@ -173,23 +207,6 @@ public class BasicParser : Parsing {
     return .success(lineNumber, remaining)
   }
 
-  func statements() throws -> [Statement] {
-    let stmt = try statement()
-
-    if token.type != .colon {
-      return [stmt]
-    }
-
-    var statements: [Statement] = [stmt]
-
-    while token.type == .colon {
-      nextToken()
-      statements.append(try statement())
-    }
-
-    return statements
-  }
-
   fileprivate func doInput() throws -> Statement {
     nextToken()
 
@@ -202,79 +219,6 @@ public class BasicParser : Parsing {
 
     let variables = try commaListOfVariables()
     return .input(prompt, variables)
-  }
-
-  func statement() throws -> Statement {
-    var result: Statement
-
-    switch token.type {
-    case .data:
-      result = try data()
-
-    case .def:
-      result = try define()
-
-    case .dim:
-      result = try dim()
-
-    case .end:
-      nextToken()
-      result = Statement.end
-
-    case .for:
-      result = try doFor()
-
-    case .gosub:
-      result = try gosub()
-
-    case .goto:
-      result = try goto()
-
-    case .input:
-      result = try doInput()
-
-    case .`let`:
-      result = try letAssign()
-
-    case .next:
-      result = try doNext()
-
-    case .on:
-      result = try on()
-
-    case .print:
-      result = try printStatement()
-
-    case .read:
-      nextToken()
-      let variables = try commaListOfVariables()
-      result = .read(variables)
-
-    case .remark:
-      nextToken()
-      result = .skip
-
-    case .restore:
-      nextToken()
-      result = .restore
-
-    case .`return`:
-      result = try returnStatement()
-
-    case .stop:
-      nextToken()
-      result = .stop
-
-    case .variable:
-      let name = token.string
-      result = try assign(name!)
-
-    default:
-      nextToken()
-      throw ParseError.error(token, "Unknown statement")
-    }
-
-    return result
   }
 
   func assign(_ name: String) throws -> Statement {
@@ -314,6 +258,7 @@ public class BasicParser : Parsing {
   }
 
   func define() throws -> Statement {
+
     nextToken()
 
     try require(.fn, "DEF requires a name of the form FNx")
