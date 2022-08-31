@@ -36,12 +36,64 @@ public class BasicParser : Parsing {
     }
   }
 
+  func when(_ tokenType: TokenType) -> peek<satisfy<Token>> {
+    peek(match(tokenType))
+  }
+
   fileprivate func makeSingleLineParser() -> Bind<Token, Parse> {
+    let statementParser =
+    when(.end) &> WrapOld(self, {
+      self.nextToken()
+      return Statement.end
+    })
+    <|> when(.data) &> WrapOld(self, data)
+    <|> when(.def) &> WrapOld(self, define)
+    <|> when(.dim) &> WrapOld(self, dim)
+    <|> when(.for) &> WrapOld(self, doFor)
+    <|> when(.gosub) &> WrapOld(self, gosub)
+    <|> when(.goto) &> WrapOld(self, goto)
+    <|> when(.if) &> WrapOld(self, ifThen)
+    <|> when(.input) &> WrapOld(self, doInput)
+    <|> when(.let) &> WrapOld(self, letAssign)
+    <|> when(.next) &> WrapOld(self, doNext)
+    <|> when(.on) &> WrapOld(self, on)
+    <|> when(.print) &> WrapOld(self, printStatement)
+    <|> when(.read) &> WrapOld(self, { [self] in
+      nextToken()
+      let variables = try commaListOfVariables()
+      return .read(variables)
+    })
+
+    <|> when(.remark) &> WrapOld(self, { [self] in
+      nextToken()
+      return .skip
+    })
+
+    <|> when(.restore) &> WrapOld(self, { [self] in
+      nextToken()
+      return .restore
+    })
+    <|> when(.return) &> WrapOld(self, returnStatement)
+
+    <|> when(.stop) &> WrapOld(self, { [self] in
+      nextToken()
+      return .stop
+    })
+
+    <|> when(.variable) &> WrapOld(self, { [self] in
+      let name = token.string
+      return try assign(name!)
+    })
+    <%> "Unknown statement"
+
+    let statementsParser =
+      statementParser <&& match(.colon, "Expected ':'")
+
     let lineParser =
     ( match(.integer, "Line number is required")
       |&> lineNumberInRange
     )
-    <&> WrapOld(self, statements)
+    <&> statementsParser
     <& match(.eol, "Extra characters at end of line")
     |> {(lineNumber, statements) in Parse(lineNumber, statements)}
 
@@ -91,7 +143,7 @@ public class BasicParser : Parsing {
     }
   }
 
-  private func match(_ type: TokenType, _ message: String) -> satisfy<Token> {
+  private func match(_ type: TokenType, _ message: String = "Didn't find expected value") -> satisfy<Token> {
     satisfy<Token>(message) { $0.type == type }
   }
 

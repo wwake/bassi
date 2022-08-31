@@ -1,9 +1,12 @@
-Start moving to the parser combinator approach
-
+Convert statement() to the parser combinator approach
+Design a peek2() combinator that returns the peeked value
+Parser combinator documentation for <|> is awkward
 
 EVO-22-14: August 30, 2022
 * Create a WrapOld adapter so new parser can call recursive descent
 * Convert singleLineParser to the new approach, and have a makeSingleLineParser method to build that parser (once)
+* Convert line() and statements() to the new approach
+* Note that we can't delete statements() until "if" is done because of mutual recursion
 
 EVO-22-13: August 29, 2022
 Set up the strategy pattern
