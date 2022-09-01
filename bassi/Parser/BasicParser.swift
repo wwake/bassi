@@ -147,6 +147,23 @@ public class BasicParser : Parsing {
     &> WrapOld(self, requireVariable)
     |> { Statement.next($0) }
 
+    let onParser =
+    match(.on)
+    &> WrapOld(self, expression)
+    <&> (match(.goto) <|> match(.gosub) <%> "ON statement requires GOTO or GOSUB")
+    <&> (
+      match(.integer, "ON requires a comma-separated list of line numbers")
+      <&& match(.comma)
+      |> { tokens in tokens.map {LineNumber($0.float)} }
+    )
+    |> { (exprGo, lineNumbers) -> Statement in
+      let (expr, savedToken) = exprGo
+      if savedToken.type == .goto {
+        return .onGoto(expr, lineNumbers)
+      } else {
+        return .onGosub(expr, lineNumbers)
+      }
+    }
 
     let readParser =
     match(.read)
@@ -165,7 +182,7 @@ public class BasicParser : Parsing {
     <|> inputParser
     <|> letParser
     <|> nextParser
-    <|> when(.on) &> WrapOld(self, on)
+    <|> onParser
     <|> when(.print) &> WrapOld(self, printStatement)
     <|> readParser
     <|> match(.remark) |> { _ in Statement.skip }
@@ -329,45 +346,6 @@ public class BasicParser : Parsing {
     }
 
     return variables
-  }
-
-  func on() throws -> Statement {
-    nextToken()
-
-    let expr = try expression()
-
-    let savedToken = token.type
-    if token.type != .goto && token.type != .gosub {
-      throw ParseError.error(token, "ON statement requires GOTO or GOSUB")
-    }
-    nextToken()
-
-    var targets : [LineNumber] = []
-
-    guard case .integer = token.type else {
-      throw ParseError.error(token, "ON requires at least one line number")
-    }
-    let target = LineNumber(token.float)
-    nextToken()
-
-    targets.append(target)
-
-    while token.type == .comma {
-      nextToken()
-
-      guard case .integer = token.type else {
-        throw ParseError.error(token, "ON requires line number after comma")
-      }
-      let target = LineNumber(token.float)
-      nextToken()
-      targets.append(target)
-    }
-
-    if savedToken == .goto {
-      return .onGoto(expr, targets)
-    } else {
-      return .onGosub(expr, targets)
-    }
   }
 
   func printStatement() throws -> Statement {

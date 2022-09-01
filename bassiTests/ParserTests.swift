@@ -686,13 +686,13 @@ class ParserTests: XCTestCase {
   func testONmissingLineNumbersIsError() {
     checkError(
       "10 ON 2 GOTO X",
-      "ON requires at least one line number")
+      "ON requires a comma-separated list of line numbers")
   }
 
   func testONmissingLineNumberAfterCommaIsError() {
     checkError(
       "10 ON 2 GOTO 10,",
-      "ON requires line number after comma")
+      "ON requires a comma-separated list of line numbers")
   }
 
   func testSimpleStatementsJustCount() {
