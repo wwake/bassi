@@ -1,4 +1,3 @@
-Convert remaining statements to new parser: PRINT, assignment
 Convert statement-oriented methods that WrapOld calls
 Extract statement functions into a new file
 Convert expression to new parser
@@ -8,6 +7,7 @@ EVO-22-16: September 1, 2022
 * Updated peek() combinator to return the parser's value rather than just 0
 * Improved documentation for parser combinator library
 * New parser for: INPUT, LET, NEXT, ON
+* Convert remaining statements to new parser: PRINT, assignment
 
 EVO-22-15: August 31, 2022
 * Convert statements to new parser: one-word statements, read, data, def, dim, for, gosub, if

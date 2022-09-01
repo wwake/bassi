@@ -61,8 +61,28 @@ public class BasicParser : Parsing {
   fileprivate func makeStatementsParser() -> Bind<Token, [Statement]> {
     let statementsParser = Bind<Token, [Statement]>()
 
+    let variableParser =
+    match(.variable, "Expected variable")
+    <&> <?>(
+      match(.leftParend, "Missing '('")
+      &> WrapOld(self, expression) <&& match(.comma)
+      <& match(.rightParend, "Missing ')'")
+    )
+    |> { (variableToken, exprs) -> Expression in
+      let name = variableToken.string!
+
+      let type : `Type` =
+      name.last! == "$" ? .string : .number
+
+      if (exprs == nil) {
+        return .variable(name, type)
+      } else {
+        return .arrayAccess(name, type, exprs!)
+      }
+    }
+
     let assignParser =
-    WrapOld(self, variable)
+       variableParser
     <& match(.equals, "Assignment is missing '='")
     <&> WrapOld(self, expression)
     |&> requireMatchingTypes
