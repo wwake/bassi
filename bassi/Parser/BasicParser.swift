@@ -258,20 +258,6 @@ public class BasicParser : Parsing {
     return .success(lineNumber, remaining)
   }
 
-  fileprivate func doInput() throws -> Statement {
-    nextToken()
-
-    var prompt: String = ""
-    if case .string = token.type {
-      prompt = token.string
-      nextToken()
-      try require(.semicolon, "? Semicolon required after prompt")
-    }
-
-    let variables = try commaListOfVariables()
-    return .input(prompt, variables)
-  }
-
   func assign(_ name: String) throws -> Statement {
     let variable = try variable(name)
 
