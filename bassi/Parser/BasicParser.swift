@@ -139,6 +139,9 @@ public class BasicParser : Parsing {
       return Statement.input(prompt, variables)
     }
 
+    let letParser =
+    match(.let) &> (WrapOld(self, assign) <%> "LET is missing variable to assign to")
+
 
     let readParser =
     match(.read)
@@ -155,7 +158,7 @@ public class BasicParser : Parsing {
     <|> gotoParser
     <|> ifThenParser
     <|> inputParser
-    <|> when(.let) &> WrapOld(self, letAssign)
+    <|> letParser // when(.let) &> WrapOld(self, letAssign)
     <|> when(.next) &> WrapOld(self, doNext)
     <|> when(.on) &> WrapOld(self, on)
     <|> when(.print) &> WrapOld(self, printStatement)
@@ -256,6 +259,10 @@ public class BasicParser : Parsing {
   }
 
   func assign() throws -> Statement {
+    if .variable != token.type {
+      throw ParseError.error(token, "LET is missing variable to assign to")
+    }
+
     let name = token.string!
 
     let variable = try variable(name)
@@ -320,9 +327,6 @@ public class BasicParser : Parsing {
   }
 
   func letAssign() throws -> Statement {
-//    let letParser =
-//      match(.let) &>
-
     nextToken()
 
     if case .variable = token.type {
