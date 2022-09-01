@@ -147,7 +147,7 @@ public class BasicParser : Parsing {
     }
 
     let letParser =
-    match(.let) &> (WrapOld(self, assign) <%> "LET is missing variable to assign to")
+    match(.let) &> (assignParser <%> "LET is missing variable to assign to")
 
     let nextParser =
     match(.next)
