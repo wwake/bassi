@@ -237,7 +237,8 @@ public class BasicParser : Parsing {
     satisfy<Token>(message) { $0.type == type }
   }
 
-  func goto() throws -> Statement {
+  // TODO - delete when the WrapperTest goes away
+  func recursiveDescent_example_method_for_testing() throws -> Statement {
     nextToken()
 
     if case .integer = token.type {
