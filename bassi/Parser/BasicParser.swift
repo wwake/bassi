@@ -232,10 +232,11 @@ public class BasicParser : Parsing {
     |> { exprs in Statement.read(exprs) }
 
     let statementParser =
-        match(.end) |> { _ in Statement.end }
+        assignParser
     <|> dataParser
     <|> defParser
     <|> dimParser
+    <|> match(.end) |> { _ in Statement.end }
     <|> forParser
     <|> gosubParser
     <|> gotoParser
@@ -250,8 +251,6 @@ public class BasicParser : Parsing {
     <|> match(.restore) |> { _ in Statement.restore }
     <|> match(.return) |> { _ in Statement.return }
     <|> match(.stop) |> { _ in Statement.stop }
-
-    <|> assignParser
     <%> "Unknown statement"
 
     let theStatementsParser =
@@ -330,30 +329,6 @@ public class BasicParser : Parsing {
       return .failure(indexOf(token), "Line number must be between 1 and \(maxLineNumber)")
     }
     return .success(lineNumber, remaining)
-  }
-
-  func commaListOfVariables() throws -> [Expression] {
-    var variables: [Expression] = []
-
-    if case .variable = token.type {
-      let variable = try variable()
-      variables.append(variable)
-    } else {
-      throw ParseError.error(token, "At least one variable is required")
-    }
-
-    while token.type == .comma {
-      nextToken()
-
-      if case .variable = token.type {
-        let variable = try variable()
-        variables.append(variable)
-      } else {
-        throw ParseError.error(token, "At least one variable is required")
-      }
-    }
-
-    return variables
   }
 
   // TODO - remove when WrapperTests goes away
