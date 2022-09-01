@@ -61,11 +61,13 @@ public class BasicParser : Parsing {
   fileprivate func makeStatementsParser() -> Bind<Token, [Statement]> {
     let statementsParser = Bind<Token, [Statement]>()
 
+    let expressionParser = WrapOld(self, expression)
+
     let variableParser =
     match(.variable, "Expected variable")
     <&> <?>(
       match(.leftParend, "Missing '('")
-      &> WrapOld(self, expression) <&& match(.comma)
+      &> expressionParser <&& match(.comma)
       <& match(.rightParend, "Missing ')'")
     )
     |> { (variableToken, exprs) -> Expression in
@@ -84,7 +86,7 @@ public class BasicParser : Parsing {
     let assignParser =
        variableParser
     <& match(.equals, "Assignment is missing '='")
-    <&> WrapOld(self, expression)
+    <&> expressionParser
     |&> requireMatchingTypes
     |> { (lhs, rhs) in Statement.assign(lhs, rhs) }
 
@@ -104,7 +106,7 @@ public class BasicParser : Parsing {
        <& match(.rightParend, "DEF requires ')' after parameter")
     )
     <& match(.equals, "DEF requires '=' after parameter definition")
-    <&> (WrapOld(self, expression) |&> requireFloatType)
+    <&> (expressionParser |&> requireFloatType)
     |&> makeDefStatement
 
     let dimParser =
@@ -113,13 +115,13 @@ public class BasicParser : Parsing {
     |> { Statement.dim($0) }
 
     let exprThenGoto =
-    (WrapOld(self, expression) |&> requireFloatType)
+    (expressionParser |&> requireFloatType)
     <& match(.then, "Missing 'THEN'")
     <&> match(.integer)
     |> {(expr, token) in Statement.ifGoto(expr, LineNumber(token.float))}
 
     let exprThenStatements =
-    (WrapOld(self, expression) |&> requireFloatType)
+    (expressionParser |&> requireFloatType)
     <& match(.then, "Missing 'THEN'")
     <&> statementsParser
     |> {(expr, stmts) in Statement.`if`(expr, stmts) }
@@ -128,12 +130,12 @@ public class BasicParser : Parsing {
     match(.for)
     &> WrapOld(self, requireVariable)
     <& match(.equals, "'=' is required")
-    <&> (WrapOld(self, expression) |&> requireFloatType)
+    <&> (expressionParser |&> requireFloatType)
     <& match(.to, "'TO' is required")
-    <&> (WrapOld(self, expression) |&> requireFloatType)
+    <&> (expressionParser |&> requireFloatType)
     <&> <?>(
       match(.step)
-      &> (WrapOld(self, expression) |&> requireFloatType)
+      &> (expressionParser |&> requireFloatType)
     )
     |> { (varFromTo, stepOpt) -> Statement in
       let ((variable, initial), final) = varFromTo
@@ -176,7 +178,7 @@ public class BasicParser : Parsing {
 
     let onParser =
     match(.on)
-    &> WrapOld(self, expression)
+    &> expressionParser
     <&> (match(.goto) <|> match(.gosub) <%> "ON statement requires GOTO or GOSUB")
     <&> (
       match(.integer, "ON requires a comma-separated list of line numbers")
@@ -197,7 +199,7 @@ public class BasicParser : Parsing {
     &> <*>(
       (match(.semicolon) |> { _ in Printable.thinSpace })
       <|> (match(.comma) |> { _ in Printable.tab })
-      <|> (WrapOld(self, expression) |> { Printable.expr($0) })
+      <|> (expressionParser |> { Printable.expr($0) })
     )
     |> { printables -> Statement in
       var values = printables
