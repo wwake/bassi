@@ -174,11 +174,12 @@ public class BasicParser : Parsing {
     )
     |> { printables -> Statement in
       var values = printables
-      if values.count == 0 {
-        return Statement.print([.newline])
-      }
 
-      if values.count == 0 || values.last! != .thinSpace && values.last != .tab {
+      let needsNewline =
+           values.count == 0
+        || values.last! != .thinSpace && values.last != .tab
+
+      if needsNewline {
         values.append(.newline)
       }
 
