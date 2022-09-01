@@ -61,6 +61,13 @@ public class BasicParser : Parsing {
   fileprivate func makeStatementsParser() -> Bind<Token, [Statement]> {
     let statementsParser = Bind<Token, [Statement]>()
 
+    let assignParser =
+    WrapOld(self, variable)
+    <& match(.equals, "Assignment is missing '='")
+    <&> WrapOld(self, expression)
+    |&> requireMatchingTypes
+    |> { (lhs, rhs) in Statement.assign(lhs, rhs) }
+
     let dataParser =
     match(.data)
     &> match(.string, "Expected a data value") <&& match(.comma)
@@ -211,7 +218,7 @@ public class BasicParser : Parsing {
     <|> match(.return) |> { _ in Statement.return }
     <|> match(.stop) |> { _ in Statement.stop }
 
-    <|> when(.variable) &> WrapOld(self, assign)
+    <|> assignParser
     <%> "Unknown statement"
 
     let theStatementsParser =
@@ -302,8 +309,6 @@ public class BasicParser : Parsing {
   }
 
   func assign() throws -> Statement {
-  //  let assignParser =
-
     if .variable != token.type {
       throw ParseError.error(token, "LET is missing variable to assign to")
     }
@@ -383,6 +388,16 @@ public class BasicParser : Parsing {
       return .success(expr, remaining)
     }
     return .failure(remaining.startIndex-1, "Numeric type is required")
+  }
+
+  func requireMatchingTypes(_ exprExpr: (Expression, Expression), _ remaining: ArraySlice<Token>) -> ParseResult<Token, (Expression, Expression)> {
+    let (left, right) = exprExpr
+
+    if left.type() == right.type() {
+      return .success(exprExpr, remaining)
+    }
+
+    return .failure(remaining.startIndex - 1, "Type mismatch")
   }
 
   fileprivate func requireFloatType(_ expr: Expression) throws {
@@ -559,9 +574,11 @@ public class BasicParser : Parsing {
     return value
   }
 
-  fileprivate func variable() throws -> Expression  {
-    let name = token.string!
-    nextToken()
+  fileprivate func variable() throws -> Expression {
+    let variableToken = token
+    try require(.variable, "Expected variable")
+
+    let name = variableToken.string!
 
     let type : `Type` =
     name.last! == "$" ? .string : .number
