@@ -8,7 +8,7 @@ final class WrapperTests: XCTestCase {
     let basicParser = BasicParser(Lexer(input))
     XCTAssertEqual(basicParser.tokenIndex, 0)
 
-    let result = WrapOld<Statement>(basicParser, basicParser.returnStatement).parse(basicParser.tokens[1...])
+    let result = WrapOld<Statement>(basicParser, basicParser.recursiveDescent_exampleOfSuccessfulParse).parse(basicParser.tokens[1...])
 
     guard case .success(let statement, let remaining) = result else {
       XCTFail("expected success but got \(result)")
@@ -24,7 +24,7 @@ final class WrapperTests: XCTestCase {
     let basicParser = BasicParser(Lexer("GOTO"))  // missing target
     XCTAssertEqual(basicParser.tokenIndex, 0)
 
-    let result = WrapOld<Statement>(basicParser, basicParser.recursiveDescent_example_method_for_testing).parse(basicParser.tokens)
+    let result = WrapOld<Statement>(basicParser, basicParser.recursiveDescent_exampleOfFailedParse).parse(basicParser.tokens)
 
     guard case .failure(let errorIndex, let message) = result else {
       XCTFail("expected failure but got \(result)")

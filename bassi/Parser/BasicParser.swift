@@ -281,7 +281,7 @@ public class BasicParser : Parsing {
   }
 
   // TODO - delete when the WrapperTest goes away
-  func recursiveDescent_example_method_for_testing() throws -> Statement {
+  func recursiveDescent_exampleOfFailedParse() throws -> Statement {
     nextToken()
 
     if case .integer = token.type {
@@ -302,13 +302,13 @@ public class BasicParser : Parsing {
   }
 
   func assign() throws -> Statement {
+  //  let assignParser =
+
     if .variable != token.type {
       throw ParseError.error(token, "LET is missing variable to assign to")
     }
 
-    let name = token.string!
-
-    let variable = try variable(name)
+    let variable = try variable()
 
     try require(.equals, "Assignment is missing '='")
 
@@ -347,8 +347,7 @@ public class BasicParser : Parsing {
     var variables: [Expression] = []
 
     if case .variable = token.type {
-      let name = token.string!
-      let variable = try variable(name)
+      let variable = try variable()
       variables.append(variable)
     } else {
       throw ParseError.error(token, "At least one variable is required")
@@ -358,8 +357,7 @@ public class BasicParser : Parsing {
       nextToken()
 
       if case .variable = token.type {
-        let name = token.string!
-        let variable = try variable(name)
+        let variable = try variable()
         variables.append(variable)
       } else {
         throw ParseError.error(token, "At least one variable is required")
@@ -369,36 +367,8 @@ public class BasicParser : Parsing {
     return variables
   }
 
-  func printStatement() throws -> Statement {
-    nextToken()
-
-    var values: [Printable] = []
-
-    while token.type != .colon && token.type != .eol {
-      if token.type == .semicolon {
-        nextToken()
-        values.append(.thinSpace)
-      } else if token.type == .comma {
-        nextToken()
-        values.append(.tab)
-      } else {
-        let value = try expression()
-        values.append(.expr(value))
-      }
-    }
-
-    if values.count == 0 {
-      return Statement.print([.newline])
-    }
-
-    if values.last! != .thinSpace && values.last != .tab {
-      values.append(.newline)
-    }
-
-    return Statement.print(values)
-  }
-
-  func returnStatement() throws -> Statement {
+  // TODO - remove when WrapperTests goes away
+  func recursiveDescent_exampleOfSuccessfulParse() throws -> Statement {
     nextToken()
     return .`return`
   }
@@ -563,7 +533,7 @@ public class BasicParser : Parsing {
       nextToken()
       return .string(text)
     } else if case .variable = token.type {
-      return try variable(token.string!)
+      return try variable()
     } else if case .predefined = token.type {
       return try predefinedFunctionCall(token.string, token.resultType)
     } else if case .fn = token.type {
@@ -589,7 +559,8 @@ public class BasicParser : Parsing {
     return value
   }
 
-  fileprivate func variable(_ name: Name) throws -> Expression  {
+  fileprivate func variable() throws -> Expression  {
+    let name = token.string!
     nextToken()
 
     let type : `Type` =
