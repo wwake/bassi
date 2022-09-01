@@ -326,15 +326,6 @@ public class BasicParser : Parsing {
     return variables
   }
 
-  func letAssign() throws -> Statement {
-    nextToken()
-
-    if case .variable = token.type {
-      return try assign()
-    }
-    throw ParseError.error(token, "LET is missing variable to assign to")
-  }
-
   func on() throws -> Statement {
     nextToken()
 

@@ -1,6 +1,10 @@
-Convert remaining statements to new parser
-Design a peek2() combinator that returns the peeked value
-Parser combinator documentation for <|> is awkward
+Convert remaining statements to new parser: NEXT
+
+EVO-22-16: September 1, 2022
+* Restore goto() method for WrapperTests
+* Updated peek() combinator to return the parser's value rather than just 0
+* Improved documentation for parser combinator library
+* New parser for: INPUT, LET
 
 EVO-22-15: August 31, 2022
 * Convert statements to new parser: one-word statements, read, data, def, dim, for, gosub, if
