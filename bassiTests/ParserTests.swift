@@ -295,7 +295,7 @@ class ParserTests: XCTestCase {
   func testInputStatementWithNoVariables() {
     checkError(
       "20 INPUT",
-      "At least one variable is required")
+      "Expected variable")
   }
 
   func testAssignmentStatementWithNumber() {

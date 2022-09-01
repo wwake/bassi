@@ -173,7 +173,7 @@ public class BasicParser : Parsing {
     let inputParser =
     match(.input)
     &> (<?>(match(.string) <& match(.semicolon, "? Semicolon required after prompt")))
-    <&> WrapOld(self, commaListOfVariables)
+    <&> variableParser <&& match(.comma)
     |> { (promptOpt, variables) -> Statement in
       let prompt = promptOpt?.string ?? ""
       return Statement.input(prompt, variables)
@@ -227,8 +227,8 @@ public class BasicParser : Parsing {
     }
 
     let readParser =
-    match(.read)
-    &> WrapOld(self, commaListOfVariables)
+       match(.read)
+    &> variableParser <&& match(.comma)
     |> { exprs in Statement.read(exprs) }
 
     let statementParser =
