@@ -308,46 +308,6 @@ public class BasicParser : Parsing {
     return .success(lineNumber, remaining)
   }
 
-  func assign() throws -> Statement {
-    if .variable != token.type {
-      throw ParseError.error(token, "LET is missing variable to assign to")
-    }
-
-    let variable = try variable()
-
-    try require(.equals, "Assignment is missing '='")
-
-    let expr = try expression()
-
-    try requireMatchingTypes(variable, expr)
-
-    return .assign(variable, expr)
-  }
-
-  func data() throws -> Statement {
-    nextToken()
-
-    var strings : [String] = []
-
-    guard case .string = token.type else {
-      throw ParseError.error(token, "Expected a data value")
-    }
-    strings.append(token.string)
-    nextToken()
-
-    while token.type == .comma {
-      nextToken()
-
-      guard case .string = token.type else {
-        throw ParseError.error(token, "Expected a data value")
-      }
-      strings.append(token.string)
-      nextToken()
-    }
-
-    return .data(strings)
-  }
-
   func commaListOfVariables() throws -> [Expression] {
     var variables: [Expression] = []
 
