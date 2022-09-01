@@ -142,6 +142,11 @@ public class BasicParser : Parsing {
     let letParser =
     match(.let) &> (WrapOld(self, assign) <%> "LET is missing variable to assign to")
 
+    let nextParser =
+    match(.next)
+    &> WrapOld(self, requireVariable)
+    |> { Statement.next($0) }
+
 
     let readParser =
     match(.read)
@@ -158,8 +163,8 @@ public class BasicParser : Parsing {
     <|> gotoParser
     <|> ifThenParser
     <|> inputParser
-    <|> letParser // when(.let) &> WrapOld(self, letAssign)
-    <|> when(.next) &> WrapOld(self, doNext)
+    <|> letParser
+    <|> nextParser
     <|> when(.on) &> WrapOld(self, on)
     <|> when(.print) &> WrapOld(self, printStatement)
     <|> readParser
