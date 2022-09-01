@@ -165,10 +165,7 @@ public class BasicParser : Parsing {
     <|> match(.return) |> { _ in Statement.return }
     <|> match(.stop) |> { _ in Statement.stop }
 
-    <|> when(.variable) &> WrapOld(self, { [self] in
-      let name = token.string
-      return try assign(name!)
-    })
+    <|> when(.variable) &> WrapOld(self, assign)
     <%> "Unknown statement"
 
     let theStatementsParser =
@@ -258,7 +255,7 @@ public class BasicParser : Parsing {
     return .success(lineNumber, remaining)
   }
 
-  func assign(_ : String) throws -> Statement {
+  func assign() throws -> Statement {
     let name = token.string!
 
     let variable = try variable(name)
@@ -329,7 +326,7 @@ public class BasicParser : Parsing {
     nextToken()
 
     if case .variable = token.type {
-      return try assign(token.string!)
+      return try assign()
     }
     throw ParseError.error(token, "LET is missing variable to assign to")
   }
