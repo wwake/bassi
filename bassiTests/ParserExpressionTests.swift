@@ -144,7 +144,7 @@ class ParserExpressionTests: XCTestCase {
   func testPrintImproperExpression() {
     checkError(
       "10 PRINT +",
-      "Expected start of expression"
+      "Extra characters at end of line"
     )
   }
   func testErrorWhenFactorIsNotValid() {

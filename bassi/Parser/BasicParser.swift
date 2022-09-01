@@ -165,6 +165,26 @@ public class BasicParser : Parsing {
       }
     }
 
+    let printParser =
+    match(.print)
+    &> <*>(
+      (match(.semicolon) |> { _ in Printable.thinSpace })
+      <|> (match(.comma) |> { _ in Printable.tab })
+      <|> (WrapOld(self, expression) |> { Printable.expr($0) })
+    )
+    |> { printables -> Statement in
+      var values = printables
+      if values.count == 0 {
+        return Statement.print([.newline])
+      }
+
+      if values.count == 0 || values.last! != .thinSpace && values.last != .tab {
+        values.append(.newline)
+      }
+
+      return Statement.print(values)
+    }
+
     let readParser =
     match(.read)
     &> WrapOld(self, commaListOfVariables)
@@ -183,7 +203,7 @@ public class BasicParser : Parsing {
     <|> letParser
     <|> nextParser
     <|> onParser
-    <|> when(.print) &> WrapOld(self, printStatement)
+    <|> printParser
     <|> readParser
     <|> match(.remark) |> { _ in Statement.skip }
     <|> match(.restore) |> { _ in Statement.restore }

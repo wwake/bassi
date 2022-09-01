@@ -120,7 +120,7 @@ class ParserTests: XCTestCase {
   func testPrintPrintIsError() {
     checkError(
       "25 PRINT PRINT",
-      "Expected start of expression"
+      "Extra characters at end of line"
     )
   }
 

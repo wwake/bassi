@@ -17,7 +17,7 @@ class _ControlFlowTests: InterpreterTests {
     let outputter = Interactor()
     let interpreter = Interpreter(Program(program), outputter)
     try interpreter.run()
-    XCTAssertTrue(outputter.output.starts(with:"?10:7 Expected start of expression"), "was \(outputter.output)")
+    XCTAssertTrue(outputter.output.starts(with:"?10:7 Extra characters at end of line"), "was \(outputter.output)")
   }
 
   func testRemainingPartsOfLineDontExecuteIfControlTransfered() {
