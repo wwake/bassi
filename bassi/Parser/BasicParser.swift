@@ -747,13 +747,4 @@ public class BasicParser : Parsing {
 
     return .`for`(variable, initial, final, step)
   }
-
-  func doNext() throws -> Statement {
-    nextToken()
-
-    let variable = try requireVariable()
-
-    return .next(variable)
-  }
-
 }
