@@ -258,7 +258,9 @@ public class BasicParser : Parsing {
     return .success(lineNumber, remaining)
   }
 
-  func assign(_ name: String) throws -> Statement {
+  func assign(_ : String) throws -> Statement {
+    let name = token.string!
+
     let variable = try variable(name)
 
     try require(.equals, "Assignment is missing '='")
@@ -321,6 +323,9 @@ public class BasicParser : Parsing {
   }
 
   func letAssign() throws -> Statement {
+//    let letParser =
+//      match(.let) &>
+
     nextToken()
 
     if case .variable = token.type {
