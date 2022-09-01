@@ -130,6 +130,15 @@ public class BasicParser : Parsing {
     match(.if) &>
     (exprThenGoto <||> exprThenStatements <%> "Numeric type is required")
 
+    let inputParser =
+    match(.input)
+    &> (<?>(match(.string) <& match(.semicolon, "? Semicolon required after prompt")))
+    <&> WrapOld(self, commaListOfVariables)
+    |> { (promptOpt, variables) -> Statement in
+      let prompt = promptOpt?.string ?? ""
+      return Statement.input(prompt, variables)
+    }
+
 
     let readParser =
     match(.read)
@@ -145,7 +154,7 @@ public class BasicParser : Parsing {
     <|> gosubParser
     <|> gotoParser
     <|> ifThenParser
-    <|> when(.input) &> WrapOld(self, doInput)
+    <|> inputParser
     <|> when(.let) &> WrapOld(self, letAssign)
     <|> when(.next) &> WrapOld(self, doNext)
     <|> when(.on) &> WrapOld(self, on)
@@ -228,6 +237,18 @@ public class BasicParser : Parsing {
     satisfy<Token>(message) { $0.type == type }
   }
 
+  func goto() throws -> Statement {
+    nextToken()
+
+    if case .integer = token.type {
+      let lineNumber = LineNumber(token.float)
+      nextToken()
+      return .goto(lineNumber)
+    }
+
+    throw ParseError.error(token, "Missing target of GOTO")
+  }
+
   func lineNumberInRange(_ token: Token, _ remaining: ArraySlice<Token>) -> ParseResult<Token, LineNumber> {
     let lineNumber = LineNumber(token.float)
     if lineNumber <= 0 || lineNumber > maxLineNumber {
@@ -285,19 +306,6 @@ public class BasicParser : Parsing {
 
     return .data(strings)
   }
-
-  func goto() throws -> Statement {
-    nextToken()
-
-    if case .integer = token.type {
-      let lineNumber = LineNumber(token.float)
-      nextToken()
-      return .goto(lineNumber)
-    }
-
-    throw ParseError.error(token, "Missing target of GOTO")
-  }
-
 
   func commaListOfVariables() throws -> [Expression] {
     var variables: [Expression] = []
