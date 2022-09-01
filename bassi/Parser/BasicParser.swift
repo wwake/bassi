@@ -292,15 +292,6 @@ public class BasicParser : Parsing {
     nextToken()
   }
 
-  func requireVariable() throws -> String {
-    guard case .variable = token.type else {
-      throw ParseError.error(token, "Variable is required")
-    }
-    let variable = token.string!
-    nextToken()
-    return variable
-  }
-
   private func singleLine() -> Parse {
     let result = singleLineParser.parse(tokens)
 
@@ -679,27 +670,5 @@ public class BasicParser : Parsing {
     try typeCheck([.number], [expr])
 
     return .userdefined("FN" + parameter, expr)
-  }
-
-  func dim1() throws -> DimInfo {
-    let arrayName = try requireVariable()
-
-    try require(.leftParend, "Missing '('")
-
-    var dimensions : [Expression] = []
-
-    let expr = try expression()
-    dimensions.append(expr)
-
-    while .comma == token.type {
-      nextToken()
-
-      let expr = try expression()
-      dimensions.append(expr)
-    }
-
-    try require(.rightParend, "Missing ')'")
-
-    return DimInfo(arrayName, dimensions, typeFor(arrayName))
   }
 }
