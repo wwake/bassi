@@ -83,6 +83,8 @@ public class BasicParser : Parsing {
       }
     }
 
+    let requiredVariableParser = match(.variable, "Variable is required") |> { $0.string! }
+
     let assignParser =
        variableParser
     <& match(.equals, "Assignment is missing '='")
@@ -102,16 +104,25 @@ public class BasicParser : Parsing {
     (  match(.fn, "DEF requires a name of the form FNx")
        &> match(.variable, "DEF requires a name of the form FNx")
        <& match(.leftParend, "Missing '('")
-       <&> WrapOld(self, requireVariable)
+       <&> requiredVariableParser
        <& match(.rightParend, "DEF requires ')' after parameter")
     )
     <& match(.equals, "DEF requires '=' after parameter definition")
     <&> (expressionParser |&> requireFloatType)
     |&> makeDefStatement
 
+    let dim1Parser =
+       requiredVariableParser
+    <& match(.leftParend, "Missing '('")
+    <&> expressionParser <&& match(.comma)
+    <& match(.rightParend, "Missing ')'")
+    |> { (arrayName, dimensions) in
+      return DimInfo(arrayName, dimensions, self.typeFor(arrayName))
+    }
+
     let dimParser =
     match(.dim)
-    &> WrapOld(self, dim1) <&& match(.comma)
+    &> dim1Parser <&& match(.comma)
     |> { Statement.dim($0) }
 
     let exprThenGoto =
@@ -128,7 +139,7 @@ public class BasicParser : Parsing {
 
     let forParser =
     match(.for)
-    &> WrapOld(self, requireVariable)
+    &> requiredVariableParser
     <& match(.equals, "'=' is required")
     <&> (expressionParser |&> requireFloatType)
     <& match(.to, "'TO' is required")
@@ -173,7 +184,7 @@ public class BasicParser : Parsing {
 
     let nextParser =
     match(.next)
-    &> WrapOld(self, requireVariable)
+    &> requiredVariableParser
     |> { Statement.next($0) }
 
     let onParser =
