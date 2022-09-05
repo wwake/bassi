@@ -146,24 +146,27 @@ public class BasicParser : Parsing {
   fileprivate func makeExpressionParser() -> Bind<Token, Expression> {
     let expressionParser = Bind<Token, Expression>()
 
+    let negationParser =
+    <*>match(.not) <&> WrapOld(self, relational)
+    |&> formUnaryExpression
+
     let andExprParser =
-    WrapOld(self, negation) <&&> match(.and)
-    |&> formExpression
+    negationParser <&&> match(.and)
+    |&> formNumericBinaryExpression
 
     let orExprParser =
     andExprParser <&&> match(.or)
-    |&> formExpression
+    |&> formNumericBinaryExpression
 
     expressionParser.bind(orExprParser.parse)
     return expressionParser
   }
 
-
   func expression() throws -> Expression {
     return try orExpr()
   }
 
-  func formExpression(_ exprTokenExprs: (Expression, Array<(Token, Expression)>), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Expression> {
+  func formNumericBinaryExpression(_ exprTokenExprs: (Expression, Array<(Token, Expression)>), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Expression> {
 
     let (expr, tokenExprs) = exprTokenExprs
 
@@ -178,6 +181,22 @@ public class BasicParser : Parsing {
       let (token, expr) = tokenExpr
       return .op2(token.type, result, expr)
     }
+    return .success(result, remaining)
+  }
+
+  func formUnaryExpression(_ tokensExpr: ([Token], Expression), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Expression> {
+    let (ops, expr) = tokensExpr
+
+    if ops.count == 0 { return .success(expr, remaining) }
+
+    guard expr.type() == .number else {
+      return .failure(remaining.startIndex - 1, "Numeric type is required")
+    }
+
+    let result = ops
+      .reversed()
+      .reduce(expr) { (exprSoFar, op) in .op1(op.type, exprSoFar) }
+
     return .success(result, remaining)
   }
 
