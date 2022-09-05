@@ -35,8 +35,10 @@ public class BasicParser : Parsing {
 
     defer {
       expressionParser = makeExpressionParser()
-      statementsParser = makeStatementsParser()
-      singleLineParser = makeSingleLineParser()
+
+      let statementParser = StatementParser()
+      statementsParser = statementParser.makeStatementsParser(expressionParser)
+      singleLineParser = statementParser.makeSingleLineParser(statementsParser)
     }
   }
 
@@ -52,10 +54,10 @@ public class BasicParser : Parsing {
     }
 
     let statement = Statement.def(
-        "FN"+token.string,
-        name,
-        expr,
-        .function([.number], .number))
+      "FN"+token.string,
+      name,
+      expr,
+      .function([.number], .number))
 
     return .success(statement, remaining)
   }

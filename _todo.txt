@@ -1,5 +1,6 @@
 Extract statement functions into a new file
 Convert expression to new parser
+Make StatementParser.indexOf pull value from the token itself
 
 EVO-22-17: September 5, 2022
 
