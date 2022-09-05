@@ -361,6 +361,14 @@ public class BasicParser : Parsing {
   }
 
   func factor() throws -> Expression {
+    let factorParser =
+    match(.leftParend) &> WrapOld(self, parenthesizedExpression)
+    <|> match(.number) |> { Expression.number($0.float) }
+    <|> match(.integer) |> { Expression.number($0.float) }
+    <|> match(.string) |> { Expression.string($0.string) }
+    <|> peek(match(.variable)) &> WrapOld(self, variable)
+
+
     if token.type == .leftParend {
       return try parenthesizedExpression()
     } else if case .number = token.type {
@@ -374,7 +382,7 @@ public class BasicParser : Parsing {
     } else if case .variable = token.type {
       return try variable()
     } else if case .predefined = token.type {
-      return try predefinedFunctionCall(token.string, token.resultType)
+      return try predefinedFunctionCall()
     } else if case .fn = token.type {
       return try userdefinedFunctionCall()
     } else {
@@ -430,7 +438,9 @@ public class BasicParser : Parsing {
     return .arrayAccess(name, type, exprs)
   }
 
-  fileprivate func predefinedFunctionCall(_ name: Name, _ type: `Type`) throws -> Expression  {
+  fileprivate func predefinedFunctionCall() throws -> Expression  {
+    let name = token.string!
+    let type = token.resultType
     nextToken()
 
     guard case .function(let parameterTypes, let resultType) = type else {
