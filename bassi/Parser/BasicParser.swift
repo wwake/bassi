@@ -144,14 +144,14 @@ public class BasicParser : Parsing {
     }
 
   fileprivate func makeExpressionParser() -> Bind<Token, Expression> {
-    let result = Bind<Token, Expression>()
+    let expressionParser = Bind<Token, Expression>()
 
     let orExprParser =
-    WrapOld(self, andExpr) <&& match(.or)
+    WrapOld(self, andExpr) <&&> match(.or)
     |&> formExpression
 
-    result.bind(orExprParser.parse)
-    return result
+    expressionParser.bind(orExprParser.parse)
+    return expressionParser
   }
 
 
@@ -159,22 +159,25 @@ public class BasicParser : Parsing {
     return try orExpr()
   }
 
-  func formExpression(_ exprs: Array<Expression>, _ remaining: ArraySlice<Token>) -> ParseResult<Token, Expression> {
+  func formExpression(_ exprTokenExprs: (Expression, Array<(Token, Expression)>), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Expression> {
 
-    if exprs.count == 1 { return .success(exprs[0], remaining) }
+    let (expr, tokenExprs) = exprTokenExprs
 
-    guard exprs.allSatisfy({$0.type() == .number}) else {
+    if tokenExprs.count == 0 { return .success(expr, remaining) }
+
+    guard expr.type() == .number
+       && tokenExprs.allSatisfy({(_,expr) in expr.type() == .number}) else {
       return .failure(remaining.startIndex - 1, "Numeric type is required")
     }
 
-    let result = exprs.dropFirst().reduce(exprs[0]) { result, expr in
-        .op2(.or, result, expr)
+    let result = tokenExprs.reduce(expr) { result, tokenExpr in
+      let (token, expr) = tokenExpr
+      return .op2(token.type, result, expr)
     }
     return .success(result, remaining)
   }
 
   func orExpr() throws -> Expression {
-
     var left = try andExpr()
 
     while token.type == .or {
@@ -190,6 +193,10 @@ public class BasicParser : Parsing {
   }
 
   func andExpr() throws -> Expression {
+//    let andExprParser =
+//    WrapOld(self, negation) <&& match(.and)
+//    |&> formExpression
+
     var left = try negation()
 
     while token.type == .and {
