@@ -146,9 +146,11 @@ public class BasicParser : Parsing {
   fileprivate func makeExpressionParser() -> Bind<Token, Expression> {
     let result = Bind<Token, Expression>()
 
-    let parser = WrapOld(self, orExpr)
+    let orExprParser =
+    WrapOld(self, andExpr) <&& match(.or)
+    |&> formExpression
 
-    result.bind(parser.parse)
+    result.bind(orExprParser.parse)
     return result
   }
 
@@ -157,7 +159,22 @@ public class BasicParser : Parsing {
     return try orExpr()
   }
 
+  func formExpression(_ exprs: Array<Expression>, _ remaining: ArraySlice<Token>) -> ParseResult<Token, Expression> {
+
+    if exprs.count == 1 { return .success(exprs[0], remaining) }
+
+    guard exprs.allSatisfy({$0.type() == .number}) else {
+      return .failure(remaining.startIndex - 1, "Numeric type is required")
+    }
+
+    let result = exprs.dropFirst().reduce(exprs[0]) { result, expr in
+        .op2(.or, result, expr)
+    }
+    return .success(result, remaining)
+  }
+
   func orExpr() throws -> Expression {
+
     var left = try andExpr()
 
     while token.type == .or {
