@@ -84,6 +84,10 @@ public class BasicParser : Parsing {
     satisfy<Token>(message) { $0.type == type }
   }
 
+  private func oneOf(_ tokens: [TokenType], _ message: String = "Didn't find expected value") -> satisfy<Token> {
+    satisfy<Token>(message) { tokens.contains($0.type) }
+  }
+
   // TODO - delete when the WrapperTest goes away
   func recursiveDescent_exampleOfFailedParse() throws -> Statement {
     nextToken()
@@ -146,8 +150,13 @@ public class BasicParser : Parsing {
   fileprivate func makeExpressionParser() -> Bind<Token, Expression> {
     let expressionParser = Bind<Token, Expression>()
 
+    let relationalParser =
+    WrapOld(self, subexpression)
+    <&> <?>(oneOf(relops) <&> WrapOld(self,subexpression))
+    |&> formMatchingBinaryExpression
+
     let negationParser =
-    <*>match(.not) <&> WrapOld(self, relational)
+    <*>match(.not) <&> relationalParser
     |&> formUnaryExpression
 
     let andExprParser =
@@ -181,6 +190,26 @@ public class BasicParser : Parsing {
       let (token, expr) = tokenExpr
       return .op2(token.type, result, expr)
     }
+    return .success(result, remaining)
+  }
+
+  func formMatchingBinaryExpression(
+    _ expr_OptTokenExpr: (Expression, (Token, Expression)?),
+    _ remaining: ArraySlice<Token>)
+  -> ParseResult<Token, Expression> {
+    let (expr1, tokenExpr) = expr_OptTokenExpr
+
+    guard let tokenExpr = tokenExpr else {
+      return .success(expr1, remaining)
+    }
+
+    let (token, expr2) = tokenExpr
+
+    guard expr1.type() == expr2.type() else {
+      return .failure(remaining.startIndex - 1, "Type mismatch")
+    }
+
+    let result = Expression.op2(token.type, expr1, expr2)
     return .success(result, remaining)
   }
 
@@ -241,7 +270,7 @@ public class BasicParser : Parsing {
     return try relational()
   }
 
-  fileprivate func relational() throws -> Expression  {
+  fileprivate func relational() throws -> Expression {
     var left = try subexpression()
 
     if relops.contains(token.type) {
