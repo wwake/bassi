@@ -25,14 +25,16 @@ public class BasicParser : Parsing {
 
   let relops: [TokenType] = [.equals, .lessThan, .lessThanOrEqualTo, .notEqual, .greaterThan, .greaterThanOrEqualTo]
 
-  var statementsParser: Bind<Token, [Statement]>!
   var singleLineParser: Bind<Token, Parse>!
+  var statementsParser: Bind<Token, [Statement]>!
+  var expressionParser: Bind<Token, Expression>!
 
   init(_ lexer: Lexer) {
     self.lexer = lexer
     self.tokens = lexer.line()
 
     defer {
+      expressionParser = makeExpressionParser()
       statementsParser = makeStatementsParser()
       singleLineParser = makeSingleLineParser()
     }
@@ -58,10 +60,12 @@ public class BasicParser : Parsing {
     return .success(statement, remaining)
   }
 
+  fileprivate func makeExpressionParser() -> Bind<Token, Expression> {
+    return Bind<Token, Expression>(WrapOld(self, expression).parse)
+  }
+
   fileprivate func makeStatementsParser() -> Bind<Token, [Statement]> {
     let statementsParser = Bind<Token, [Statement]>()
-
-    let expressionParser = WrapOld(self, expression)
 
     let variableParser =
     match(.variable, "Expected variable")
