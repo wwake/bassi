@@ -154,8 +154,18 @@ public class BasicParser : Parsing {
   fileprivate func makeExpressionParser() -> Bind<Token, Expression> {
     let expressionParser = Bind<Token, Expression>()
 
+    let factorParser =
+    peek(match(.leftParend)) &> WrapOld(self, parenthesizedExpression)
+    <|> match(.number) |> { Expression.number($0.float) }
+    <|> match(.integer) |> { Expression.number($0.float) }
+    <|> match(.string) |> { Expression.string($0.string) }
+    <|> peek(match(.variable)) &> WrapOld(self, variable)
+    <|> peek(match(.predefined)) &> WrapOld(self, predefinedFunctionCall)
+    <|> peek(match(.fn)) &> WrapOld(self, userdefinedFunctionCall)
+    <%> "Expected start of expression"
+
     let powerParser =
-    WrapOld(self, factor) <&&> match(.exponent)
+    factorParser <&&> match(.exponent)
     |&> formNumericBinaryExpression
 
     let negativeParser =
@@ -361,13 +371,6 @@ public class BasicParser : Parsing {
   }
 
   func factor() throws -> Expression {
-    let factorParser =
-    match(.leftParend) &> WrapOld(self, parenthesizedExpression)
-    <|> match(.number) |> { Expression.number($0.float) }
-    <|> match(.integer) |> { Expression.number($0.float) }
-    <|> match(.string) |> { Expression.string($0.string) }
-    <|> peek(match(.variable)) &> WrapOld(self, variable)
-
 
     if token.type == .leftParend {
       return try parenthesizedExpression()
