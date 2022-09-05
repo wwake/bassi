@@ -370,8 +370,8 @@ class ParserTests: XCTestCase {
     checkError("17 A=B$^3", "Type mismatch")
     checkError("17 A=3^B$", "Type mismatch")
 
-    checkError("17 A=B$*C$", "Type mismatch")
-    checkError("17 A=3/B$", "Type mismatch")
+    checkError("17 A=B$*C$", "Numeric type is required")
+    checkError("17 A=3/B$", "Numeric type is required")
 
     checkError("17 A=B$+C$", "Numeric type is required")
     checkError("17 A=3-B$", "Numeric type is required")

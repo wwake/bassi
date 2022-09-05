@@ -23,9 +23,11 @@ public class BasicParser : Parsing {
   var lineNumber = 0
   var columnNumber = 0
 
-  let relops: [TokenType] = [.equals, .lessThan, .lessThanOrEqualTo, .notEqual, .greaterThan, .greaterThanOrEqualTo]
+  let relationalOps: [TokenType] = [.equals, .lessThan, .lessThanOrEqualTo, .notEqual, .greaterThan, .greaterThanOrEqualTo]
 
-  let addops: [TokenType] = [.plus, .minus]
+  let addOps: [TokenType] = [.plus, .minus]
+  let multiplyOps: [TokenType] = [.times, .divide]
+
 
   var singleLineParser: Bind<Token, Parse>!
   var statementsParser: Bind<Token, [Statement]>!
@@ -152,13 +154,17 @@ public class BasicParser : Parsing {
   fileprivate func makeExpressionParser() -> Bind<Token, Expression> {
     let expressionParser = Bind<Token, Expression>()
 
+    let termParser =
+    WrapOld(self, power) <&&> oneOf(multiplyOps)
+    |&> formNumericBinaryExpression
+
     let subexpressionParser =
-    WrapOld(self, term) <&&> oneOf(addops)
+    termParser <&&> oneOf(addOps)
     |&> formNumericBinaryExpression
 
     let relationalParser =
     subexpressionParser
-    <&> <?>(oneOf(relops) <&> WrapOld(self,subexpression))
+    <&> <?>(oneOf(relationalOps) <&> WrapOld(self,subexpression))
     |&> formMatchingBinaryExpression
 
     let negationParser =
@@ -279,7 +285,7 @@ public class BasicParser : Parsing {
   fileprivate func relational() throws -> Expression {
     var left = try subexpression()
 
-    if relops.contains(token.type) {
+    if relationalOps.contains(token.type) {
       let op = token.type
       nextToken()
 
@@ -309,6 +315,7 @@ public class BasicParser : Parsing {
   }
 
   func term() throws -> Expression {
+
     var left = try power()
 
     while token.type == .times || token.type == .divide {
