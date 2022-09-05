@@ -25,6 +25,8 @@ public class BasicParser : Parsing {
 
   let relops: [TokenType] = [.equals, .lessThan, .lessThanOrEqualTo, .notEqual, .greaterThan, .greaterThanOrEqualTo]
 
+  let addops: [TokenType] = [.plus, .minus]
+
   var singleLineParser: Bind<Token, Parse>!
   var statementsParser: Bind<Token, [Statement]>!
   var expressionParser: Bind<Token, Expression>!
@@ -150,8 +152,12 @@ public class BasicParser : Parsing {
   fileprivate func makeExpressionParser() -> Bind<Token, Expression> {
     let expressionParser = Bind<Token, Expression>()
 
+    let subexpressionParser =
+    WrapOld(self, term) <&&> oneOf(addops)
+    |&> formNumericBinaryExpression
+
     let relationalParser =
-    WrapOld(self, subexpression)
+    subexpressionParser
     <&> <?>(oneOf(relops) <&> WrapOld(self,subexpression))
     |&> formMatchingBinaryExpression
 
