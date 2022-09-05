@@ -50,10 +50,6 @@ public class BasicParser : Parsing {
     peek(match(tokenType))
   }
 
-  fileprivate func makeExpressionParser() -> Bind<Token, Expression> {
-    return Bind<Token, Expression>(WrapOld(self, expression).parse)
-  }
-
   func nextToken() {
     tokenIndex += 1
   }
@@ -146,6 +142,12 @@ public class BasicParser : Parsing {
         throw ParseError.error(token, "Type mismatch")
       }
     }
+
+  fileprivate func makeExpressionParser() -> Bind<Token, Expression> {
+    let parser = WrapOld(self, orExpr).parse
+    return Bind<Token, Expression>(parser)
+  }
+
 
   func expression() throws -> Expression {
     return try orExpr()
