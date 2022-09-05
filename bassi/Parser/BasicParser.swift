@@ -146,8 +146,12 @@ public class BasicParser : Parsing {
   fileprivate func makeExpressionParser() -> Bind<Token, Expression> {
     let expressionParser = Bind<Token, Expression>()
 
+    let andExprParser =
+    WrapOld(self, negation) <&&> match(.and)
+    |&> formExpression
+
     let orExprParser =
-    WrapOld(self, andExpr) <&&> match(.or)
+    andExprParser <&&> match(.or)
     |&> formExpression
 
     expressionParser.bind(orExprParser.parse)
@@ -193,10 +197,6 @@ public class BasicParser : Parsing {
   }
 
   func andExpr() throws -> Expression {
-//    let andExprParser =
-//    WrapOld(self, negation) <&& match(.and)
-//    |&> formExpression
-
     var left = try negation()
 
     while token.type == .and {

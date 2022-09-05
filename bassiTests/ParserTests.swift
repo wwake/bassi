@@ -377,7 +377,7 @@ class ParserTests: XCTestCase {
     checkError("17 A=3-B$", "Type mismatch")
 
     checkError("17 A=NOT B$", "Numeric type is required")
-    checkError("17 A=B$ AND 3", "Type mismatch")
+    checkError("17 A=B$ AND 3", "Numeric type is required")
     checkError("17 A=42 OR B$", "Numeric type is required")
   }
 
