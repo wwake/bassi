@@ -144,8 +144,12 @@ public class BasicParser : Parsing {
     }
 
   fileprivate func makeExpressionParser() -> Bind<Token, Expression> {
-    let parser = WrapOld(self, orExpr).parse
-    return Bind<Token, Expression>(parser)
+    let result = Bind<Token, Expression>()
+
+    let parser = WrapOld(self, orExpr)
+
+    result.bind(parser.parse)
+    return result
   }
 
 
