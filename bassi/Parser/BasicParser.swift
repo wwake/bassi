@@ -154,8 +154,16 @@ public class BasicParser : Parsing {
   fileprivate func makeExpressionParser() -> Bind<Token, Expression> {
     let expressionParser = Bind<Token, Expression>()
 
+    let powerParser =
+    WrapOld(self, factor) <&&> match(.exponent)
+    |&> formNumericBinaryExpression
+
+    let negativeParser =
+    <*>match(.minus) <&> powerParser
+    |&> formUnaryExpression(_:_:)
+
     let termParser =
-    WrapOld(self, power) <&&> oneOf(multiplyOps)
+    negativeParser <&&> oneOf(multiplyOps)
     |&> formNumericBinaryExpression
 
     let subexpressionParser =
