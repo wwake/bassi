@@ -154,12 +154,33 @@ public class BasicParser : Parsing {
   fileprivate func makeExpressionParser() -> Bind<Token, Expression> {
     let expressionParser = Bind<Token, Expression>()
 
+    let variableParser =
+    (
+      match(.variable, "Expected variable")
+      |> { ($0.string!, $0.string!.last! == "$" ? Type.string : .number)}
+    )
+    <&> <?>(
+      match(.leftParend)
+      &> expressionParser <&& match(.comma)
+      <& match(.rightParend)
+    )
+    |> { (nameType, exprs) -> Expression in
+      let (name, type) = nameType
+      guard let exprs = exprs else {
+        return .variable(name, type)
+      }
+      return .arrayAccess(name, type, exprs)
+    }
+
+    let parenthesizedParser =
+    match(.leftParend) &> expressionParser <& match(.rightParend, "Missing ')'")
+
     let factorParser =
-    peek(match(.leftParend)) &> WrapOld(self, parenthesizedExpression)
+        parenthesizedParser
     <|> match(.number) |> { Expression.number($0.float) }
     <|> match(.integer) |> { Expression.number($0.float) }
     <|> match(.string) |> { Expression.string($0.string) }
-    <|> peek(match(.variable)) &> WrapOld(self, variable)
+    <|> variableParser
     <|> peek(match(.predefined)) &> WrapOld(self, predefinedFunctionCall)
     <|> peek(match(.fn)) &> WrapOld(self, userdefinedFunctionCall)
     <%> "Expected start of expression"

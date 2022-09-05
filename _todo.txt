@@ -1,8 +1,9 @@
-Extract statement functions into a new file
 Convert expression to new parser
 Make StatementParser.indexOf pull value from the token itself
+Make variable tokens know their type
 
 EVO-22-17: September 5, 2022
+* Extract statement functions into a new file
 
 
 EVO-22-16: September 1, 2022
