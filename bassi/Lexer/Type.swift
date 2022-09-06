@@ -13,6 +13,24 @@ public indirect enum `Type` : Equatable {
   case string
   case function([`Type`], `Type`)
   case opt(`Type`)
+
+  public func conformsTo(_ parameterType: `Type`) -> Bool {
+    let argumentType = self
+    if parameterType == argumentType {
+        return true
+      }
+      if case .opt(let innerType) = parameterType {
+        if innerType == argumentType {
+          return true
+        }
+        if argumentType == .missing {
+          return true
+        }
+      }
+      return false
+    }
+
+
 }
 
 extension `Type`: Hashable {}
