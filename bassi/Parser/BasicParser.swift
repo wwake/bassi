@@ -218,7 +218,7 @@ public class BasicParser : Parsing {
 
     let relationalParser =
     subexpressionParser
-    <&> <?>(oneOf(relationalOps) <&> WrapOld(self,subexpression))
+    <&> <?>(oneOf(relationalOps) <&> subexpressionParser)
     |&> formMatchingBinaryExpression
 
     let negationParser =

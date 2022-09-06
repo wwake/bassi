@@ -1,9 +1,11 @@
-Convert expression to new parser: user-defined function call
+* Use the new expressionParser everywhere
+* Eliminate all WrapOld calls
 Make StatementParser.indexOf pull value from the token itself
 Make variable tokens know their type
 
 EVO-22-18: September 6, 2022
 * Convert expression to new parser: Predefined function call
+* Convert expression to new parser: user-defined function call
 
 EVO-22-17: September 5, 2022
 * Extract statement functions into a new file
