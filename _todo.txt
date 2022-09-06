@@ -1,3 +1,4 @@
+* Eliminate unused old-style parser code
 * Make variable tokens know their type
 * Make StatementParser.indexOf pull value from the token itself
 

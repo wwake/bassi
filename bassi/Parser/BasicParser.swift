@@ -270,7 +270,7 @@ public class BasicParser : Parsing {
     _ parameterTypes: [`Type`],
     _ arguments: [Expression]) throws {
 
-      if parameterTypes.count < arguments.count {
+      if arguments.count > parameterTypes.count {
         throw ParseError.error(token, "Function not called with correct number of arguments")
       }
 
