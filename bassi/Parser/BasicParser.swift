@@ -206,7 +206,7 @@ public class BasicParser : Parsing {
 
     let negativeParser =
     <*>match(.minus) <&> powerParser
-    |&> formUnaryExpression(_:_:)
+    |&> formUnaryExpression
 
     let termParser =
     negativeParser <&&> oneOf(multiplyOps)
@@ -235,10 +235,6 @@ public class BasicParser : Parsing {
 
     expressionParser.bind(orExprParser.parse)
     return expressionParser
-  }
-
-  func expression() throws -> Expression {
-    return try orExpr()
   }
 
   func formNumericBinaryExpression(_ exprTokenExprs: (Expression, Array<(Token, Expression)>), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Expression> {
@@ -295,188 +291,6 @@ public class BasicParser : Parsing {
     return .success(result, remaining)
   }
 
-  func orExpr() throws -> Expression {
-    var left = try andExpr()
-
-    while token.type == .or {
-      let op = token.type
-      nextToken()
-
-      let right = try andExpr()
-      try requireFloatTypes(left, right)
-
-      left = .op2(op, left, right)
-    }
-    return left
-  }
-
-  func andExpr() throws -> Expression {
-    var left = try negation()
-
-    while token.type == .and {
-      let op = token.type
-      nextToken()
-
-      let right = try negation()
-      try requireFloatTypes(left, right)
-
-      left = .op2(op, left, right)
-    }
-    return left
-  }
-
-  func negation() throws -> Expression {
-    if .not == token.type {
-      nextToken()
-      let value = try negation()
-      try requireFloatType(value)
-      return .op1(.not, value)
-    }
-
-    return try relational()
-  }
-
-  fileprivate func relational() throws -> Expression {
-    var left = try subexpression()
-
-    if relationalOps.contains(token.type) {
-      let op = token.type
-      nextToken()
-
-      let right = try subexpression()
-
-      try requireMatchingTypes(left, right)
-      left = .op2(op, left, right)
-    }
-
-    return left
-  }
-
-  func subexpression() throws -> Expression {
-    var left = try term()
-
-    while token.type == .plus || token.type == .minus {
-      let op = token.type
-      nextToken()
-
-      let right = try term()
-
-      try requireFloatTypes(left, right)
-
-      left = .op2(op, left, right)
-    }
-    return left
-  }
-
-  func term() throws -> Expression {
-
-    var left = try power()
-
-    while token.type == .times || token.type == .divide {
-      let op = token.type
-      nextToken()
-
-      let right = try power()
-
-      try requireFloatTypes(left, right)
-      left = .op2(op, left, right)
-    }
-    return left
-  }
-
-  func power() throws -> Expression {
-    if .minus ==  token.type {
-      nextToken()
-      let value = try power()
-      try requireFloatType(value)
-      return .op1(.minus, value)
-    }
-
-    var left = try factor()
-
-    while token.type == .exponent {
-      let op = token.type
-      nextToken()
-
-      let right = try factor()
-
-      try requireFloatTypes(left, right)
-      left = .op2(op, left, right)
-    }
-    return left
-  }
-
-  func factor() throws -> Expression {
-
-    if token.type == .leftParend {
-      return try parenthesizedExpression()
-    } else if case .number = token.type {
-      return numericFactor(token.float)
-    } else if case .integer = token.type {
-      return numericFactor(token.float)
-    } else if case .string = token.type {
-      let text = token.string!
-      nextToken()
-      return .string(text)
-    } else if case .variable = token.type {
-      return try variable()
-    } else if case .predefined = token.type {
-      return try predefinedFunctionCall()
-    } else if case .fn = token.type {
-      return try userdefinedFunctionCall()
-    } else {
-      throw ParseError.error(token, "Expected start of expression")
-    }
-  }
-
-  fileprivate func parenthesizedExpression() throws -> Expression {
-    nextToken()
-
-    let expr = try expression()
-
-    try require(.rightParend, "Missing ')'")
-
-    return expr
-  }
-
-  fileprivate func numericFactor(_ floatValue: (Float)) -> Expression {
-    let value = Expression.number(floatValue)
-    nextToken()
-    return value
-  }
-
-  fileprivate func variable() throws -> Expression {
-    let variableToken = token
-    try require(.variable, "Expected variable")
-
-    let name = variableToken.string!
-
-    let type : `Type` =
-    name.last! == "$" ? .string : .number
-
-    if token.type != .leftParend {
-      return .variable(name, type)
-    }
-
-    var exprs: [Expression] = []
-
-    try require(.leftParend, "Missing '('")
-
-    let expr = try expression()
-    exprs.append(expr)
-
-    while token.type == .comma {
-      nextToken()
-
-      let expr = try expression()
-      exprs.append(expr)
-    }
-
-    try require(.rightParend, "Missing ')'")
-
-    return .arrayAccess(name, type, exprs)
-  }
-
   func formPredefinedCall(
     _ tokenExprs: (Token, [Expression]),
     _ remaining: ArraySlice<Token>)
@@ -506,36 +320,6 @@ public class BasicParser : Parsing {
     } catch {
       return .failure(indexOf(token), "Can't happen - unexpected error \(error)")
     }
-  }
-
-  fileprivate func predefinedFunctionCall() throws -> Expression {
-    let name = token.string!
-    let type = token.resultType
-    nextToken()
-
-    guard case .function(let parameterTypes, let resultType) = type else {
-      throw ParseError.error(token, "Internal error: Function has non-function type")
-    }
-
-    try require(.leftParend, "Missing '('")
-
-    var exprs: [Expression] = []
-    exprs.append(try expression())
-
-    while token.type == .comma {
-      nextToken()
-      exprs.append(try expression())
-    }
-
-    while exprs.count < parameterTypes.count {
-      exprs.append(.missing)
-    }
-
-    try require(.rightParend, "Missing ')'")
-
-    try typeCheck(parameterTypes, exprs)
-
-    return .predefined(name, exprs, resultType)
   }
 
   fileprivate func typeCheck(
@@ -571,7 +355,6 @@ public class BasicParser : Parsing {
       return false
     }
 
-
   func formUserDefinedFunctionCall(
     _ tokenExpr: (Token, Expression),
     _ remaining: ArraySlice<Token>)
@@ -588,26 +371,5 @@ public class BasicParser : Parsing {
     } catch {
       return .failure(remaining.startIndex, "Unexpected error \(error)")
     }
-}
-
-
-  fileprivate func userdefinedFunctionCall() throws -> Expression {
-    nextToken()
-
-    guard case .variable = token.type else {
-      throw ParseError.error(token, "Call to FNx must have letter after FN")
-    }
-    let parameter = token.string!
-    nextToken()
-
-    try require(.leftParend, "Missing '('")
-
-    let expr = try expression()
-
-    try require(.rightParend, "Missing ')'")
-
-    try typeCheck([.number], [expr])
-
-    return .userdefined("FN" + parameter, expr)
   }
 }
