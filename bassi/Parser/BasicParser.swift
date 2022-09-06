@@ -137,8 +137,8 @@ public class BasicParser : Parsing {
 
     let powerParser =
     factorParser <&&> match(.exponent)
-    |&> checkOperandsNumericIfRequired
-    |&> formNumericBinaryExpression
+    |&> checkMultipleOperandsAreNumeric
+    |> formBinaryExpression
 
     let negativeParser =
     <*>match(.minus) <&> powerParser
@@ -146,13 +146,13 @@ public class BasicParser : Parsing {
 
     let termParser =
     negativeParser <&&> oneOf(multiplyOps)
-    |&> checkOperandsNumericIfRequired
-    |&> formNumericBinaryExpression
+    |&> checkMultipleOperandsAreNumeric
+    |> formBinaryExpression
 
     let subexpressionParser =
     termParser <&&> oneOf(addOps)
-    |&> checkOperandsNumericIfRequired
-    |&> formNumericBinaryExpression
+    |&> checkMultipleOperandsAreNumeric
+    |> formBinaryExpression
 
     let relationalParser =
     subexpressionParser
@@ -165,19 +165,19 @@ public class BasicParser : Parsing {
 
     let andExprParser =
     negationParser <&&> match(.and)
-    |&> checkOperandsNumericIfRequired
-    |&> formNumericBinaryExpression
+    |&> checkMultipleOperandsAreNumeric
+    |> formBinaryExpression
 
     let orExprParser =
     andExprParser <&&> match(.or)
-    |&> checkOperandsNumericIfRequired
-    |&> formNumericBinaryExpression
+    |&> checkMultipleOperandsAreNumeric
+    |> formBinaryExpression
 
     expressionParser.bind(orExprParser.parse)
     return expressionParser
   }
 
-  func checkOperandsNumericIfRequired(_ exprTokenExprs: (Expression, Array<(Token, Expression)>), _ remaining: ArraySlice<Token>) -> ParseResult<Token, (Expression, Array<(Token, Expression)>)> {
+  func checkMultipleOperandsAreNumeric(_ exprTokenExprs: (Expression, Array<(Token, Expression)>), _ remaining: ArraySlice<Token>) -> ParseResult<Token, (Expression, Array<(Token, Expression)>)> {
 
     let (expr, tokenExprs) = exprTokenExprs
 
@@ -191,15 +191,13 @@ public class BasicParser : Parsing {
     return .success(exprTokenExprs, remaining)
   }
 
-  func formNumericBinaryExpression(_ exprTokenExprs: (Expression, Array<(Token, Expression)>), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Expression> {
-
+  func formBinaryExpression(_ exprTokenExprs: (Expression, Array<(Token, Expression)>)) -> Expression {
     let (expr, tokenExprs) = exprTokenExprs
 
-    let result = tokenExprs.reduce(expr) { result, tokenExpr in
+    return tokenExprs.reduce(expr) { result, tokenExpr in
       let (token, expr) = tokenExpr
       return .op2(token.type, result, expr)
     }
-    return .success(result, remaining)
   }
 
   func formMatchingBinaryExpression(
