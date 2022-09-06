@@ -249,7 +249,7 @@ public class BasicParser : Parsing {
 
     let allArgumentsAreCompatible = zip(arguments, parameterTypes)
       .allSatisfy { (argument, parameterType) in
-        conformsTo(argument.type(), parameterType)
+        argument.type().conformsTo(parameterType)
       }
     if !allArgumentsAreCompatible {
       return .failure(remaining.startIndex - 2, "Type mismatch")
@@ -264,12 +264,6 @@ public class BasicParser : Parsing {
     return arguments.count > parameterTypes.count
   }
 
-  fileprivate func conformsTo(
-    _ argumentType: `Type`,
-    _ parameterType: `Type`) -> Bool {
-      argumentType.conformsTo(parameterType)
-    }
-
   func formUserDefinedFunctionCall(
     _ tokenExpr: (Token, Expression),
     _ remaining: ArraySlice<Token>)
@@ -278,7 +272,7 @@ public class BasicParser : Parsing {
 
     let parameter = token.string!
 
-    if !conformsTo(argument.type(), .number) {
+    if !argument.type().conformsTo(.number) {
       return .failure(remaining.startIndex - 2, "Type mismatch")
     }
 
