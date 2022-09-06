@@ -243,45 +243,30 @@ public class BasicParser : Parsing {
       arguments.append(.missing)
     }
 
-      if hasTooManyArguments(arguments, parameterTypes) {
-        return .failure(remaining.startIndex - 2, "Function called with too many arguments")
-      }
+    if hasTooManyArguments(arguments, parameterTypes) {
+      return .failure(remaining.startIndex - 2, "Function called with too many arguments")
+    }
 
-      let allArgumentsAreCompatible = zip(arguments, parameterTypes)
-        .allSatisfy { (argument, parameterType) in
-          isCompatible(parameterType, argument.type())
-        }
-      if !allArgumentsAreCompatible {
-        return .failure(remaining.startIndex - 2, "Type mismatch")
+    let allArgumentsAreCompatible = zip(arguments, parameterTypes)
+      .allSatisfy { (argument, parameterType) in
+        isCompatible(argument.type(), parameterType)
       }
+    if !allArgumentsAreCompatible {
+      return .failure(remaining.startIndex - 2, "Type mismatch")
+    }
 
-      return .success(
-        .predefined(token.string, arguments, resultType),
-        remaining)
+    return .success(
+      .predefined(token.string, arguments, resultType),
+      remaining)
   }
 
   fileprivate func hasTooManyArguments(_ arguments: [Expression], _ parameterTypes: [Type]) -> Bool {
     return arguments.count > parameterTypes.count
   }
 
-  fileprivate func typeCheck(
-    _ parameterTypes: [`Type`],
-    _ arguments: [Expression]) throws {
-
-      let allArgumentsAreCompatible = zip(arguments, parameterTypes)
-        .allSatisfy { (argument, parameterType) in
-          isCompatible(parameterType, argument.type())
-        }
-
-      if !allArgumentsAreCompatible {
-        throw ParseError.error(Token(line: 0,column: 0,type: .end), "Type mismatch")
-
-      }
-    }
-
   fileprivate func isCompatible(
-    _ parameterType: `Type`,
-    _ argumentType: `Type`) -> Bool {
+    _ argumentType: `Type`,
+    _ parameterType: `Type`) -> Bool {
       if parameterType == argumentType {
         return true
       }
@@ -304,9 +289,10 @@ public class BasicParser : Parsing {
 
     let parameter = token.string!
 
-      if !isCompatible(.number, argument.type()) {
-        return .failure(remaining.startIndex - 2, "Type mismatch")
-      }
-      return .success(.userdefined("FN" + parameter, argument), remaining)
+    if !isCompatible(argument.type(), .number) {
+      return .failure(remaining.startIndex - 2, "Type mismatch")
+    }
+
+    return .success(.userdefined("FN" + parameter, argument), remaining)
   }
 }
