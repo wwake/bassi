@@ -175,13 +175,21 @@ public class BasicParser : Parsing {
     let parenthesizedParser =
     match(.leftParend) &> expressionParser <& match(.rightParend, "Missing ')'")
 
+    let predefinedFunctionCallParser =
+    match(.predefined)
+    <& match(.leftParend)
+    <&> expressionParser <&& match(.comma)
+    <& match(.rightParend, "Missing ')'")
+    |&> formPredefinedCall
+
+
     let factorParser =
         parenthesizedParser
     <|> match(.number) |> { Expression.number($0.float) }
     <|> match(.integer) |> { Expression.number($0.float) }
     <|> match(.string) |> { Expression.string($0.string) }
     <|> variableParser
-    <|> peek(match(.predefined)) &> WrapOld(self, predefinedFunctionCall)
+    <|> predefinedFunctionCallParser
     <|> peek(match(.fn)) &> WrapOld(self, userdefinedFunctionCall)
     <%> "Expected start of expression"
 
@@ -462,7 +470,38 @@ public class BasicParser : Parsing {
     return .arrayAccess(name, type, exprs)
   }
 
-  fileprivate func predefinedFunctionCall() throws -> Expression  {
+  func formPredefinedCall(
+    _ tokenExprs: (Token, [Expression]),
+    _ remaining: ArraySlice<Token>)
+  -> ParseResult<Token, Expression> {
+    let (token, exprs) = tokenExprs
+
+    let type = token.resultType
+
+    guard case .function(let parameterTypes, let resultType) = type else {
+      preconditionFailure("Internal error: Function \(token.string!) has non-function type")
+    }
+
+    var arguments = exprs
+    while arguments.count < parameterTypes.count {
+      arguments.append(.missing)
+    }
+
+    do {
+      try typeCheck(parameterTypes, arguments)
+
+      return .success(
+        .predefined(token.string, arguments, resultType),
+        remaining)
+
+    } catch ParseError.error(_, let message) {
+      return .failure(remaining.startIndex - 2, message)
+    } catch {
+      return .failure(indexOf(token), "Can't happen - unexpected error \(error)")
+    }
+  }
+
+  fileprivate func predefinedFunctionCall() throws -> Expression {
     let name = token.string!
     let type = token.resultType
     nextToken()
