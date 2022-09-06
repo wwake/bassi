@@ -92,25 +92,6 @@ public class BasicParser : Parsing {
     satisfy<Token>(message) { tokens.contains($0.type) }
   }
 
-  // TODO - delete when the WrapperTest goes away
-  func recursiveDescent_exampleOfFailedParse() throws -> Statement {
-    nextToken()
-
-    if case .integer = token.type {
-      let lineNumber = LineNumber(token.float)
-      nextToken()
-      return .goto(lineNumber)
-    }
-
-    throw ParseError.error(token, "Missing target of GOTO")
-  }
-
-  // TODO - remove when WrapperTests goes away
-  func recursiveDescent_exampleOfSuccessfulParse() throws -> Statement {
-    nextToken()
-    return .`return`
-  }
-
   func requireFloatType(_ expr: Expression, _ remaining: ArraySlice<Token>) -> ParseResult<Token, Expression> {
 
     if expr.type() == .number {
