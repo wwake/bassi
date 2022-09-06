@@ -226,6 +226,17 @@ public class BasicParser : Parsing {
     return .success(result, remaining)
   }
 
+  fileprivate func hasTooManyArguments(_ arguments: [Expression], _ parameterTypes: [Type]) -> Bool {
+    return arguments.count > parameterTypes.count
+  }
+
+  fileprivate func argumentsAreCompatible(_ arguments: [Expression], _ parameterTypes: [Type]) -> Bool {
+    zip(arguments, parameterTypes)
+      .allSatisfy { (argument, parameterType) in
+        argument.type().conformsTo(parameterType)
+      }
+  }
+
   func formPredefinedCall(
     _ tokenExprs: (Token, [Expression]),
     _ remaining: ArraySlice<Token>)
@@ -247,21 +258,13 @@ public class BasicParser : Parsing {
       return .failure(remaining.startIndex - 2, "Function called with too many arguments")
     }
 
-    let allArgumentsAreCompatible = zip(arguments, parameterTypes)
-      .allSatisfy { (argument, parameterType) in
-        argument.type().conformsTo(parameterType)
-      }
-    if !allArgumentsAreCompatible {
+    if !argumentsAreCompatible(arguments, parameterTypes) {
       return .failure(remaining.startIndex - 2, "Type mismatch")
     }
 
     return .success(
       .predefined(token.string, arguments, resultType),
       remaining)
-  }
-
-  fileprivate func hasTooManyArguments(_ arguments: [Expression], _ parameterTypes: [Type]) -> Bool {
-    return arguments.count > parameterTypes.count
   }
 
   func formUserDefinedFunctionCall(
