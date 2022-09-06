@@ -430,7 +430,13 @@ class ParserTests: XCTestCase {
         .number)
     )
   }
-  
+
+  func testPredefinedCalledWithTooManyArguments() {
+    checkError(
+      "1 PRINT SQR(\"x\", 2)",
+      "Function called with too many arguments")
+  }
+
   func testPredefinedFunctionEnforcesTypes() {
     checkError(
       "25 PRINT SQR(\"X\")",

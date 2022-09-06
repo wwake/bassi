@@ -270,8 +270,8 @@ public class BasicParser : Parsing {
     _ parameterTypes: [`Type`],
     _ arguments: [Expression]) throws {
 
-      if arguments.count > parameterTypes.count {
-        throw ParseError.error(token, "Function not called with correct number of arguments")
+      if parameterTypes.count < arguments.count {
+        throw ParseError.error(token, "Function called with too many arguments")
       }
 
       try zip(parameterTypes, arguments)

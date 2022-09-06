@@ -54,7 +54,7 @@ class Repl : ObservableObject {
       try interpreter.run()
       updateShadowVariables()
     } catch InterpreterError.error(let lineNumber, let message) {
-      append("\(lineNumber): ?\(message)\n")
+      append("?\(lineNumber):\(message)\n")
     } catch {
       append("\(error)\n")
     }
