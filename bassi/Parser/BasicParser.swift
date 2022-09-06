@@ -60,10 +60,6 @@ public class BasicParser : Parsing {
     }
   }
 
-  func indexOf(_ token: Token) -> Int {
-    tokens.firstIndex(of: token) ?? 0
-  }
-
   private func match(_ type: TokenType, _ message: String = "Didn't find expected value") -> satisfy<Token> {
     satisfy<Token>(message) { $0.type == type }
   }
@@ -130,7 +126,7 @@ public class BasicParser : Parsing {
     |&> formUserDefinedFunctionCall
 
     let factorParser =
-        parenthesizedParser
+    parenthesizedParser
     <|> match(.number) |> { Expression.number($0.float) }
     <|> match(.integer) |> { Expression.number($0.float) }
     <|> match(.string) |> { Expression.string($0.string) }
@@ -183,7 +179,7 @@ public class BasicParser : Parsing {
     if tokenExprs.count == 0 { return .success(expr, remaining) }
 
     guard expr.type() == .number
-       && tokenExprs.allSatisfy({(_,expr) in expr.type() == .number}) else {
+            && tokenExprs.allSatisfy({(_,expr) in expr.type() == .number}) else {
       return .failure(remaining.startIndex - 1, "Numeric type is required")
     }
 
@@ -247,34 +243,40 @@ public class BasicParser : Parsing {
       arguments.append(.missing)
     }
 
-    do {
-      try typeCheck(parameterTypes, arguments)
+      if hasTooManyArguments(arguments, parameterTypes) {
+        return .failure(remaining.startIndex - 2, "Function called with too many arguments")
+      }
+
+      let allArgumentsAreCompatible = zip(arguments, parameterTypes)
+        .allSatisfy { (argument, parameterType) in
+          isCompatible(parameterType, argument.type())
+        }
+      if !allArgumentsAreCompatible {
+        return .failure(remaining.startIndex - 2, "Type mismatch")
+      }
 
       return .success(
         .predefined(token.string, arguments, resultType),
         remaining)
+  }
 
-    } catch ParseError.error(_, let message) {
-      return .failure(remaining.startIndex - 2, message)
-    } catch {
-      return .failure(indexOf(token), "Can't happen - unexpected error \(error)")
-    }
+  fileprivate func hasTooManyArguments(_ arguments: [Expression], _ parameterTypes: [Type]) -> Bool {
+    return arguments.count > parameterTypes.count
   }
 
   fileprivate func typeCheck(
     _ parameterTypes: [`Type`],
     _ arguments: [Expression]) throws {
 
-      if arguments.count > parameterTypes.count {
-        throw ParseError.error(Token(line: 0,column: 0,type: .end), "Function called with too many arguments")
-      }
-
-      try zip(parameterTypes, arguments)
-        .forEach { (parameterType, argument) in
-          if !isCompatible(parameterType, argument.type()) {
-            throw ParseError.error(Token(line: 0,column: 0,type: .end), "Type mismatch")
-          }
+      let allArgumentsAreCompatible = zip(arguments, parameterTypes)
+        .allSatisfy { (argument, parameterType) in
+          isCompatible(parameterType, argument.type())
         }
+
+      if !allArgumentsAreCompatible {
+        throw ParseError.error(Token(line: 0,column: 0,type: .end), "Type mismatch")
+
+      }
     }
 
   fileprivate func isCompatible(
@@ -302,13 +304,9 @@ public class BasicParser : Parsing {
 
     let parameter = token.string!
 
-    do {
-      try typeCheck([.number], [argument])
+      if !isCompatible(.number, argument.type()) {
+        return .failure(remaining.startIndex - 2, "Type mismatch")
+      }
       return .success(.userdefined("FN" + parameter, argument), remaining)
-    } catch ParseError.error(_, let message) {
-      return .failure(remaining.startIndex - 2, message)
-    } catch {
-      return .failure(remaining.startIndex, "Unexpected error \(error)")
-    }
   }
 }

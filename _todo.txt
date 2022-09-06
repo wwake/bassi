@@ -1,4 +1,5 @@
-* Eliminate unused old-style parser code
+* Improve use of checker methods
+* Eliminate remaining old-style parser code
 * Make variable tokens know their type
 * Make StatementParser.indexOf pull value from the token itself
 
@@ -7,6 +8,7 @@ EVO-22-18: September 6, 2022
 * Convert expression to new parser: user-defined function call
 * Use the new expressionParser everywhere
 * Eliminate all WrapOld calls
+* Eliminate most unused old-style parser code
 
 EVO-22-17: September 5, 2022
 * Extract statement functions into a new file
