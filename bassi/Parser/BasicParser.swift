@@ -50,23 +50,8 @@ public class BasicParser : Parsing {
     return singleLine()
   }
 
-  func when(_ tokenType: TokenType) -> peek<satisfy<Token>> {
-    peek(match(tokenType))
-  }
-
-  func nextToken() {
-    tokenIndex += 1
-  }
-
   func indexOf(_ token: Token) -> Int {
     tokens.firstIndex(of: token) ?? 0
-  }
-
-  fileprivate func require(_ expected: TokenType, _ message: String) throws {
-    if token.type != expected {
-      throw ParseError.error(token, message)
-    }
-    nextToken()
   }
 
   private func singleLine() -> Parse {
