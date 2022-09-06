@@ -182,6 +182,13 @@ public class BasicParser : Parsing {
     <& match(.rightParend, "Missing ')'")
     |&> formPredefinedCall
 
+    let userDefinedFunctionCallParser =
+    match(.fn)
+    &> match(.variable, "Call to FNx must have letter after FN")
+    <& match(.leftParend, "Missing '('")
+    <&> expressionParser
+    <& match(.rightParend, "Missing ')'")
+    |&> formUserDefinedFunctionCall
 
     let factorParser =
         parenthesizedParser
@@ -190,7 +197,7 @@ public class BasicParser : Parsing {
     <|> match(.string) |> { Expression.string($0.string) }
     <|> variableParser
     <|> predefinedFunctionCallParser
-    <|> peek(match(.fn)) &> WrapOld(self, userdefinedFunctionCall)
+    <|> userDefinedFunctionCallParser
     <%> "Expected start of expression"
 
     let powerParser =
@@ -563,6 +570,25 @@ public class BasicParser : Parsing {
       }
       return false
     }
+
+
+  func formUserDefinedFunctionCall(
+    _ tokenExpr: (Token, Expression),
+    _ remaining: ArraySlice<Token>)
+  -> ParseResult<Token, Expression> {
+    let (token, argument) = tokenExpr
+
+    let parameter = token.string!
+
+    do {
+      try typeCheck([.number], [argument])
+      return .success(.userdefined("FN" + parameter, argument), remaining)
+    } catch ParseError.error(_, let message) {
+      return .failure(remaining.startIndex - 2, message)
+    } catch {
+      return .failure(remaining.startIndex, "Unexpected error \(error)")
+    }
+}
 
 
   fileprivate func userdefinedFunctionCall() throws -> Expression {
