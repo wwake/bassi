@@ -50,10 +50,6 @@ public class BasicParser : Parsing {
     return singleLine()
   }
 
-  func indexOf(_ token: Token) -> Int {
-    tokens.firstIndex(of: token) ?? 0
-  }
-
   private func singleLine() -> Parse {
     let result = singleLineParser.parse(tokens)
 
@@ -67,6 +63,10 @@ public class BasicParser : Parsing {
         errorToken.line,
         [.error(errorToken.line, errorToken.column, message)])
     }
+  }
+
+  func indexOf(_ token: Token) -> Int {
+    tokens.firstIndex(of: token) ?? 0
   }
 
   private func match(_ type: TokenType, _ message: String = "Didn't find expected value") -> satisfy<Token> {
@@ -94,28 +94,6 @@ public class BasicParser : Parsing {
 
     return .failure(remaining.startIndex - 1, "Type mismatch")
   }
-
-  fileprivate func requireFloatType(_ expr: Expression) throws {
-    if expr.type() != .number {
-      throw ParseError.error(token, "Numeric type is required")
-    }
-  }
-
-  fileprivate func requireFloatTypes(
-    _ left: Expression,
-    _ right: Expression) throws {
-      if left.type() != .number || right.type() != .number {
-        throw ParseError.error(token, "Type mismatch")
-      }
-    }
-
-  fileprivate func requireMatchingTypes(
-    _ left: Expression,
-    _ right: Expression) throws {
-      if left.type() != right.type() {
-        throw ParseError.error(token, "Type mismatch")
-      }
-    }
 
   fileprivate func makeExpressionParser() -> Bind<Token, Expression> {
     let expressionParser = Bind<Token, Expression>()
