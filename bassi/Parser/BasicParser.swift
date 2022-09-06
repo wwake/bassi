@@ -137,6 +137,7 @@ public class BasicParser : Parsing {
 
     let powerParser =
     factorParser <&&> match(.exponent)
+    |&> checkOperandsNumericIfRequired
     |&> formNumericBinaryExpression
 
     let negativeParser =
@@ -145,10 +146,12 @@ public class BasicParser : Parsing {
 
     let termParser =
     negativeParser <&&> oneOf(multiplyOps)
+    |&> checkOperandsNumericIfRequired
     |&> formNumericBinaryExpression
 
     let subexpressionParser =
     termParser <&&> oneOf(addOps)
+    |&> checkOperandsNumericIfRequired
     |&> formNumericBinaryExpression
 
     let relationalParser =
@@ -162,26 +165,35 @@ public class BasicParser : Parsing {
 
     let andExprParser =
     negationParser <&&> match(.and)
+    |&> checkOperandsNumericIfRequired
     |&> formNumericBinaryExpression
 
     let orExprParser =
     andExprParser <&&> match(.or)
+    |&> checkOperandsNumericIfRequired
     |&> formNumericBinaryExpression
 
     expressionParser.bind(orExprParser.parse)
     return expressionParser
   }
 
-  func formNumericBinaryExpression(_ exprTokenExprs: (Expression, Array<(Token, Expression)>), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Expression> {
+  func checkOperandsNumericIfRequired(_ exprTokenExprs: (Expression, Array<(Token, Expression)>), _ remaining: ArraySlice<Token>) -> ParseResult<Token, (Expression, Array<(Token, Expression)>)> {
 
     let (expr, tokenExprs) = exprTokenExprs
 
-    if tokenExprs.count == 0 { return .success(expr, remaining) }
+    if tokenExprs.count == 0 { return .success(exprTokenExprs, remaining) }
 
     guard expr.type() == .number
             && tokenExprs.allSatisfy({(_,expr) in expr.type() == .number}) else {
       return .failure(remaining.startIndex - 1, "Numeric type is required")
     }
+
+    return .success(exprTokenExprs, remaining)
+  }
+
+  func formNumericBinaryExpression(_ exprTokenExprs: (Expression, Array<(Token, Expression)>), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Expression> {
+
+    let (expr, tokenExprs) = exprTokenExprs
 
     let result = tokenExprs.reduce(expr) { result, tokenExpr in
       let (token, expr) = tokenExpr
