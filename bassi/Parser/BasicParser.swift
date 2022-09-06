@@ -13,12 +13,7 @@ public class BasicParser : Parsing {
 
   var lexer: Lexer
 
-  var token: Token {
-    tokens[tokenIndex]
-  }
-
   var tokens : ArraySlice<Token>
-  var tokenIndex = 0
 
   var lineNumber = 0
   var columnNumber = 0
@@ -270,14 +265,14 @@ public class BasicParser : Parsing {
     _ parameterTypes: [`Type`],
     _ arguments: [Expression]) throws {
 
-      if parameterTypes.count < arguments.count {
-        throw ParseError.error(token, "Function called with too many arguments")
+      if arguments.count > parameterTypes.count {
+        throw ParseError.error(Token(line: 0,column: 0,type: .end), "Function called with too many arguments")
       }
 
       try zip(parameterTypes, arguments)
         .forEach { (parameterType, argument) in
           if !isCompatible(parameterType, argument.type()) {
-            throw ParseError.error(token, "Type mismatch")
+            throw ParseError.error(Token(line: 0,column: 0,type: .end), "Type mismatch")
           }
         }
     }
