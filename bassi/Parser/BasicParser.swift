@@ -142,6 +142,7 @@ public class BasicParser : Parsing {
 
     let negativeParser =
     <*>match(.minus) <&> powerParser
+    |&> checkNumericIfUnary
     |&> formUnaryExpression
 
     let termParser =
@@ -161,6 +162,7 @@ public class BasicParser : Parsing {
 
     let negationParser =
     <*>match(.not) <&> relationalParser
+    |&> checkNumericIfUnary
     |&> formUnaryExpression
 
     let andExprParser =
@@ -220,6 +222,21 @@ public class BasicParser : Parsing {
     return .success(result, remaining)
   }
 
+  func checkNumericIfUnary(
+    _ tokensExpr: ([Token], Expression),
+    _ remaining: ArraySlice<Token>)
+  -> ParseResult<Token, ([Token], Expression)> {
+    let (ops, expr) = tokensExpr
+
+    if ops.count == 0 { return .success(tokensExpr, remaining) }
+
+    guard expr.type() == .number else {
+      return .failure(remaining.startIndex - 1, "Numeric type is required")
+    }
+
+    return .success(tokensExpr, remaining)
+  }
+
   func formUnaryExpression(_ tokensExpr: ([Token], Expression), _ remaining: ArraySlice<Token>) -> ParseResult<Token, Expression> {
     let (ops, expr) = tokensExpr
 
@@ -235,6 +252,7 @@ public class BasicParser : Parsing {
 
     return .success(result, remaining)
   }
+
 
   fileprivate func hasTooManyArguments(_ arguments: [Expression], _ parameterTypes: [Type]) -> Bool {
     return arguments.count > parameterTypes.count
