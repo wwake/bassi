@@ -121,7 +121,3 @@ public indirect enum Statement : Equatable {
     return .error(0, 0, "Statement.at: index too big - internal error")
   }
 }
-
-protocol Parsing {
-  func parse() -> Parse
-}

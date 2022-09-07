@@ -58,7 +58,6 @@
 		9195174A286B5794009BFC5B /* ValueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91951749286B5794009BFC5B /* ValueTests.swift */; };
 		9195174C286CA4DC009BFC5B /* BasicArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9195174B286CA4DC009BFC5B /* BasicArray.swift */; };
 		9195174E286CA9FA009BFC5B /* BasicArrayTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9195174D286CA9FA009BFC5B /* BasicArrayTests.swift */; };
-		91B3922328BD2E26005E20F9 /* OldParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B3922228BD2E26005E20F9 /* OldParser.swift */; };
 		91B3922A28BD3A1B005E20F9 /* pcombo in Frameworks */ = {isa = PBXBuildFile; productRef = 91B3922928BD3A1B005E20F9 /* pcombo */; };
 		91BE90E8283E7CD9004F0CF9 /* ExpressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91BE90E7283E7CD9004F0CF9 /* ExpressionTests.swift */; };
 /* End PBXBuildFile section */
@@ -139,7 +138,6 @@
 		9195174B286CA4DC009BFC5B /* BasicArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicArray.swift; sourceTree = "<group>"; };
 		9195174D286CA9FA009BFC5B /* BasicArrayTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicArrayTests.swift; sourceTree = "<group>"; };
 		91B3922128BD1C57005E20F9 /* Bint-strat.key */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Bint-strat.key"; sourceTree = "<group>"; };
-		91B3922228BD2E26005E20F9 /* OldParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OldParser.swift; sourceTree = "<group>"; };
 		91BE90E7283E7CD9004F0CF9 /* ExpressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -184,7 +182,6 @@
 			children = (
 				91165771282AB0790000D3AA /* Parse.swift */,
 				91165773282AB1030000D3AA /* SyntaxAnalyzer.swift */,
-				91B3922228BD2E26005E20F9 /* OldParser.swift */,
 				912DFBDE28C6655B00479EAB /* StatementParser.swift */,
 				912DFCA728C9094F00479EAB /* ExpressionParser.swift */,
 			);
@@ -464,7 +461,6 @@
 				9116576E28295D2A0000D3AA /* Token.swift in Sources */,
 				9130886A282EBA6C00E5C62E /* Repl.swift in Sources */,
 				91165772282AB0790000D3AA /* Parse.swift in Sources */,
-				91B3922328BD2E26005E20F9 /* OldParser.swift in Sources */,
 				9195174C286CA4DC009BFC5B /* BasicArray.swift in Sources */,
 				9116576628295A2B0000D3AA /* Interpreter.swift in Sources */,
 				918861E72866051E00B7B19C /* Interactor.swift in Sources */,
