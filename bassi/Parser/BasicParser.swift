@@ -8,7 +8,7 @@
 import Foundation
 import pcombo
 
-public class BasicParser : Parsing {
+public class BasicParser {
   var lexer: Lexer
 
   var tokens : ArraySlice<Token>
@@ -33,7 +33,7 @@ public class BasicParser : Parsing {
     }
   }
 
-  func parse() -> Parse {
+  func parse(_ : ArraySlice<Token>) -> Parse {
     let result = singleLineParser.parse(tokens)
 
     switch result {

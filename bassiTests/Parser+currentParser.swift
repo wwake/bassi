@@ -8,6 +8,6 @@
 import Foundation
 @testable import bassi
 
-func currentParser(_ input: String) -> Parsing {
-  return OldParser(Lexer(input))
+func currentParser(_ input: String) -> BasicParser {
+  return BasicParser(Lexer(input))
 }

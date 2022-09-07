@@ -8,7 +8,7 @@
 import Foundation
 
 public class SyntaxAnalyzer {
-  func parse(_ parser: Parsing) -> Parse {
-    return parser.parse()
+  func parse(_ parser: BasicParser, _ tokens: ArraySlice<Token>) -> Parse {
+    return parser.parse(tokens)
   }
 }
