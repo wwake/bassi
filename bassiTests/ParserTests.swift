@@ -14,7 +14,7 @@ class ParserTests: XCTestCase {
     _ expected: Statement)
   {
     let parser = SyntaxAnalyzer()
-    let result = parser.parse(BasicParser(), Lexer(program).line())
+    let result = parser.parse(Lexer(program).line())
     XCTAssertEqual(
       result.statements,
       [expected]
@@ -26,7 +26,7 @@ class ParserTests: XCTestCase {
     _ expected: [Statement])
   {
     let parser = SyntaxAnalyzer()
-    let result = parser.parse(BasicParser(), Lexer(program).line())
+    let result = parser.parse(Lexer(program).line())
     XCTAssertEqual(
       result.statements,
       expected
@@ -39,7 +39,7 @@ class ParserTests: XCTestCase {
 
       let input = "10 PRINT \(expression)"
       let parser = SyntaxAnalyzer()
-      let result = parser.parse(BasicParser(), Lexer(input).line())
+      let result = parser.parse(Lexer(input).line())
       XCTAssertEqual(
         result,
         Parse(
@@ -53,7 +53,7 @@ class ParserTests: XCTestCase {
     _ expected: String)
   {
     let parser = SyntaxAnalyzer()
-    let output = parser.parse(BasicParser(), Lexer(program).line())
+    let output = parser.parse(Lexer(program).line())
 
     if case .error(_, _, let actualMessage) = output.statements[0] {
       XCTAssertEqual(
@@ -73,11 +73,11 @@ class ParserTests: XCTestCase {
     let parser = SyntaxAnalyzer()
 
     XCTAssertEqual(
-      parser.parse(BasicParser(), Lexer("1 END").line()),
+      parser.parse(Lexer("1 END").line()),
       Parse(1, [.end]))
 
     XCTAssertEqual(
-      parser.parse(BasicParser(), Lexer("99999 END").line()),
+      parser.parse(Lexer("99999 END").line()),
       Parse(99999, [.end]))
   }
 
