@@ -9,10 +9,6 @@ import Foundation
 import pcombo
 
 public class BasicParser {
-  var lexer: Lexer
-
-  var tokens : ArraySlice<Token>
-
   var lineNumber = 0
   var columnNumber = 0
 
@@ -20,10 +16,7 @@ public class BasicParser {
   var statementsParser: Bind<Token, [Statement]>!
   var expressionParser: Bind<Token, Expression>!
 
-  init(_ lexer: Lexer) {
-    self.lexer = lexer
-    self.tokens = lexer.line()
-
+  init() {
     defer {
       expressionParser = ExpressionParser().makeExpressionParser()
 
@@ -33,7 +26,7 @@ public class BasicParser {
     }
   }
 
-  func parse(_ : ArraySlice<Token>) -> Parse {
+  func parse(_ tokens: ArraySlice<Token>) -> Parse {
     let result = singleLineParser.parse(tokens)
 
     switch result {
