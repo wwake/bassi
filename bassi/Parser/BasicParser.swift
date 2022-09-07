@@ -9,15 +9,12 @@ import Foundation
 import pcombo
 
 public class BasicParser : Parsing {
-  let maxLineNumber = 99999
-
   var lexer: Lexer
 
   var tokens : ArraySlice<Token>
 
   var lineNumber = 0
   var columnNumber = 0
-
 
   var singleLineParser: Bind<Token, Parse>!
   var statementsParser: Bind<Token, [Statement]>!
@@ -37,10 +34,6 @@ public class BasicParser : Parsing {
   }
 
   func parse() -> Parse {
-    return singleLine()
-  }
-
-  private func singleLine() -> Parse {
     let result = singleLineParser.parse(tokens)
 
     switch result {
