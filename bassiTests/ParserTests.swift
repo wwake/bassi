@@ -14,7 +14,7 @@ class ParserTests: XCTestCase {
     _ expected: Statement)
   {
     let parser = SyntaxAnalyzer()
-    let result = parser.parse(currentParser(program))
+    let result = parser.parse(BasicParser(Lexer(program)))
     XCTAssertEqual(
       result.statements,
       [expected]
@@ -26,7 +26,7 @@ class ParserTests: XCTestCase {
     _ expected: [Statement])
   {
     let parser = SyntaxAnalyzer()
-    let result = parser.parse(currentParser(program))
+    let result = parser.parse(BasicParser(Lexer(program)))
     XCTAssertEqual(
       result.statements,
       expected
@@ -39,7 +39,7 @@ class ParserTests: XCTestCase {
 
       let input = "10 PRINT \(expression)"
       let parser = SyntaxAnalyzer()
-      let result = parser.parse(currentParser(input))
+      let result = parser.parse(BasicParser(Lexer(input)))
       XCTAssertEqual(
         result,
         Parse(
@@ -54,7 +54,7 @@ class ParserTests: XCTestCase {
   {
     let line = program
     let parser = SyntaxAnalyzer()
-    let output = parser.parse(currentParser(line))
+    let output = parser.parse(BasicParser(Lexer(line)))
 
     if case .error(_, _, let actualMessage) = output.statements[0] {
       XCTAssertEqual(

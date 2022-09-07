@@ -78,9 +78,6 @@ class Interpreter {
 
   func currentParser(_ line: String) -> Parsing {
     return BasicParser(Lexer(line))
-//    return useNewParser
-//     ? BasicParser(Lexer(line))
-//     : OldParser(Lexer(line))
   }
 
   func nextLocationFor(_ location: Location) -> Location {
