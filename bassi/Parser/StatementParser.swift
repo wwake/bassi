@@ -278,5 +278,4 @@ public class StatementParser {
 
     return .failure(remaining.startIndex - 1, "Type mismatch")
   }
-
 }
