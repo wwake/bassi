@@ -8,6 +8,15 @@
         "branch" : "main",
         "revision" : "00617cdb85beaf279f3fbb9d149684b479080d07"
       }
+    },
+    {
+      "identity" : "test-spike",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/wwake/test-spike.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "7373af3a0014ffef379936e9a329484536b09b00"
+      }
     }
   ],
   "version" : 2
