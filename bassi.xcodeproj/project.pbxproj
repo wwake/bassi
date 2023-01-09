@@ -16,7 +16,6 @@
 		91165770282AADC20000D3AA /* ParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9116576F282AADC20000D3AA /* ParserTests.swift */; };
 		91165772282AB0790000D3AA /* Parse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91165771282AB0790000D3AA /* Parse.swift */; };
 		91165774282AB1030000D3AA /* SyntaxAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91165773282AB1030000D3AA /* SyntaxAnalyzer.swift */; };
-		911ACD69296CA3A600F61B6F /* PTestPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 911ACD68296CA3A600F61B6F /* PTestPackage */; };
 		912DFBDF28C6655B00479EAB /* StatementParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 912DFBDE28C6655B00479EAB /* StatementParser.swift */; };
 		912DFCA828C9094F00479EAB /* ExpressionParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 912DFCA728C9094F00479EAB /* ExpressionParser.swift */; };
 		91308863282D5F6300E5C62E /* Expression+make.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91308862282D5F6300E5C62E /* Expression+make.swift */; };
@@ -155,7 +154,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				911ACD69296CA3A600F61B6F /* PTestPackage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -360,7 +358,6 @@
 			);
 			name = bassiTests;
 			packageProductDependencies = (
-				911ACD68296CA3A600F61B6F /* PTestPackage */,
 			);
 			productName = bassiTests;
 			productReference = 9192F7432828B69000FAFFA1 /* bassiTests.xctest */;
@@ -418,7 +415,6 @@
 			mainGroup = 9192F7292828B68F00FAFFA1;
 			packageReferences = (
 				91B3922828BD3A1B005E20F9 /* XCRemoteSwiftPackageReference "pcombo" */,
-				911ACD67296CA3A600F61B6F /* XCRemoteSwiftPackageReference "test-spike" */,
 			);
 			productRefGroup = 9192F7332828B68F00FAFFA1 /* Products */;
 			projectDirPath = "";
@@ -834,14 +830,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		911ACD67296CA3A600F61B6F /* XCRemoteSwiftPackageReference "test-spike" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/wwake/test-spike.git";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
-		};
 		91B3922828BD3A1B005E20F9 /* XCRemoteSwiftPackageReference "pcombo" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/wwake/pcombo.git";
@@ -853,11 +841,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		911ACD68296CA3A600F61B6F /* PTestPackage */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 911ACD67296CA3A600F61B6F /* XCRemoteSwiftPackageReference "test-spike" */;
-			productName = PTestPackage;
-		};
 		91B3922928BD3A1B005E20F9 /* pcombo */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 91B3922828BD3A1B005E20F9 /* XCRemoteSwiftPackageReference "pcombo" */;

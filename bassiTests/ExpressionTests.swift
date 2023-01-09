@@ -34,5 +34,4 @@ class ExpressionTests: XCTestCase {
     let call = Expression.predefined("CHR$", [.number(3)], .string)
     XCTAssertEqual(call.type(), .string)
   }
-
 }
